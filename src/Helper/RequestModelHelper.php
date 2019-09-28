@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Manager;
+namespace RestApiBundle\Helper;
 
 use RestApiBundle\RequestModelInterface;
 use function array_key_exists;
