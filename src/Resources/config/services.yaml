@@ -1,3 +1,14 @@
 services:
-    RestApiBundle\Manager\RequestModelManager:
-        autowire: ~
+    _defaults:
+        autoconfigure: true
+        autowire: true
+        public: false
+
+    _instanceof:
+        Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface:
+            tags:
+                - { name: controller.argument_value_resolver, priority: 25 }
+
+    RestApiBundle\Manager\:
+        resource: '../../../src/Manager/*'
+        public: true
