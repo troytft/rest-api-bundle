@@ -2,7 +2,6 @@
 
 namespace RestApiBundle\Manager;
 
-use RestApiBundle\Helper\RequestModelHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
@@ -37,7 +36,7 @@ class RequestModelActionArgumentValueResolver implements ArgumentValueResolverIn
     {
         $className = $argument->getType();
 
-        $requestModel = RequestModelHelper::instantiate($className);
+        $requestModel = RequestModelHelp::instantiate($className);
         $this->requestModelManager->handleRequest($requestModel, $this->getRequestData());
 
         yield $requestModel;
