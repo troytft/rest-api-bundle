@@ -1,0 +1,3 @@
+services:
+    RestApiBundle\Manager\RequestModelManager:
+        autowire: ~
