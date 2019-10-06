@@ -5,6 +5,7 @@ namespace RestApiBundle\Manager;
 use Mapper;
 use RestApiBundle\Exception\RequestModelMappingException;
 use RestApiBundle\RequestModelInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 use function get_class;
 use function sprintf;
 
@@ -15,9 +16,15 @@ class RequestModelManager
      */
     private $mapper;
 
-    public function __construct()
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
     {
         $this->mapper = new Mapper\Mapper();
+        $this->translator = $translator;
     }
 
     public function handleRequest(RequestModelInterface $requestModel, array $data): void
@@ -26,28 +33,26 @@ class RequestModelManager
             $this->mapper->map($requestModel, $data);
         } catch (Mapper\Exception\ExceptionInterface $exception) {
             if ($exception instanceof Mapper\Exception\MappingValidation\CollectionRequiredException) {
-                throw new RequestModelMappingException([$exception->getPathAsString() => ['This value should be collection.']]);
+                throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.collection_required')]]);
             } elseif ($exception instanceof Mapper\Exception\MappingValidation\ObjectRequiredException) {
-                throw new RequestModelMappingException([$exception->getPathAsString() => ['This value should be object.']]);
+                throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.object_required')]]);
             } elseif ($exception instanceof Mapper\Exception\MappingValidation\ScalarRequiredException) {
-                throw new RequestModelMappingException([$exception->getPathAsString() => ['This value should be scalar.']]);
+                throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.scalar_required')]]);
             } elseif ($exception instanceof Mapper\Exception\MappingValidation\UndefinedKeyException) {
-                throw new RequestModelMappingException([$exception->getPathAsString() => ['Key is not defined in model.']]);
+                throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.undefined_key')]]);
             } elseif ($exception instanceof Mapper\Exception\Transformer\WrappedTransformerException) {
                 $previousException = $exception->getPrevious();
 
                 if ($previousException instanceof Mapper\Exception\Transformer\BooleanRequiredException) {
-                    throw new RequestModelMappingException([$exception->getPathAsString() => ['This value should be boolean.']]);
+                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.boolean_required')]]);
                 } elseif ($previousException instanceof Mapper\Exception\Transformer\FloatRequiredException) {
-                    throw new RequestModelMappingException([$exception->getPathAsString() => ['This value should be float.']]);
+                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.float_required')]]);
                 } elseif ($exception instanceof Mapper\Exception\Transformer\IntegerRequiredException) {
-                    throw new RequestModelMappingException([$exception->getPathAsString() => ['This value should be integer.']]);
+                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.integer_required')]]);
                 } elseif ($exception instanceof Mapper\Exception\Transformer\InvalidDateFormatException) {
-                    throw new RequestModelMappingException([$exception->getPathAsString() => [sprintf('This value should be valid date with format "%s".', $exception->getFormat())]]);
+                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.invalid_date_format', ['{format}' => $exception->getFormat()])]]);
                 } elseif ($exception instanceof Mapper\Exception\Transformer\InvalidDateTimeFormatException) {
-                    throw new RequestModelMappingException([$exception->getPathAsString() => [sprintf('This value should be valid date time with format "%s".', $exception->getFormat())]]);
-                } elseif ($exception instanceof Mapper\Exception\Transformer\IntegerRequiredException) {
-                    throw new RequestModelMappingException([$exception->getPathAsString() => ['This value should be integer.']]);
+                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.invalid_date_time_format', ['{format}' => $exception->getFormat()])]]);
                 } else {
                     throw new \InvalidArgumentException();
                 }
