@@ -20,7 +20,9 @@
         "php": "^7.2",
         "doctrine/orm": "~2.5",
         "symfony/framework-bundle": "~3.4",
-        "symfony/validator": "~3.3",
+        "symfony/http-kernel": "~3.4",
+        "symfony/translation": "~3.4",
+        "symfony/validator": "~3.4",
         "troytft/mapper": "~1.0.1"
     },
     "require-dev": {
