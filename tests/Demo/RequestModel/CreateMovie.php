@@ -18,7 +18,7 @@ class CreateMovie implements RequestModelInterface
     /**
      * @var File|null
      *
-     * @Mapper\Entity(class="File", nullable=true)
+     * Mapper\Entity(class="File", nullable=true)
      */
     private $image;
 

@@ -42,19 +42,20 @@ class RequestModelManager
                 throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.undefined_key')]]);
             } elseif ($exception instanceof Mapper\Exception\Transformer\WrappedTransformerException) {
                 $previousException = $exception->getPrevious();
-
                 if ($previousException instanceof Mapper\Exception\Transformer\BooleanRequiredException) {
                     throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.boolean_required')]]);
                 } elseif ($previousException instanceof Mapper\Exception\Transformer\FloatRequiredException) {
                     throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.float_required')]]);
-                } elseif ($exception instanceof Mapper\Exception\Transformer\IntegerRequiredException) {
+                } elseif ($previousException instanceof Mapper\Exception\Transformer\StringRequiredException) {
+                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.string_required')]]);
+                } elseif ($previousException instanceof Mapper\Exception\Transformer\IntegerRequiredException) {
                     throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.integer_required')]]);
-                } elseif ($exception instanceof Mapper\Exception\Transformer\InvalidDateFormatException) {
-                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.invalid_date_format', ['{format}' => $exception->getFormat()])]]);
-                } elseif ($exception instanceof Mapper\Exception\Transformer\InvalidDateTimeFormatException) {
-                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.invalid_date_time_format', ['{format}' => $exception->getFormat()])]]);
+                } elseif ($previousException instanceof Mapper\Exception\Transformer\InvalidDateFormatException) {
+                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.invalid_date_format', ['{format}' => $previousException->getFormat()])]]);
+                } elseif ($previousException instanceof Mapper\Exception\Transformer\InvalidDateTimeFormatException) {
+                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.invalid_date_time_format', ['{format}' => $previousException->getFormat()])]]);
                 } else {
-                    throw new \InvalidArgumentException();
+                    throw new \RuntimeException(sprintf('Unhandled exception %s %s', get_class($previousException), $previousException->getMessage()));
                 }
             } else {
                 throw new \RuntimeException(sprintf('Unhandled exception %s %s', get_class($exception), $exception->getMessage()));
