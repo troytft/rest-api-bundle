@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "946b5b85ff53915e274bba1e83d1e917",
+    "content-hash": "97eecf3501a1bd0e45a62227e76b4433",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -2672,16 +2672,16 @@
         },
         {
             "name": "troytft/mapper",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/troytft/mapper.git",
-                "reference": "4c25c87ae85f508ba52789804aa0b920fd2478fb"
+                "reference": "8aec2bd22c5b3e252e334a872bfcff8767a82245"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/troytft/mapper/zipball/4c25c87ae85f508ba52789804aa0b920fd2478fb",
-                "reference": "4c25c87ae85f508ba52789804aa0b920fd2478fb",
+                "url": "https://api.github.com/repos/troytft/mapper/zipball/8aec2bd22c5b3e252e334a872bfcff8767a82245",
+                "reference": "8aec2bd22c5b3e252e334a872bfcff8767a82245",
                 "shasum": ""
             },
             "require": {
@@ -2708,7 +2708,7 @@
             "keywords": [
                 "mapper"
             ],
-            "time": "2019-09-28T17:43:58+00:00"
+            "time": "2019-10-13T19:12:58+00:00"
         }
     ],
     "packages-dev": [

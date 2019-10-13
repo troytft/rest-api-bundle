@@ -32,34 +32,36 @@ class RequestModelManager
         try {
             $this->mapper->map($requestModel, $data);
         } catch (Mapper\Exception\ExceptionInterface $exception) {
-            if ($exception instanceof Mapper\Exception\MappingValidation\CollectionRequiredException) {
-                throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.collection_required')]]);
-            } elseif ($exception instanceof Mapper\Exception\MappingValidation\ObjectRequiredException) {
-                throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.object_required')]]);
-            } elseif ($exception instanceof Mapper\Exception\MappingValidation\ScalarRequiredException) {
-                throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.scalar_required')]]);
-            } elseif ($exception instanceof Mapper\Exception\MappingValidation\UndefinedKeyException) {
-                throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.undefined_key')]]);
+            $translationParameters = [];
+
+            if ($exception instanceof Mapper\Exception\MappingValidation\MappingValidationExceptionInterface || $exception instanceof Mapper\Exception\MappingValidation\UndefinedKeyException) {
+                $path = $exception->getPathAsString();
+                $translationId = get_class($exception);
             } elseif ($exception instanceof Mapper\Exception\Transformer\WrappedTransformerException) {
+                $path = $exception->getPathAsString();
                 $previousException = $exception->getPrevious();
-                if ($previousException instanceof Mapper\Exception\Transformer\BooleanRequiredException) {
-                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.boolean_required')]]);
-                } elseif ($previousException instanceof Mapper\Exception\Transformer\FloatRequiredException) {
-                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.float_required')]]);
-                } elseif ($previousException instanceof Mapper\Exception\Transformer\StringRequiredException) {
-                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.string_required')]]);
-                } elseif ($previousException instanceof Mapper\Exception\Transformer\IntegerRequiredException) {
-                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.integer_required')]]);
-                } elseif ($previousException instanceof Mapper\Exception\Transformer\InvalidDateFormatException) {
-                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.invalid_date_format', ['{format}' => $previousException->getFormat()])]]);
+                $translationId = get_class($previousException);
+
+                if ($previousException instanceof Mapper\Exception\Transformer\InvalidDateFormatException) {
+                    $translationParameters = [
+                        '{format}' => $previousException->getFormat(),
+                    ];
                 } elseif ($previousException instanceof Mapper\Exception\Transformer\InvalidDateTimeFormatException) {
-                    throw new RequestModelMappingException([$exception->getPathAsString() => [$this->translator->trans('mapper_exception.invalid_date_time_format', ['{format}' => $previousException->getFormat()])]]);
-                } else {
-                    throw new \RuntimeException(sprintf('Unhandled exception %s %s', get_class($previousException), $previousException->getMessage()));
+                    $translationParameters = [
+                        '{format}' => $previousException->getFormat(),
+                    ];
                 }
             } else {
-                throw new \RuntimeException(sprintf('Unhandled exception %s %s', get_class($exception), $exception->getMessage()));
+                throw $exception;
             }
+
+            $message = $this->translator->trans($translationId, $translationParameters, 'exceptions');
+
+            if ($message === $translationId) {
+                throw new \InvalidArgumentException(sprintf('Can\'t find translation with key "%s"', $translationId));
+            }
+
+            throw new RequestModelMappingException([$path => [$message]]);
         }
     }
 }
