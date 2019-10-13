@@ -35,6 +35,13 @@ class ModelWithAllTypes implements RequestModelInterface
      */
     private $stringType;
 
+    /**
+     * @var InnerModel
+     *
+     * @Mapper\Model(class="Tests\Demo\RequestModel\InnerModel")
+     */
+    private $model;
+
     public function getBooleanType(): bool
     {
         return $this->booleanType;
@@ -79,6 +86,18 @@ class ModelWithAllTypes implements RequestModelInterface
     public function setStringType(string $stringType)
     {
         $this->stringType = $stringType;
+
+        return $this;
+    }
+
+    public function getModel(): InnerModel
+    {
+        return $this->model;
+    }
+
+    public function setModel(InnerModel $model)
+    {
+        $this->model = $model;
 
         return $this;
     }

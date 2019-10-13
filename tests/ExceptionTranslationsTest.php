@@ -78,4 +78,17 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
             $this->assertSame(['floatType' => ['This value should be float.']], $exception->getProperties());
         }
     }
+
+    public function testModel()
+    {
+        try {
+            $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
+            $this->requestModelManager->handleRequest($model, [
+                'model' => false,
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $this->assertSame(['model' => ['This value should be object.']], $exception->getProperties());
+        }
+    }
 }
