@@ -4,29 +4,9 @@ namespace Tests;
 
 use Tests;
 use RestApiBundle;
-use Nyholm\BundleTest\BaseBundleTestCase;
 
 class ExceptionTranslationsTest extends BaseBundleTestCase
 {
-    /**
-     * @var RestApiBundle\Manager\RequestModelManager
-     */
-    private $requestModelManager;
-
-    protected function getBundleClass()
-    {
-        return RestApiBundle\RestApiBundle::class;
-    }
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->bootKernel();
-        $container = $this->getContainer();
-        $this->requestModelManager = $container->get(RestApiBundle\Manager\RequestModelManager::class);
-    }
-
     public function testBooleanRequiredException()
     {
         try {
