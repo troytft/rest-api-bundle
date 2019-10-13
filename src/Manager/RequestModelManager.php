@@ -6,8 +6,15 @@ use Mapper;
 use RestApiBundle\Exception\RequestModelMappingException;
 use RestApiBundle\RequestModelInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use function count;
+use function explode;
 use function get_class;
 use function sprintf;
+use function str_replace;
+use function strpos;
+use function var_dump;
 
 class RequestModelManager
 {
@@ -21,10 +28,16 @@ class RequestModelManager
      */
     private $translator;
 
-    public function __construct(TranslatorInterface $translator)
+    /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    public function __construct(TranslatorInterface $translator, ValidatorInterface $validator)
     {
         $this->mapper = new Mapper\Mapper();
         $this->translator = $translator;
+        $this->validator = $validator;
     }
 
     public function handleRequest(RequestModelInterface $requestModel, array $data): void
@@ -62,6 +75,31 @@ class RequestModelManager
             }
 
             throw new RequestModelMappingException([$path => [$message]]);
+        }
+
+        $violations = $this->validator->validate($requestModel);
+
+        if (count($violations)) {
+            $errors = [];
+
+            /** @var ConstraintViolation $violation */
+            foreach ($violations as $violation) {
+                if (!isset($errors[$violation->getPropertyPath()])) {
+                    $errors[$violation->getPropertyPath()] = [];
+                }
+
+                $errors[$violation->getPropertyPath()][] = $violation->getMessage();
+            }
+
+            foreach ($errors as $path => $pathErrors) {
+                if (strpos($path, '[') !== false) {
+                    $newPath = str_replace(['[', ']'], ['.', ''], $path);
+                    $errors[$newPath] = $pathErrors;
+                    unset($errors[$path]);
+                }
+            }
+
+            throw new RequestModelMappingException($errors);
         }
     }
 }

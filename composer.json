@@ -22,8 +22,8 @@
         "symfony/framework-bundle": "~3.4",
         "symfony/http-kernel": "~3.4",
         "symfony/translation": "~3.4",
-        "symfony/validator": "~3.4",
-        "troytft/mapper": "~1.0.2"
+        "symfony/validator": "~3.3",
+        "troytft/mapper": "dev-master"
     },
     "require-dev": {
         "nyholm/symfony-bundle-test": "dev-master",

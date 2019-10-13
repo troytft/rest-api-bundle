@@ -1,0 +1,74 @@
+<?php
+
+namespace Tests\Demo\RequestModel;
+
+use RestApiBundle\RequestModelInterface;
+use RestApiBundle\Annotation\RequestModel as Mapper;
+use Symfony\Component\Validator\Constraints as Assert;
+
+class ModelWithValidation implements RequestModelInterface
+{
+    /**
+     * @var string
+     *
+     * @Mapper\StringType()
+     *
+     * @Assert\Length(min=6, max=255)
+     * @Assert\Email()
+     */
+    private $stringField;
+
+    /**
+     * @var InnerModelWithValidation
+     *
+     * @Mapper\Model(class="Tests\Demo\RequestModel\InnerModelWithValidation")
+     *
+     * @Assert\Valid()
+     */
+    private $modelField;
+
+    /**
+     * @var array
+     *
+     * @Mapper\Collection(type=@Mapper\Model(class="Tests\Demo\RequestModel\InnerModelWithValidation"))
+     *
+     * @Assert\Valid()
+     */
+    private $collectionField;
+
+    public function getStringField(): string
+    {
+        return $this->stringField;
+    }
+
+    public function setStringField(string $stringField)
+    {
+        $this->stringField = $stringField;
+
+        return $this;
+    }
+
+    public function getModelField(): InnerModelWithValidation
+    {
+        return $this->modelField;
+    }
+
+    public function setModelField(InnerModelWithValidation $modelField)
+    {
+        $this->modelField = $modelField;
+
+        return $this;
+    }
+
+    public function getCollectionField(): array
+    {
+        return $this->collectionField;
+    }
+
+    public function setCollectionField(array $collectionField)
+    {
+        $this->collectionField = $collectionField;
+
+        return $this;
+    }
+}
