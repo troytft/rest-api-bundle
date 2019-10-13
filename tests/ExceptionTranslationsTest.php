@@ -5,7 +5,6 @@ namespace Tests;
 use Tests;
 use RestApiBundle;
 use Nyholm\BundleTest\BaseBundleTestCase;
-use function var_dump;
 
 class ExceptionTranslationsTest extends BaseBundleTestCase
 {
@@ -129,6 +128,19 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
             $this->assertSame(['dateTime' => ['This value should be valid date time with format "Y-m-d\TH:i:sP".']], $exception->getProperties());
+        }
+    }
+
+    public function testUndefinedKeyException()
+    {
+        try {
+            $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
+            $this->requestModelManager->handleRequest($model, [
+                'undefinedKey' => false,
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $this->assertSame(['undefinedKey' => ['Key is not defined in model.']], $exception->getProperties());
         }
     }
 }
