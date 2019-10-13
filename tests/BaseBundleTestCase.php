@@ -6,11 +6,6 @@ use RestApiBundle;
 
 abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
 {
-    /**
-     * @var RestApiBundle\Manager\RequestModelManager
-     */
-    protected $requestModelManager;
-
     protected function getBundleClass()
     {
         return RestApiBundle\RestApiBundle::class;
@@ -21,8 +16,10 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         parent::__construct();
 
         $this->bootKernel();
-        $container = $this->getContainer();
+    }
 
-        $this->requestModelManager = $container->get(RestApiBundle\Manager\RequestModelManager::class);
+    protected function getRequestModelManager(): RestApiBundle\Manager\RequestModelManager
+    {
+        return $this->getContainer()->get(RestApiBundle\Manager\RequestModelManager::class);
     }
 }
