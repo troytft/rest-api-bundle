@@ -42,6 +42,13 @@ class ModelWithAllTypes implements RequestModelInterface
      */
     private $model;
 
+    /**
+     * @var array
+     *
+     * @Mapper\Collection(type=@Mapper\IntegerType())
+     */
+    private $collection;
+
     public function getBooleanType(): bool
     {
         return $this->booleanType;
@@ -98,6 +105,18 @@ class ModelWithAllTypes implements RequestModelInterface
     public function setModel(InnerModel $model)
     {
         $this->model = $model;
+
+        return $this;
+    }
+
+    public function getCollection(): array
+    {
+        return $this->collection;
+    }
+
+    public function setCollection(array $collection)
+    {
+        $this->collection = $collection;
 
         return $this;
     }

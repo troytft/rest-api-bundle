@@ -27,7 +27,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
         $this->requestModelManager = $container->get(RestApiBundle\Manager\RequestModelManager::class);
     }
 
-    public function testBooleanType()
+    public function testBooleanRequiredException()
     {
         try {
             $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
@@ -40,7 +40,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
         }
     }
 
-    public function testStringType()
+    public function testStringRequiredException()
     {
         try {
             $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
@@ -53,7 +53,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
         }
     }
 
-    public function testIntegerType()
+    public function testIntegerRequiredException()
     {
         try {
             $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
@@ -66,7 +66,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
         }
     }
 
-    public function testFloatType()
+    public function testFloatRequiredException()
     {
         try {
             $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
@@ -79,7 +79,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
         }
     }
 
-    public function testModel()
+    public function testModelRequiredException()
     {
         try {
             $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
@@ -89,6 +89,19 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
             $this->assertSame(['model' => ['This value should be object.']], $exception->getProperties());
+        }
+    }
+
+    public function testCollectionRequiredException()
+    {
+        try {
+            $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
+            $this->requestModelManager->handleRequest($model, [
+                'collection' => false,
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $this->assertSame(['collection' => ['This value should be collection.']], $exception->getProperties());
         }
     }
 }
