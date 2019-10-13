@@ -49,6 +49,20 @@ class ModelWithAllTypes implements RequestModelInterface
      */
     private $collection;
 
+    /**
+     * @var \DateTime
+     *
+     * @Mapper\Date()
+     */
+    private $date;
+
+    /**
+     * @var \DateTime
+     *
+     * @Mapper\DateTime()
+     */
+    private $dateTime;
+
     public function getBooleanType(): bool
     {
         return $this->booleanType;
@@ -117,6 +131,30 @@ class ModelWithAllTypes implements RequestModelInterface
     public function setCollection(array $collection)
     {
         $this->collection = $collection;
+
+        return $this;
+    }
+
+    public function getDate(): \DateTime
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTime $date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getDateTime(): \DateTime
+    {
+        return $this->dateTime;
+    }
+
+    public function setDateTime(\DateTime $dateTime)
+    {
+        $this->dateTime = $dateTime;
 
         return $this;
     }

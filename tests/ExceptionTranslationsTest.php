@@ -5,6 +5,7 @@ namespace Tests;
 use Tests;
 use RestApiBundle;
 use Nyholm\BundleTest\BaseBundleTestCase;
+use function var_dump;
 
 class ExceptionTranslationsTest extends BaseBundleTestCase
 {
@@ -102,6 +103,32 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
             $this->assertSame(['collection' => ['This value should be collection.']], $exception->getProperties());
+        }
+    }
+
+    public function testInvalidDateFormatException()
+    {
+        try {
+            $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
+            $this->requestModelManager->handleRequest($model, [
+                'date' => false,
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $this->assertSame(['date' => ['This value should be valid date with format "Y-m-d".']], $exception->getProperties());
+        }
+    }
+
+    public function testInvalidDateTimeFormatException()
+    {
+        try {
+            $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
+            $this->requestModelManager->handleRequest($model, [
+                'dateTime' => false,
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $this->assertSame(['dateTime' => ['This value should be valid date time with format "Y-m-d\TH:i:sP".']], $exception->getProperties());
         }
     }
 }

@@ -7,5 +7,5 @@ mapper_exception:
     float_required: This value should be float.
     string_required: This value should be string.
     integer_required: This value should be integer.
-    invalid_date_format: This value should be valid date with format "{format}"
-    invalid_date_time_format: This value should be valid date time with format "{format}"
+    invalid_date_format: This value should be valid date with format "{format}".
+    invalid_date_time_format: This value should be valid date time with format "{format}".
