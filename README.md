@@ -9,6 +9,7 @@
 ```bash
 composer require troytft/rest-api-bundle
 ```
+
 Подключите бандл в `app/AppKernel.php`
 
 ```php
@@ -18,7 +19,7 @@ class AppKernel extends Kernel
     {
         $bundles = [
             // ...
-            new FOS\RestBundle\FOSRestBundle(),
+            new RestApiBundle\RestApiBundle(),
         ];
 
         // ...
