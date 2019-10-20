@@ -8,7 +8,8 @@ class ControllerTest extends BaseBundleTestCase
 {
     public function testRequestEmulation()
     {
-        $request = Request::create('http://localhost/register', 'POST', ['test' => 'value']);
+        $jsonBody = '{"test": "value"}';
+        $request = Request::create('http://localhost/register', 'POST', [], [], [], [], $jsonBody);
         $response = $this->getKernel()->handle($request);
 
         $this->assertSame(400, $response->getStatusCode());

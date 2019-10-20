@@ -18,6 +18,8 @@
     },
     "require": {
         "php": "^7.2",
+        "ext-json": "*",
+        "ext-zlib": "*",
         "doctrine/orm": "~2.5",
         "symfony/framework-bundle": "~3.4",
         "symfony/http-kernel": "~3.4",
