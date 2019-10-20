@@ -10,7 +10,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     public function testBooleanRequiredException()
     {
         try {
-            $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
+            $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithAllTypes();
             $this->getRequestModelManager()->handleRequest($model, [
                 'booleanType' => 'string',
             ]);
@@ -23,7 +23,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     public function testStringRequiredException()
     {
         try {
-            $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
+            $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithAllTypes();
             $this->getRequestModelManager()->handleRequest($model, [
                 'stringType' => false,
             ]);
@@ -36,7 +36,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     public function testIntegerRequiredException()
     {
         try {
-            $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
+            $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithAllTypes();
             $this->getRequestModelManager()->handleRequest($model, [
                 'integerType' => false,
             ]);
@@ -49,7 +49,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     public function testFloatRequiredException()
     {
         try {
-            $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
+            $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithAllTypes();
             $this->getRequestModelManager()->handleRequest($model, [
                 'floatType' => false,
             ]);
@@ -62,7 +62,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     public function testModelRequiredException()
     {
         try {
-            $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
+            $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithAllTypes();
             $this->getRequestModelManager()->handleRequest($model, [
                 'model' => false,
             ]);
@@ -75,7 +75,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     public function testCollectionRequiredException()
     {
         try {
-            $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
+            $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithAllTypes();
             $this->getRequestModelManager()->handleRequest($model, [
                 'collection' => false,
             ]);
@@ -88,7 +88,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     public function testInvalidDateFormatException()
     {
         try {
-            $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
+            $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithAllTypes();
             $this->getRequestModelManager()->handleRequest($model, [
                 'date' => false,
             ]);
@@ -101,7 +101,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     public function testInvalidDateTimeFormatException()
     {
         try {
-            $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
+            $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithAllTypes();
             $this->getRequestModelManager()->handleRequest($model, [
                 'dateTime' => false,
             ]);
@@ -114,7 +114,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     public function testUndefinedKeyException()
     {
         try {
-            $model = new Tests\Demo\RequestModel\ModelWithAllTypes();
+            $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithAllTypes();
             $this->getRequestModelManager()->handleRequest($model, [
                 'undefinedKey' => false,
             ]);

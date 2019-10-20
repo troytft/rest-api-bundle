@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Demo\RequestModel;
+namespace Tests\Mock\DemoBundle\RequestModel;
 
 use RestApiBundle\Annotation\RequestModel as Mapper;
 use RestApiBundle\RequestModelInterface;
@@ -38,7 +38,7 @@ class ModelWithAllTypes implements RequestModelInterface
     /**
      * @var InnerModel
      *
-     * @Mapper\Model(class="Tests\Demo\RequestModel\InnerModel")
+     * @Mapper\Model(class="Tests\Mock\DemoBundle\RequestModel\InnerModel")
      */
     private $model;
 

@@ -3,12 +3,12 @@
 namespace Tests;
 
 use RestApiBundle;
-use Symfony\Bundle\FrameworkBundle\Tests\Functional\app\AppKernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
 {
     /**
-     * @var AppKernel
+     * @var KernelInterface
      */
     protected $kernel;
 
@@ -36,13 +36,14 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     protected function createKernel()
     {
         $this->kernel = parent::createKernel();
-        $this->kernel->addBundle(Demo\DemoBundle::class);
-        $this->kernel->addConfigFile(__DIR__ . '/config.yaml');
+        $this->kernel->setRootDir(__DIR__ . '/mock');
+        $this->kernel->addBundle(Mock\DemoBundle\DemoBundle::class);
+        $this->kernel->addConfigFile(__DIR__ . '/mock/config/config.yaml');
 
         return $this->kernel;
     }
 
-    public function getKernel(): AppKernel
+    public function getKernel(): KernelInterface
     {
         return $this->kernel;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Demo\RequestModel;
+namespace Tests\Mock\DemoBundle\RequestModel;
 
 use RestApiBundle\Annotation\RequestModel as Mapper;
 use RestApiBundle\RequestModelInterface;

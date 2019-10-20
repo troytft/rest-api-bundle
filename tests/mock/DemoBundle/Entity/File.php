@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Demo\Entity;
+namespace Tests\Mock\DemoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
