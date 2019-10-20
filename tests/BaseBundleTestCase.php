@@ -23,7 +23,6 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         parent::__construct();
 
         $this->bootKernel();
-
     }
 
     protected function getRequestModelManager(): RestApiBundle\Manager\RequestModelManager
@@ -37,6 +36,7 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     protected function createKernel()
     {
         $this->kernel = parent::createKernel();
+        $this->kernel->addBundle(Demo\DemoBundle::class);
         $this->kernel->addConfigFile(__DIR__ . '/config.yaml');
 
         return $this->kernel;
