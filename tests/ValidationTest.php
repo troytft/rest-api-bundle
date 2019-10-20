@@ -7,7 +7,7 @@ use RestApiBundle;
 
 class ValidationTest extends BaseBundleTestCase
 {
-    public function testBooleanRequiredException()
+    public function testValidationException()
     {
         try {
             $model = new Tests\Demo\RequestModel\ModelWithValidation();
@@ -34,6 +34,9 @@ class ValidationTest extends BaseBundleTestCase
                 ],
                 'collectionField.0.stringField' => [
                     'This value is too short. It should have 3 characters or more.',
+                ],
+                '*' => [
+                    'Example message without property',
                 ],
             ];
             $this->assertSame($expected, $exception->getProperties());

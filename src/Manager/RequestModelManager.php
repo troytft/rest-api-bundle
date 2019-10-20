@@ -8,13 +8,13 @@ use RestApiBundle\RequestModelInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use function count;
+use function array_key_last;
 use function explode;
 use function get_class;
+use function implode;
 use function sprintf;
 use function str_replace;
 use function strpos;
-use function var_dump;
 
 class RequestModelManager
 {
@@ -40,7 +40,19 @@ class RequestModelManager
         $this->validator = $validator;
     }
 
+    /**
+     * @throws RequestModelMappingException
+     */
     public function handleRequest(RequestModelInterface $requestModel, array $data): void
+    {
+        $this->mapModel($requestModel, $data);
+        $this->validateModel($requestModel);
+    }
+
+    /**
+     * @throws RequestModelMappingException
+     */
+    private function mapModel(RequestModelInterface $requestModel, array $data): void
     {
         try {
             $this->mapper->map($requestModel, $data);
@@ -59,7 +71,9 @@ class RequestModelManager
                     $translationParameters = [
                         '{format}' => $previousException->getFormat(),
                     ];
-                } elseif ($previousException instanceof Mapper\Exception\Transformer\InvalidDateTimeFormatException) {
+                }
+
+                if ($previousException instanceof Mapper\Exception\Transformer\InvalidDateTimeFormatException) {
                     $translationParameters = [
                         '{format}' => $previousException->getFormat(),
                     ];
@@ -76,30 +90,53 @@ class RequestModelManager
 
             throw new RequestModelMappingException([$path => [$message]]);
         }
+    }
 
+    /**
+     * @throws RequestModelMappingException
+     */
+    private function validateModel(RequestModelInterface $requestModel): void
+    {
         $violations = $this->validator->validate($requestModel);
 
-        if (count($violations)) {
+        if ($violations) {
             $errors = [];
 
             /** @var ConstraintViolation $violation */
             foreach ($violations as $violation) {
-                if (!isset($errors[$violation->getPropertyPath()])) {
-                    $errors[$violation->getPropertyPath()] = [];
+                $path = $this->getNormalizedConstraintViolationPath($violation);
+                if (!isset($errors[$path])) {
+                    $errors[$path] = [];
                 }
 
-                $errors[$violation->getPropertyPath()][] = $violation->getMessage();
-            }
-
-            foreach ($errors as $path => $pathErrors) {
-                if (strpos($path, '[') !== false) {
-                    $newPath = str_replace(['[', ']'], ['.', ''], $path);
-                    $errors[$newPath] = $pathErrors;
-                    unset($errors[$path]);
-                }
+                $errors[$path][] = $violation->getMessage();
             }
 
             throw new RequestModelMappingException($errors);
         }
+    }
+
+    private function getNormalizedConstraintViolationPath(ConstraintViolation $constraintViolation): string
+    {
+        $path = $constraintViolation->getPropertyPath();
+
+        if (strpos($path, '[') !== false) {
+            $path = str_replace(['[', ']'], ['.', ''], $path);
+        }
+
+        $pathParts = explode('.', $path);
+        $lastPartKey = array_key_last($pathParts);
+
+        $isProperty = $this
+            ->mapper
+            ->getSchemaGenerator()
+            ->isModelHasProperty($constraintViolation->getRoot(), $pathParts[$lastPartKey]);
+
+        if (!$isProperty) {
+            $pathParts[$lastPartKey] = '*';
+            $path = implode('.', $pathParts);
+        }
+
+        return $path;
     }
 }

@@ -36,6 +36,20 @@ class ModelWithValidation implements RequestModelInterface
      */
     private $collectionField;
 
+    /**
+     * @return bool
+     *
+     * @Assert\IsTrue(message="Example message without property")
+     */
+    public function isValueEquals(): bool
+    {
+        if ($this->modelField && $this->stringField === $this->modelField->getStringField()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function getStringField(): string
     {
         return $this->stringField;

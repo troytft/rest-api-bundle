@@ -2676,12 +2676,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/troytft/mapper.git",
-                "reference": "bcdc3212ad60eba062583b5f4fef48c42d9cee26"
+                "reference": "8e580e56bb0913feb520477494e0bef8086d7306"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/troytft/mapper/zipball/bcdc3212ad60eba062583b5f4fef48c42d9cee26",
-                "reference": "bcdc3212ad60eba062583b5f4fef48c42d9cee26",
+                "url": "https://api.github.com/repos/troytft/mapper/zipball/8e580e56bb0913feb520477494e0bef8086d7306",
+                "reference": "8e580e56bb0913feb520477494e0bef8086d7306",
                 "shasum": ""
             },
             "require": {
@@ -2708,7 +2708,7 @@
             "keywords": [
                 "mapper"
             ],
-            "time": "2019-10-13T22:57:58+00:00"
+            "time": "2019-10-15T21:54:20+00:00"
         }
     ],
     "packages-dev": [
