@@ -12,3 +12,6 @@ services:
     RestApiBundle\Manager\:
         resource: '../../../src/Manager/*'
         public: true
+
+    RestApiBundle\EventSubscriber\:
+        resource: '../../../src/EventSubscriber/*'

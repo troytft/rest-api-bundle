@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use RestApiBundle;
 use Symfony\Component\HttpFoundation\Request;
 
 class ControllerTest extends BaseBundleTestCase
@@ -10,12 +9,9 @@ class ControllerTest extends BaseBundleTestCase
     public function testRequestEmulation()
     {
         $request = Request::create('http://localhost/register', 'POST', ['test' => 'value']);
+        $response = $this->getKernel()->handle($request);
 
-        try {
-            $this->getKernel()->handle($request);
-            $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['test' => ['Key is not defined in model.']], $exception->getProperties());
-        }
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('{"properties":{"test":["Key is not defined in model."]}}', $response->getContent());
     }
 }
