@@ -3,9 +3,15 @@
 namespace Tests;
 
 use RestApiBundle;
+use Symfony\Bundle\FrameworkBundle\Tests\Functional\app\AppKernel;
 
 abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
 {
+    /**
+     * @var AppKernel
+     */
+    protected $kernel;
+
     protected function getBundleClass()
     {
         return RestApiBundle\RestApiBundle::class;
@@ -30,9 +36,14 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
      */
     protected function createKernel()
     {
-        $kernel = parent::createKernel();
-        $kernel->addConfigFile(__DIR__ . '/config.yaml');
+        $this->kernel = parent::createKernel();
+        $this->kernel->addConfigFile(__DIR__ . '/config.yaml');
 
-        return $kernel;
+        return $this->kernel;
+    }
+
+    public function getKernel(): AppKernel
+    {
+        return $this->kernel;
     }
 }
