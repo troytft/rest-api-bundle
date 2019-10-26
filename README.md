@@ -1,16 +1,13 @@
 # REST API Bundle
 
-Прослойка для запросов и ответов, каждый запрос и каждый ответ – это отдельная модель.
-
-### Requirements
-* PHP 7.2 or higher
+REST API Bundle is abstraction layer for requests and responses. Requests and responses are described by classes. 
 
 ### Installation
 ```bash
 composer require troytft/rest-api-bundle
 ```
 
-Подключите бандл в `app/AppKernel.php`
+Add bundle to `app/AppKernel.php`
 
 ```php
 class AppKernel extends Kernel
