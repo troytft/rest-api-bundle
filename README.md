@@ -7,7 +7,7 @@ REST API Bundle is abstraction layer for requests and responses. Requests and re
 composer require troytft/rest-api-bundle
 ```
 
-Add bundle to `app/AppKernel.php`
+Add bundle to `AppKernel.php`
 
 ```php
 class AppKernel extends Kernel
