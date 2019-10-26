@@ -1,7 +1,7 @@
 {
     "name": "troytft/reset-api-bundle",
     "type": "library",
-    "description": "REST API Bundle is abstraction layer for requests and responses.",
+    "description": "REST API Bundle is abstraction layer for requests and responses. Requests and responses are described by classes.",
     "license": "Apache-2.0",
     "autoload": {
         "psr-4": {
