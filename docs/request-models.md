@@ -2,9 +2,9 @@
 
 Модели для запросов создаются с помощью классов, класс должен имплементировать интерфейс `RestApiBundle\RequestModelInteface`.
 
-Чтобы поле стало доступно в запросе необходимо добавить аннотацию с одним из типов. 
+Set model properties type with type annotations.
 
-Полный список типов [`request-model-types.md`](request-model-types.md).
+Full list of type annotations can be found at [`request-model-type-annotations.md`](request-model-type-annotations.md).
 
 ##### Example:
 

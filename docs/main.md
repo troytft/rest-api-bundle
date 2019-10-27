@@ -1,4 +1,4 @@
 # Documentation
 
-* Usage request models [`request-models.md`](request-models.md)
-* Request model types [`request-model-types.md`](request-model-types.md)
+* How to use request models [`request-models.md`](request-models.md)
+* Request model type annotations list [`request-model-type-annotations.md`](request-model-type-annotations.md)
