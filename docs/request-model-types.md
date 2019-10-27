@@ -2,32 +2,55 @@
 У всех типов есть параметр `nullable`, если параметр включен, то клиент в запросе сможет передать `null` в качестве значения для этого поля.
 
 ### RestApiBundle\Annotation\RequestModel\BooleanType
-Accepts json boolean
+Accepts boolean
+
+##### Options
+ * **nullable** – is null allowed
 
 ### RestApiBundle\Annotation\RequestModel\StringType
-Accepts json string
+Accepts string
+
+##### Options
+ * **nullable** – is null allowed
 
 ### RestApiBundle\Annotation\RequestModel\FloatType
-Accepts json float
+Accepts float
 
-##### RestApiBundle\Annotation\RequestModel\IntegerType
-Accepts json integer
+##### Options
+ * **nullable** – is null allowed
+
+### RestApiBundle\Annotation\RequestModel\IntegerType
+Accepts integer
+
+##### Options
+ * **nullable** – is null allowed
 
 ### RestApiBundle\Annotation\RequestModel\Collection
-Тип для коллекций, тип эллемента коллекции задачает с помощью параметра `type`.
+Accepts collection with item type, specified by option type
 
-Поддерживаются все доступные типы.
+##### Options
+ * **nullable** – is null allowed
+ * **type** – require type annotation
+ 
+All types are available.
+
 
 ### RestApiBundle\Annotation\RequestModel\Model
-Тип для моделей, класс модели задается ввиду classname с помощью параметра `class`.
-Для того, чтобы валидация работала и на встраиваемую модель, необходимо добавить к полю аннотацию `@Assert\Valid`.
+Accepts object with data and map to model, specified by option `class`.
 
-Ограничений по уровню вложенности нет.
+##### Options
+ * **nullable** – is null allowed
+ * **class** – require class name implementing `RestApiBundle\RequestModelInterface`
+
+If you want validate inner level model, add symfony validation annotation `@Assert\Valid`.
+
+Nested level is not limited.
 
 ### RestApiBundle\Annotation\RequestModel\Date
-Accepts json string with format, and converts to \DateTime
+Accepts string with format, and converts to \DateTime
 
-Options:
+##### Options
+ * **nullable** – is null allowed
  * **format** – string format for date and time, default: `Y-m-d\TH:i:sP`
  * **forceLocalTimezone** – is force \DateTime to local timezone, default: true
 
@@ -38,4 +61,4 @@ Options:
  * **format** – string format for date and time, default: `Y-m-d`
 
 ### RestApiBundle\Annotation\RequestModel\Timestamp
-Accepts json integer, converts to \DateTime
+Accepts integer, and converts to \DateTime
