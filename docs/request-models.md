@@ -76,7 +76,7 @@ Path может быть многоуровневный, уровни объед
 
 ##### Example
 
-```
+```http request
 HTTP/1.1 400
 Content-Type: application/json
 
