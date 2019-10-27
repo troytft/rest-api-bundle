@@ -1,4 +1,4 @@
-# Types
+# Type Annotations
 
 ### RestApiBundle\Annotation\RequestModel\BooleanType
 Accepts boolean
