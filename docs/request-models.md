@@ -81,7 +81,7 @@ Path может быть многоуровневный, уровни объед
     "properties": {
         "*": ["Error message"], // error without property
         "genres.3": ["Error message"], // error in element of collection
-        "name": ["Error message 1", "Error message 2"] // two errors with same path 
+        "name": ["Error message 1", "Error message 2"], // two errors with same path 
         "revenue.0.countryName": ["Error message"] // 3 levels with collection and model
     }
 }
