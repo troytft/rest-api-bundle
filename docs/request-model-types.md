@@ -1,5 +1,4 @@
 # Types
-У всех типов есть параметр `nullable`, если параметр включен, то клиент в запросе сможет передать `null` в качестве значения для этого поля.
 
 ### RestApiBundle\Annotation\RequestModel\BooleanType
 Accepts boolean
@@ -33,7 +32,6 @@ Accepts collection with item type, specified by option type
  * **type** – require type annotation
  
 All types are available.
-
 
 ### RestApiBundle\Annotation\RequestModel\Model
 Accepts object with data and map to model, specified by option `class`.
