@@ -64,3 +64,25 @@ class MovieController extends BaseController
 }
 ```
 
+### Errors
+В случае ошибок маппинга или валидации – клиент будет возвращен ответ со статусом 400 и ответ в формате json.
+Ответ содержит ключ `properties` содержит объект, ключ объекта это path, а значение ключа это массив из строк с текстами ошибок.
+
+Path это путь к полю, в котором произошла ошибка.
+Path может быть многоуровневный, уровни объединяются точкой.
+
+Если ошибка произошла в моделе, то путь будет название поля, если ошибка общая и у неё нет поля, то путь будет `*`.
+Если ошибка произошла в коллекции, то путь будет числовым индексом.
+
+##### Examples
+
+```json
+{
+    "properties": {
+        "*": ["Error message"], // error without property
+        "genres.3": ["Error message"], // error in element of collection
+        "name": ["Error message 1", "Error message 2"] // two errors with same path 
+        "revenue.0.countryName": ["Error message"] // 3 levels with collection and model
+    }
+}
+```
