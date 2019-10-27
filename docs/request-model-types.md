@@ -4,31 +4,31 @@
 ### RestApiBundle\Annotation\RequestModel\BooleanType
 Accepts boolean
 
-##### Options
+##### Options:
  * **nullable** – is null allowed
 
 ### RestApiBundle\Annotation\RequestModel\StringType
 Accepts string
 
-##### Options
+##### Options:
  * **nullable** – is null allowed
 
 ### RestApiBundle\Annotation\RequestModel\FloatType
 Accepts float
 
-##### Options
+##### Options:
  * **nullable** – is null allowed
 
 ### RestApiBundle\Annotation\RequestModel\IntegerType
 Accepts integer
 
-##### Options
+##### Options:
  * **nullable** – is null allowed
 
 ### RestApiBundle\Annotation\RequestModel\Collection
 Accepts collection with item type, specified by option type
 
-##### Options
+##### Options:
  * **nullable** – is null allowed
  * **type** – require type annotation
  
@@ -38,7 +38,7 @@ All types are available.
 ### RestApiBundle\Annotation\RequestModel\Model
 Accepts object with data and map to model, specified by option `class`.
 
-##### Options
+##### Options:
  * **nullable** – is null allowed
  * **class** – require class name implementing `RestApiBundle\RequestModelInterface`
 
@@ -49,7 +49,7 @@ Nested level is not limited.
 ### RestApiBundle\Annotation\RequestModel\Date
 Accepts string with format, and converts to \DateTime
 
-##### Options
+##### Options:
  * **nullable** – is null allowed
  * **format** – string format for date and time, default: `Y-m-d\TH:i:sP`
  * **forceLocalTimezone** – is force \DateTime to local timezone, default: true
@@ -57,7 +57,7 @@ Accepts string with format, and converts to \DateTime
 ### RestApiBundle\Annotation\RequestModel\DateTime
 Accepts json string with format, and converts to \DateTime
 
-Options:
+##### Options:
  * **format** – string format for date and time, default: `Y-m-d`
 
 ### RestApiBundle\Annotation\RequestModel\Timestamp
