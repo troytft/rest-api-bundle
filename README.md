@@ -1,5 +1,7 @@
 # REST API Bundle
 
+*Work in progress, first stable release will be soon.*
+
 REST API Bundle is abstraction layer for requests and responses. Requests and responses are described by classes. 
 
 ### Installation
