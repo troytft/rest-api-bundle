@@ -36,9 +36,9 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     protected function createKernel()
     {
         $this->kernel = parent::createKernel();
-        $this->kernel->setRootDir(__DIR__ . '/mock');
+        $this->kernel->setRootDir(__DIR__ . '/Mock');
         $this->kernel->addBundle(Mock\DemoBundle\DemoBundle::class);
-        $this->kernel->addConfigFile(__DIR__ . '/mock/config/config.yaml');
+        $this->kernel->addConfigFile(__DIR__ . '/Mock/config/config.yaml');
 
         return $this->kernel;
     }
