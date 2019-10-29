@@ -2,8 +2,6 @@
 
 [![Build Status](https://travis-ci.org/troytft/rest-api-bundle.svg?branch=master)](https://travis-ci.org/troytft/rest-api-bundle)
 
-*Work in progress, first stable release will be soon.*
-
 REST API Bundle is abstraction layer for requests and responses. Requests and responses are described by classes. 
 
 ### Installation

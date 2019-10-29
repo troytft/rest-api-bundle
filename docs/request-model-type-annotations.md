@@ -53,10 +53,10 @@ Accepts string with format, and converts to \DateTime
  * **forceLocalTimezone** – is force \DateTime to local timezone, default: true
 
 ### RestApiBundle\Annotation\RequestModel\DateTime
-Accepts json string with format, and converts to \DateTime
+Accepts JSON string with format, and converts to a \DateTime
 
 ##### Options:
  * **format** – string format for date and time, default: `Y-m-d`
 
 ### RestApiBundle\Annotation\RequestModel\Timestamp
-Accepts integer, and converts to \DateTime
+Accepts integer, and converts to a \DateTime

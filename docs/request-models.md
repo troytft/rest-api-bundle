@@ -1,6 +1,6 @@
 # Request Models
 
-Create model with interface `RestApiBundle\RequestModelInteface`, and add type annotation to model properties.
+Create a model with interface `RestApiBundle\RequestModelInteface`, and add a type annotation to model properties.
 
 Full list of type annotations can be found at [`request-model-type-annotations.md`](request-model-type-annotations.md).
 
@@ -34,7 +34,7 @@ class CreateMovie implements RequestModelInterface
 }
 ```
 
-Add model to the action as argument. Mapper will map json request date and validate model.
+Add the model to the action as an argument. The mapper will map JSON request date and validate the model.
 
 ##### Example:
 
@@ -63,7 +63,8 @@ class MovieController extends BaseController
 ```
 
 ### Errors
-If error happens, that client will receive response with 400 status code and json body.
+
+If an error happens, that client will receive a response with 400 status code and JSON body.
 
 ##### Example:
 
