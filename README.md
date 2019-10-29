@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/troytft/rest-api-bundle.svg?branch=master)](https://travis-ci.org/troytft/rest-api-bundle)
 
-REST API Bundle is abstraction layer for requests and responses. Requests and responses are described by classes. 
+REST API Bundle is abstraction layer for requests and responses.
 
 ### Installation
 ```bash
