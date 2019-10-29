@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use function function_exists;
 use function gzdecode;
 use function json_decode;
 
@@ -26,7 +27,15 @@ class BodySubscriber implements EventSubscriberInterface
             return;
         }
 
-        $content = $request->headers->get('content-encoding') === 'gzip' ? gzdecode($request->getContent()) : $request->getContent();
+        $content = $request->getContent();
+        if ($request->headers->get('content-encoding') === 'gzip') {
+            if (!function_exists('gzdecode')) {
+                throw new \RuntimeException('Function gzdecode does not exist.');
+            }
+
+            $content = gzdecode($content);
+        }
+
         $decodedContent = json_decode($content, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new \Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException();
