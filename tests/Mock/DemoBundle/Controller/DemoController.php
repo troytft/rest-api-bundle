@@ -3,9 +3,9 @@
 namespace Tests\Mock\DemoBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Tests\Mock\DemoBundle as App;
-use function var_dump;
 
 class DemoController extends BaseController
 {
@@ -14,6 +14,6 @@ class DemoController extends BaseController
      */
     public function registerAction(App\RequestModel\ModelWithValidation $model)
     {
-        var_dump('sss');die();
+        return new Response('ok');
     }
 }
