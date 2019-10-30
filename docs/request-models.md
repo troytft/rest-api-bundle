@@ -68,10 +68,7 @@ If an error happens, that client will receive a response with 400 status code an
 
 ##### Example:
 
-```http request
-HTTP/1.1 400
-Content-Type: application/json
-
+```json
 {
     "properties": {
         "*": ["Error message"], 
