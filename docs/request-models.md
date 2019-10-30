@@ -68,7 +68,7 @@ If an error happens, that client will receive a response with 400 status code an
 
 ##### Example:
 
-```json
+```javascript
 {
     "properties": {
         "*": ["Error message"], 
