@@ -2,7 +2,7 @@
 
 namespace Tests\Mock\DemoBundle\RequestModel;
 
-use RestApiBundle\Annotation\RequestModel as Mapper;
+use RestApiBundle\RequestModel\Annotation as Mapper;
 use RestApiBundle\RequestModelInterface;
 
 use Symfony\Component\Validator\Constraints as Assert;

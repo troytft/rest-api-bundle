@@ -1,30 +1,30 @@
 # Type Annotations
 
-### RestApiBundle\Annotation\RequestModel\BooleanType
+### RestApiBundle\RequestModel\Annotation\BooleanType
 Accepts boolean
 
 ##### Options:
  * **nullable** – is null allowed
 
-### RestApiBundle\Annotation\RequestModel\StringType
+### RestApiBundle\RequestModel\Annotation\StringType
 Accepts string
 
 ##### Options:
  * **nullable** – is null allowed
 
-### RestApiBundle\Annotation\RequestModel\FloatType
+### RestApiBundle\RequestModel\Annotation\FloatType
 Accepts float
 
 ##### Options:
  * **nullable** – is null allowed
 
-### RestApiBundle\Annotation\RequestModel\IntegerType
+### RestApiBundle\RequestModel\Annotation\IntegerType
 Accepts integer
 
 ##### Options:
  * **nullable** – is null allowed
 
-### RestApiBundle\Annotation\RequestModel\Collection
+### RestApiBundle\RequestModel\Annotation\Collection
 Accepts collection with item type, specified by option type
 
 ##### Options:
@@ -33,7 +33,7 @@ Accepts collection with item type, specified by option type
  
 All types are available.
 
-### RestApiBundle\Annotation\RequestModel\Model
+### RestApiBundle\RequestModel\Annotation\Model
 Accepts object with data and map to model, specified by option `class`.
 
 ##### Options:
@@ -44,7 +44,7 @@ If you want validate inner level model, add symfony validation annotation `@Asse
 
 Nested level is not limited.
 
-### RestApiBundle\Annotation\RequestModel\Date
+### RestApiBundle\RequestModel\Annotation\Date
 Accepts string with format, and converts to \DateTime
 
 ##### Options:
@@ -52,11 +52,11 @@ Accepts string with format, and converts to \DateTime
  * **format** – string format for date and time, default: `Y-m-d\TH:i:sP`
  * **forceLocalTimezone** – is force \DateTime to local timezone, default: true
 
-### RestApiBundle\Annotation\RequestModel\DateTime
+### RestApiBundle\RequestModel\Annotation\DateTime
 Accepts JSON string with format, and converts to a \DateTime
 
 ##### Options:
  * **format** – string format for date and time, default: `Y-m-d`
 
-### RestApiBundle\Annotation\RequestModel\Timestamp
+### RestApiBundle\RequestModel\Annotation\Timestamp
 Accepts integer, and converts to a \DateTime
