@@ -14,12 +14,12 @@ class ModelWithEntity implements RequestModelInterface
      */
     private $fieldWithEntity;
 
-    public function getFieldWithEntity(): bool
+    public function getFieldWithEntity(): ?\Tests\Mock\DemoBundle\Entity\File
     {
         return $this->fieldWithEntity;
     }
 
-    public function setFieldWithEntity(bool $fieldWithEntity)
+    public function setFieldWithEntity(?\Tests\Mock\DemoBundle\Entity\File $fieldWithEntity)
     {
         $this->fieldWithEntity = $fieldWithEntity;
 

@@ -5,6 +5,7 @@ namespace RestApiBundle\Manager\RequestModel;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Mapper\Transformer\TransformerInterface;
+use RestApiBundle\Exception\RequestModel\EntityNotFoundException;
 use Tests\Mock\DemoBundle\Repository\FileRepository;
 use function get_class;
 use function is_bool;
@@ -28,9 +29,15 @@ class EntityTransformer implements TransformerInterface
 
     public function transform($value, array $options)
     {
-        /** @var FileRepository $repository */
-        $repository = $this->entityManager->getRepository(\Tests\Mock\DemoBundle\Entity\File::class);
-        var_dump($repository->findOneBy([$options[static::FIELD_OPTION] => $value]));die();
+        /** @var EntityRepository $repository */
+        $repository = $this->entityManager->getRepository($options[static::CLASS_OPTION]);
+        $entity = $repository->findOneBy([$options[static::FIELD_OPTION] => $value]);
+
+        if (!$entity) {
+            throw new EntityNotFoundException();
+        }
+
+        return $entity;
 //
 //        $fieldType = $this->em->getClassMetadata($this->entityName)->getTypeOfField($this->fieldName);
 //        if ($fieldType === \Doctrine\DBAL\Types\Type::INTEGER && !is_numeric($value)) {

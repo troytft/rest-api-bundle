@@ -16,6 +16,7 @@ use function implode;
 use function sprintf;
 use function str_replace;
 use function strpos;
+use function var_dump;
 
 class RequestModelManager
 {
@@ -108,7 +109,7 @@ class RequestModelManager
     {
         $violations = $this->validator->validate($requestModel);
 
-        if ($violations) {
+        if ($violations->count()) {
             $errors = [];
 
             /** @var ConstraintViolation $violation */
