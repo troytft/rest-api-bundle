@@ -60,3 +60,10 @@ Accepts JSON string with format, and converts to a \DateTime
 
 ### RestApiBundle\Annotation\RequestModel\Timestamp
 Accepts integer, and converts to a \DateTime
+
+### RestApiBundle\Annotation\RequestModel\Entity
+Accepts scalar, and find an entity by `field`
+
+##### Options:
+ * **class** – class name of an entity
+ * **field** – field specified for find an entity, default: `id`

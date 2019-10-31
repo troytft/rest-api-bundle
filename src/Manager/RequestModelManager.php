@@ -4,6 +4,7 @@ namespace RestApiBundle\Manager;
 
 use Mapper;
 use RestApiBundle\Exception\RequestModelMappingException;
+use RestApiBundle\Manager\RequestModel\EntityTransformer;
 use RestApiBundle\RequestModelInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -33,11 +34,19 @@ class RequestModelManager
      */
     private $validator;
 
-    public function __construct(TranslatorInterface $translator, ValidatorInterface $validator)
+    /**
+     * @var EntityTransformer
+     */
+    private $entityTransformer;
+
+    public function __construct(TranslatorInterface $translator, ValidatorInterface $validator, EntityTransformer $entityTransformer)
     {
         $this->mapper = new Mapper\Mapper();
         $this->translator = $translator;
         $this->validator = $validator;
+        $this->entityTransformer = $entityTransformer;
+
+        $this->mapper->addTransformer($this->entityTransformer);
     }
 
     /**
@@ -99,7 +108,7 @@ class RequestModelManager
     {
         $violations = $this->validator->validate($requestModel);
 
-        if ($violations) {
+        if ($violations->count()) {
             $errors = [];
 
             /** @var ConstraintViolation $violation */

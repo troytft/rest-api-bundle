@@ -6,3 +6,12 @@ framework:
         resource: "%kernel.root_dir%/config/routing.yaml"
         strict_requirements: ~
         type: yaml
+
+doctrine:
+    dbal:
+        driver:   pdo_sqlite
+        memory:   true
+    orm:
+        entity_managers:
+            default:
+                auto_mapping: true
