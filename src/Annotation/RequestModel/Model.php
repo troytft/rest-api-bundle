@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\RequestModel\Annotation;
+namespace RestApiBundle\Annotation\RequestModel;
 
 /**
  * @Annotation

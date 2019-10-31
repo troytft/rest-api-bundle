@@ -11,7 +11,7 @@ Full list of type annotations can be found at [`request-model-type-annotations.m
 
 namespace App\AcmeBundle\RequestModel;
 
-use RestApiBundle\RequestModel\Annotation as Mapper;
+use RestApiBundle\Annotation\RequestModel as Mapper;
 use RestApiBundle\RequestModelInterface;
 
 class CreateMovie implements RequestModelInterface

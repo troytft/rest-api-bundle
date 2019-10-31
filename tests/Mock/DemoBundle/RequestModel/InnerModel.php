@@ -2,7 +2,7 @@
 
 namespace Tests\Mock\DemoBundle\RequestModel;
 
-use RestApiBundle\RequestModel\Annotation as Mapper;
+use RestApiBundle\Annotation\RequestModel as Mapper;
 use RestApiBundle\RequestModelInterface;
 
 class InnerModel implements RequestModelInterface
