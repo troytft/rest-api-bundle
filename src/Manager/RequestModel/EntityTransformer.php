@@ -6,11 +6,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Mapper\Transformer\TransformerInterface;
 use RestApiBundle\Exception\RequestModel\EntityNotFoundException;
-use Tests\Mock\DemoBundle\Repository\FileRepository;
-use function get_class;
-use function is_bool;
-use Mapper\Exception\Transformer\BooleanRequiredException;
-use function var_dump;
 
 class EntityTransformer implements TransformerInterface
 {
@@ -38,17 +33,5 @@ class EntityTransformer implements TransformerInterface
         }
 
         return $entity;
-//
-//        $fieldType = $this->em->getClassMetadata($this->entityName)->getTypeOfField($this->fieldName);
-//        if ($fieldType === \Doctrine\DBAL\Types\Type::INTEGER && !is_numeric($value)) {
-//            throw new ValidationFieldException($this->getPropertyName(), 'Значение должно быть числом');
-//        } elseif (!is_numeric($value) && !is_string($value)) {
-//            throw new ValidationFieldException($this->getPropertyName(), 'Значение должно быть строкой или числом');
-//        }
-//        $entity = $this->em->getRepository($this->entityName)->findOneBy([$this->fieldName => $value]);
-//        if (!$entity && !$this->nullable) {
-//            throw new ValidationFieldException($this->getPropertyName(), 'Сущность с таким значением не найдена');
-//        }
-//        return $entity;
     }
 }

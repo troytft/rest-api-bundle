@@ -4,10 +4,7 @@ namespace RestApiBundle\Annotation\RequestModel;
 
 use Mapper\Annotation\NullableTrait;
 use Mapper\DTO\Mapping\ScalarTypeInterface;
-use Mapper\Transformer\BooleanTransformer;
-use Mapper\Transformer\DateTransformer;
 use RestApiBundle\Manager\RequestModel\EntityTransformer;
-use function is_string;
 
 /**
  * @Annotation

@@ -16,7 +16,6 @@ use function implode;
 use function sprintf;
 use function str_replace;
 use function strpos;
-use function var_dump;
 
 class RequestModelManager
 {

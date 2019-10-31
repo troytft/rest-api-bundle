@@ -29,4 +29,17 @@ class EntityTransformerTest extends BaseBundleTestCase
             $this->assertSame(['fieldWithEntity' => ['An entity with specified value not found.']], $exception->getProperties());
         }
     }
+
+    public function testNull()
+    {
+        try {
+            $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithEntity();
+            $this->getRequestModelManager()->handleRequest($model, [
+                'fieldWithEntity' => null
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $this->assertSame(['fieldWithEntity' => ['This value should be scalar.']], $exception->getProperties());
+        }
+    }
 }
