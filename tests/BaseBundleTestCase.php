@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use RestApiBundle;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -38,6 +39,7 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         $this->kernel = parent::createKernel();
         $this->kernel->setRootDir(__DIR__ . '/Mock');
         $this->kernel->addBundle(Mock\DemoBundle\DemoBundle::class);
+        $this->kernel->addBundle(DoctrineBundle::class);
         $this->kernel->addConfigFile(__DIR__ . '/Mock/config/config.yaml');
 
         return $this->kernel;
