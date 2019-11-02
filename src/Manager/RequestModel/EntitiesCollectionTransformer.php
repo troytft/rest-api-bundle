@@ -1,0 +1,61 @@
+<?php
+
+namespace RestApiBundle\Manager\RequestModel;
+
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
+use Mapper\Transformer\TransformerInterface;
+use RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException;
+use function count;
+use function ucfirst;
+
+class EntitiesCollectionTransformer implements TransformerInterface
+{
+    public const CLASS_OPTION = 'class';
+    public const FIELD_OPTION = 'field';
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
+    public function transform($value, array $options)
+    {
+        $class = $options[static::CLASS_OPTION];
+        $field = $options[static::FIELD_OPTION];
+
+        /** @var EntityRepository $repository */
+        $repository = $this->entityManager->getRepository($class);
+        $results = $repository->findBy([$field => $value]);
+
+        if (count($results) !== count($value)) {
+            throw new OneEntityOfEntitiesCollectionNotFoundException();
+        }
+
+        $sortedResults = [];
+        $getterName = 'get' . ucfirst($field);
+
+        foreach ($results as $object) {
+            if (!method_exists($object, $getterName)) {
+                throw new \InvalidArgumentException();
+            }
+
+            $key = array_search($object->{$getterName}(), $value);
+            if ($key === false) {
+                throw new \InvalidArgumentException();
+            }
+
+            $sortedResults[$key] = $object;
+        }
+
+        unset($results);
+        ksort($sortedResults);
+
+        return $sortedResults;
+    }
+}
