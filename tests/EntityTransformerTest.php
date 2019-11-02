@@ -15,6 +15,7 @@ class EntityTransformerTest extends BaseBundleTestCase
             'fieldWithEntity' => 1
         ]);
         $this->assertTrue($model->getFieldWithEntity() instanceof File);
+        $this->assertSame(1, $model->getFieldWithEntity()->getId());
     }
 
     public function testEntityNotFound()

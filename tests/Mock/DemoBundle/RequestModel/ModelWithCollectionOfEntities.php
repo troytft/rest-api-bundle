@@ -2,6 +2,7 @@
 
 namespace Tests\Mock\DemoBundle\RequestModel;
 
+use Tests;
 use RestApiBundle\Annotation\RequestModel as Mapper;
 use RestApiBundle\RequestModelInterface;
 
@@ -14,6 +15,9 @@ class ModelWithCollectionOfEntities implements RequestModelInterface
      */
     private $fieldWithCollectionOfEntities;
 
+    /**
+     * @return Tests\Mock\DemoBundle\Entity\File[]
+     */
     public function getFieldWithCollectionOfEntities(): array
     {
         return $this->fieldWithCollectionOfEntities;

@@ -5,7 +5,7 @@ namespace Tests;
 use RestApiBundle;
 use Tests;
 
-class CollectionOfEntitiesTest extends BaseBundleTestCase
+class EntitiesCollectionTest extends BaseBundleTestCase
 {
     public function testSuccess()
     {
@@ -15,6 +15,24 @@ class CollectionOfEntitiesTest extends BaseBundleTestCase
         ]);
         $this->assertIsArray($model->getFieldWithCollectionOfEntities());
         $this->assertCount(2, $model->getFieldWithCollectionOfEntities());
+        $this->assertTrue($model->getFieldWithCollectionOfEntities()[0] instanceof Tests\Mock\DemoBundle\Entity\File);
+        $this->assertSame($model->getFieldWithCollectionOfEntities()[0]->getId(), 1);
+        $this->assertTrue($model->getFieldWithCollectionOfEntities()[1] instanceof Tests\Mock\DemoBundle\Entity\File);
+        $this->assertSame($model->getFieldWithCollectionOfEntities()[1]->getId(), 2);
+    }
+
+    public function testOrder()
+    {
+        $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithCollectionOfEntities();
+        $this->getRequestModelManager()->handleRequest($model, [
+            'fieldWithCollectionOfEntities' => [2, 1]
+        ]);
+        $this->assertIsArray($model->getFieldWithCollectionOfEntities());
+        $this->assertCount(2, $model->getFieldWithCollectionOfEntities());
+        $this->assertTrue($model->getFieldWithCollectionOfEntities()[0] instanceof Tests\Mock\DemoBundle\Entity\File);
+        $this->assertSame($model->getFieldWithCollectionOfEntities()[0]->getId(), 2);
+        $this->assertTrue($model->getFieldWithCollectionOfEntities()[1] instanceof Tests\Mock\DemoBundle\Entity\File);
+        $this->assertSame($model->getFieldWithCollectionOfEntities()[1]->getId(), 1);
     }
 
     public function testEntityNotFound()
