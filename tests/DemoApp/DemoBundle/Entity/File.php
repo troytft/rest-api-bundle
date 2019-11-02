@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Mock\DemoBundle\Entity;
+namespace Tests\DemoApp\DemoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="Tests\Mock\DemoBundle\Repository\FileRepository")
+ * @ORM\Entity(repositoryClass="Tests\DemoApp\DemoBundle\Repository\FileRepository")
  */
 class File
 {

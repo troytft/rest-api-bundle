@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Mock\DemoBundle;
+namespace Tests\DemoApp\DemoBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

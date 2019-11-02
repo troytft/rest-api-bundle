@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Mock\DemoBundle\RequestModel;
+namespace Tests\DemoApp\DemoBundle\RequestModel;
 
 use RestApiBundle\RequestModelInterface;
 use RestApiBundle\Annotation\RequestModel as Mapper;
@@ -21,7 +21,7 @@ class ModelWithValidation implements RequestModelInterface
     /**
      * @var InnerModelWithValidation
      *
-     * @Mapper\Model(class="Tests\Mock\DemoBundle\RequestModel\InnerModelWithValidation")
+     * @Mapper\Model(class="Tests\DemoApp\DemoBundle\RequestModel\InnerModelWithValidation")
      *
      * @Assert\Valid()
      */
@@ -30,7 +30,7 @@ class ModelWithValidation implements RequestModelInterface
     /**
      * @var array
      *
-     * @Mapper\Collection(type=@Mapper\Model(class="Tests\Mock\DemoBundle\RequestModel\InnerModelWithValidation"))
+     * @Mapper\Collection(type=@Mapper\Model(class="Tests\DemoApp\DemoBundle\RequestModel\InnerModelWithValidation"))
      *
      * @Assert\Valid()
      */

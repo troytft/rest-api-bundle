@@ -4,13 +4,13 @@ namespace Tests;
 
 use RestApiBundle;
 use Tests;
-use Tests\Mock\DemoBundle\Entity\File;
+use Tests\DemoApp\DemoBundle\Entity\File;
 
 class EntityTransformerTest extends BaseBundleTestCase
 {
     public function testSuccess()
     {
-        $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithEntity();
+        $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithEntity();
         $this->getRequestModelManager()->handleRequest($model, [
             'fieldWithEntity' => 1
         ]);
@@ -21,7 +21,7 @@ class EntityTransformerTest extends BaseBundleTestCase
     public function testEntityNotFound()
     {
         try {
-            $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithEntity();
+            $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithEntity();
             $this->getRequestModelManager()->handleRequest($model, [
                 'fieldWithEntity' => 3
             ]);
@@ -34,7 +34,7 @@ class EntityTransformerTest extends BaseBundleTestCase
     public function testNull()
     {
         try {
-            $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithEntity();
+            $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithEntity();
             $this->getRequestModelManager()->handleRequest($model, [
                 'fieldWithEntity' => null
             ]);

@@ -10,7 +10,7 @@ class ValidationTest extends BaseBundleTestCase
     public function testValidationException()
     {
         try {
-            $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithValidation();
+            $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithValidation();
             $this->getRequestModelManager()->handleRequest($model, [
                 'stringField' => 's',
                 'modelField' => [

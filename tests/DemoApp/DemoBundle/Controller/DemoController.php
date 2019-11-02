@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Mock\DemoBundle\Controller;
+namespace Tests\DemoApp\DemoBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Tests\Mock\DemoBundle as App;
+use Tests\DemoApp\DemoBundle as App;
 
 class DemoController extends BaseController
 {

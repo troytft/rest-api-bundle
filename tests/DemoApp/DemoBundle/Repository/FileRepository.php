@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Mock\DemoBundle\Repository;
+namespace Tests\DemoApp\DemoBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Tests\Mock\DemoBundle\Entity\File;
+use Tests\DemoApp\DemoBundle\Entity\File;
 use function in_array;
 
 class FileRepository extends EntityRepository
