@@ -42,8 +42,6 @@ Accepts object with data and map to model, specified by option `class`.
 
 If you want validate inner level model, add symfony validation annotation `@Assert\Valid`.
 
-Nested level is not limited.
-
 ### RestApiBundle\Annotation\RequestModel\Date
 Accepts string with format, and converts to \DateTime
 
@@ -67,3 +65,10 @@ Accepts scalar, and find an entity by `field`
 ##### Options:
  * **class** – class name of an entity
  * **field** – field specified for find an entity, default: `id`
+ 
+ ### RestApiBundle\Annotation\RequestModel\EntitiesCollection
+ Accepts collection of scalars, and find items by `field`
+ 
+ ##### Options:
+  * **class** – class name of an entity
+  * **field** – field specified for find an entity, default: `id`
