@@ -5,7 +5,7 @@ namespace Tests;
 use Tests;
 use RestApiBundle;
 
-class ValidationTest extends BaseBundleTestCase
+class RequestModelValidationTest extends BaseBundleTestCase
 {
     public function testValidationException()
     {
