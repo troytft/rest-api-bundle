@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cb2cdffbaaf90fd1c9daf7ece799d343",
+    "content-hash": "dd86ba555b662757b8b4386d19e278ac",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -2672,16 +2672,16 @@
         },
         {
             "name": "troytft/mapper",
-            "version": "dev-master",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/troytft/mapper.git",
-                "reference": "5b4c3c59c5f6fa02f89c4ea5e9d0f902e40974cc"
+                "reference": "bbcd3be4aafe5c155366f5c0f3f1d5869426c256"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/troytft/mapper/zipball/5b4c3c59c5f6fa02f89c4ea5e9d0f902e40974cc",
-                "reference": "5b4c3c59c5f6fa02f89c4ea5e9d0f902e40974cc",
+                "url": "https://api.github.com/repos/troytft/mapper/zipball/bbcd3be4aafe5c155366f5c0f3f1d5869426c256",
+                "reference": "bbcd3be4aafe5c155366f5c0f3f1d5869426c256",
                 "shasum": ""
             },
             "require": {
@@ -2708,7 +2708,7 @@
             "keywords": [
                 "mapper"
             ],
-            "time": "2019-11-02T06:25:58+00:00"
+            "time": "2019-11-02T06:55:54+00:00"
         }
     ],
     "packages-dev": [
@@ -5430,7 +5430,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "troytft/mapper": 20,
         "nyholm/symfony-bundle-test": 20
     },
     "prefer-stable": false,
