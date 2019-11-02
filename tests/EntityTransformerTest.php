@@ -8,13 +8,14 @@ use Tests\Mock\DemoBundle\Entity\File;
 
 class EntityTransformerTest extends BaseBundleTestCase
 {
-    public function testSuccessTransform()
+    public function testSuccess()
     {
         $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithEntity();
         $this->getRequestModelManager()->handleRequest($model, [
             'fieldWithEntity' => 1
         ]);
         $this->assertTrue($model->getFieldWithEntity() instanceof File);
+        $this->assertSame(1, $model->getFieldWithEntity()->getId());
     }
 
     public function testEntityNotFound()
@@ -22,7 +23,7 @@ class EntityTransformerTest extends BaseBundleTestCase
         try {
             $model = new Tests\Mock\DemoBundle\RequestModel\ModelWithEntity();
             $this->getRequestModelManager()->handleRequest($model, [
-                'fieldWithEntity' => 2
+                'fieldWithEntity' => 3
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {

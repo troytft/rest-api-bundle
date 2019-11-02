@@ -9,3 +9,4 @@ Mapper\Exception\Transformer\IntegerRequiredException: This value should be inte
 Mapper\Exception\Transformer\InvalidDateFormatException: This value should be valid date with format "{format}".
 Mapper\Exception\Transformer\InvalidDateTimeFormatException: This value should be valid date time with format "{format}".
 RestApiBundle\Exception\RequestModel\EntityNotFoundException: An entity with specified value not found.
+RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException: One entity of entities collection not found.
