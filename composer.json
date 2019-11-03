@@ -1,5 +1,5 @@
 {
-    "name": "troytft/reset-api-bundle",
+    "name": "troytft/rest-api-bundle",
     "type": "library",
     "description": "REST API Bundle is abstraction layer for requests and responses",
     "license": "Apache-2.0",
