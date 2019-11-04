@@ -16,7 +16,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['booleanType' => ['This value should be boolean.']], $exception->getProperties());
+            $this->assertSame(['booleanType' => ['This value should be a boolean.']], $exception->getProperties());
         }
     }
 
@@ -29,7 +29,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['stringType' => ['This value should be string.']], $exception->getProperties());
+            $this->assertSame(['stringType' => ['This value should be a string.']], $exception->getProperties());
         }
     }
 
@@ -42,7 +42,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['integerType' => ['This value should be integer.']], $exception->getProperties());
+            $this->assertSame(['integerType' => ['This value should be an integer.']], $exception->getProperties());
         }
     }
 
@@ -55,7 +55,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['floatType' => ['This value should be float.']], $exception->getProperties());
+            $this->assertSame(['floatType' => ['This value should be a float.']], $exception->getProperties());
         }
     }
 
@@ -68,7 +68,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['model' => ['This value should be object.']], $exception->getProperties());
+            $this->assertSame(['model' => ['This value should be an object.']], $exception->getProperties());
         }
     }
 
@@ -81,7 +81,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['collection' => ['This value should be collection.']], $exception->getProperties());
+            $this->assertSame(['collection' => ['This value should be a collection.']], $exception->getProperties());
         }
     }
 
@@ -120,7 +120,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['undefinedKey' => ['Key is not defined in model.']], $exception->getProperties());
+            $this->assertSame(['undefinedKey' => ['The key is not defined in the model.']], $exception->getProperties());
         }
     }
 }

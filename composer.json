@@ -24,7 +24,7 @@
         "symfony/http-kernel": "~3.4",
         "symfony/translation": "~3.4",
         "symfony/validator": "~3.3",
-        "troytft/mapper": "~1.2.0"
+        "troytft/mapper": "~1.3.0"
     },
     "suggest": {
         "ext-zlib": "For support gzip requests"
