@@ -2,14 +2,14 @@
 
 namespace RestApiBundle\Manager\RequestModel;
 
+use Mapper;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use Mapper\Transformer\TransformerInterface;
 use RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException;
 use function count;
 use function ucfirst;
 
-class EntitiesCollectionTransformer implements TransformerInterface
+class EntitiesCollectionTransformer implements Mapper\Transformer\TransformerInterface
 {
     public const CLASS_OPTION = 'class';
     public const FIELD_OPTION = 'field';

@@ -15,9 +15,9 @@ class EntitiesCollectionTest extends BaseBundleTestCase
         ]);
         $this->assertIsArray($model->getFieldWithCollectionOfEntities());
         $this->assertCount(2, $model->getFieldWithCollectionOfEntities());
-        $this->assertTrue($model->getFieldWithCollectionOfEntities()[0] instanceof Tests\DemoApp\DemoBundle\Entity\File);
+        $this->assertTrue($model->getFieldWithCollectionOfEntities()[0] instanceof Tests\DemoApp\DemoBundle\Entity\Genre);
         $this->assertSame($model->getFieldWithCollectionOfEntities()[0]->getId(), 1);
-        $this->assertTrue($model->getFieldWithCollectionOfEntities()[1] instanceof Tests\DemoApp\DemoBundle\Entity\File);
+        $this->assertTrue($model->getFieldWithCollectionOfEntities()[1] instanceof Tests\DemoApp\DemoBundle\Entity\Genre);
         $this->assertSame($model->getFieldWithCollectionOfEntities()[1]->getId(), 2);
     }
 
@@ -29,9 +29,9 @@ class EntitiesCollectionTest extends BaseBundleTestCase
         ]);
         $this->assertIsArray($model->getFieldWithCollectionOfEntities());
         $this->assertCount(2, $model->getFieldWithCollectionOfEntities());
-        $this->assertTrue($model->getFieldWithCollectionOfEntities()[0] instanceof Tests\DemoApp\DemoBundle\Entity\File);
+        $this->assertTrue($model->getFieldWithCollectionOfEntities()[0] instanceof Tests\DemoApp\DemoBundle\Entity\Genre);
         $this->assertSame($model->getFieldWithCollectionOfEntities()[0]->getId(), 2);
-        $this->assertTrue($model->getFieldWithCollectionOfEntities()[1] instanceof Tests\DemoApp\DemoBundle\Entity\File);
+        $this->assertTrue($model->getFieldWithCollectionOfEntities()[1] instanceof Tests\DemoApp\DemoBundle\Entity\Genre);
         $this->assertSame($model->getFieldWithCollectionOfEntities()[1]->getId(), 1);
     }
 
