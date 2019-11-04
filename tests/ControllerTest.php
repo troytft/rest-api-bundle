@@ -13,6 +13,6 @@ class ControllerTest extends BaseBundleTestCase
         $response = $this->getKernel()->handle($request);
 
         $this->assertSame(400, $response->getStatusCode());
-        $this->assertSame('{"properties":{"test":["Key is not defined in model."]}}', $response->getContent());
+        $this->assertSame('{"properties":{"test":["The key is not defined in the model."]}}', $response->getContent());
     }
 }

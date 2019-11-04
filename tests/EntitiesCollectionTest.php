@@ -57,7 +57,7 @@ class EntitiesCollectionTest extends BaseBundleTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['fieldWithCollectionOfEntities' => ['This value should be collection.']], $exception->getProperties());
+            $this->assertSame(['fieldWithCollectionOfEntities' => ['This value should not be null.']], $exception->getProperties());
         }
     }
 
@@ -70,7 +70,7 @@ class EntitiesCollectionTest extends BaseBundleTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['fieldWithCollectionOfEntities.1' => ['This value should be integer.']], $exception->getProperties());
+            $this->assertSame(['fieldWithCollectionOfEntities.1' => ['This value should be an integer.']], $exception->getProperties());
         }
     }
 }

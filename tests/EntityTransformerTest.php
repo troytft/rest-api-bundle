@@ -62,7 +62,7 @@ class EntityTransformerTest extends BaseBundleTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['fieldWithEntity' => ['This value should be scalar.']], $exception->getProperties());
+            $this->assertSame(['fieldWithEntity' => ['This value should not be null.']], $exception->getProperties());
         }
     }
 
@@ -75,7 +75,7 @@ class EntityTransformerTest extends BaseBundleTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['fieldWithEntity' => ['This value should be integer.']], $exception->getProperties());
+            $this->assertSame(['fieldWithEntity' => ['This value should be an integer.']], $exception->getProperties());
         }
     }
 
@@ -88,7 +88,7 @@ class EntityTransformerTest extends BaseBundleTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['fieldWithEntity' => ['This value should be string.']], $exception->getProperties());
+            $this->assertSame(['fieldWithEntity' => ['This value should be a string.']], $exception->getProperties());
         }
     }
 }

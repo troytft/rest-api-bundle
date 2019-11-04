@@ -1,11 +1,11 @@
-Mapper\Exception\MappingValidation\CollectionRequiredException: This value should be collection.
-Mapper\Exception\MappingValidation\ObjectRequiredException: This value should be object.
-Mapper\Exception\MappingValidation\ScalarRequiredException: This value should be scalar.
-Mapper\Exception\MappingValidation\UndefinedKeyException: Key is not defined in model.
-Mapper\Exception\Transformer\BooleanRequiredException: This value should be boolean.
-Mapper\Exception\Transformer\FloatRequiredException: This value should be float.
-Mapper\Exception\Transformer\StringRequiredException: This value should be string.
-Mapper\Exception\Transformer\IntegerRequiredException: This value should be integer.
+Mapper\Exception\MappingValidation\CollectionRequiredException: This value should be a collection.
+Mapper\Exception\MappingValidation\ObjectRequiredException: This value should be an object.
+Mapper\Exception\MappingValidation\CanNotBeNullException: This value should not be null.
+Mapper\Exception\MappingValidation\UndefinedKeyException: The key is not defined in the model.
+Mapper\Exception\Transformer\BooleanRequiredException: This value should be a boolean.
+Mapper\Exception\Transformer\FloatRequiredException: This value should be a float.
+Mapper\Exception\Transformer\StringRequiredException: This value should be a string.
+Mapper\Exception\Transformer\IntegerRequiredException: This value should be an integer.
 Mapper\Exception\Transformer\InvalidDateFormatException: This value should be valid date with format "{format}".
 Mapper\Exception\Transformer\InvalidDateTimeFormatException: This value should be valid date time with format "{format}".
 RestApiBundle\Exception\RequestModel\EntityNotFoundException: An entity with specified value not found.
