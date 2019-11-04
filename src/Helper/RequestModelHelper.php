@@ -21,11 +21,6 @@ class RequestModelHelper
     {
     }
 
-    /**
-     * @param string $className
-     *
-     * @return \ReflectionClass
-     */
     private static function getReflection(string $className): \ReflectionClass
     {
         if (!array_key_exists($className, static::$reflectionCache)) {
@@ -35,11 +30,6 @@ class RequestModelHelper
         return static::$reflectionCache[$className];
     }
 
-    /**
-     * @param string $className
-     *
-     * @return bool
-     */
     public static function isRequestModel(string $className): bool
     {
         if (!array_key_exists($className, static::$reflectionCache)) {
@@ -52,17 +42,17 @@ class RequestModelHelper
         return static::$classNameCache[$className];
     }
 
-    /**
-     * @param string $className
-     *
-     * @return RequestModelInterface
-     */
-    public static function instantiate(string $className)
+    public static function instantiate(string $className): RequestModelInterface
     {
         if (!static::isRequestModel($className)) {
             throw new \InvalidArgumentException();
         }
 
-        return static::getReflection($className)->newInstance();
+        $model = static::getReflection($className)->newInstance();
+        if (!$model instanceof RequestModelInterface) {
+            throw new \InvalidArgumentException();
+        }
+
+        return $model;
     }
 }
