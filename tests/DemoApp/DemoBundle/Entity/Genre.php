@@ -6,9 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="Tests\DemoApp\DemoBundle\Repository\FileRepository")
+ * @ORM\Entity(repositoryClass="Tests\DemoApp\DemoBundle\Repository\GenreRepository")
  */
-class File
+class Genre
 {
     /**
      * @var int
@@ -19,6 +19,13 @@ class File
      */
     private $id;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="slug", type="string")
+     */
+    private $slug;
+
     public function getId(): int
     {
         return $this->id;
@@ -27,6 +34,18 @@ class File
     public function setId(int $id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug)
+    {
+        $this->slug = $slug;
 
         return $this;
     }

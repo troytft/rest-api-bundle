@@ -9,14 +9,14 @@ use RestApiBundle\RequestModelInterface;
 class ModelWithCollectionOfEntities implements RequestModelInterface
 {
     /**
-     * @var \Tests\DemoApp\DemoBundle\Entity\File[]
+     * @var \Tests\DemoApp\DemoBundle\Entity\Genre[]
      *
-     * @Mapper\EntitiesCollection(class="Tests\DemoApp\DemoBundle\Entity\File")
+     * @Mapper\EntitiesCollection(class="Tests\DemoApp\DemoBundle\Entity\Genre")
      */
     private $fieldWithCollectionOfEntities;
 
     /**
-     * @return Tests\DemoApp\DemoBundle\Entity\File[]
+     * @return Tests\DemoApp\DemoBundle\Entity\Genre[]
      */
     public function getFieldWithCollectionOfEntities(): array
     {
