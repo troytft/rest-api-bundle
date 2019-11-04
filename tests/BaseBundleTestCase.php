@@ -29,7 +29,12 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
 
     protected function getRequestModelManager(): RestApiBundle\Manager\RequestModelManager
     {
-        return $this->getContainer()->get(RestApiBundle\Manager\RequestModelManager::class);
+        $manager = $this->getContainer()->get(RestApiBundle\Manager\RequestModelManager::class);
+        if (!$manager instanceof RestApiBundle\Manager\RequestModelManager) {
+            throw new \InvalidArgumentException();
+        }
+
+        return $manager;
     }
 
     /**

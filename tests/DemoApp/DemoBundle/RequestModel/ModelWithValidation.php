@@ -43,7 +43,7 @@ class ModelWithValidation implements RequestModelInterface
      */
     public function isValueEquals(): bool
     {
-        if ($this->modelField && $this->stringField === $this->modelField->getStringField()) {
+        if ($this->stringField === $this->modelField->getStringField()) {
             return false;
         }
 
