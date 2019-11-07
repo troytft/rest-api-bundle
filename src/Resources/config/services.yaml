@@ -3,6 +3,8 @@ services:
         autoconfigure: true
         autowire: true
         public: false
+        bind:
+            $parameterBag: '@=service("kernel").getContainer().getParameterBag()' # symfony 4 magic
 
     _instanceof:
         Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface:
@@ -15,3 +17,6 @@ services:
 
     RestApiBundle\EventSubscriber\:
         resource: '../../../src/EventSubscriber/*'
+
+    RestApiBundle\HelperService\:
+        resource: '../../../src/HelperService/*'

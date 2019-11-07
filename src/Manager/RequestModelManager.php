@@ -44,22 +44,40 @@ class RequestModelManager
      */
     private $entitiesCollectionTransformer;
 
+    /**
+     * @var RestApiBundle\HelperService\SettingsProvider
+     */
+    private $settingsProvider;
+
     public function __construct(
         TranslatorInterface $translator,
         ValidatorInterface $validator,
         RestApiBundle\Manager\RequestModel\EntityTransformer $entityTransformer,
-        RestApiBundle\Manager\RequestModel\EntitiesCollectionTransformer $entitiesCollectionTransformer
+        RestApiBundle\Manager\RequestModel\EntitiesCollectionTransformer $entitiesCollectionTransformer,
+        RestApiBundle\HelperService\SettingsProvider $settingsProvider
     ) {
-        $this->mapper = new Mapper\Mapper();
         $this->translator = $translator;
         $this->validator = $validator;
         $this->entityTransformer = $entityTransformer;
         $this->entitiesCollectionTransformer = $entitiesCollectionTransformer;
+        $this->settingsProvider = $settingsProvider;
 
-        $this->mapper->addTransformer($this->entityTransformer);
-        $this->mapper->addTransformer($this->entitiesCollectionTransformer);
+        $this->prepareMapper();
     }
 
+    private function prepareMapper()
+    {
+        $settings = new Mapper\DTO\Settings();
+        $settings
+            ->setIsPropertiesNullableByDefault($this->settingsProvider->getMapperIsNullableByDefault())
+            ->setIsAllowedUndefinedKeysInData($this->settingsProvider->getMapperIsAllowUndefinedKeys())
+            ->setIsClearMissing($this->settingsProvider->getMapperIsClearMissingKeys());
+
+        $this->mapper = new Mapper\Mapper($settings);
+        $this->mapper
+            ->addTransformer($this->entityTransformer)
+            ->addTransformer($this->entitiesCollectionTransformer);
+    }
     /**
      * @throws RequestModelMappingException
      */
@@ -158,5 +176,10 @@ class RequestModelManager
         }
 
         return $path;
+    }
+
+    public function getIsHandleRequestModelMappingException(): bool
+    {
+        return $this->settingsProvider->getIsHandleRequestModelMappingException();
     }
 }
