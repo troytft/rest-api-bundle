@@ -3,11 +3,15 @@
 namespace RestApiBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class RestApiBundle extends Bundle
 {
-    public function getContainerExtension()
+    public function build(ContainerBuilder $container)
     {
-        return new DependencyInjection\RestApiBundleExtension();
+        parent::build($container);
+
+        $container->registerExtension(new DependencyInjection\ConfigExtension());
+        $container->registerExtension(new DependencyInjection\ServicesExtension());
     }
 }
