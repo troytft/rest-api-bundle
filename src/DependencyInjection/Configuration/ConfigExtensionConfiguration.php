@@ -12,9 +12,6 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
      */
     private $alias;
 
-    /**
-     * @param string $alias
-     */
     public function __construct(string $alias)
     {
         $this->alias = $alias;
@@ -23,9 +20,7 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder($this->alias);
-        $rootNode = $treeBuilder->getRootNode();
-
-        $rootNode
+        $treeBuilder->getRootNode()
             ->children()
                 ->arrayNode('mapper')
                     ->addDefaultsIfNotSet()
