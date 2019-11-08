@@ -19,8 +19,8 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
 
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder($this->alias);
-        $treeBuilder->getRootNode()
+        $treeBuilder = new TreeBuilder();
+        $treeBuilder->root($this->alias)
             ->children()
                 ->arrayNode('mapper')
                     ->addDefaultsIfNotSet()
