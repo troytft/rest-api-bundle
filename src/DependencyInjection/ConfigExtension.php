@@ -8,20 +8,19 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class ConfigExtension extends Extension
 {
-    public function getAlias(): string
-    {
-        return 'rest_api';
-    }
-
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
-        return new RestApiBundle\DependencyInjection\Configuration\ConfigExtensionConfiguration($this->getAlias());
+        return new RestApiBundle\DependencyInjection\Configuration\ConfigExtensionConfiguration();
     }
 
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
-        $container->setParameter($this->getAlias(), $config);
+
+        $container->setParameter('rest_api.request_model.nullable_by_default', $config['request_model']['nullable_by_default']);
+        $container->setParameter('rest_api.request_model.allow_undefined_keys', $config['request_model']['allow_undefined_keys']);
+        $container->setParameter('rest_api.request_model.clear_missing', $config['request_model']['clear_missing']);
+        $container->setParameter('rest_api.request_model.handle_mapping_exception', $config['request_model']['handle_mapping_exception']);
     }
 }

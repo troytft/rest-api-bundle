@@ -18,21 +18,21 @@ class SettingsProvider
 
     public function getMapperIsNullableByDefault(): bool
     {
-        return $this->parameterBag->get('rest_api')['mapper']['nullable_by_default'];
+        return $this->parameterBag->get('rest_api.request_model.nullable_by_default');
     }
 
     public function getMapperIsAllowUndefinedKeys(): bool
     {
-        return $this->parameterBag->get('rest_api')['mapper']['allow_undefined_keys'];
+        return $this->parameterBag->get('rest_api.request_model.allow_undefined_keys');
     }
 
     public function getMapperIsClearMissingKeys(): bool
     {
-        return $this->parameterBag->get('rest_api')['mapper']['clear_missing'];
+        return $this->parameterBag->get('rest_api.request_model.clear_missing');
     }
 
     public function getIsHandleRequestModelMappingException(): bool
     {
-        return $this->parameterBag->get('rest_api')['handle_request_model_mapping_exception'];
+        return $this->parameterBag->get('rest_api.request_model.handle_mapping_exception');
     }
 }

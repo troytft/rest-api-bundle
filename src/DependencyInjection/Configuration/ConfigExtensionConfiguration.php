@@ -7,22 +7,12 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class ConfigExtensionConfiguration implements ConfigurationInterface
 {
-    /**
-     * @var string
-     */
-    private $alias;
-
-    public function __construct(string $alias)
-    {
-        $this->alias = $alias;
-    }
-
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $treeBuilder->root($this->alias)
+        $treeBuilder->root('rest_api')
             ->children()
-                ->arrayNode('mapper')
+                ->arrayNode('request_model')
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->booleanNode('nullable_by_default')
@@ -34,11 +24,12 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
                         ->booleanNode('clear_missing')
                             ->defaultTrue()
                         ->end()
+                        ->booleanNode('handle_mapping_exception')
+                            ->defaultTrue()
+                        ->end()
                     ->end()
                 ->end()
-                ->booleanNode('handle_request_model_mapping_exception')
-                    ->defaultTrue()
-                ->end()
+
              ->end();
 
         return $treeBuilder;
