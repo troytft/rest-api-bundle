@@ -21,7 +21,7 @@ class DateTransformer extends \Mapper\Transformer\DateTransformer
         if (!isset($options[static::FORMAT_OPTION_NAME])) {
             $options[static::FORMAT_OPTION_NAME] = $this->settingsProvider->getRequestModelDateTransformerDefaultFormat();
         }
-        
+
         return parent::transform($value, $options);
     }
 

@@ -24,7 +24,7 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
                         ->booleanNode('clear_missing')
                             ->defaultTrue()
                         ->end()
-                        ->booleanNode('handle_mapping_exception')
+                        ->booleanNode('handle_exception')
                             ->defaultTrue()
                         ->end()
                         ->booleanNode('date_time_transformer_force_local_timezone')

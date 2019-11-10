@@ -33,9 +33,9 @@ class SettingsProvider
         return $this->parameterBag->get(ConfigExtension::PARAMETER_REQUEST_MODEL_CLEAR_MISSING);
     }
 
-    public function getRequestModelHandleMappingException(): bool
+    public function getRequestModelHandleException(): bool
     {
-        return $this->parameterBag->get(ConfigExtension::PARAMETER_REQUEST_MODEL_HANDLE_MAPPING_EXCEPTION);
+        return $this->parameterBag->get(ConfigExtension::PARAMETER_REQUEST_MODEL_HANDLE_EXCEPTION);
     }
 
     public function getRequestModelDateTimeTransformerForceLocalTimezone(): bool
