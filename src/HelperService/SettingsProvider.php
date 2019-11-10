@@ -4,7 +4,6 @@ namespace RestApiBundle\HelperService;
 
 use RestApiBundle\DependencyInjection\ConfigExtension;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use function var_dump;
 
 class SettingsProvider
 {
