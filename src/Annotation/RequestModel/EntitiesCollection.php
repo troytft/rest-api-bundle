@@ -5,7 +5,7 @@ namespace RestApiBundle\Annotation\RequestModel;
 use Mapper\Annotation\NullableTrait;
 use Mapper\DTO\Mapping\CollectionTypeInterface;
 use Mapper\DTO\Mapping\TypeInterface;
-use RestApiBundle\Manager\RequestModel\EntitiesCollectionTransformer;
+use RestApiBundle\Manager\RequestModel\Transformer\EntitiesCollectionTransformer;
 
 /**
  * @Annotation

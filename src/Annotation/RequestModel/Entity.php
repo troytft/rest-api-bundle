@@ -4,7 +4,7 @@ namespace RestApiBundle\Annotation\RequestModel;
 
 use Mapper\Annotation\NullableTrait;
 use Mapper\DTO\Mapping\ScalarTypeInterface;
-use RestApiBundle\Manager\RequestModel\EntityTransformer;
+use RestApiBundle\Manager\RequestModel\Transformer\EntityTransformer;
 
 /**
  * @Annotation
