@@ -11,13 +11,13 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 class ExceptionSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var RestApiBundle\Manager\RequestModelManager
+     * @var RestApiBundle\HelperService\SettingsProvider
      */
-    private $requestModelManager;
+    private $settingsProvider;
 
-    public function __construct(RestApiBundle\Manager\RequestModelManager $requestModelManager)
+    public function __construct(RestApiBundle\HelperService\SettingsProvider $settingsProvider)
     {
-        $this->requestModelManager = $requestModelManager;
+        $this->settingsProvider = $settingsProvider;
     }
 
     public static function getSubscribedEvents()
@@ -29,7 +29,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
 
     public function onEvent(GetResponseForExceptionEvent $event)
     {
-        if (!$this->requestModelManager->getIsHandleRequestModelMappingException()) {
+        if (!$this->settingsProvider->getIsHandleRequestModelMappingException()) {
             return;
         }
 

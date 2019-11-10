@@ -35,16 +35,6 @@ class RequestModelManager
     private $validator;
 
     /**
-     * @var RestApiBundle\Manager\RequestModel\EntityTransformer
-     */
-    private $entityTransformer;
-
-    /**
-     * @var RestApiBundle\Manager\RequestModel\EntitiesCollectionTransformer
-     */
-    private $entitiesCollectionTransformer;
-
-    /**
      * @var RestApiBundle\HelperService\SettingsProvider
      */
     private $settingsProvider;
@@ -52,45 +42,36 @@ class RequestModelManager
     public function __construct(
         TranslatorInterface $translator,
         ValidatorInterface $validator,
-        RestApiBundle\Manager\RequestModel\EntityTransformer $entityTransformer,
-        RestApiBundle\Manager\RequestModel\EntitiesCollectionTransformer $entitiesCollectionTransformer,
         RestApiBundle\HelperService\SettingsProvider $settingsProvider
     ) {
         $this->translator = $translator;
         $this->validator = $validator;
-        $this->entityTransformer = $entityTransformer;
-        $this->entitiesCollectionTransformer = $entitiesCollectionTransformer;
         $this->settingsProvider = $settingsProvider;
-
-        $this->prepareMapper();
-    }
-
-    private function prepareMapper()
-    {
-        $settings = new Mapper\DTO\Settings();
-        $settings
+        $this->mapper = new Mapper\Mapper();
+        $this->mapper->getSettings()
             ->setIsPropertiesNullableByDefault($this->settingsProvider->getMapperIsNullableByDefault())
             ->setIsAllowedUndefinedKeysInData($this->settingsProvider->getMapperIsAllowUndefinedKeys())
             ->setIsClearMissing($this->settingsProvider->getMapperIsClearMissingKeys());
-
-        $this->mapper = new Mapper\Mapper($settings);
-        $this->mapper
-            ->addTransformer($this->entityTransformer)
-            ->addTransformer($this->entitiesCollectionTransformer);
     }
-    /**
-     * @throws RequestModelMappingException
-     */
-    public function handleRequest(RequestModelInterface $requestModel, array $data): void
+
+    public function addTransformer(Mapper\Transformer\TransformerInterface $transformer): void
     {
-        $this->mapModel($requestModel, $data);
-        $this->validateModel($requestModel);
+        $this->mapper->addTransformer($transformer);
     }
 
     /**
      * @throws RequestModelMappingException
      */
-    private function mapModel(RequestModelInterface $requestModel, array $data): void
+    public function handle(RequestModelInterface $requestModel, array $data): void
+    {
+        $this->map($requestModel, $data);
+        $this->validate($requestModel);
+    }
+
+    /**
+     * @throws RequestModelMappingException
+     */
+    private function map(RequestModelInterface $requestModel, array $data): void
     {
         try {
             $this->mapper->map($requestModel, $data);
@@ -133,7 +114,7 @@ class RequestModelManager
     /**
      * @throws RequestModelMappingException
      */
-    private function validateModel(RequestModelInterface $requestModel): void
+    private function validate(RequestModelInterface $requestModel): void
     {
         $violations = $this->validator->validate($requestModel);
 
@@ -142,7 +123,7 @@ class RequestModelManager
 
             /** @var ConstraintViolation $violation */
             foreach ($violations as $violation) {
-                $path = $this->getNormalizedConstraintViolationPath($violation);
+                $path = $this->normalizeConstraintViolationPath($violation);
                 if (!isset($errors[$path])) {
                     $errors[$path] = [];
                 }
@@ -154,7 +135,7 @@ class RequestModelManager
         }
     }
 
-    private function getNormalizedConstraintViolationPath(ConstraintViolation $constraintViolation): string
+    private function normalizeConstraintViolationPath(ConstraintViolation $constraintViolation): string
     {
         $path = $constraintViolation->getPropertyPath();
 
@@ -176,10 +157,5 @@ class RequestModelManager
         }
 
         return $path;
-    }
-
-    public function getIsHandleRequestModelMappingException(): bool
-    {
-        return $this->settingsProvider->getIsHandleRequestModelMappingException();
     }
 }

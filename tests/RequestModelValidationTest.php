@@ -11,7 +11,7 @@ class RequestModelValidationTest extends BaseBundleTestCase
     {
         try {
             $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithValidation();
-            $this->getRequestModelManager()->handleRequest($model, [
+            $this->getRequestModelManager()->handle($model, [
                 'stringField' => 's',
                 'modelField' => [
                     'stringField' => 's',

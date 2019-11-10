@@ -11,7 +11,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     {
         try {
             $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithAllTypes();
-            $this->getRequestModelManager()->handleRequest($model, [
+            $this->getRequestModelManager()->handle($model, [
                 'booleanType' => 'string',
             ]);
             $this->fail();
@@ -24,7 +24,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     {
         try {
             $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithAllTypes();
-            $this->getRequestModelManager()->handleRequest($model, [
+            $this->getRequestModelManager()->handle($model, [
                 'stringType' => false,
             ]);
             $this->fail();
@@ -37,7 +37,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     {
         try {
             $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithAllTypes();
-            $this->getRequestModelManager()->handleRequest($model, [
+            $this->getRequestModelManager()->handle($model, [
                 'integerType' => false,
             ]);
             $this->fail();
@@ -50,7 +50,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     {
         try {
             $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithAllTypes();
-            $this->getRequestModelManager()->handleRequest($model, [
+            $this->getRequestModelManager()->handle($model, [
                 'floatType' => false,
             ]);
             $this->fail();
@@ -63,7 +63,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     {
         try {
             $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithAllTypes();
-            $this->getRequestModelManager()->handleRequest($model, [
+            $this->getRequestModelManager()->handle($model, [
                 'model' => false,
             ]);
             $this->fail();
@@ -76,7 +76,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     {
         try {
             $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithAllTypes();
-            $this->getRequestModelManager()->handleRequest($model, [
+            $this->getRequestModelManager()->handle($model, [
                 'collection' => false,
             ]);
             $this->fail();
@@ -89,7 +89,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     {
         try {
             $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithAllTypes();
-            $this->getRequestModelManager()->handleRequest($model, [
+            $this->getRequestModelManager()->handle($model, [
                 'date' => false,
             ]);
             $this->fail();
@@ -102,7 +102,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     {
         try {
             $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithAllTypes();
-            $this->getRequestModelManager()->handleRequest($model, [
+            $this->getRequestModelManager()->handle($model, [
                 'dateTime' => false,
             ]);
             $this->fail();
@@ -115,7 +115,7 @@ class ExceptionTranslationsTest extends BaseBundleTestCase
     {
         try {
             $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithAllTypes();
-            $this->getRequestModelManager()->handleRequest($model, [
+            $this->getRequestModelManager()->handle($model, [
                 'undefinedKey' => false,
             ]);
             $this->fail();

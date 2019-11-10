@@ -58,4 +58,9 @@ class EntitiesCollectionTransformer implements Mapper\Transformer\TransformerInt
 
         return $sortedResults;
     }
+
+    public static function getName(): string
+    {
+        return static::class;
+    }
 }

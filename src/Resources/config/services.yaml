@@ -11,12 +11,11 @@ services:
             tags:
                 - { name: controller.argument_value_resolver, priority: 25 }
 
-    RestApiBundle\Manager\:
-        resource: '../../../src/Manager/*'
+        Mapper\Transformer\TransformerInterface:
+            tags: [!php/const RestApiBundle\DependencyInjection\CompilerPass\RequestModelTransformerCompilerPass::TAG]
+
+    RestApiBundle\:
+        resource: '../../../src/*'
+
+    RestApiBundle\Manager\RequestModelManager:
         public: true
-
-    RestApiBundle\EventSubscriber\:
-        resource: '../../../src/EventSubscriber/*'
-
-    RestApiBundle\HelperService\:
-        resource: '../../../src/HelperService/*'
