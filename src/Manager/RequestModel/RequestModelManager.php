@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Manager;
+namespace RestApiBundle\Manager\RequestModel;
 
 use Mapper;
 use RestApiBundle;
@@ -49,9 +49,9 @@ class RequestModelManager
         $this->settingsProvider = $settingsProvider;
         $this->mapper = new Mapper\Mapper();
         $this->mapper->getSettings()
-            ->setIsPropertiesNullableByDefault($this->settingsProvider->getMapperIsNullableByDefault())
-            ->setIsAllowedUndefinedKeysInData($this->settingsProvider->getMapperIsAllowUndefinedKeys())
-            ->setIsClearMissing($this->settingsProvider->getMapperIsClearMissingKeys());
+            ->setIsPropertiesNullableByDefault($this->settingsProvider->getRequestModelNullableByDefault())
+            ->setIsAllowedUndefinedKeysInData($this->settingsProvider->getRequestModelAllowUndefinedKeys())
+            ->setIsClearMissing($this->settingsProvider->getRequestModelClearMissingKeys());
     }
 
     public function addTransformer(Mapper\Transformer\TransformerInterface $transformer): void

@@ -29,7 +29,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
 
     public function onEvent(GetResponseForExceptionEvent $event)
     {
-        if (!$this->settingsProvider->getIsHandleRequestModelMappingException()) {
+        if (!$this->settingsProvider->getRequestModelHandleException()) {
             return;
         }
 

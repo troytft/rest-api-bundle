@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Manager;
+namespace RestApiBundle\Manager\RequestModel;
 
 use RestApiBundle\Helper\RequestModelHelper;
 use Symfony\Component\HttpFoundation\Request;
@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 
-class RequestModelActionArgumentValueResolver implements ArgumentValueResolverInterface
+class ActionArgumentValueResolver implements ArgumentValueResolverInterface
 {
     /**
      * @var RequestStack
