@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Manager;
+namespace RestApiBundle\Manager\RequestModel;
 
 use Mapper;
 use RestApiBundle;

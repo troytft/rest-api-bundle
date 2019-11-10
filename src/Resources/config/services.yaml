@@ -17,5 +17,5 @@ services:
     RestApiBundle\:
         resource: '../../../src/*'
 
-    RestApiBundle\Manager\RequestModelManager:
+    RestApiBundle\Manager\RequestModel\RequestModelManager:
         public: true
