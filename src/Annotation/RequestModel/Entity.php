@@ -23,9 +23,9 @@ class Entity implements ScalarTypeInterface
      */
     public $field = 'id';
 
-    public function getTransformer(): string
+    public function getTransformerName(): string
     {
-        return EntityTransformer::class;
+        return EntityTransformer::getName();
     }
 
     public function getTransformerOptions(): array

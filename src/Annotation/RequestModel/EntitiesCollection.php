@@ -39,9 +39,9 @@ class EntitiesCollection implements CollectionTypeInterface
         return $this->type;
     }
 
-    public function getTransformer(): ?string
+    public function getTransformerName(): ?string
     {
-        return EntitiesCollectionTransformer::class;
+        return EntitiesCollectionTransformer::getName();
     }
 
     public function getTransformerOptions(): array

@@ -11,6 +11,7 @@ class RestApiBundle extends Bundle
     {
         parent::build($container);
 
+        $container->addCompilerPass(new DependencyInjection\CompilerPass\RequestModelTransformerCompilerPass());
         $container->registerExtension(new DependencyInjection\ConfigExtension());
         $container->registerExtension(new DependencyInjection\ServicesExtension());
     }

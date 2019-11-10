@@ -10,7 +10,7 @@ class EntitiesCollectionTest extends BaseBundleTestCase
     public function testSuccess()
     {
         $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithCollectionOfEntities();
-        $this->getRequestModelManager()->handleRequest($model, [
+        $this->getRequestModelManager()->handle($model, [
             'fieldWithCollectionOfEntities' => [1, 2]
         ]);
         $this->assertIsArray($model->getFieldWithCollectionOfEntities());
@@ -24,7 +24,7 @@ class EntitiesCollectionTest extends BaseBundleTestCase
     public function testOrder()
     {
         $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithCollectionOfEntities();
-        $this->getRequestModelManager()->handleRequest($model, [
+        $this->getRequestModelManager()->handle($model, [
             'fieldWithCollectionOfEntities' => [2, 1]
         ]);
         $this->assertIsArray($model->getFieldWithCollectionOfEntities());
@@ -39,7 +39,7 @@ class EntitiesCollectionTest extends BaseBundleTestCase
     {
         try {
             $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithCollectionOfEntities();
-            $this->getRequestModelManager()->handleRequest($model, [
+            $this->getRequestModelManager()->handle($model, [
                 'fieldWithCollectionOfEntities' => [1, 2, 3]
             ]);
             $this->fail();
@@ -52,7 +52,7 @@ class EntitiesCollectionTest extends BaseBundleTestCase
     {
         try {
             $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithCollectionOfEntities();
-            $this->getRequestModelManager()->handleRequest($model, [
+            $this->getRequestModelManager()->handle($model, [
                 'fieldWithCollectionOfEntities' => null
             ]);
             $this->fail();
@@ -65,7 +65,7 @@ class EntitiesCollectionTest extends BaseBundleTestCase
     {
         try {
             $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithCollectionOfEntities();
-            $this->getRequestModelManager()->handleRequest($model, [
+            $this->getRequestModelManager()->handle($model, [
                 'fieldWithCollectionOfEntities' => [1, 'string']
             ]);
             $this->fail();

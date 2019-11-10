@@ -38,7 +38,7 @@ class RequestModelActionArgumentValueResolver implements ArgumentValueResolverIn
         $className = $argument->getType();
 
         $requestModel = RequestModelHelper::instantiate($className);
-        $this->requestModelManager->handleRequest($requestModel, $this->getRequestData());
+        $this->requestModelManager->handle($requestModel, $this->getRequestData());
 
         yield $requestModel;
     }

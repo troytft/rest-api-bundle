@@ -52,4 +52,9 @@ class EntityTransformer implements Mapper\Transformer\TransformerInterface
 
         return $entity;
     }
+
+    public static function getName(): string
+    {
+        return static::class;
+    }
 }
