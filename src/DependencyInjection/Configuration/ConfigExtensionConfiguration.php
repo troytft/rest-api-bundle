@@ -7,10 +7,20 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class ConfigExtensionConfiguration implements ConfigurationInterface
 {
+    /**
+     * @var string
+     */
+    private $alias;
+
+    public function __construct(string $alias)
+    {
+        $this->alias = $alias;
+    }
+
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('rest_api')
+        $treeBuilder->root($this->alias)
             ->children()
                 ->arrayNode('request_model')
                     ->addDefaultsIfNotSet()
