@@ -23,6 +23,7 @@
         "symfony/expression-language": "~3.4",
         "symfony/framework-bundle": "~3.4",
         "symfony/http-kernel": "~3.4",
+        "symfony/polyfill-php73": "^1.12",
         "symfony/translation": "~3.4",
         "symfony/validator": "~3.3",
         "troytft/mapper": "~1.4.0"
