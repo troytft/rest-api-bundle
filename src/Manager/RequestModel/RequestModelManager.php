@@ -7,7 +7,7 @@ use RestApiBundle;
 use RestApiBundle\Exception\RequestModelMappingException;
 use RestApiBundle\RequestModelInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use function array_key_last;
 use function explode;
@@ -121,7 +121,7 @@ class RequestModelManager
         if ($violations->count()) {
             $errors = [];
 
-            /** @var ConstraintViolation $violation */
+            /** @var ConstraintViolationInterface $violation */
             foreach ($violations as $violation) {
                 $path = $this->normalizeConstraintViolationPath($violation);
                 if (!isset($errors[$path])) {
@@ -135,7 +135,7 @@ class RequestModelManager
         }
     }
 
-    private function normalizeConstraintViolationPath(ConstraintViolation $constraintViolation): string
+    private function normalizeConstraintViolationPath(ConstraintViolationInterface $constraintViolation): string
     {
         $path = $constraintViolation->getPropertyPath();
 
