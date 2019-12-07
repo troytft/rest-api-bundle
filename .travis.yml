@@ -10,8 +10,8 @@ env:
 
 install:
     - composer global require 'hirak/prestissimo:^0.3' --no-suggest --no-interaction --prefer-dist --no-progress
-    - composer require "symfony/symfony:^${SYMFONY_MAJOR_VERSION}" --no-suggest --no-interaction --prefer-dist --no-progress --update-with-all-dependencies
     - composer install --no-suggest --no-interaction --no-scripts
+    - composer require "symfony/symfony:^${SYMFONY_MAJOR_VERSION}" --no-suggest --no-interaction --prefer-dist --no-progress --update-with-all-dependencies
 
 script:
     - vendor/bin/phpunit
