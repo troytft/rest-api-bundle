@@ -11,7 +11,7 @@ env:
 install:
     - composer global require 'hirak/prestissimo:^0.3' --no-suggest --no-interaction --prefer-dist --no-progress
     - composer install --no-suggest --no-interaction --no-scripts
-    - composer require "symfony/lts:^${SYMFONY_MAJOR_VERSION}" --update-with-dependencies
+    - composer require "symfony/lts:^${SYMFONY_MAJOR_VERSION}" --update-with-all-dependencies
 
 script:
     - vendor/bin/phpunit
