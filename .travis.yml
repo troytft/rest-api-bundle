@@ -10,7 +10,7 @@ env:
 
 install:
     - composer global require 'hirak/prestissimo:^0.3' --no-suggest --no-interaction --prefer-dist --no-progress
-    - composer require 'symfony/lts:^${SYMFONY_MAJOR_VERSION}' --no-suggest --no-interaction --prefer-dist --no-progress
+    - composer require "symfony/lts:^${SYMFONY_MAJOR_VERSION}" --no-suggest --no-interaction --prefer-dist --no-progress
     - composer install --no-suggest --no-interaction --no-scripts
 
 script:
