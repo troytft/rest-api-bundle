@@ -37,6 +37,17 @@ class ModelWithValidation implements RequestModelInterface
     private $collectionField;
 
     /**
+     * @var int[]
+     *
+     * @Mapper\Collection(type=@Mapper\IntegerType())
+     *
+     * @Assert\All(constraints={
+     *     @Assert\Range(min=10)
+     * })
+     */
+    private $collectionOfIntegers;
+
+    /**
      * @return bool
      *
      * @Assert\IsTrue(message="Example message without property")
@@ -82,6 +93,18 @@ class ModelWithValidation implements RequestModelInterface
     public function setCollectionField(array $collectionField)
     {
         $this->collectionField = $collectionField;
+
+        return $this;
+    }
+
+    public function getCollectionOfIntegers(): array
+    {
+        return $this->collectionOfIntegers;
+    }
+
+    public function setCollectionOfIntegers(array $collectionOfIntegers)
+    {
+        $this->collectionOfIntegers = $collectionOfIntegers;
 
         return $this;
     }
