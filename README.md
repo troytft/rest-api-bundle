@@ -4,6 +4,13 @@
 
 REST API Bundle is abstraction layer for requests and responses.
 
+Work in progress.
+
+##### Roadmap
+* Response layer
+* Swagger file generation 
+* First stable release
+
 ### Installation
 ```bash
 composer require troytft/rest-api-bundle
