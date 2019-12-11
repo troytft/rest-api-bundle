@@ -20,10 +20,12 @@ class RequestModelValidationTest extends BaseBundleTestCase
                     [
                         'stringField' => 's',
                     ],
+                    null
                 ]
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            var_dump($exception->getProperties());
             $expected = [
                 'stringField' => [
                     'This value is too short. It should have 6 characters or more.',
@@ -34,6 +36,9 @@ class RequestModelValidationTest extends BaseBundleTestCase
                 ],
                 'collectionField.0.stringField' => [
                     'This value is too short. It should have 3 characters or more.',
+                ],
+                'collectionField.1' => [
+                    "This value should not be null."
                 ],
                 '*' => [
                     'Example message without property',

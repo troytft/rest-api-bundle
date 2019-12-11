@@ -138,7 +138,6 @@ class RequestModelManager
     private function normalizeConstraintViolationPath(ConstraintViolationInterface $constraintViolation): string
     {
         $path = $constraintViolation->getPropertyPath();
-
         if (strpos($path, '[') !== false) {
             $path = str_replace(['[', ']'], ['.', ''], $path);
         }
@@ -151,7 +150,9 @@ class RequestModelManager
             ->getSchemaGenerator()
             ->isModelHasProperty($constraintViolation->getRoot(), $pathParts[$lastPartKey]);
 
-        if (!$isProperty) {
+        $isItemOfCollection = is_numeric($pathParts[$lastPartKey]);
+
+        if (!$isProperty && !$isItemOfCollection) {
             $pathParts[$lastPartKey] = '*';
             $path = implode('.', $pathParts);
         }
