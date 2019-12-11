@@ -19,8 +19,9 @@ class RequestModelValidationTest extends BaseBundleTestCase
                 'collectionField' => [
                     [
                         'stringField' => 's',
-                    ],
-                ]
+                    ]
+                ],
+                'collectionOfIntegers' => [1, 12, 5],
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
@@ -35,9 +36,15 @@ class RequestModelValidationTest extends BaseBundleTestCase
                 'collectionField.0.stringField' => [
                     'This value is too short. It should have 3 characters or more.',
                 ],
-                '*' => [
-                    'Example message without property',
+                'collectionOfIntegers.0' => [
+                    'This value should be 10 or more.'
                 ],
+                'collectionOfIntegers.2' => [
+                    'This value should be 10 or more.'
+                ],
+                '*' => [
+                    'Example message without property'
+                ]
             ];
             $this->assertSame($expected, $exception->getProperties());
         }
