@@ -24,6 +24,7 @@
         "symfony/framework-bundle": "^3.0 || ^4.0",
         "symfony/http-kernel": "^3.0 || ^4.0",
         "symfony/polyfill-php73": "^1.12",
+        "symfony/serializer": "^3.0 || ^4.0",
         "symfony/translation": "^3.0 || ^4.0",
         "symfony/validator": "^3.0 || ^4.0",
         "troytft/mapper": "~1.4.0"
