@@ -1,31 +1,29 @@
 <?php
 
-namespace Common\EventSubscriber;
+namespace RestApiBundle\EventSubscriber;
 
-use Common;
+use RestApiBundle;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use function array_keys;
+use function count;
+use function join;
+use function range;
 
-class ResponseSerializationSubscriber implements EventSubscriberInterface
+class ResponseModelSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var Common\HelperService\ResponseModelSerializer
+     * @var RestApiBundle\Manager\ResponseModel\ResponseModelSerializer
      */
     private $responseModelSerializer;
 
-    /**
-     * @param Common\HelperService\ResponseModelSerializer $responseModelSerializer
-     */
-    public function __construct(Common\HelperService\ResponseModelSerializer $responseModelSerializer)
+    public function __construct(RestApiBundle\Manager\ResponseModel\ResponseModelSerializer $responseModelSerializer)
     {
         $this->responseModelSerializer = $responseModelSerializer;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents()
     {
         return [
@@ -33,20 +31,16 @@ class ResponseSerializationSubscriber implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param GetResponseForControllerResultEvent $event
-     */
     public function handle(GetResponseForControllerResultEvent $event)
     {
-        if (!($result = $event->getControllerResult()) instanceof Response) {
-            $requestAttributes = $event->getRequest()->attributes;
+        $result = $event->getControllerResult();
 
-            if (!$httpStatus = $requestAttributes->get('_annotation_http_status')) {
-                $httpStatus = $result !== null ? 200 : 204;
-            }
-
-            $defaultHeaders = ['Content-Type' => 'application/json'];
-            $headers = array_merge($defaultHeaders, (array) $requestAttributes->get('_response_headers'));
+        if (!$result instanceof Response) {
+            $defaultHeaders = [
+                'Content-Type' => 'application/json',
+            ];
+            $headers = array_merge($defaultHeaders, $event->getRequest()->attributes->get('_response_headers', []));
+            $httpStatus = $result !== null ? 200 : 204;
 
             $event->setResponse(new Response($this->serializeResponse($result), $httpStatus, $headers));
 
@@ -54,34 +48,39 @@ class ResponseSerializationSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return null|string
-     */
     private function serializeResponse($value): ?string
     {
         if ($value === null) {
             return null;
         }
 
-        if (!is_array($value)) {
+        if ($value instanceof RestApiBundle\ResponseModelInterface) {
             return $this->responseModelSerializer->toJson($value);
         }
 
-        if (empty($value)) {
-            return '[]';
+        if (is_array($value)) {
+            if (!$this->isPlainArray($value)) {
+                throw new \InvalidArgumentException('Allowed only collections of response models.');
+            }
+
+            $chunks = [];
+
+            foreach ($value as $item) {
+                if (!$item instanceof  RestApiBundle\ResponseModelInterface) {
+                    throw new \InvalidArgumentException('Allowed only collections of response models.');
+                }
+
+                $chunks[] = $this->responseModelSerializer->toJson($item);
+            }
+
+            return '[' . join(',', $chunks) . ']';
         }
 
-        if (array_keys($value) !== range(0, count($value) - 1)) {
-            return $this->responseModelSerializer->toJson($value);
-        }
+        throw new \InvalidArgumentException();
+    }
 
-        $chunks = [];
-        foreach ($value as $key => $item) {
-            $chunks[] = $this->responseModelSerializer->toJson($item);
-        }
-
-        return '[' . join(',', $chunks) . ']';
+    private function isPlainArray(array $items): bool
+    {
+        return array_keys($items) === range(0, count($items) - 1);
     }
 }

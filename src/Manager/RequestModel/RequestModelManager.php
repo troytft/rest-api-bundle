@@ -35,14 +35,14 @@ class RequestModelManager
     private $validator;
 
     /**
-     * @var RestApiBundle\HelperService\SettingsProvider
+     * @var RestApiBundle\SettingsProvider
      */
     private $settingsProvider;
 
     public function __construct(
         TranslatorInterface $translator,
         ValidatorInterface $validator,
-        RestApiBundle\HelperService\SettingsProvider $settingsProvider
+        RestApiBundle\SettingsProvider $settingsProvider
     ) {
         $this->translator = $translator;
         $this->validator = $validator;

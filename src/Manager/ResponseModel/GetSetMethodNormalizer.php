@@ -1,6 +1,6 @@
 <?php
 
-namespace Common\Helper\Serializer;
+namespace RestApiBundle\Manager\ResponseModel;
 
 use RestApiBundle;
 
@@ -13,21 +13,11 @@ class GetSetMethodNormalizer extends \Symfony\Component\Serializer\Normalizer\Ge
      */
     private $typenameCache = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function supportsNormalization($data, $format = null)
     {
-        return parent::supportsNormalization($data, $format) && $data instanceof Common\ResponseModel\ResponseModelInterface && $this->supports(get_class($data));
+        return parent::supportsNormalization($data, $format) && $data instanceof RestApiBundle\ResponseModelInterface && $this->supports(get_class($data));
     }
 
-    /**
-     * Checks if the given class has any get{Property} method.
-     *
-     * @param string $class
-     *
-     * @return bool
-     */
     private function supports($class)
     {
         $class = new \ReflectionClass($class);
@@ -42,12 +32,7 @@ class GetSetMethodNormalizer extends \Symfony\Component\Serializer\Normalizer\Ge
         return false;
     }
 
-    /**
-     * Checks if a method's name is get.* or is.*, and can be called without parameters.
-     *
-     * @return bool whether the method is a getter or boolean getter
-     */
-    private function isGetMethod(\ReflectionMethod $method)
+    private function isGetMethod(\ReflectionMethod $method): bool
     {
         $methodLength = strlen($method->name);
         $getOrIs = ((strpos($method->name, 'get') === 0 && $methodLength > 3) || (strpos($method->name, 'is') === 0 && $methodLength > 2));
@@ -55,43 +40,33 @@ class GetSetMethodNormalizer extends \Symfony\Component\Serializer\Normalizer\Ge
         return !$method->isStatic() && ($getOrIs && $method->getNumberOfRequiredParameters() === 0);
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function extractAttributes($object, $format = null, array $context = [])
     {
         $attributes = parent::extractAttributes($object, $format, $context);
-        if ($object instanceof Common\ResponseModel\ResponseModelInterface) {
+        if ($object instanceof RestApiBundle\ResponseModelInterface) {
             $attributes[] = static::ATTRIBUTE_TYPENAME;
         }
 
         return $attributes;
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getAttributeValue($object, $attribute, $format = null, array $context = [])
     {
-        if ($attribute === static::ATTRIBUTE_TYPENAME && $object instanceof Common\ResponseModel\ResponseModelInterface) {
+        if ($attribute === static::ATTRIBUTE_TYPENAME && $object instanceof RestApiBundle\ResponseModelInterface) {
             return $this->resolveTypename($object);
         }
 
         return parent::getAttributeValue($object, $attribute, $format, $context);
     }
 
-    /**
-     * @param Common\ResponseModel\ResponseModelInterface $object
-     *
-     * @return string
-     */
-    private function resolveTypename(Common\ResponseModel\ResponseModelInterface $model): string
+    private function resolveTypename(RestApiBundle\ResponseModelInterface $responseModel): string
     {
-        $className = get_class($model);
+        $className = get_class($responseModel);
 
         if (!isset($this->typenameCache[$className])) {
             $parts = [];
             $isResponseModel = false;
+
             foreach (explode('\\', $className) as $part) {
                 if ($isResponseModel) {
                     $parts[] = $part;
@@ -99,6 +74,7 @@ class GetSetMethodNormalizer extends \Symfony\Component\Serializer\Normalizer\Ge
                     $isResponseModel = true;
                 }
             }
+
             if (!$isResponseModel) {
                 throw new \RuntimeException(
                     sprintf('Response model "%s" must be in "ResponseModel" namespace', $className)
