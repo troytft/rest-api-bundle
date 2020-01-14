@@ -14,12 +14,6 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
      */
     protected $kernel;
 
-    protected function getBundleClass()
-    {
-        return RestApiBundle\RestApiBundle::class;
-    }
-
-
     public function __construct()
     {
         parent::__construct();
@@ -27,19 +21,11 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         $this->bootKernel();
     }
 
-    protected function getRequestModelManager(): RestApiBundle\Manager\RequestModel\RequestModelManager
+    protected function getBundleClass()
     {
-        $manager = $this->getContainer()->get(RestApiBundle\Manager\RequestModel\RequestModelManager::class);
-        if (!$manager instanceof RestApiBundle\Manager\RequestModel\RequestModelManager) {
-            throw new \InvalidArgumentException();
-        }
-
-        return $manager;
+        return RestApiBundle\RestApiBundle::class;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function createKernel()
     {
         $this->kernel = parent::createKernel();
@@ -54,5 +40,15 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     public function getKernel(): KernelInterface
     {
         return $this->kernel;
+    }
+
+    protected function getResponseModelSerializer(): RestApiBundle\Manager\ResponseModel\ResponseModelSerializer
+    {
+        return $this->getContainer()->get(RestApiBundle\Manager\ResponseModel\ResponseModelSerializer::class);
+    }
+
+    protected function getRequestModelManager(): RestApiBundle\Manager\RequestModel\RequestModelManager
+    {
+        return $this->getContainer()->get(RestApiBundle\Manager\RequestModel\RequestModelManager::class);
     }
 }
