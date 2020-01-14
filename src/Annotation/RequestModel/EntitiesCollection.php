@@ -2,10 +2,10 @@
 
 namespace RestApiBundle\Annotation\RequestModel;
 
+use RestApiBundle;
 use Mapper\Annotation\NullableTrait;
 use Mapper\DTO\Mapping\CollectionTypeInterface;
 use Mapper\DTO\Mapping\TypeInterface;
-use RestApiBundle\Manager\RequestModel\Transformer\EntitiesCollectionTransformer;
 
 /**
  * @Annotation
@@ -41,14 +41,14 @@ class EntitiesCollection implements CollectionTypeInterface
 
     public function getTransformerName(): ?string
     {
-        return EntitiesCollectionTransformer::getName();
+        return RestApiBundle\Services\Request\Mapper\EntitiesCollectionTransformer::getName();
     }
 
     public function getTransformerOptions(): array
     {
         return [
-            EntitiesCollectionTransformer::CLASS_OPTION => $this->class,
-            EntitiesCollectionTransformer::FIELD_OPTION => $this->field,
+            RestApiBundle\Services\Request\Mapper\EntitiesCollectionTransformer::CLASS_OPTION => $this->class,
+            RestApiBundle\Services\Request\Mapper\EntitiesCollectionTransformer::FIELD_OPTION => $this->field,
         ];
     }
 }

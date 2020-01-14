@@ -1,11 +1,9 @@
 <?php
 
-namespace RestApiBundle\Manager\RequestModel;
+namespace RestApiBundle\Services\Request;
 
 use Mapper;
 use RestApiBundle;
-use RestApiBundle\Exception\RequestModelMappingException;
-use RestApiBundle\RequestModelInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -17,7 +15,7 @@ use function sprintf;
 use function str_replace;
 use function strpos;
 
-class RequestModelManager
+class RequestHandler
 {
     /**
      * @var Mapper\Mapper
@@ -60,18 +58,18 @@ class RequestModelManager
     }
 
     /**
-     * @throws RequestModelMappingException
+     * @throws RestApiBundle\Exception\RequestModelMappingException
      */
-    public function handle(RequestModelInterface $requestModel, array $data): void
+    public function handle(RestApiBundle\RequestModelInterface $requestModel, array $data): void
     {
         $this->map($requestModel, $data);
         $this->validate($requestModel);
     }
 
     /**
-     * @throws RequestModelMappingException
+     * @throws RestApiBundle\Exception\RequestModelMappingException
      */
-    private function map(RequestModelInterface $requestModel, array $data): void
+    private function map(RestApiBundle\RequestModelInterface $requestModel, array $data): void
     {
         try {
             $this->mapper->map($requestModel, $data);
@@ -107,14 +105,14 @@ class RequestModelManager
                 throw new \InvalidArgumentException(sprintf('Can\'t find translation with key "%s"', $translationId));
             }
 
-            throw new RequestModelMappingException([$path => [$message]]);
+            throw new RestApiBundle\Exception\RequestModelMappingException([$path => [$message]]);
         }
     }
 
     /**
-     * @throws RequestModelMappingException
+     * @throws RestApiBundle\Exception\RequestModelMappingException
      */
-    private function validate(RequestModelInterface $requestModel): void
+    private function validate(RestApiBundle\RequestModelInterface $requestModel): void
     {
         $violations = $this->validator->validate($requestModel);
 
@@ -131,7 +129,7 @@ class RequestModelManager
                 $errors[$path][] = $violation->getMessage();
             }
 
-            throw new RequestModelMappingException($errors);
+            throw new RestApiBundle\Exception\RequestModelMappingException($errors);
         }
     }
 

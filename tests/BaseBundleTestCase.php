@@ -52,10 +52,10 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $result;
     }
 
-    protected function getRequestModelManager(): RestApiBundle\Manager\RequestModel\RequestModelManager
+    protected function getRequestModelManager(): RestApiBundle\Services\Request\RequestHandler
     {
-        $result = $this->getContainer()->get(RestApiBundle\Manager\RequestModel\RequestModelManager::class);
-        if (!$result instanceof RestApiBundle\Manager\RequestModel\RequestModelManager) {
+        $result = $this->getContainer()->get(RestApiBundle\Services\Request\RequestHandler::class);
+        if (!$result instanceof RestApiBundle\Services\Request\RequestHandler) {
             throw new \InvalidArgumentException();
         }
 

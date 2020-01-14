@@ -1,8 +1,8 @@
 <?php
 
-namespace RestApiBundle\Manager\RequestModel;
+namespace RestApiBundle\Services\Request;
 
-use RestApiBundle\Helper\RequestModelHelper;
+use RestApiBundle;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
@@ -16,29 +16,29 @@ class ActionArgumentValueResolver implements ArgumentValueResolverInterface
     private $requestStack;
 
     /**
-     * @var RequestModelManager
+     * @var RestApiBundle\Services\Request\RequestHandler
      */
-    private $requestModelManager;
+    private $requestHandler;
 
-    public function __construct(RequestStack $requestStack, RequestModelManager $requestModelManager)
+    public function __construct(RequestStack $requestStack, RestApiBundle\Services\Request\RequestHandler $requestHandler)
     {
         $this->requestStack = $requestStack;
-        $this->requestModelManager = $requestModelManager;
+        $this->requestHandler = $requestHandler;
     }
 
     public function supports(Request $request, ArgumentMetadata $argument): bool
     {
         $className = $argument->getType();
 
-        return RequestModelHelper::isRequestModel($className);
+        return RestApiBundle\Helper\RequestModelHelper::isRequestModel($className);
     }
 
     public function resolve(Request $request, ArgumentMetadata $argument): \Generator
     {
         $className = $argument->getType();
 
-        $requestModel = RequestModelHelper::instantiate($className);
-        $this->requestModelManager->handle($requestModel, $this->getRequestData());
+        $requestModel = RestApiBundle\Helper\RequestModelHelper::instantiate($className);
+        $this->requestHandler->handle($requestModel, $this->getRequestData());
 
         yield $requestModel;
     }

@@ -2,9 +2,9 @@
 
 namespace RestApiBundle\Annotation\RequestModel;
 
+use RestApiBundle;
 use Mapper\Annotation\NullableTrait;
 use Mapper\DTO\Mapping\ScalarTypeInterface;
-use RestApiBundle\Manager\RequestModel\Transformer\EntityTransformer;
 
 /**
  * @Annotation
@@ -25,14 +25,14 @@ class Entity implements ScalarTypeInterface
 
     public function getTransformerName(): string
     {
-        return EntityTransformer::getName();
+        return RestApiBundle\Services\Request\Mapper\EntityTransformer::getName();
     }
 
     public function getTransformerOptions(): array
     {
         return [
-            EntityTransformer::CLASS_OPTION => $this->class,
-            EntityTransformer::FIELD_OPTION => $this->field,
+            RestApiBundle\Services\Request\Mapper\EntityTransformer::CLASS_OPTION => $this->class,
+            RestApiBundle\Services\Request\Mapper\EntityTransformer::FIELD_OPTION => $this->field,
         ];
     }
 }

@@ -17,7 +17,7 @@ services:
     RestApiBundle\:
         resource: '../../../src/*'
 
-    RestApiBundle\Manager\RequestModel\RequestModelManager:
+    RestApiBundle\Services\Request\RequestHandler:
         public: true
 
     RestApiBundle\Services\Response\Serializer:
