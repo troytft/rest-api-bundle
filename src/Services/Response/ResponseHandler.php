@@ -1,40 +1,43 @@
 <?php
 
-namespace RestApiBundle\EventSubscriber;
+namespace RestApiBundle\Services\Response;
 
 use RestApiBundle;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use function array_keys;
-use function count;
+use function array_merge;
+use function is_array;
 use function join;
 use function range;
 
-class ResponseModelSubscriber implements EventSubscriberInterface
+class ResponseHandler
 {
     /**
-     * @var RestApiBundle\Services\Response\Serializer
+     * @var RestApiBundle\Services\SettingsProvider
      */
-    private $responseModelSerializer;
+    private $settingsProvider;
 
-    public function __construct(RestApiBundle\Services\Response\Serializer $responseModelSerializer)
-    {
-        $this->responseModelSerializer = $responseModelSerializer;
+    /**
+     * @var Serializer
+     */
+    private $serializer;
+
+    public function __construct(
+        RestApiBundle\Services\SettingsProvider $settingsProvider,
+        RestApiBundle\Services\Response\Serializer $serializer
+    ) {
+        $this->settingsProvider = $settingsProvider;
+        $this->serializer = $serializer;
     }
 
-    public static function getSubscribedEvents()
+    public function handleControllerResultEvent(GetResponseForControllerResultEvent $event)
     {
-        return [
-            KernelEvents::VIEW => 'handle'
-        ];
-    }
+        if (!$this->settingsProvider->isResponseHandlerEnabled()) {
+            return;
+        }
 
-    public function handle(GetResponseForControllerResultEvent $event)
-    {
         $result = $event->getControllerResult();
-
         if (!$result instanceof Response) {
             $defaultHeaders = [
                 'Content-Type' => 'application/json',
@@ -43,8 +46,6 @@ class ResponseModelSubscriber implements EventSubscriberInterface
             $httpStatus = $result !== null ? 200 : 204;
 
             $event->setResponse(new Response($this->serializeResponse($result), $httpStatus, $headers));
-
-            return;
         }
     }
 
@@ -53,7 +54,7 @@ class ResponseModelSubscriber implements EventSubscriberInterface
         if ($value === null) {
             $result = null;
         } elseif ($value instanceof RestApiBundle\ResponseModelInterface) {
-            $result = $this->responseModelSerializer->toJson($value);
+            $result = $this->serializer->toJson($value);
         } elseif (is_array($value)) {
             if (!$this->isPlainArray($value)) {
                 throw new \InvalidArgumentException('Associative arrays are not allowed.');
@@ -66,7 +67,7 @@ class ResponseModelSubscriber implements EventSubscriberInterface
                     throw new \InvalidArgumentException('The collection should consist of response models.');
                 }
 
-                $chunks[] = $this->responseModelSerializer->toJson($item);
+                $chunks[] = $this->serializer->toJson($item);
             }
 
             $result = '[' . join(',', $chunks) . ']';
