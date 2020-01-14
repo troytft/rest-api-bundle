@@ -14,7 +14,7 @@ class ResponseModelTest extends BaseBundleTestCase
             ->setId(13)
             ->setSlug('genre-slug');
 
-        $json = $this->getResponseModelSerializer()->toJson(new Tests\DemoApp\DemoBundle\ResponseModel\Genre($entity));
+        $json = $this->getResponseSerializer()->toJson(new Tests\DemoApp\DemoBundle\ResponseModel\Genre($entity));
 
         $this->assertSame('{"id":13,"slug":"genre-slug","__typename":"Genre"}', $json);
     }

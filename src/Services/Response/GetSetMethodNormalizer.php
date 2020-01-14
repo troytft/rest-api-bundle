@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Manager\ResponseModel;
+namespace RestApiBundle\Services\Response;
 
 use RestApiBundle;
 

@@ -42,10 +42,10 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $this->kernel;
     }
 
-    protected function getResponseModelSerializer(): RestApiBundle\Manager\ResponseModel\Serializer
+    protected function getResponseSerializer(): RestApiBundle\Services\Response\Serializer
     {
-        $result = $this->getContainer()->get(RestApiBundle\Manager\ResponseModel\Serializer::class);
-        if (!$result instanceof RestApiBundle\Manager\ResponseModel\Serializer) {
+        $result = $this->getContainer()->get(RestApiBundle\Services\Response\Serializer::class);
+        if (!$result instanceof RestApiBundle\Services\Response\Serializer) {
             throw new \InvalidArgumentException();
         }
 

@@ -15,11 +15,11 @@ use function range;
 class ResponseModelSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var RestApiBundle\Manager\ResponseModel\Serializer
+     * @var RestApiBundle\Services\Response\Serializer
      */
     private $responseModelSerializer;
 
-    public function __construct(RestApiBundle\Manager\ResponseModel\Serializer $responseModelSerializer)
+    public function __construct(RestApiBundle\Services\Response\Serializer $responseModelSerializer)
     {
         $this->responseModelSerializer = $responseModelSerializer;
     }

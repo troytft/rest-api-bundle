@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Manager\ResponseModel;
+namespace RestApiBundle\Services\Response;
 
 use RestApiBundle;
 
@@ -19,7 +19,7 @@ class Serializer
         ]);
 
         $normalizers = [
-            new RestApiBundle\Manager\ResponseModel\GetSetMethodNormalizer(),
+            new RestApiBundle\Services\Response\GetSetMethodNormalizer(),
             $dateTimeNormalizer
         ];
         $encoders = [
