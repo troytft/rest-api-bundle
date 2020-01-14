@@ -51,4 +51,9 @@ class SettingsProvider
     {
         return $this->settings[RestApiBundle\Enum\SettingsKey::DEFAULT_REQUEST_DATE_FORMAT];
     }
+
+    public function isResponseHandlerEnabled(): bool
+    {
+        return $this->settings[RestApiBundle\Enum\SettingsKey::IS_RESPONSE_HANDLER_ENABLED];
+    }
 }

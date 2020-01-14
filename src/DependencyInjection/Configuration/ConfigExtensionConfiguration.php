@@ -45,7 +45,9 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
                 ->booleanNode(RestApiBundle\Enum\SettingsKey::DEFAULT_REQUEST_DATETIME_FORMAT)
                     ->defaultValue('Y-m-d\TH:i:sP')
                 ->end()
-                ->booleanNode(RestApiBundle\Enum\SettingsKey::IS_RESPONSE_HANDLER_ENABLED)->end()
+                ->booleanNode(RestApiBundle\Enum\SettingsKey::IS_RESPONSE_HANDLER_ENABLED)
+                    ->defaultTrue()
+                ->end()
             ->end();
 
         return $treeBuilder;
