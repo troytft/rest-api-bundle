@@ -19,3 +19,6 @@ services:
 
     RestApiBundle\Manager\RequestModel\RequestModelManager:
         public: true
+
+    RestApiBundle\Manager\ResponseModel\Serializer:
+        public: true

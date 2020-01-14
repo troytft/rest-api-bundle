@@ -15,6 +15,7 @@ class ConfigExtension extends Extension
     public const PARAMETER_REQUEST_MODEL_DATE_TIME_TRANSFORMER_FORCE_LOCAL_TIMEZONE = 'rest_api.request_model.date_time_transformer_force_local_timezone';
     public const PARAMETER_REQUEST_MODEL_DATE_TIME_TRANSFORMER_DEFAULT_FORMAT = 'rest_api.request_model.date_time_transformer_default_format';
     public const PARAMETER_REQUEST_MODEL_DATE_TRANSFORMER_DEFAULT_FORMAT = 'rest_api.request_model.date_transformer_default_format';
+    public const IS_RESPONSE_SUBSCRIBER_ENABLED = 'rest_api.response_model.is_response_subscriber_enabled';
 
     public function getAlias()
     {
@@ -38,5 +39,6 @@ class ConfigExtension extends Extension
         $container->setParameter(static::PARAMETER_REQUEST_MODEL_DATE_TIME_TRANSFORMER_FORCE_LOCAL_TIMEZONE, $config['request_model']['date_time_transformer_force_local_timezone']);
         $container->setParameter(static::PARAMETER_REQUEST_MODEL_DATE_TIME_TRANSFORMER_DEFAULT_FORMAT, $config['request_model']['date_time_transformer_default_format']);
         $container->setParameter(static::PARAMETER_REQUEST_MODEL_DATE_TRANSFORMER_DEFAULT_FORMAT, $config['request_model']['date_transformer_default_format']);
+        $container->setParameter(static::IS_RESPONSE_SUBSCRIBER_ENABLED, $config['response_model']['is_response_subscriber_enabled']);
     }
 }

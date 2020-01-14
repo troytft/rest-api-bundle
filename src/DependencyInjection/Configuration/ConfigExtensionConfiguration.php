@@ -48,7 +48,14 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-
+                ->arrayNode('response_model')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                         ->booleanNode('is_response_subscriber_enabled')
+                            ->defaultTrue()
+                         ->end()
+                    ->end()
+                ->end()
              ->end();
 
         return $treeBuilder;

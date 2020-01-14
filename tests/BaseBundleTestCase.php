@@ -14,12 +14,6 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
      */
     protected $kernel;
 
-    protected function getBundleClass()
-    {
-        return RestApiBundle\RestApiBundle::class;
-    }
-
-
     public function __construct()
     {
         parent::__construct();
@@ -27,19 +21,11 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         $this->bootKernel();
     }
 
-    protected function getRequestModelManager(): RestApiBundle\Manager\RequestModel\RequestModelManager
+    protected function getBundleClass()
     {
-        $manager = $this->getContainer()->get(RestApiBundle\Manager\RequestModel\RequestModelManager::class);
-        if (!$manager instanceof RestApiBundle\Manager\RequestModel\RequestModelManager) {
-            throw new \InvalidArgumentException();
-        }
-
-        return $manager;
+        return RestApiBundle\RestApiBundle::class;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function createKernel()
     {
         $this->kernel = parent::createKernel();
@@ -54,5 +40,25 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     public function getKernel(): KernelInterface
     {
         return $this->kernel;
+    }
+
+    protected function getResponseModelSerializer(): RestApiBundle\Manager\ResponseModel\Serializer
+    {
+        $result = $this->getContainer()->get(RestApiBundle\Manager\ResponseModel\Serializer::class);
+        if (!$result instanceof RestApiBundle\Manager\ResponseModel\Serializer) {
+            throw new \InvalidArgumentException();
+        }
+
+        return $result;
+    }
+
+    protected function getRequestModelManager(): RestApiBundle\Manager\RequestModel\RequestModelManager
+    {
+        $result = $this->getContainer()->get(RestApiBundle\Manager\RequestModel\RequestModelManager::class);
+        if (!$result instanceof RestApiBundle\Manager\RequestModel\RequestModelManager) {
+            throw new \InvalidArgumentException();
+        }
+
+        return $result;
     }
 }

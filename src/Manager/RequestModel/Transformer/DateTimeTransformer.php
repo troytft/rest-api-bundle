@@ -2,16 +2,16 @@
 
 namespace RestApiBundle\Manager\RequestModel\Transformer;
 
-use RestApiBundle\HelperService\SettingsProvider;
+use RestApiBundle;
 
 class DateTimeTransformer extends \Mapper\Transformer\DateTimeTransformer
 {
     /**
-     * @var SettingsProvider
+     * @var RestApiBundle\SettingsProvider
      */
     private $settingsProvider;
 
-    public function __construct(SettingsProvider $settingsProvider)
+    public function __construct(RestApiBundle\SettingsProvider $settingsProvider)
     {
         $this->settingsProvider = $settingsProvider;
     }
