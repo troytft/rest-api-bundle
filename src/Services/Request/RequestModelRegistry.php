@@ -1,11 +1,11 @@
 <?php
 
-namespace RestApiBundle\Helper;
+namespace RestApiBundle\Services\Request;
 
-use RestApiBundle\RequestModelInterface;
+use RestApiBundle;
 use function array_key_exists;
 
-class RequestModelHelper
+class RequestModelRegistry
 {
     /**
      * @var array<string,\ReflectionClass>
@@ -36,20 +36,20 @@ class RequestModelHelper
             $reflectionClass = static::getReflection($className);
 
             static::$classNameCache[$className] = $reflectionClass->isInstantiable()
-                && $reflectionClass->implementsInterface(RequestModelInterface::class);
+                && $reflectionClass->implementsInterface(RestApiBundle\RequestModelInterface::class);
         }
 
         return static::$classNameCache[$className];
     }
 
-    public static function instantiate(string $className): RequestModelInterface
+    public static function instantiate(string $className): RestApiBundle\RequestModelInterface
     {
         if (!static::isRequestModel($className)) {
             throw new \InvalidArgumentException();
         }
 
         $model = static::getReflection($className)->newInstance();
-        if (!$model instanceof RequestModelInterface) {
+        if (!$model instanceof RestApiBundle\RequestModelInterface) {
             throw new \InvalidArgumentException();
         }
 

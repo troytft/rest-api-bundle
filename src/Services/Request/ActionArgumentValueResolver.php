@@ -30,14 +30,14 @@ class ActionArgumentValueResolver implements ArgumentValueResolverInterface
     {
         $className = $argument->getType();
 
-        return RestApiBundle\Helper\RequestModelHelper::isRequestModel($className);
+        return RestApiBundle\Services\Request\RequestModelRegistry::isRequestModel($className);
     }
 
     public function resolve(Request $request, ArgumentMetadata $argument): \Generator
     {
         $className = $argument->getType();
 
-        $requestModel = RestApiBundle\Helper\RequestModelHelper::instantiate($className);
+        $requestModel = RestApiBundle\Services\Request\RequestModelRegistry::instantiate($className);
         $this->requestHandler->handle($requestModel, $this->getRequestData());
 
         yield $requestModel;
