@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Annotation\RequestModel;
+namespace RestApiBundle\Annotation\Request;
 
 use RestApiBundle;
 use Mapper\Annotation\NullableTrait;

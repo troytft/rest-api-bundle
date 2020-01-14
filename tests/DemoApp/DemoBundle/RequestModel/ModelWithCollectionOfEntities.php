@@ -3,7 +3,7 @@
 namespace Tests\DemoApp\DemoBundle\RequestModel;
 
 use Tests;
-use RestApiBundle\Annotation\RequestModel as Mapper;
+use RestApiBundle\Annotation\Request as Mapper;
 use RestApiBundle\RequestModelInterface;
 
 class ModelWithCollectionOfEntities implements RequestModelInterface

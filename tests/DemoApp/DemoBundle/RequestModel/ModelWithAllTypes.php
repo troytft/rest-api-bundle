@@ -2,7 +2,7 @@
 
 namespace Tests\DemoApp\DemoBundle\RequestModel;
 
-use RestApiBundle\Annotation\RequestModel as Mapper;
+use RestApiBundle\Annotation\Request as Mapper;
 use RestApiBundle\RequestModelInterface;
 
 class ModelWithAllTypes implements RequestModelInterface
