@@ -11,11 +11,11 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 class ExceptionSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var RestApiBundle\SettingsProvider
+     * @var RestApiBundle\Services\SettingsProvider
      */
     private $settingsProvider;
 
-    public function __construct(RestApiBundle\SettingsProvider $settingsProvider)
+    public function __construct(RestApiBundle\Services\SettingsProvider $settingsProvider)
     {
         $this->settingsProvider = $settingsProvider;
     }

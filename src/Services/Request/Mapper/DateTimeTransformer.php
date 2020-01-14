@@ -7,11 +7,11 @@ use RestApiBundle;
 class DateTimeTransformer extends \Mapper\Transformer\DateTimeTransformer
 {
     /**
-     * @var RestApiBundle\SettingsProvider
+     * @var RestApiBundle\Services\SettingsProvider
      */
     private $settingsProvider;
 
-    public function __construct(RestApiBundle\SettingsProvider $settingsProvider)
+    public function __construct(RestApiBundle\Services\SettingsProvider $settingsProvider)
     {
         $this->settingsProvider = $settingsProvider;
     }

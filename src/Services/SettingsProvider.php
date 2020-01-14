@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle;
+namespace RestApiBundle\Services;
 
 use RestApiBundle\DependencyInjection\ConfigExtension;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;

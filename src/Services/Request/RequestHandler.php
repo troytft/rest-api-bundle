@@ -33,14 +33,14 @@ class RequestHandler
     private $validator;
 
     /**
-     * @var RestApiBundle\SettingsProvider
+     * @var RestApiBundle\Services\SettingsProvider
      */
     private $settingsProvider;
 
     public function __construct(
         TranslatorInterface $translator,
         ValidatorInterface $validator,
-        RestApiBundle\SettingsProvider $settingsProvider
+        RestApiBundle\Services\SettingsProvider $settingsProvider
     ) {
         $this->translator = $translator;
         $this->validator = $validator;
