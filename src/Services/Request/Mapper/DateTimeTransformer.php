@@ -19,11 +19,11 @@ class DateTimeTransformer extends \Mapper\Transformer\DateTimeTransformer
     public function transform($value, array $options = [])
     {
         if (!isset($options[static::FORMAT_OPTION_NAME])) {
-            $options[static::FORMAT_OPTION_NAME] = $this->settingsProvider->getRequestModelDateTimeTransformerDefaultFormat();
+            $options[static::FORMAT_OPTION_NAME] = $this->settingsProvider->getDefaultRequestDatetimeFormat();
         }
 
         if (!isset($options[static::FORCE_LOCAL_TIMEZONE_OPTION_NAME])) {
-            $options[static::FORCE_LOCAL_TIMEZONE_OPTION_NAME] = $this->settingsProvider->getRequestModelDateTimeTransformerForceLocalTimezone();
+            $options[static::FORCE_LOCAL_TIMEZONE_OPTION_NAME] = $this->settingsProvider->isForceRequestDatetimeToLocalTimezone();
         }
 
         return parent::transform($value, $options);
