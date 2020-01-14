@@ -46,7 +46,7 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
                     ->defaultValue('Y-m-d\TH:i:sP')
                 ->end()
                 ->booleanNode(RestApiBundle\Enum\SettingsKey::IS_RESPONSE_HANDLER_ENABLED)
-                    ->defaultTrue();
+                    ->defaultTrue()
                 ->end()
             ->end();
 
