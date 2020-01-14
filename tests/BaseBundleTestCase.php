@@ -44,11 +44,21 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
 
     protected function getResponseModelSerializer(): RestApiBundle\Manager\ResponseModel\ResponseModelSerializer
     {
-        return $this->getContainer()->get(RestApiBundle\Manager\ResponseModel\ResponseModelSerializer::class);
+        $result = $this->getContainer()->get(RestApiBundle\Manager\ResponseModel\ResponseModelSerializer::class);
+        if (!$result instanceof RestApiBundle\Manager\ResponseModel\ResponseModelSerializer) {
+            throw new \InvalidArgumentException();
+        }
+
+        return $result;
     }
 
     protected function getRequestModelManager(): RestApiBundle\Manager\RequestModel\RequestModelManager
     {
-        return $this->getContainer()->get(RestApiBundle\Manager\RequestModel\RequestModelManager::class);
+        $result = $this->getContainer()->get(RestApiBundle\Manager\RequestModel\RequestModelManager::class);
+        if (!$result instanceof RestApiBundle\Manager\RequestModel\RequestModelManager) {
+            throw new \InvalidArgumentException();
+        }
+
+        return $result;
     }
 }

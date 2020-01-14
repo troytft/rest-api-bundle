@@ -14,9 +14,14 @@ class ResponseModelSerializer
 
     public function __construct()
     {
+        $dateTimeNormalizer = new Serializer\Normalizer\DateTimeNormalizer([
+            Serializer\Normalizer\DateTimeNormalizer::FORMAT_KEY => \DATE_ATOM,
+            Serializer\Normalizer\DateTimeNormalizer::TIMEZONE_KEY => new \DateTimeZone('UTC'),
+        ]);
+
         $normalizers = [
             new RestApiBundle\Manager\ResponseModel\GetSetMethodNormalizer(),
-            new Serializer\Normalizer\DateTimeNormalizer(DATE_ATOM, new \DateTimeZone('UTC'))
+            $dateTimeNormalizer
         ];
         $encoders = [
             new Serializer\Encoder\JsonEncoder()

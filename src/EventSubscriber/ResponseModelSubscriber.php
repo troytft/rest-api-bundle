@@ -51,32 +51,30 @@ class ResponseModelSubscriber implements EventSubscriberInterface
     private function serializeResponse($value): ?string
     {
         if ($value === null) {
-            return null;
-        }
-
-        if ($value instanceof RestApiBundle\ResponseModelInterface) {
-            return $this->responseModelSerializer->toJson($value);
-        }
-
-        if (is_array($value)) {
+            $result = null;
+        } elseif ($value instanceof RestApiBundle\ResponseModelInterface) {
+            $result = $this->responseModelSerializer->toJson($value);
+        } elseif (is_array($value)) {
             if (!$this->isPlainArray($value)) {
-                throw new \InvalidArgumentException('Allowed only collections of response models.');
+                throw new \InvalidArgumentException('Associative arrays are not allowed.');
             }
 
             $chunks = [];
 
             foreach ($value as $item) {
-                if (!$item instanceof  RestApiBundle\ResponseModelInterface) {
-                    throw new \InvalidArgumentException('Allowed only collections of response models.');
+                if (!$item instanceof RestApiBundle\ResponseModelInterface) {
+                    throw new \InvalidArgumentException('The collection should consist of response models.');
                 }
 
                 $chunks[] = $this->responseModelSerializer->toJson($item);
             }
 
-            return '[' . join(',', $chunks) . ']';
+            $result = '[' . join(',', $chunks) . ']';
+        } else {
+            throw new \InvalidArgumentException();
         }
 
-        throw new \InvalidArgumentException();
+        return $result;
     }
 
     private function isPlainArray(array $items): bool
