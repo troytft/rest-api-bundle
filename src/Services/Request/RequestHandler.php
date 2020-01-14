@@ -47,9 +47,9 @@ class RequestHandler
         $this->settingsProvider = $settingsProvider;
         $this->mapper = new Mapper\Mapper();
         $this->mapper->getSettings()
-            ->setIsPropertiesNullableByDefault($this->settingsProvider->getRequestModelNullableByDefault())
-            ->setIsAllowedUndefinedKeysInData($this->settingsProvider->getRequestModelAllowUndefinedKeys())
-            ->setIsClearMissing($this->settingsProvider->getRequestModelClearMissingKeys());
+            ->setIsPropertiesNullableByDefault($this->settingsProvider->isRequestPropertiesNullableByDefault())
+            ->setIsAllowedUndefinedKeysInData($this->settingsProvider->isRequestUndefinedKeysAllowed())
+            ->setIsClearMissing($this->settingsProvider->isRequestClearMissingEnabled());
     }
 
     public function addTransformer(Mapper\Transformer\TransformerInterface $transformer): void

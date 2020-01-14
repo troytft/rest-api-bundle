@@ -2,53 +2,53 @@
 
 namespace RestApiBundle\Services;
 
-use RestApiBundle\DependencyInjection\ConfigExtension;
+use RestApiBundle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class SettingsProvider
 {
     /**
-     * @var ParameterBagInterface
+     * @var array
      */
-    private $parameterBag;
+    private $settings;
 
     public function __construct(ParameterBagInterface $parameterBag)
     {
-        $this->parameterBag = $parameterBag;
+        $this->settings = $parameterBag->get(RestApiBundle\DependencyInjection\SettingsExtension::ALIAS);
     }
 
-    public function getRequestModelNullableByDefault(): bool
+    public function isRequestPropertiesNullableByDefault(): bool
     {
-        return $this->parameterBag->get(ConfigExtension::PARAMETER_REQUEST_MODEL_NULLABLE_BY_DEFAULT);
+        return $this->settings[RestApiBundle\Enum\SettingsKey::IS_REQUEST_PROPERTIES_NULLABLE_BY_DEFAULT];
     }
 
-    public function getRequestModelAllowUndefinedKeys(): bool
+    public function isRequestUndefinedKeysAllowed(): bool
     {
-        return $this->parameterBag->get(ConfigExtension::PARAMETER_REQUEST_MODEL_ALLOW_UNDEFINED_KEYS);
+        return $this->settings[RestApiBundle\Enum\SettingsKey::IS_REQUEST_UNDEFINED_KEYS_ALLOWED];
     }
 
-    public function getRequestModelClearMissingKeys(): bool
+    public function isRequestClearMissingEnabled(): bool
     {
-        return $this->parameterBag->get(ConfigExtension::PARAMETER_REQUEST_MODEL_CLEAR_MISSING);
+        return $this->settings[RestApiBundle\Enum\SettingsKey::IS_REQUEST_CLEAR_MISSING_ENABLED];
     }
 
-    public function getRequestModelHandleException(): bool
+    public function isRequestValidationExceptionHandlerEnabled(): bool
     {
-        return $this->parameterBag->get(ConfigExtension::PARAMETER_REQUEST_MODEL_HANDLE_EXCEPTION);
+        return $this->settings[RestApiBundle\Enum\SettingsKey::IS_REQUEST_VALIDATION_EXCEPTION_HANDLER_ENABLED];
     }
 
-    public function getRequestModelDateTimeTransformerForceLocalTimezone(): bool
+    public function isForceRequestDatetimeToLocalTimezone(): bool
     {
-        return $this->parameterBag->get(ConfigExtension::PARAMETER_REQUEST_MODEL_DATE_TIME_TRANSFORMER_FORCE_LOCAL_TIMEZONE);
+        return $this->settings[RestApiBundle\Enum\SettingsKey::IS_FORCE_REQUEST_DATETIME_TO_LOCAL_TIMEZONE];
     }
 
-    public function getRequestModelDateTimeTransformerDefaultFormat(): string
+    public function getDefaultRequestDatetimeFormat(): string
     {
-        return $this->parameterBag->get(ConfigExtension::PARAMETER_REQUEST_MODEL_DATE_TIME_TRANSFORMER_DEFAULT_FORMAT);
+        return $this->settings[RestApiBundle\Enum\SettingsKey::DEFAULT_REQUEST_DATETIME_FORMAT];
     }
 
-    public function getRequestModelDateTransformerDefaultFormat(): string
+    public function getDefaultRequestDateFormat(): string
     {
-        return $this->parameterBag->get(ConfigExtension::PARAMETER_REQUEST_MODEL_DATE_TRANSFORMER_DEFAULT_FORMAT);
+        return $this->settings[RestApiBundle\Enum\SettingsKey::DEFAULT_REQUEST_DATE_FORMAT];
     }
 }

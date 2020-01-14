@@ -19,7 +19,7 @@ class DateTransformer extends \Mapper\Transformer\DateTransformer
     public function transform($value, array $options = [])
     {
         if (!isset($options[static::FORMAT_OPTION_NAME])) {
-            $options[static::FORMAT_OPTION_NAME] = $this->settingsProvider->getRequestModelDateTransformerDefaultFormat();
+            $options[static::FORMAT_OPTION_NAME] = $this->settingsProvider->getDefaultRequestDateFormat();
         }
 
         return parent::transform($value, $options);
