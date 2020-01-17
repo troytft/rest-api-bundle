@@ -2,6 +2,7 @@
 
 namespace RestApiBundle\Services\Docs;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use RestApiBundle;
 use Symfony\Component\Routing\RouterInterface;
 use function explode;
@@ -17,6 +18,7 @@ class DocsGenerator
 
     public function generate(RouterInterface $router)
     {
+        $reader = new AnnotationReader();
         $routeCollection = $router->getRouteCollection();
 
         foreach ($routeCollection as $route) {
@@ -25,8 +27,14 @@ class DocsGenerator
             $controllerReflectionClass = $this->getReflectionByClass($controllerClass);
             $actionReflectionMethod = $controllerReflectionClass->getMethod($actionName);
 
-            var_dump($actionReflectionMethod->getDocComment(), $actionReflectionMethod->getModifiers(), $actionReflectionMethod->getReturnType(), $actionReflectionMethod->getParameters());
-            var_dump($route->getMethods(), $route->getPath(), $route->getDefault('_controller'), $controllerClass, $actionName);
+            $annotation = $reader->getMethodAnnotation($actionReflectionMethod, RestApiBundle\Annotation\Docs\Endpoint::class);
+            if (!$annotation instanceof RestApiBundle\Annotation\Docs\Endpoint) {
+                continue;
+            }
+
+            var_dump($annotation);
+            //var_dump($actionReflectionMethod->getDocComment(), $actionReflectionMethod->getModifiers(), $actionReflectionMethod->getReturnType(), $actionReflectionMethod->getParameters());
+            //var_dump($route->getMethods(), $route->getPath(), $route->getDefault('_controller'), $controllerClass, $actionName);
         }
     }
 

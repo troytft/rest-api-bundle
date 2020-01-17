@@ -11,7 +11,7 @@ use RestApiBundle\Annotation\Docs;
 class DemoController extends BaseController
 {
     /**
-     * @Docs\Endpoint(name="Test", tags={"nn", "ss"})
+     * @Docs\Endpoint(name="Registration")
      *
      * @Route("/register", methods="POST")
      */

@@ -2,19 +2,26 @@
 
 namespace RestApiBundle\Annotation\Docs;
 
-use function var_dump;
-
 /**
  * @Annotation
+ * @Target({"METHOD"})
  */
 class Endpoint
 {
-    private $name;
-    private $description;
-    private $tags;
+    /**
+     * @Required
+     *
+     * @var string
+     */
+    public $name;
 
-    public function __construct(array $values)
-    {
-        var_dump($values);
-    }
+    /**
+     * @var string
+     */
+    public $description;
+
+    /**
+     * @var array<string>
+     */
+    public $tags;
 }
