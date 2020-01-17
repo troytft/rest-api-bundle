@@ -2,6 +2,7 @@
 
 namespace RestApiBundle\Command;
 
+use RestApiBundle;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,6 +12,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\RouterInterface;
+use function explode;
+use function rtrim;
 use function var_dump;
 
 class GenerateDocsCommand extends Command
@@ -22,19 +25,21 @@ class GenerateDocsCommand extends Command
      */
     private $router;
 
-    public function __construct(ContainerInterface $container)
+    /**
+     * @var RestApiBundle\Services\Docs\DocsGenerator
+     */
+    private $docsGenerator;
+
+    public function __construct(ContainerInterface $container, RestApiBundle\Services\Docs\DocsGenerator $docsGenerator)
     {
-        var_dump($container->get('router')->getRouteCollection()->all());
-//        /** @var $collection \Symfony\Component\Routing\RouteCollection */
-//        $collection = $router->getRouteCollection();
-//        $allRoutes = $collection->all();
-//
-//        var_dump($allRoutes);
+        $this->router = $container->get('router');
+        $this->docsGenerator = $docsGenerator;
+
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        var_dump('sss');
+        $this->docsGenerator->generate($this->router);
     }
 }
