@@ -32,7 +32,12 @@ class EndpointData
     /**
      * @var string|null
      */
-    private $responseBody;
+    private $responseClass;
+
+    /**
+     * @var bool
+     */
+    private $isResponseNullable;
 
     public function getTitle(): string
     {
@@ -106,14 +111,26 @@ class EndpointData
         return $this;
     }
 
-    public function getResponseBody(): ?string
+    public function getResponseClass(): ?string
     {
-        return $this->responseBody;
+        return $this->responseClass;
     }
 
-    public function setResponseBody(?string $responseBody)
+    public function setResponseClass(?string $responseClass)
     {
-        $this->responseBody = $responseBody;
+        $this->responseClass = $responseClass;
+
+        return $this;
+    }
+
+    public function getIsResponseNullable(): bool
+    {
+        return $this->isResponseNullable;
+    }
+
+    public function setIsResponseNullable(bool $isResponseNullable)
+    {
+        $this->isResponseNullable = $isResponseNullable;
 
         return $this;
     }
