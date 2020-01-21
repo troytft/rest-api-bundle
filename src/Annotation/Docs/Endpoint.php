@@ -13,7 +13,7 @@ class Endpoint
      *
      * @var string
      */
-    public $name;
+    public $title;
 
     /**
      * @var string

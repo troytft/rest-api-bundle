@@ -11,11 +11,15 @@ use RestApiBundle\Annotation\Docs;
 class DemoController extends BaseController
 {
     /**
-     * @Docs\Endpoint(name="Registration")
+     * @Docs\Endpoint(title="Registration")
      *
      * @Route("/register", methods="POST")
+     *
+     * @param App\RequestModel\ModelWithValidation $model
+     *
+     * @return Response
      */
-    public function registerAction(App\RequestModel\ModelWithValidation $model)
+    public function registerAction(App\RequestModel\ModelWithValidation $model): Response
     {
         return new Response('ok');
     }
