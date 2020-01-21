@@ -2,6 +2,7 @@
 
 namespace RestApiBundle\Services\Docs;
 
+use cebe\openapi\spec as OpenApi;
 use Doctrine\Common\Annotations\AnnotationReader;
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\Types\Object_;
@@ -10,9 +11,14 @@ use Symfony\Component\Routing\RouteCollection;
 use phpDocumentor\Reflection\DocBlockFactory;
 use function count;
 use function explode;
+use function lcfirst;
 use function ltrim;
 use function reset;
 use function rtrim;
+use function strlen;
+use function strpos;
+use function strtolower;
+use function substr;
 use function var_dump;
 
 class DocsGenerator
@@ -40,6 +46,16 @@ class DocsGenerator
 
     public function generate(RouteCollection $routeCollection)
     {
+        $openapiPaths = new OpenApi\Paths([]);
+        $openapi = new OpenApi\OpenApi([
+            'openapi' => '3.0.0',
+            'info' => [
+                'title' => 'Open API Specification',
+                'version' => '1.0.0',
+            ],
+            'paths' => $openapiPaths,
+        ]);
+
         foreach ($routeCollection as $route) {
             [$controllerClass, $actionName] = explode('::', $route->getDefault('_controller'));
 
@@ -50,14 +66,6 @@ class DocsGenerator
             if (!$annotation instanceof RestApiBundle\Annotation\Docs\Endpoint) {
                 continue;
             }
-
-            $endpointData = new RestApiBundle\DTO\Docs\EndpointData();
-            $endpointData
-                ->setUrl($route->getPath())
-                ->setMethods($route->getMethods())
-                ->setTitle($annotation->title)
-                ->setDescription($annotation->description)
-                ->setTags($annotation->tags);
 
             $docBlock = $this->docBlockFactory->create($actionReflectionMethod->getDocComment());
 
@@ -86,11 +94,89 @@ class DocsGenerator
                 throw new \InvalidArgumentException('Not implemented');
             }
 
-            var_dump($endpointData);
+            $openapiOperation = new OpenApi\Operation([
+                'summary' => $annotation->title,
+                'responses' => [
+                    200 => $this->getOpenApiResponseByResponseModelClass($responseClass),
+                ]
+            ]);
+
+            if ($annotation->tags) {
+                $openapiOperation->tags = $annotation->tags;
+            }
+
+            if ($annotation->description) {
+                $openapiOperation->description = $annotation->description;
+            }
+
+            $openapiPathItem = new OpenApi\PathItem([]);
+            foreach ($route->getMethods() as $method) {
+                $method = strtolower($method);
+                $openapiPathItem->{$method} = $openapiOperation;
+            }
+
+            $openapiPaths->addPath($route->getPath(), $openapiPathItem);
             //var_dump($annotation);
 //            var_dump(, $actionReflectionMethod->getParameters());
             //var_dump($route->getMethods(), $route->getPath(), $route->getDefault('_controller'), $controllerClass, $actionName);
         }
+
+        var_dump(\cebe\openapi\Writer::writeToYaml($openapi));
+    }
+
+    private function getOpenApiResponseByResponseModelClass(string $class): OpenApi\Response
+    {
+        $responseModelReflection = $this->getReflectionByClass($class);
+        $methods = $responseModelReflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+
+        $properties = [];
+
+        foreach ($methods as $method) {
+            if (strpos($method->getName(), 'get') !== 0) {
+                continue;
+            }
+
+            $propertyName = lcfirst(substr($method->getName(), 3));
+
+            $returnType = (string) $responseModelReflection->getMethod($method->getName())->getReturnType();
+
+            switch ($returnType) {
+                case 'int':
+                    $properties[$propertyName] = [
+                        'type' => 'number',
+                    ];
+
+                    break;
+
+                case 'string':
+                    $properties[$propertyName] = [
+                        'type' => 'string',
+                    ];
+
+                    break;
+
+                default:
+                    throw new \InvalidArgumentException('Not implemented.');
+            }
+        }
+
+        $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = [
+            'type' => 'string',
+        ];
+
+        $response = new OpenApi\Response([
+            'description' => 'Success',
+            'content' => [
+                'application/json' => [
+                    'schema' => [
+                        'type' => 'object',
+                        'properties' => $properties,
+                    ]
+                ]
+            ]
+        ]);
+
+        return $response;
     }
 
     private function getResponseClassByReturnDocBlock(Return_ $returnDocBlock): string
@@ -104,11 +190,6 @@ class DocsGenerator
         return $class;
     }
 
-    private function getResponseScheme(string $class)
-    {
-
-    }
-
     private function getReflectionByClass(string $class): \ReflectionClass
     {
         $class = rtrim($class, '\\');
@@ -118,5 +199,13 @@ class DocsGenerator
         }
 
         return $this->reflectionClassCache[$class];
+    }
+
+    private function isGetMethod(\ReflectionMethod $method): bool
+    {
+        $methodLength = strlen($method->name);
+        $getOrIs = ((strpos($method->name, 'get') === 0 && $methodLength > 3) || (strpos($method->name, 'is') === 0 && $methodLength > 2));
+
+        return !$method->isStatic() && ($getOrIs && $method->getNumberOfRequiredParameters() === 0);
     }
 }

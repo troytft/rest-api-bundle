@@ -4,6 +4,7 @@ namespace RestApiBundle\Services\Response;
 
 use RestApiBundle;
 use function get_class;
+use function strpos;
 
 class GetSetMethodNormalizer extends \Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer
 {
@@ -20,20 +21,12 @@ class GetSetMethodNormalizer extends \Symfony\Component\Serializer\Normalizer\Ge
         $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
 
         foreach ($methods as $method) {
-            if ($this->isGetMethod($method)) {
+            if (strpos($method->getName(), 'get') === 0) {
                 return true;
             }
         }
 
         return false;
-    }
-
-    private function isGetMethod(\ReflectionMethod $method): bool
-    {
-        $methodLength = strlen($method->name);
-        $getOrIs = ((strpos($method->name, 'get') === 0 && $methodLength > 3) || (strpos($method->name, 'is') === 0 && $methodLength > 2));
-
-        return !$method->isStatic() && ($getOrIs && $method->getNumberOfRequiredParameters() === 0);
     }
 
     public function extractAttributes($object, $format = null, array $context = [])

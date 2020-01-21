@@ -12,15 +12,13 @@ use RestApiBundle\Annotation\Docs;
 class DemoController extends BaseController
 {
     /**
-     * @Docs\Endpoint(title="Registration")
+     * @Docs\Endpoint(title="Genre response model details")
      *
-     * @Route("/genre", methods="POST")
-     *
-     * @param App\RequestModel\ModelWithValidation $model
+     * @Route("/genre", methods="GET")
      *
      * @return Tests\DemoApp\DemoBundle\ResponseModel\Genre
      */
-    public function registerAction()
+    public function genreAction()
     {
         $entity = new App\Entity\Genre();
         $entity
