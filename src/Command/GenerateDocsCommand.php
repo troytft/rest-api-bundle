@@ -17,23 +17,12 @@ class GenerateDocsCommand extends Command
     protected static $defaultName = 'rest-api:generate-docs';
 
     /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
      * @var RestApiBundle\Services\Docs\DocsGenerator
      */
     private $docsGenerator;
 
-    public function __construct(ContainerInterface $container, RestApiBundle\Services\Docs\DocsGenerator $docsGenerator)
+    public function __construct(RestApiBundle\Services\Docs\DocsGenerator $docsGenerator)
     {
-        $router = $container->get('router');
-        if (!$router instanceof RouterInterface) {
-            throw new \InvalidArgumentException();
-        }
-
-        $this->router = $router;
         $this->docsGenerator = $docsGenerator;
 
         parent::__construct();
@@ -54,7 +43,7 @@ class GenerateDocsCommand extends Command
             return 100;
         }
 
-        $this->docsGenerator->generate($this->router->getRouteCollection(), $input->getOption(static::OUTPUT_OPTION));
+        $this->docsGenerator->writeToFile($input->getOption(static::OUTPUT_OPTION));
 
         return 0;
     }

@@ -9,6 +9,7 @@ use phpDocumentor\Reflection\Types\Object_;
 use RestApiBundle;
 use Symfony\Component\Routing\RouteCollection;
 use phpDocumentor\Reflection\DocBlockFactory;
+use Symfony\Component\Routing\RouterInterface;
 use function count;
 use function explode;
 use function lcfirst;
@@ -20,6 +21,11 @@ use function substr;
 
 class DocsGenerator
 {
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
     /**
      * @var AnnotationReader
      */
@@ -35,13 +41,14 @@ class DocsGenerator
      */
     private $reflectionClassCache;
 
-    public function __construct()
+    public function __construct(RouterInterface $router)
     {
+        $this->router = $router;
         $this->annotationReader = new AnnotationReader();
         $this->docBlockFactory = DocBlockFactory::createInstance();
     }
 
-    public function generate(RouteCollection $routeCollection, string $outputFile)
+    public function writeToFile(string $fileName)
     {
         $openapiPaths = new OpenApi\Paths([]);
         $openapi = new OpenApi\OpenApi([
@@ -53,7 +60,7 @@ class DocsGenerator
             'paths' => $openapiPaths,
         ]);
 
-        foreach ($routeCollection as $route) {
+        foreach ($this->router->getRouteCollection() as $route) {
             [$controllerClass, $actionName] = explode('::', $route->getDefault('_controller'));
 
             $controllerReflectionClass = $this->getReflectionByClass($controllerClass);
@@ -124,7 +131,7 @@ class DocsGenerator
             //var_dump($route->getMethods(), $route->getPath(), $route->getDefault('_controller'), $controllerClass, $actionName);
         }
 
-        \cebe\openapi\Writer::writeToYamlFile($openapi, $outputFile);
+        \cebe\openapi\Writer::writeToYamlFile($openapi, $fileName);
     }
 
     private function getOpenApiResponseByResponseModelClass(string $class): OpenApi\Response
