@@ -3,9 +3,6 @@
 namespace RestApiBundle\Services\Docs;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use phpDocumentor\Reflection\DocBlock\Tags\Return_;
-use phpDocumentor\Reflection\DocBlockFactory;
-use phpDocumentor\Reflection\Types\Object_;
 use RestApiBundle;
 use Symfony\Component\Routing\RouterInterface;
 use function explode;
@@ -23,14 +20,23 @@ class RouteDataExtractor
     private $docBlockHelper;
 
     /**
+     * @var RestApiBundle\Services\Docs\ReflectionHelper
+     */
+    private $reflectionHelper;
+
+    /**
      * @var AnnotationReader
      */
     private $annotationReader;
 
-    public function __construct(RouterInterface $router, RestApiBundle\Services\Docs\DocBlockHelper $docBlockHelper)
-    {
+    public function __construct(
+        RouterInterface $router,
+        RestApiBundle\Services\Docs\DocBlockHelper $docBlockHelper,
+        RestApiBundle\Services\Docs\ReflectionHelper $reflectionHelper
+    ) {
         $this->router = $router;
         $this->docBlockHelper = $docBlockHelper;
+        $this->reflectionHelper = $reflectionHelper;
         $this->annotationReader = new AnnotationReader();
     }
 
@@ -45,9 +51,9 @@ class RouteDataExtractor
             [$controllerClass, $actionName] = explode('::', $route->getDefault('_controller'));
 
             $controllerReflectionClass = new \ReflectionClass($controllerClass);
-            $actionReflectionMethod = $controllerReflectionClass->getMethod($actionName);
+            $reflectionMethod = $controllerReflectionClass->getMethod($actionName);
 
-            $annotation = $this->annotationReader->getMethodAnnotation($actionReflectionMethod, RestApiBundle\Annotation\Docs\Endpoint::class);
+            $annotation = $this->annotationReader->getMethodAnnotation($reflectionMethod, RestApiBundle\Annotation\Docs\Endpoint::class);
             if (!$annotation instanceof RestApiBundle\Annotation\Docs\Endpoint) {
                 continue;
             }
@@ -60,16 +66,13 @@ class RouteDataExtractor
                 ->setPath($route->getPath())
                 ->setMethods($route->getMethods());
 
-            $returnTypeByDocBlock = $this->docBlockHelper->getReturnTypeByReturnTag($actionReflectionMethod);
+            $returnTypeByDocBlock = $this->docBlockHelper->getReturnTypeByReturnTag($reflectionMethod);
+            $returnTypeByReflection = $this->reflectionHelper->getReturnTypeByTypeHint($reflectionMethod);
+
             if ($returnTypeByDocBlock) {
                 $routeData->setReturnType($returnTypeByDocBlock);
-            } elseif ($actionReflectionMethod->getReturnType()) {
-                if ($actionReflectionMethod->getReturnType()->allowsNull()) {
-                    throw new \InvalidArgumentException('Not implemented.');
-                }
-
-                $responseClass = (string) $actionReflectionMethod->getReturnType();
-                $routeData->setReturnType(new RestApiBundle\DTO\Docs\ReturnType\ClassType($responseClass, false));
+            } elseif ($returnTypeByReflection) {
+                $routeData->setReturnType($returnTypeByReflection);
             } else {
                 throw new RestApiBundle\Exception\Docs\InvalidEndpointException('Return type not specified.', $controllerClass, $actionName);
             }
