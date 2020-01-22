@@ -16,8 +16,12 @@ class ReflectionHelper
             throw new \InvalidArgumentException('Not implemented.');
         }
 
-        $responseClass = (string) $reflectionMethod->getReturnType();
+        $class = (string) $reflectionMethod->getReturnType();
+        
+        if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($class)) {
+            throw new \InvalidArgumentException('Not implemented');
+        }
 
-        return new RestApiBundle\DTO\Docs\ReturnType\ClassType($responseClass, false);
+        return new RestApiBundle\DTO\Docs\ReturnType\ClassType($class, false);
     }
 }
