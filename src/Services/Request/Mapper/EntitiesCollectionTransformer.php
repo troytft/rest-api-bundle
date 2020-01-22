@@ -5,7 +5,7 @@ namespace RestApiBundle\Services\Request\Mapper;
 use Mapper;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException;
+use RestApiBundle;
 use function count;
 use function ucfirst;
 
@@ -34,7 +34,7 @@ class EntitiesCollectionTransformer implements Mapper\Transformer\TransformerInt
         $results = $repository->findBy([$field => $value]);
 
         if (count($results) !== count($value)) {
-            throw new OneEntityOfEntitiesCollectionNotFoundException();
+            throw new RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException();
         }
 
         $sortedResults = [];
