@@ -9,13 +9,13 @@ use function strtolower;
 class RootSchemaResolver
 {
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\ReturnTypeSchemaResolver
+     * @var RestApiBundle\Services\Docs\OpenApi\ResponsesResolver
      */
-    private $returnTypeSchemaResolver;
+    private $responsesResolver;
 
-    public function __construct(RestApiBundle\Services\Docs\OpenApi\ReturnTypeSchemaResolver $returnTypeSchemaResolver)
+    public function __construct(RestApiBundle\Services\Docs\OpenApi\ResponsesResolver $responsesResolver)
     {
-        $this->returnTypeSchemaResolver = $returnTypeSchemaResolver;
+        $this->responsesResolver = $responsesResolver;
     }
 
     public function resolve(array $routeDataItems): OpenApi\OpenApi
@@ -35,20 +35,11 @@ class RootSchemaResolver
                 throw new \InvalidArgumentException('Not implemented.');
             }
 
-            $response = new OpenApi\Response([
-                'description' => 'Success',
-                'content' => [
-                    'application/json' => [
-                        'schema' => $this->returnTypeSchemaResolver->resolve($returnType)
-                    ]
-                ]
-            ]);
+
 
             $operation = new OpenApi\Operation([
                 'summary' => $routeData->getTitle(),
-                'responses' => [
-                    200 => $response,
-                ]
+                'responses' => $this->responsesResolver->resolve($returnType),
             ]);
 
             if ($routeData->getTags()) {

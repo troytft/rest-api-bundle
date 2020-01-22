@@ -8,9 +8,9 @@ use function lcfirst;
 use function strpos;
 use function substr;
 
-class ReturnTypeSchemaResolver
+class ResponsesResolver
 {
-    public function resolve(RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface $returnType): OpenApi\Schema
+    public function resolve(RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface $returnType): OpenApi\Responses
     {
         if (!$returnType instanceof RestApiBundle\DTO\Docs\ReturnType\ClassType) {
             throw new \InvalidArgumentException('Not implemented.');
@@ -58,9 +58,20 @@ class ReturnTypeSchemaResolver
             'type' => 'string',
         ];
 
-        return new OpenApi\Schema([
+        $schema = new OpenApi\Schema([
             'type' => OpenApi\Type::OBJECT,
             'properties' => $properties,
+        ]);
+
+        return new OpenApi\Responses([
+            200 => [
+                'description' => 'Success',
+                'content' => [
+                    'application/json' => [
+                        'schema' => $schema
+                    ]
+                ]
+            ]
         ]);
     }
 }
