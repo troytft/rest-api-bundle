@@ -82,6 +82,4 @@ class RouteDataExtractor
 
         return $items;
     }
-
-
 }

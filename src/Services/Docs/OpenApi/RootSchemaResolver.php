@@ -61,6 +61,4 @@ class RootSchemaResolver
 
         return $root;
     }
-
-
 }
