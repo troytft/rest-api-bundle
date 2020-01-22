@@ -15,7 +15,10 @@ class DemoController extends BaseController
      */
     public function registerAction(Tests\DemoApp\DemoBundle\RequestModel\ModelWithValidation $model)
     {
-        if (!$model->isValueEquals())
+        if ($model->getStringField() === '') {
+            throw new \InvalidArgumentException();
+        }
+        
         return new Response('ok');
     }
 
