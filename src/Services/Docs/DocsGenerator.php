@@ -64,6 +64,12 @@ class DocsGenerator
                 continue;
             }
 
+            $routeData = new RestApiBundle\DTO\Docs\RouteData();
+            $routeData
+                ->setTitle($annotation->title)
+                ->setDescription($annotation->description)
+                ->setTags($annotation->tags);
+
             $docBlock = $this->docBlockFactory->create($actionReflectionMethod->getDocComment());
 
             if ($docBlock->getTagsByName('return')) {
@@ -98,12 +104,12 @@ class DocsGenerator
                 ]
             ]);
 
-            if ($annotation->tags) {
-                $openapiOperation->tags = $annotation->tags;
+            if ($routeData->getTags()) {
+                $openapiOperation->tags = $routeData->getTags();
             }
 
-            if ($annotation->description) {
-                $openapiOperation->description = $annotation->description;
+            if ($routeData->getDescription()) {
+                $openapiOperation->description = $routeData->getDescription();
             }
 
             $openapiPathItem = new OpenApi\PathItem([]);

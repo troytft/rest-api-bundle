@@ -18,7 +18,7 @@ class DemoController extends BaseController
         if ($model->getStringField() === '') {
             throw new \InvalidArgumentException();
         }
-        
+
         return new Response('ok');
     }
 

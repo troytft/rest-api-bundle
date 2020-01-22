@@ -23,5 +23,5 @@ class Endpoint
     /**
      * @var array<string>
      */
-    public $tags;
+    public $tags = [];
 }
