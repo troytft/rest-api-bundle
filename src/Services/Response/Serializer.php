@@ -23,7 +23,7 @@ class Serializer
             $dateTimeNormalizer
         ];
         $encoder = new \Symfony\Component\Serializer\Encoder\JsonEncoder(
-            new \Symfony\Component\Serializer\Encoder\JsonEncode(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+            new \Symfony\Component\Serializer\Encoder\JsonEncode([JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES])
         );
 
         $this->serializer = new \Symfony\Component\Serializer\Serializer($normalizers, [$encoder]);

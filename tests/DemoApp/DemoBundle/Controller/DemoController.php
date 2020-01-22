@@ -2,6 +2,7 @@
 
 namespace Tests\DemoApp\DemoBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
 use Tests;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -9,6 +10,15 @@ use RestApiBundle\Annotation\Docs;
 
 class DemoController extends BaseController
 {
+    /**
+     * @Route("/register", methods="POST")
+     */
+    public function registerAction(Tests\DemoApp\DemoBundle\RequestModel\ModelWithValidation $model)
+    {
+        if (!$model->isValueEquals())
+        return new Response('ok');
+    }
+
     /**
      * @Docs\Endpoint(title="Genre response model details")
      *
