@@ -22,6 +22,11 @@ class RouteData
     private $tags;
 
     /**
+     * @var string
+     */
+    private $path;
+
+    /**
      * @var string[]
      */
     private $methods;
@@ -63,6 +68,18 @@ class RouteData
     public function setTags(array $tags)
     {
         $this->tags = $tags;
+
+        return $this;
+    }
+
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+    public function setPath(string $path)
+    {
+        $this->path = $path;
 
         return $this;
     }
