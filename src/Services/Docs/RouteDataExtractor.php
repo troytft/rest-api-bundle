@@ -18,20 +18,20 @@ class RouteDataExtractor
     private $router;
 
     /**
+     * @var RestApiBundle\Services\Docs\DocBlockHelper
+     */
+    private $docBlockHelper;
+
+    /**
      * @var AnnotationReader
      */
     private $annotationReader;
 
-    /**
-     * @var DocBlockFactory
-     */
-    private $docBlockFactory;
-
-    public function __construct(RouterInterface $router)
+    public function __construct(RouterInterface $router, RestApiBundle\Services\Docs\DocBlockHelper $docBlockHelper)
     {
         $this->router = $router;
+        $this->docBlockHelper = $docBlockHelper;
         $this->annotationReader = new AnnotationReader();
-        $this->docBlockFactory = DocBlockFactory::createInstance();
     }
 
     /**
@@ -60,20 +60,9 @@ class RouteDataExtractor
                 ->setPath($route->getPath())
                 ->setMethods($route->getMethods());
 
-            $docBlock = $this->docBlockFactory->create($actionReflectionMethod->getDocComment());
-
-            if ($docBlock->getTagsByName('return')) {
-                if (count($docBlock->getTagsByName('return')) > 1) {
-                    throw new RestApiBundle\Exception\Docs\InvalidEndpointException('DocBlock contains more then one @return tag.', $controllerClass, $actionName);
-                }
-
-                $docBlockReturnType = $docBlock->getTagsByName('return')[0];
-                if (!$docBlockReturnType instanceof Return_) {
-                    throw new \InvalidArgumentException();
-                }
-
-                $responseClass = $this->getResponseClassByReturnDocBlock($docBlockReturnType);
-                $routeData->setReturnType(new RestApiBundle\DTO\Docs\ReturnType\ClassType($responseClass, false));
+            $returnTypeByDocBlock = $this->docBlockHelper->getReturnTypeByReturnTag($actionReflectionMethod);
+            if ($returnTypeByDocBlock) {
+                $routeData->setReturnType($returnTypeByDocBlock);
             } elseif ($actionReflectionMethod->getReturnType()) {
                 if ($actionReflectionMethod->getReturnType()->allowsNull()) {
                     throw new \InvalidArgumentException('Not implemented.');
@@ -85,24 +74,11 @@ class RouteDataExtractor
                 throw new RestApiBundle\Exception\Docs\InvalidEndpointException('Return type not specified.', $controllerClass, $actionName);
             }
 
-            if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($responseClass)) {
-                throw new \InvalidArgumentException('Not implemented');
-            }
-
             $items[] = $routeData;
         }
 
         return $items;
     }
 
-    private function getResponseClassByReturnDocBlock(Return_ $returnDocBlock): string
-    {
-        if ($returnDocBlock->getType() instanceof Object_) {
-            $class = (string) $returnDocBlock->getType();
-        } else {
-            throw new \InvalidArgumentException('Not implemented.');
-        }
 
-        return $class;
-    }
 }
