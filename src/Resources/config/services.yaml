@@ -22,3 +22,7 @@ services:
 
     RestApiBundle\Services\Response\Serializer:
         public: true
+
+    # temporary public
+    RestApiBundle\Services\Docs\OpenApi\ResponsesResolver:
+        public: true

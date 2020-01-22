@@ -1,12 +1,13 @@
 <?php
 
-namespace Tests;
+namespace Tests\Docs;
 
+use Tests;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Yaml\Yaml;
 
-class GenerateDocsTest extends BaseBundleTestCase
+class GenerateDocsCommandTest extends Tests\BaseBundleTestCase
 {
     public function testExecute()
     {
