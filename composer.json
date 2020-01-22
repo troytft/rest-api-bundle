@@ -31,6 +31,7 @@
         "symfony/serializer": "^3.0 || ^4.0",
         "symfony/translation": "^3.0 || ^4.0",
         "symfony/validator": "^3.0 || ^4.0",
+        "symfony/yaml": "^3.0 || ^4.0",
         "troytft/mapper": "~1.4.0"
     },
     "suggest": {

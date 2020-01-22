@@ -44,7 +44,7 @@ class DocsGenerator
         $this->docBlockFactory = DocBlockFactory::createInstance();
     }
 
-    public function generate(RouteCollection $routeCollection)
+    public function generate(RouteCollection $routeCollection, string $outputFile)
     {
         $openapiPaths = new OpenApi\Paths([]);
         $openapi = new OpenApi\OpenApi([
@@ -121,7 +121,7 @@ class DocsGenerator
             //var_dump($route->getMethods(), $route->getPath(), $route->getDefault('_controller'), $controllerClass, $actionName);
         }
 
-        var_dump(\cebe\openapi\Writer::writeToYaml($openapi));
+        \cebe\openapi\Writer::writeToYamlFile($openapi, $outputFile);
     }
 
     private function getOpenApiResponseByResponseModelClass(string $class): OpenApi\Response
