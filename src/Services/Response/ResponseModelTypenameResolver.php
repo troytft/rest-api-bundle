@@ -13,7 +13,7 @@ class ResponseModelTypenameResolver
      */
     private $typenameCache = [];
 
-    public function resolve(string $class): string 
+    public function resolve(string $class): string
     {
         if (!isset($this->typenameCache[$class])) {
             $parts = [];

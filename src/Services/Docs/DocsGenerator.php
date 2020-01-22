@@ -12,14 +12,11 @@ use phpDocumentor\Reflection\DocBlockFactory;
 use function count;
 use function explode;
 use function lcfirst;
-use function ltrim;
-use function reset;
 use function rtrim;
 use function strlen;
 use function strpos;
 use function strtolower;
 use function substr;
-use function var_dump;
 
 class DocsGenerator
 {
