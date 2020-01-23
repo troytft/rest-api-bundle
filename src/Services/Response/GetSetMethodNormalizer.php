@@ -3,15 +3,12 @@
 namespace RestApiBundle\Services\Response;
 
 use RestApiBundle;
+use function get_class;
+use function strpos;
 
 class GetSetMethodNormalizer extends \Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer
 {
-    private const ATTRIBUTE_TYPENAME = '__typename';
-
-    /**
-     * @var array
-     */
-    private $typenameCache = [];
+    public const ATTRIBUTE_TYPENAME = '__typename';
 
     public function supportsNormalization($data, $format = null)
     {
@@ -24,7 +21,7 @@ class GetSetMethodNormalizer extends \Symfony\Component\Serializer\Normalizer\Ge
         $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
 
         foreach ($methods as $method) {
-            if ($this->isGetMethod($method)) {
+            if (strpos($method->getName(), 'get') === 0) {
                 return true;
             }
         }
@@ -32,65 +29,31 @@ class GetSetMethodNormalizer extends \Symfony\Component\Serializer\Normalizer\Ge
         return false;
     }
 
-    private function isGetMethod(\ReflectionMethod $method): bool
+    public function extractAttributes($object, $format = null, array $context = [])
     {
-        $methodLength = strlen($method->name);
-        $getOrIs = ((strpos($method->name, 'get') === 0 && $methodLength > 3) || (strpos($method->name, 'is') === 0 && $methodLength > 2));
-
-        return !$method->isStatic() && ($getOrIs && $method->getNumberOfRequiredParameters() === 0);
-    }
-
-    protected function extractAttributes($object, $format = null, array $context = [])
-    {
-        $attributes = parent::extractAttributes($object, $format, $context);
-        if ($object instanceof RestApiBundle\ResponseModelInterface) {
-            $attributes[] = static::ATTRIBUTE_TYPENAME;
+        if (!$object instanceof RestApiBundle\ResponseModelInterface) {
+            throw new \InvalidArgumentException();
         }
+
+        $attributes = parent::extractAttributes($object, $format, $context);
+        $attributes[] = static::ATTRIBUTE_TYPENAME;
 
         return $attributes;
     }
 
     protected function getAttributeValue($object, $attribute, $format = null, array $context = [])
     {
-        if ($attribute === static::ATTRIBUTE_TYPENAME && $object instanceof RestApiBundle\ResponseModelInterface) {
-            return $this->resolveTypename($object);
+        if (!$object instanceof RestApiBundle\ResponseModelInterface) {
+            throw new \InvalidArgumentException();
+        }
+
+        if ($attribute === static::ATTRIBUTE_TYPENAME) {
+            $typenameResolver = new ResponseModelTypenameResolver();
+            $typename = $typenameResolver->resolve(get_class($object));
+
+            return $typename;
         }
 
         return parent::getAttributeValue($object, $attribute, $format, $context);
-    }
-
-    private function resolveTypename(RestApiBundle\ResponseModelInterface $responseModel): string
-    {
-        $className = get_class($responseModel);
-
-        if (!isset($this->typenameCache[$className])) {
-            $parts = [];
-            $isResponseModel = false;
-
-            foreach (explode('\\', $className) as $part) {
-                if ($isResponseModel) {
-                    $parts[] = $part;
-                } elseif ($part === 'ResponseModel') {
-                    $isResponseModel = true;
-                }
-            }
-
-            if (!$isResponseModel) {
-                throw new \RuntimeException(
-                    sprintf('Response model "%s" must be in "ResponseModel" namespace', $className)
-                );
-            }
-
-            $typename = join('_', $parts);
-            if (!$typename) {
-                throw new \RuntimeException(
-                    sprintf('Response model "%s" must have typename', $className)
-                );
-            }
-
-            $this->typenameCache[$className] = $typename;
-        }
-
-        return $this->typenameCache[$className];
     }
 }

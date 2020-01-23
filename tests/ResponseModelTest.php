@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use Symfony\Component\HttpFoundation\Request;
 use Tests;
+use Symfony\Component\HttpFoundation\Request;
 
 class ResponseModelTest extends BaseBundleTestCase
 {

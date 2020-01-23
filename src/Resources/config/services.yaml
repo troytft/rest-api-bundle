@@ -2,7 +2,7 @@ services:
     _defaults:
         autoconfigure: true
         autowire: true
-        public: false
+        public: true
         bind:
             $parameterBag: '@=service("kernel").getContainer().getParameterBag()' # symfony 4 magic
 
@@ -15,10 +15,4 @@ services:
             tags: [!php/const RestApiBundle\DependencyInjection\CompilerPass\RequestModelTransformerCompilerPass::TAG]
 
     RestApiBundle\:
-        resource: '../../../src/*'
-
-    RestApiBundle\Services\Request\RequestHandler:
-        public: true
-
-    RestApiBundle\Services\Response\Serializer:
-        public: true
+        resource: '../../../src/{Command,EventSubscriber,Services}/*'

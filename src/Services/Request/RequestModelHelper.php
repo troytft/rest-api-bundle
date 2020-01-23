@@ -5,7 +5,7 @@ namespace RestApiBundle\Services\Request;
 use RestApiBundle;
 use function array_key_exists;
 
-class RequestModelRegistry
+class RequestModelHelper
 {
     /**
      * @var array<string,\ReflectionClass>
