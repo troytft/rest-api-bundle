@@ -4,14 +4,26 @@ namespace RestApiBundle\Services\Docs;
 
 use RestApiBundle;
 use function lcfirst;
+use function ltrim;
 use function strpos;
 use function substr;
 
 class ResponseModelHelper
 {
-    public function extractReturnTypeObjectFromResponseModelClass(string $class): RestApiBundle\DTO\Docs\ReturnType\ObjectType
+    /**
+     * @var array<string, RestApiBundle\DTO\Docs\ReturnType\ObjectType>
+     */
+    private $objectClassCache = [];
+
+    public function getObjectTypeByClass(string $class): RestApiBundle\DTO\Docs\ReturnType\ObjectType
     {
-        $reflectionClass = new \ReflectionClass($class);
+        $class = ltrim($class, '\\');
+
+        if (isset($this->objectClassCache[$class])) {
+            return $this->objectClassCache[$class];
+        }
+
+        $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
         if (!$reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class)) {
             throw new \InvalidArgumentException();
         }
@@ -51,12 +63,14 @@ class ResponseModelHelper
                     break;
 
                 default:
-                    $properties[$propertyName] = $this->extractReturnTypeObjectFromResponseModelClass((string) $returnType);
+                    $properties[$propertyName] = $this->getObjectTypeByClass((string) $returnType);
             }
         }
 
         $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\Docs\ReturnType\StringType(false);
 
-        return new RestApiBundle\DTO\Docs\ReturnType\ObjectType($properties, false);
+        $this->objectClassCache[$class] = new RestApiBundle\DTO\Docs\ReturnType\ObjectType($properties, false);
+
+        return $this->objectClassCache[$class];
     }
 }

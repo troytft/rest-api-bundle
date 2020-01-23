@@ -8,11 +8,6 @@ use function array_key_exists;
 class RequestModelHelper
 {
     /**
-     * @var array<string,\ReflectionClass>
-     */
-    private static $reflectionCache = [];
-
-    /**
      * @var array<string,bool>
      */
     private static $classNameCache = [];
@@ -21,19 +16,10 @@ class RequestModelHelper
     {
     }
 
-    private static function getReflection(string $className): \ReflectionClass
-    {
-        if (!array_key_exists($className, static::$reflectionCache)) {
-            static::$reflectionCache[$className] = new \ReflectionClass($className);
-        }
-
-        return static::$reflectionCache[$className];
-    }
-
     public static function isRequestModel(string $className): bool
     {
-        if (!array_key_exists($className, static::$reflectionCache)) {
-            $reflectionClass = static::getReflection($className);
+        if (!array_key_exists($className, static::$classNameCache)) {
+            $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($className);
 
             static::$classNameCache[$className] = $reflectionClass->isInstantiable()
                 && $reflectionClass->implementsInterface(RestApiBundle\RequestModelInterface::class);
@@ -48,7 +34,7 @@ class RequestModelHelper
             throw new \InvalidArgumentException();
         }
 
-        $model = static::getReflection($className)->newInstance();
+        $model = RestApiBundle\Services\ReflectionClassStore::get($className)->newInstance();
         if (!$model instanceof RestApiBundle\RequestModelInterface) {
             throw new \InvalidArgumentException();
         }

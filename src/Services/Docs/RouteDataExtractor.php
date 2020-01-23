@@ -50,7 +50,7 @@ class RouteDataExtractor
         foreach ($this->router->getRouteCollection() as $route) {
             [$controllerClass, $actionName] = explode('::', $route->getDefault('_controller'));
 
-            $controllerReflectionClass = new \ReflectionClass($controllerClass);
+            $controllerReflectionClass = RestApiBundle\Services\ReflectionClassStore::get($controllerClass);
             $reflectionMethod = $controllerReflectionClass->getMethod($actionName);
 
             $annotation = $this->annotationReader->getMethodAnnotation($reflectionMethod, RestApiBundle\Annotation\Docs\Endpoint::class);
