@@ -43,7 +43,7 @@ class DocBlockHelperTest extends Tests\BaseBundleTestCase
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ClassType::class, $returnType);
         $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
-        $this->assertFalse($returnType->getIsNullable());
+        $this->assertFalse($returnType->getIsNullPossible());
     }
 
     public function testNullableSingleResponseModelReturnTag()
@@ -55,7 +55,7 @@ class DocBlockHelperTest extends Tests\BaseBundleTestCase
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ClassType::class, $returnType);
         $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
-        $this->assertTrue($returnType->getIsNullable());
+        $this->assertTrue($returnType->getIsNullPossible());
     }
 
     public function testArrayOfResponseModelsReturnTag()
@@ -67,7 +67,7 @@ class DocBlockHelperTest extends Tests\BaseBundleTestCase
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\CollectionOfClassesType::class, $returnType);
         $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
-        $this->assertFalse($returnType->getIsNullable());
+        $this->assertFalse($returnType->getIsNullPossible());
     }
 
     public function testNullableArrayOfResponseModelsReturnTag()
@@ -79,7 +79,7 @@ class DocBlockHelperTest extends Tests\BaseBundleTestCase
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\CollectionOfClassesType::class, $returnType);
         $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
-        $this->assertTrue($returnType->getIsNullable());
+        $this->assertTrue($returnType->getIsNullPossible());
     }
 
     private function getDocBlockHelper(): RestApiBundle\Services\Docs\DocBlockHelper

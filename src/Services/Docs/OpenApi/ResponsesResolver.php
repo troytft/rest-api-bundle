@@ -14,17 +14,22 @@ class ResponsesResolver
     {
         $responses = new OpenApi\Responses([]);
 
-        if ($returnType instanceof RestApiBundle\DTO\Docs\ReturnType\NullType) {
+        if ($returnType->getIsNullPossible()) {
             $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
-
-            return $responses;
         }
 
-        if (!$returnType instanceof RestApiBundle\DTO\Docs\ReturnType\ClassType) {
-            throw new \InvalidArgumentException('Not implemented.');
+        if ($returnType instanceof RestApiBundle\DTO\Docs\ReturnType\ClassType) {
+            $responses->addResponse('200', $this->getResponseByClassType($returnType));
+        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\ReturnType\CollectionOfClassesType) {
+            $responses->addResponse('200', $this->getResponseByCollectionOfClasessesType($returnType));
         }
 
-        $reflectionClass = new \ReflectionClass($returnType->getClass());
+        return $responses;
+    }
+
+    private function getResponseByClassType(RestApiBundle\DTO\Docs\ReturnType\ClassType $classType): OpenApi\Response
+    {
+        $reflectionClass = new \ReflectionClass($classType->getClass());
 
         if (!$reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class)) {
             throw new \InvalidArgumentException();
@@ -71,15 +76,18 @@ class ResponsesResolver
             'properties' => $properties,
         ]);
 
-        return new OpenApi\Responses([
-            200 => [
-                'description' => 'Success',
-                'content' => [
-                    'application/json' => [
-                        'schema' => $schema
-                    ]
+        return new OpenApi\Response([
+            'description' => 'Success',
+            'content' => [
+                'application/json' => [
+                    'schema' => $schema
                 ]
             ]
         ]);
+    }
+
+    private function getResponseByCollectionOfClasessesType(RestApiBundle\DTO\Docs\ReturnType\CollectionOfClassesType $collectionOfClassesType): OpenApi\Response
+    {
+
     }
 }

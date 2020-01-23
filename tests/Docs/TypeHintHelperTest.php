@@ -38,7 +38,7 @@ class TypeHintHelperTest extends Tests\BaseBundleTestCase
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ClassType::class, $returnType);
         $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
-        $this->assertFalse($returnType->getIsNullable());
+        $this->assertFalse($returnType->getIsNullPossible());
     }
 
     public function testNullableResponseModelReturnType()
@@ -51,7 +51,7 @@ class TypeHintHelperTest extends Tests\BaseBundleTestCase
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ClassType::class, $returnType);
         $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
-        $this->assertTrue($returnType->getIsNullable());
+        $this->assertTrue($returnType->getIsNullPossible());
     }
 
     private function getReflectionHelper(): RestApiBundle\Services\Docs\TypeHintHelper

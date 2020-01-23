@@ -14,12 +14,12 @@ class CollectionOfClassesType implements RestApiBundle\DTO\Docs\ReturnType\Retur
     /**
      * @var bool
      */
-    private $isNullable;
+    private $isNullPossible;
 
     public function __construct(string $class, bool $isNullable)
     {
         $this->class = $class;
-        $this->isNullable = $isNullable;
+        $this->isNullPossible = $isNullable;
     }
 
     public function getClass(): string
@@ -27,8 +27,8 @@ class CollectionOfClassesType implements RestApiBundle\DTO\Docs\ReturnType\Retur
         return $this->class;
     }
 
-    public function getIsNullable(): bool
+    public function getIsNullPossible(): bool
     {
-        return $this->isNullable;
+        return $this->isNullPossible;
     }
 }
