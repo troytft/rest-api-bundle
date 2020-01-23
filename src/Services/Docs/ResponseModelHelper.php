@@ -11,7 +11,7 @@ class ResponseModelHelper
 {
     public function extractReturnTypeObjectFromResponseModelClass(string $class): RestApiBundle\DTO\Docs\ReturnType\ObjectType
     {
-        $reflectionClass = new \ReflectionClass($class);
+        $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
         if (!$reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class)) {
             throw new \InvalidArgumentException();
         }
