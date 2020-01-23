@@ -3,7 +3,7 @@ php:
     - 7.2
 install:
     - composer global require 'hirak/prestissimo:^0.3' --no-suggest --no-interaction --prefer-dist --no-progress
-    - composer install --no-suggest --no-interaction --no-scripts --prefer-lowest
+    - composer install --no-suggest --no-interaction --no-scripts
 script:
     - vendor/bin/phpunit
     - vendor/bin/phpcs
