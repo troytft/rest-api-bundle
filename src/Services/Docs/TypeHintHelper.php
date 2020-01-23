@@ -28,7 +28,7 @@ class TypeHintHelper
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
-        $objectType = $this->responseModelHelper->extractReturnTypeObjectFromResponseModelClass($class);
+        $objectType = $this->responseModelHelper->getObjectTypeByClass($class);
 
         if ($reflectionMethod->getReturnType()->allowsNull()) {
             $objectType->setIsNullable(true);

@@ -118,7 +118,7 @@ class DocBlockHelper
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
-        $responseModelObject = $this->responseModelHelper->extractReturnTypeObjectFromResponseModelClass($class);
+        $responseModelObject = $this->responseModelHelper->getObjectTypeByClass($class);
 
         return new RestApiBundle\DTO\Docs\ReturnType\ObjectType($responseModelObject->getProperties(), $isNullable);
     }
