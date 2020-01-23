@@ -19,7 +19,7 @@ class ReflectionHelper
         $class = (string) $reflectionMethod->getReturnType();
 
         if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($class)) {
-            throw new \InvalidArgumentException('Not implemented');
+            throw new RestApiBundle\Exception\Docs\ValidationException('Unsupported return type.');
         }
 
         return new RestApiBundle\DTO\Docs\ReturnType\ClassType($class, false);
