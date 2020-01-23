@@ -42,7 +42,7 @@ class RootSchemaResolver
                 $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
             }
 
-            if ($returnType instanceof RestApiBundle\DTO\Docs\ReturnType\NullType) {
+            if (!$returnType instanceof RestApiBundle\DTO\Docs\ReturnType\NullType) {
                 $responses->addResponse('200', new OpenApi\Response([
                     'description' => 'Success response with body',
                     'content' => [
