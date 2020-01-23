@@ -12,16 +12,12 @@ class ReflectionHelper
             return null;
         }
 
-        if ($reflectionMethod->getReturnType()->allowsNull()) {
-            throw new \InvalidArgumentException('Not implemented.');
-        }
-
         $class = (string) $reflectionMethod->getReturnType();
 
         if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($class)) {
             throw new RestApiBundle\Exception\Docs\ValidationException('Unsupported return type.');
         }
 
-        return new RestApiBundle\DTO\Docs\ReturnType\ClassType($class, false);
+        return new RestApiBundle\DTO\Docs\ReturnType\ClassType($class, $reflectionMethod->getReturnType()->allowsNull());
     }
 }

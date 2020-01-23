@@ -22,6 +22,30 @@ class DemoController extends BaseController
         return new Response('ok');
     }
 
+    public function methodWithEmptyTypeHintAction()
+    {
+    }
+
+    public function notNullableResponseModelTypeHintAction(): Tests\DemoApp\DemoBundle\ResponseModel\Genre
+    {
+        $entity = new Tests\DemoApp\DemoBundle\Entity\Genre();
+        $entity
+            ->setId(1)
+            ->setSlug('test-genre');
+
+        return new Tests\DemoApp\DemoBundle\ResponseModel\Genre($entity);
+    }
+
+    public function nullableResponseModelTypeHintAction(): ?Tests\DemoApp\DemoBundle\ResponseModel\Genre
+    {
+        $entity = new Tests\DemoApp\DemoBundle\Entity\Genre();
+        $entity
+            ->setId(1)
+            ->setSlug('test-genre');
+
+        return new Tests\DemoApp\DemoBundle\ResponseModel\Genre($entity);
+    }
+
     /**
      * @Docs\Endpoint(title="Genre response model details")
      *
