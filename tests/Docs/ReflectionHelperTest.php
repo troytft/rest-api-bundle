@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Docs\OpenApi;
+namespace Tests\Docs;
 
 use Tests;
 use RestApiBundle;
