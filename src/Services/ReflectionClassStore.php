@@ -2,7 +2,6 @@
 
 namespace RestApiBundle\Services;
 
-use RestApiBundle;
 use function ltrim;
 
 class ReflectionClassStore
