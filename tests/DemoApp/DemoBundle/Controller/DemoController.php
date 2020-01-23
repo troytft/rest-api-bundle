@@ -13,7 +13,7 @@ class DemoController extends BaseController
     /**
      * @Route("/register", methods="POST")
      */
-    public function registerAction(Tests\DemoApp\DemoBundle\RequestModel\ModelWithValidation $model)
+    public function registerAction(Tests\DemoApp\DemoBundle\RequestModel\ModelWithValidation $model): Response
     {
         if ($model->getStringField() === '') {
             throw new \InvalidArgumentException();
