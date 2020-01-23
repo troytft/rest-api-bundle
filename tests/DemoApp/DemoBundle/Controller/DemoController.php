@@ -28,22 +28,59 @@ class DemoController extends BaseController
 
     public function notNullableResponseModelTypeHintAction(): Tests\DemoApp\DemoBundle\ResponseModel\Genre
     {
-        $entity = new Tests\DemoApp\DemoBundle\Entity\Genre();
-        $entity
-            ->setId(1)
-            ->setSlug('test-genre');
-
-        return new Tests\DemoApp\DemoBundle\ResponseModel\Genre($entity);
+        return $this->getGenreResponseModel(1, 'test-genre');
     }
 
     public function nullableResponseModelTypeHintAction(): ?Tests\DemoApp\DemoBundle\ResponseModel\Genre
     {
-        $entity = new Tests\DemoApp\DemoBundle\Entity\Genre();
-        $entity
-            ->setId(1)
-            ->setSlug('test-genre');
+        return $this->getGenreResponseModel(1, 'test-genre');
+    }
 
-        return new Tests\DemoApp\DemoBundle\ResponseModel\Genre($entity);
+    /**
+     *
+     */
+    public function methodWithoutReturnTag()
+    {
+    }
+
+    /**
+     * @return null
+     */
+    public function methodWithNullReturnTag()
+    {
+        return null;
+    }
+
+    /**
+     * @return Tests\DemoApp\DemoBundle\ResponseModel\Genre
+     */
+    public function methodWithSingleResponseModelReturnTag()
+    {
+        return $this->getGenreResponseModel(1, 'test-genre');
+    }
+
+    /**
+     * @return Tests\DemoApp\DemoBundle\ResponseModel\Genre|null
+     */
+    public function methodWithNullableSingleResponseModelReturnTag()
+    {
+        return $this->getGenreResponseModel(1, 'test-genre');
+    }
+
+    /**
+     * @return Tests\DemoApp\DemoBundle\ResponseModel\Genre[]
+     */
+    public function methodWithArrayOfResponseModelsReturnTag()
+    {
+        return [$this->getGenreResponseModel(1, 'test-genre')];
+    }
+
+    /**
+     * @return Tests\DemoApp\DemoBundle\ResponseModel\Genre[]|null
+     */
+    public function methodWithNullableArrayOfResponseModelsReturnTag()
+    {
+        return [$this->getGenreResponseModel(1, 'test-genre')];
     }
 
     /**
@@ -55,10 +92,15 @@ class DemoController extends BaseController
      */
     public function genreAction()
     {
+        return $this->getGenreResponseModel(1, 'test-genre');
+    }
+
+    private function getGenreResponseModel(int $id, string $slug): Tests\DemoApp\DemoBundle\ResponseModel\Genre
+    {
         $entity = new Tests\DemoApp\DemoBundle\Entity\Genre();
         $entity
-            ->setId(1)
-            ->setSlug('test-genre');
+            ->setId($id)
+            ->setSlug($slug);
 
         return new Tests\DemoApp\DemoBundle\ResponseModel\Genre($entity);
     }

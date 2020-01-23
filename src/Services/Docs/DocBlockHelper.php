@@ -2,10 +2,14 @@
 
 namespace RestApiBundle\Services\Docs;
 
-use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
+use phpDocumentor\Reflection\Types\Array_;
+use phpDocumentor\Reflection\Types\Compound;
+use phpDocumentor\Reflection\Types\Null_;
 use phpDocumentor\Reflection\Types\Object_;
 use RestApiBundle;
+use function count;
+use function ltrim;
 
 class DocBlockHelper
 {
@@ -30,25 +34,66 @@ class DocBlockHelper
         }
 
         if ($count > 1) {
-            throw new \InvalidArgumentException();
-            //throw new RestApiBundle\Exception\Docs\InvalidEndpointException('DocBlock contains more then one @return tag.', $controllerClass, $actionName);
+            throw new RestApiBundle\Exception\Docs\ValidationException('DocBlock contains more then one @return tag.');
         }
 
         $returnTag = $docBlock->getTagsByName('return')[0];
-        if (!$returnTag instanceof Return_) {
-            throw new \InvalidArgumentException();
-        }
+        $type = $returnTag->getType();
 
-        if ($returnTag->getType() instanceof Object_) {
-            $class = (string) $returnTag->getType();
+        if ($type instanceof Null_) {
+            $result = $this->convertNullTypeToReturnType($returnTag->getType());
+        } elseif ($type instanceof Object_) {
+            $result = $this->convertObjectTypeToReturnType($returnTag->getType(), false);
+        } elseif ($type instanceof Array_) {
+            $result = $this->convertArrayTypeToReturnType($type, false);
+        } elseif ($type instanceof Compound) {
+            $types = (array) $type->getIterator();
+            if (count($types) > 2) {
+                throw new RestApiBundle\Exception\Docs\ValidationException('Unsupported return type.');
+            }
 
-            if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($class)) {
-                throw new \InvalidArgumentException('Not implemented');
+            if ($types[0] instanceof Object_ && $types[1] instanceof Null_) {
+                $result = $this->convertObjectTypeToReturnType($types[0], true);
+            } elseif ($types[1] instanceof Object_ && $types[0] instanceof Null_) {
+                $result = $this->convertObjectTypeToReturnType($types[1], true);
+            } elseif ($types[0] instanceof Array_ && $types[1] instanceof Null_) {
+                $result = $this->convertArrayTypeToReturnType($types[0], true);
+            } elseif ($types[1] instanceof Array_ && $types[0] instanceof Null_) {
+                $result = $this->convertArrayTypeToReturnType($types[1], true);
+            } else {
+                throw new RestApiBundle\Exception\Docs\ValidationException('Unsupported return type.');
             }
         } else {
-            throw new \InvalidArgumentException('Not implemented.');
+            throw new RestApiBundle\Exception\Docs\ValidationException('Unsupported return type.');
         }
 
-        return new RestApiBundle\DTO\Docs\ReturnType\ClassType($class, false);
+        return $result;
+    }
+
+    private function convertNullTypeToReturnType(Null_ $type)
+    {
+        return new RestApiBundle\DTO\Docs\ReturnType\NullType();
+    }
+
+    private function convertObjectTypeToReturnType(Object_ $type, bool $isNullable)
+    {
+        $class = ltrim((string) $type, '\\');
+        if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($class)) {
+            throw new RestApiBundle\Exception\Docs\ValidationException('Unsupported return type.');
+        }
+
+        return new RestApiBundle\DTO\Docs\ReturnType\ClassType($class, $isNullable);
+    }
+
+    private function convertArrayTypeToReturnType(Array_ $type, bool $isNullable)
+    {
+        $valueType = $type->getValueType();
+        if (!$valueType instanceof Object_) {
+            throw new RestApiBundle\Exception\Docs\ValidationException('Unsupported return type.');
+        }
+
+        $objectReturnType = $this->convertObjectTypeToReturnType($valueType, $isNullable);
+
+        return new RestApiBundle\DTO\Docs\ReturnType\CollectionOfClassesType($objectReturnType->getClass(), $isNullable);
     }
 }
