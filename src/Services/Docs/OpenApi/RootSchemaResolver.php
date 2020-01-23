@@ -9,13 +9,13 @@ use function strtolower;
 class RootSchemaResolver
 {
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\ReturnTypeToSchemaConverter
+     * @var RestApiBundle\Services\Docs\OpenApi\TypeToSchemaConverter
      */
-    private $returnTypeToSchemaConverter;
+    private $typeToSchemaConverter;
 
-    public function __construct(RestApiBundle\Services\Docs\OpenApi\ReturnTypeToSchemaConverter $returnTypeToSchemaConverter)
+    public function __construct(RestApiBundle\Services\Docs\OpenApi\TypeToSchemaConverter $typeToSchemaConverter)
     {
-        $this->returnTypeToSchemaConverter = $returnTypeToSchemaConverter;
+        $this->typeToSchemaConverter = $typeToSchemaConverter;
     }
 
     /**
@@ -42,12 +42,12 @@ class RootSchemaResolver
                 $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
             }
 
-            if (!$returnType instanceof RestApiBundle\DTO\Docs\ReturnType\NullType) {
+            if (!$returnType instanceof RestApiBundle\DTO\Docs\Type\NullType) {
                 $responses->addResponse('200', new OpenApi\Response([
                     'description' => 'Success response with body',
                     'content' => [
                         'application/json' => [
-                            'schema' => $this->returnTypeToSchemaConverter->convert($returnType)
+                            'schema' => $this->typeToSchemaConverter->convert($returnType)
                         ]
                     ]
                 ]));
@@ -57,6 +57,27 @@ class RootSchemaResolver
                 'summary' => $routeData->getTitle(),
                 'responses' => $responses,
             ]);
+
+            $parameters = [];
+
+            foreach ($routeData->getPathParameters() as $routeDataPathParameter) {
+                $pathParameter = new OpenApi\Parameter([
+                    'in' => 'path',
+                    'name' => $routeDataPathParameter->getName(),
+                    'description' => $routeDataPathParameter->getDescription(),
+                    'required' => true,
+                ]);
+
+                if ($routeDataPathParameter->getType()) {
+                    $pathParameter->schema = $this->typeToSchemaConverter->convert($routeDataPathParameter->getType());
+                }
+
+                $parameters[] = $pathParameter;
+            }
+
+            if ($parameters) {
+                $operation->parameters = $parameters;
+            }
 
             if ($routeData->getTags()) {
                 $operation->tags = $routeData->getTags();

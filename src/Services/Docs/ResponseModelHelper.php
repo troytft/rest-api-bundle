@@ -11,11 +11,11 @@ use function substr;
 class ResponseModelHelper
 {
     /**
-     * @var array<string, RestApiBundle\DTO\Docs\ReturnType\ObjectType>
+     * @var array<string, RestApiBundle\DTO\Docs\Type\ObjectType>
      */
     private $objectClassCache = [];
 
-    public function getObjectTypeByClass(string $class): RestApiBundle\DTO\Docs\ReturnType\ObjectType
+    public function getObjectTypeByClass(string $class): RestApiBundle\DTO\Docs\Type\ObjectType
     {
         $class = ltrim($class, '\\');
 
@@ -41,24 +41,24 @@ class ResponseModelHelper
 
             switch ((string) $returnType) {
                 case 'string':
-                    $properties[$propertyName] = new RestApiBundle\DTO\Docs\ReturnType\StringType($returnType->allowsNull());
+                    $properties[$propertyName] = new RestApiBundle\DTO\Docs\Type\StringType($returnType->allowsNull());
 
                     break;
 
                 case 'int':
                 case 'integer':
-                    $properties[$propertyName] = new RestApiBundle\DTO\Docs\ReturnType\IntegerType($returnType->allowsNull());
+                    $properties[$propertyName] = new RestApiBundle\DTO\Docs\Type\IntegerType($returnType->allowsNull());
 
                     break;
 
                 case 'float':
-                    $properties[$propertyName] = new RestApiBundle\DTO\Docs\ReturnType\FloatType($returnType->allowsNull());
+                    $properties[$propertyName] = new RestApiBundle\DTO\Docs\Type\FloatType($returnType->allowsNull());
 
                     break;
 
                 case 'bool':
                 case 'boolean':
-                    $properties[$propertyName] = new RestApiBundle\DTO\Docs\ReturnType\BooleanType($returnType->allowsNull());
+                    $properties[$propertyName] = new RestApiBundle\DTO\Docs\Type\BooleanType($returnType->allowsNull());
 
                     break;
 
@@ -67,9 +67,9 @@ class ResponseModelHelper
             }
         }
 
-        $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\Docs\ReturnType\StringType(false);
+        $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\Docs\Type\StringType(false);
 
-        $this->objectClassCache[$class] = new RestApiBundle\DTO\Docs\ReturnType\ObjectType($properties, false);
+        $this->objectClassCache[$class] = new RestApiBundle\DTO\Docs\Type\ObjectType($properties, false);
 
         return $this->objectClassCache[$class];
     }

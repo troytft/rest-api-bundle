@@ -6,6 +6,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use RestApiBundle;
 use Symfony\Component\Routing\RouterInterface;
 use function explode;
+use function sprintf;
 
 class RouteDataExtractor
 {
@@ -15,14 +16,9 @@ class RouteDataExtractor
     private $router;
 
     /**
-     * @var RestApiBundle\Services\Docs\DocBlockHelper
+     * @var RestApiBundle\Services\Docs\TypeReader
      */
-    private $docBlockHelper;
-
-    /**
-     * @var RestApiBundle\Services\Docs\TypeHintHelper
-     */
-    private $typeHintHelper;
+    private $typeReader;
 
     /**
      * @var AnnotationReader
@@ -31,12 +27,10 @@ class RouteDataExtractor
 
     public function __construct(
         RouterInterface $router,
-        RestApiBundle\Services\Docs\DocBlockHelper $docBlockHelper,
-        RestApiBundle\Services\Docs\TypeHintHelper $typeHintHelper
+        RestApiBundle\Services\Docs\TypeReader $typeReader
     ) {
         $this->router = $router;
-        $this->docBlockHelper = $docBlockHelper;
-        $this->typeHintHelper = $typeHintHelper;
+        $this->typeReader = $typeReader;
         $this->annotationReader = new AnnotationReader();
     }
 
@@ -66,17 +60,25 @@ class RouteDataExtractor
                 ->setPath($route->getPath())
                 ->setMethods($route->getMethods());
 
+            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+                if (!isset($route->getRequirements()[$reflectionParameter->getName()])) {
+                    continue;
+                }
+
+                $type = new RestApiBundle\DTO\Docs\Type\StringType($reflectionParameter->allowsNull());
+                $pathParameterDescription = sprintf('String regex format is "%s".', $route->getRequirement($reflectionParameter->getName()));
+
+                $routeData->addPathParameter(new RestApiBundle\DTO\Docs\PathParameter($reflectionParameter->getName(), $type, $pathParameterDescription));
+            }
+
             try {
-                $returnTypeByDocBlock = $this->docBlockHelper->getReturnTypeByReturnTag($reflectionMethod);
-                $returnTypeByTypeHint = $this->typeHintHelper->getReturnTypeByReflectionMethod($reflectionMethod);
+                $returnType = $this->typeReader->getReturnTypeByReflectionMethod($reflectionMethod);
             } catch (RestApiBundle\Exception\Docs\InvalidDefinition\InvalidDefinitionExceptionInterface $exception) {
                 throw new RestApiBundle\Exception\Docs\InvalidEndpointException($exception->getMessage(), $controllerClass, $actionName);
             }
 
-            if ($returnTypeByDocBlock) {
-                $routeData->setReturnType($returnTypeByDocBlock);
-            } elseif ($returnTypeByTypeHint) {
-                $routeData->setReturnType($returnTypeByTypeHint);
+            if ($returnType) {
+                $routeData->setReturnType($returnType);
             } else {
                 throw new RestApiBundle\Exception\Docs\InvalidEndpointException('Return type not found in docBlock and type-hint.', $controllerClass, $actionName);
             }

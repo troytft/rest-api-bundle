@@ -1,13 +1,13 @@
 <?php
 
-namespace RestApiBundle\DTO\Docs\ReturnType;
+namespace RestApiBundle\DTO\Docs\Type;
 
 use RestApiBundle;
 
-class ObjectType implements RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface
+class ObjectType implements RestApiBundle\DTO\Docs\Type\TypeInterface
 {
     /**
-     * @var array<string, RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface>
+     * @var array<string, RestApiBundle\DTO\Docs\Type\TypeInterface>
      */
     private $properties;
 
@@ -23,7 +23,7 @@ class ObjectType implements RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterfac
     }
 
     /**
-     * @return array<string, RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface>
+     * @return array<string, RestApiBundle\DTO\Docs\Type\TypeInterface>
      */
     public function getProperties(): array
     {

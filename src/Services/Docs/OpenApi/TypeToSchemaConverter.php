@@ -5,21 +5,21 @@ namespace RestApiBundle\Services\Docs\OpenApi;
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
 
-class ReturnTypeToSchemaConverter
+class TypeToSchemaConverter
 {
-    public function convert(RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface $returnType): OpenApi\Schema
+    public function convert(RestApiBundle\DTO\Docs\Type\TypeInterface $returnType): OpenApi\Schema
     {
-        if ($returnType instanceof RestApiBundle\DTO\Docs\ReturnType\ObjectType) {
+        if ($returnType instanceof RestApiBundle\DTO\Docs\Type\ObjectType) {
             $result = $this->convertObjectType($returnType);
-        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\ReturnType\CollectionType) {
+        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\Type\CollectionType) {
             $result = $this->convertCollectionType($returnType);
-        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\ReturnType\StringType) {
+        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\Type\StringType) {
             $result = $this->convertStringType($returnType);
-        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\ReturnType\IntegerType) {
+        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\Type\IntegerType) {
             $result = $this->convertIntegerType($returnType);
-        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\ReturnType\FloatType) {
+        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\Type\FloatType) {
             $result = $this->convertFloatType($returnType);
-        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\ReturnType\BooleanType) {
+        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\Type\BooleanType) {
             $result = $this->convertBooleanType($returnType);
         } else {
             throw new \InvalidArgumentException();
@@ -28,7 +28,7 @@ class ReturnTypeToSchemaConverter
         return $result;
     }
 
-    private function convertObjectType(RestApiBundle\DTO\Docs\ReturnType\ObjectType $objectType): OpenApi\Schema
+    private function convertObjectType(RestApiBundle\DTO\Docs\Type\ObjectType $objectType): OpenApi\Schema
     {
         $properties = [];
 
@@ -43,7 +43,7 @@ class ReturnTypeToSchemaConverter
         ]);
     }
 
-    private function convertCollectionType(RestApiBundle\DTO\Docs\ReturnType\CollectionType $collectionType): OpenApi\Schema
+    private function convertCollectionType(RestApiBundle\DTO\Docs\Type\CollectionType $collectionType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
@@ -54,7 +54,7 @@ class ReturnTypeToSchemaConverter
         ]);
     }
 
-    private function convertStringType(RestApiBundle\DTO\Docs\ReturnType\StringType $stringType): OpenApi\Schema
+    private function convertStringType(RestApiBundle\DTO\Docs\Type\StringType $stringType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
@@ -62,7 +62,7 @@ class ReturnTypeToSchemaConverter
         ]);
     }
 
-    private function convertIntegerType(RestApiBundle\DTO\Docs\ReturnType\IntegerType $integerType): OpenApi\Schema
+    private function convertIntegerType(RestApiBundle\DTO\Docs\Type\IntegerType $integerType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::INTEGER,
@@ -70,7 +70,7 @@ class ReturnTypeToSchemaConverter
         ]);
     }
 
-    private function convertFloatType(RestApiBundle\DTO\Docs\ReturnType\FloatType $floatType): OpenApi\Schema
+    private function convertFloatType(RestApiBundle\DTO\Docs\Type\FloatType $floatType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::NUMBER,
@@ -79,7 +79,7 @@ class ReturnTypeToSchemaConverter
         ]);
     }
 
-    private function convertBooleanType(RestApiBundle\DTO\Docs\ReturnType\BooleanType $booleanType): OpenApi\Schema
+    private function convertBooleanType(RestApiBundle\DTO\Docs\Type\BooleanType $booleanType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::BOOLEAN,

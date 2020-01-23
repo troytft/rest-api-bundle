@@ -1,10 +1,10 @@
 <?php
 
-namespace RestApiBundle\DTO\Docs\ReturnType;
+namespace RestApiBundle\DTO\Docs\Type;
 
 use RestApiBundle;
 
-class FloatType implements RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface
+class IntegerType implements RestApiBundle\DTO\Docs\Type\TypeInterface, RestApiBundle\DTO\Docs\Type\ScalarInterface
 {
     /**
      * @var bool

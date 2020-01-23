@@ -3,7 +3,7 @@ info:
     title: 'Open API Specification'
     version: 1.0.0
 paths:
-    /genre:
+    '/genres/by-slug/{genre}':
         get:
             summary: 'Genre response model details'
             responses:
@@ -24,3 +24,12 @@ paths:
                                         type: string
                                         nullable: false
                                 nullable: false
+            parameters:
+                -
+                    name: genre
+                    in: path
+                    description: 'String regex format is "\d+".'
+                    required: true
+                    schema:
+                        type: string
+                        nullable: false

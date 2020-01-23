@@ -16,7 +16,7 @@ class TypeHintHelper
         $this->responseModelHelper = $responseModelHelper;
     }
 
-    public function getReturnTypeByReflectionMethod(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface
+    public function getReturnTypeByReflectionMethod(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Type\TypeInterface
     {
         if (!$reflectionMethod->getReturnType()) {
             return null;
