@@ -2,6 +2,7 @@
 
 namespace RestApiBundle\Services\Docs;
 
+use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\Types\Array_;
 use phpDocumentor\Reflection\Types\Compound;
@@ -38,12 +39,16 @@ class DocBlockHelper
         }
 
         $returnTag = $docBlock->getTagsByName('return')[0];
+        if (!$returnTag instanceof Return_) {
+            throw new \InvalidArgumentException();
+        }
+
         $type = $returnTag->getType();
 
         if ($type instanceof Null_) {
-            $result = $this->convertNullTypeToReturnType($returnTag->getType());
+            $result = $this->convertNullTypeToReturnType($type);
         } elseif ($type instanceof Object_) {
-            $result = $this->convertObjectTypeToReturnType($returnTag->getType(), false);
+            $result = $this->convertObjectTypeToReturnType($type, false);
         } elseif ($type instanceof Array_) {
             $result = $this->convertArrayTypeToReturnType($type, false);
         } elseif ($type instanceof Compound) {
