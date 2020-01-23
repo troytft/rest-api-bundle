@@ -18,6 +18,6 @@ class TypeHintHelper
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
-        return new RestApiBundle\DTO\Docs\ReturnType\ClassType($class, $reflectionMethod->getReturnType()->allowsNull());
+        return new RestApiBundle\DTO\Docs\ReturnType\ObjectType($class, $reflectionMethod->getReturnType()->allowsNull());
     }
 }

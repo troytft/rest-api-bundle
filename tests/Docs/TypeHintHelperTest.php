@@ -33,12 +33,12 @@ class TypeHintHelperTest extends Tests\BaseBundleTestCase
         $reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('notNullableResponseModelTypeHintAction');
 
-        /** @var RestApiBundle\DTO\Docs\ReturnType\ClassType $returnType */
+        /** @var RestApiBundle\DTO\Docs\ReturnType\ObjectType $returnType */
         $returnType = $this->getReflectionHelper()->getReturnTypeByReflectionMethod($reflectionMethod);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ClassType::class, $returnType);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ObjectType::class, $returnType);
         $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
-        $this->assertFalse($returnType->getIsNullPossible());
+        $this->assertFalse($returnType->getIsNullable());
     }
 
     public function testNullableResponseModelReturnType()
@@ -46,12 +46,12 @@ class TypeHintHelperTest extends Tests\BaseBundleTestCase
         $reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('nullableResponseModelTypeHintAction');
 
-        /** @var RestApiBundle\DTO\Docs\ReturnType\ClassType $returnType */
+        /** @var RestApiBundle\DTO\Docs\ReturnType\ObjectType $returnType */
         $returnType = $this->getReflectionHelper()->getReturnTypeByReflectionMethod($reflectionMethod);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ClassType::class, $returnType);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ObjectType::class, $returnType);
         $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
-        $this->assertTrue($returnType->getIsNullPossible());
+        $this->assertTrue($returnType->getIsNullable());
     }
 
     private function getReflectionHelper(): RestApiBundle\Services\Docs\TypeHintHelper

@@ -31,7 +31,7 @@ class RootSchemaResolver
 
         foreach ($routeDataItems as $routeData) {
             $returnType = $routeData->getReturnType();
-            if (!$returnType instanceof RestApiBundle\DTO\Docs\ReturnType\ClassType) {
+            if (!$returnType instanceof RestApiBundle\DTO\Docs\ReturnType\ObjectType) {
                 throw new \InvalidArgumentException('Not implemented.');
             }
 

@@ -4,5 +4,5 @@ namespace RestApiBundle\DTO\Docs\ReturnType;
 
 interface ReturnTypeInterface
 {
-    public function getIsNullPossible(): bool;
+    public function getIsNullable(): bool;
 }

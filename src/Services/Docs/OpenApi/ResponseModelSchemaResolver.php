@@ -8,28 +8,29 @@ use function lcfirst;
 use function strpos;
 use function substr;
 
-class ResponsesResolver
+class ResponseModelSchemaResolver
 {
-    public function resolve(RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface $returnType): OpenApi\Responses
-    {
-        $responses = new OpenApi\Responses([]);
+    /**
+     * @var RestApiBundle\Services\Docs\DocBlockHelper
+     */
+    private $docBlockHelper;
 
-        if ($returnType->getIsNullable()) {
-            $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
-        }
+    /**
+     * @var RestApiBundle\Services\Docs\TypeHintHelper
+     */
+    private $typeHintHelper;
 
-        if ($returnType instanceof RestApiBundle\DTO\Docs\ReturnType\ObjectType) {
-            $responses->addResponse('200', $this->getResponseByClassType($returnType));
-        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\ReturnType\CollectionType) {
-            $responses->addResponse('200', $this->getResponseByCollectionOfClasessesType($returnType));
-        }
-
-        return $responses;
+    public function __construct(
+        RestApiBundle\Services\Docs\DocBlockHelper $docBlockHelper,
+        RestApiBundle\Services\Docs\TypeHintHelper $typeHintHelper
+    ) {
+        $this->docBlockHelper = $docBlockHelper;
+        $this->typeHintHelper = $typeHintHelper;
     }
 
-    private function getResponseByClassType(RestApiBundle\DTO\Docs\ReturnType\ObjectType $classType): OpenApi\Response
+    public function resolve(string $class): OpenApi\Schema
     {
-        $reflectionClass = new \ReflectionClass($classType->getClass());
+        $reflectionClass = new \ReflectionClass($class);
 
         if (!$reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class)) {
             throw new \InvalidArgumentException();
@@ -44,6 +45,7 @@ class ResponsesResolver
             }
 
             $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
+
 
             $returnType = (string) $reflectionClass->getMethod($reflectionMethod->getName())->getReturnType();
 
@@ -75,19 +77,5 @@ class ResponsesResolver
             'type' => OpenApi\Type::OBJECT,
             'properties' => $properties,
         ]);
-
-        return new OpenApi\Response([
-            'description' => 'Success',
-            'content' => [
-                'application/json' => [
-                    'schema' => $schema
-                ]
-            ]
-        ]);
-    }
-
-    private function getResponseByCollectionOfClasessesType(RestApiBundle\DTO\Docs\ReturnType\CollectionType $collectionOfClassesType): OpenApi\Response
-    {
-
     }
 }
