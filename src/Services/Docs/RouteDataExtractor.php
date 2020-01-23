@@ -66,8 +66,12 @@ class RouteDataExtractor
                 ->setPath($route->getPath())
                 ->setMethods($route->getMethods());
 
-            $returnTypeByDocBlock = $this->docBlockHelper->getReturnTypeByReturnTag($reflectionMethod);
-            $returnTypeByReflection = $this->reflectionHelper->getReturnTypeByTypeHint($reflectionMethod);
+            try {
+                $returnTypeByDocBlock = $this->docBlockHelper->getReturnTypeByReturnTag($reflectionMethod);
+                $returnTypeByReflection = $this->reflectionHelper->getReturnTypeByTypeHint($reflectionMethod);
+            } catch (RestApiBundle\Exception\Docs\ValidationException $validationException) {
+                throw new RestApiBundle\Exception\Docs\InvalidEndpointException($validationException->getMessage(), $controllerClass, $actionName);
+            }
 
             if ($returnTypeByDocBlock) {
                 $routeData->setReturnType($returnTypeByDocBlock);

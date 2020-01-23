@@ -19,7 +19,7 @@ class GenerateDocsCommandTest extends Tests\BaseBundleTestCase
         $commandTester->execute(['--output' => $temporaryOutputFile]);
 
         $generatedData = Yaml::parseFile($temporaryOutputFile);
-        $preparedData = Yaml::parseFile(__DIR__ . '/data/openapi.yaml');
+        $preparedData = Yaml::parseFile(__DIR__ . '/../data/openapi.yaml');
 
         $this->assertSame(0, $commandTester->getStatusCode());
         $this->assertSame($preparedData, $generatedData);

@@ -15,7 +15,7 @@ class ResponsesResolver
         $responses = new OpenApi\Responses([]);
 
         if ($returnType instanceof RestApiBundle\DTO\Docs\ReturnType\NullType) {
-            $responses->addResponse(204, new OpenApi\Response(['description' => 'Success response with empty body']));
+            $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
 
             return $responses;
         }

@@ -19,7 +19,7 @@ class ResponsesResolverTest extends Tests\BaseBundleTestCase
 
     private function assertResponsesContainsNullResponse(OpenApi\Responses $responses)
     {
-        $response = $responses->getResponse(204);
+        $response = $responses->getResponse('204');
 
         $this->assertInstanceOf(OpenApi\Response::class, $response);
         $this->assertSame('Success response with empty body', $response->description);
