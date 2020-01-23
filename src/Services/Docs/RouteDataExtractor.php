@@ -20,7 +20,7 @@ class RouteDataExtractor
     private $docBlockHelper;
 
     /**
-     * @var RestApiBundle\Services\Docs\ReflectionHelper
+     * @var RestApiBundle\Services\Docs\TypeHintHelper
      */
     private $reflectionHelper;
 
@@ -32,7 +32,7 @@ class RouteDataExtractor
     public function __construct(
         RouterInterface $router,
         RestApiBundle\Services\Docs\DocBlockHelper $docBlockHelper,
-        RestApiBundle\Services\Docs\ReflectionHelper $reflectionHelper
+        RestApiBundle\Services\Docs\TypeHintHelper $reflectionHelper
     ) {
         $this->router = $router;
         $this->docBlockHelper = $docBlockHelper;
@@ -68,7 +68,7 @@ class RouteDataExtractor
 
             try {
                 $returnTypeByDocBlock = $this->docBlockHelper->getReturnTypeByReturnTag($reflectionMethod);
-                $returnTypeByReflection = $this->reflectionHelper->getReturnTypeByTypeHint($reflectionMethod);
+                $returnTypeByReflection = $this->reflectionHelper->getReturnTypeByReflectionMethod($reflectionMethod);
             } catch (RestApiBundle\Exception\Docs\ValidationException $validationException) {
                 throw new RestApiBundle\Exception\Docs\InvalidEndpointException($validationException->getMessage(), $controllerClass, $actionName);
             }

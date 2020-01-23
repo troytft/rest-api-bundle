@@ -5,59 +5,59 @@ namespace Tests\Docs;
 use Tests;
 use RestApiBundle;
 
-class ReflectionHelperTest extends Tests\BaseBundleTestCase
+class TypeHintHelperTest extends Tests\BaseBundleTestCase
 {
-    public function testUnsupportedClassTypeHint()
+    public function testUnsupportedReturnType()
     {
         $reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('registerAction');
 
         try {
-            $this->getReflectionHelper()->getReturnTypeByTypeHint($reflectionMethod);
+            $this->getReflectionHelper()->getReturnTypeByReflectionMethod($reflectionMethod);
             $this->fail();
         } catch (RestApiBundle\Exception\Docs\ValidationException $validationException) {
             $this->assertSame('Unsupported return type.', $validationException->getMessage());
         }
     }
 
-    public function testEmptyTypeHint()
+    public function testEmptyReturnType()
     {
         $reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('methodWithEmptyTypeHintAction');
 
-        $this->assertNull($this->getReflectionHelper()->getReturnTypeByTypeHint($reflectionMethod));
+        $this->assertNull($this->getReflectionHelper()->getReturnTypeByReflectionMethod($reflectionMethod));
     }
 
-    public function testNotNullableResponseModelTypeHint()
+    public function testResponseModelReturnType()
     {
         $reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('notNullableResponseModelTypeHintAction');
 
         /** @var RestApiBundle\DTO\Docs\ReturnType\ClassType $returnType */
-        $returnType = $this->getReflectionHelper()->getReturnTypeByTypeHint($reflectionMethod);
+        $returnType = $this->getReflectionHelper()->getReturnTypeByReflectionMethod($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ClassType::class, $returnType);
         $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertFalse($returnType->getIsNullable());
     }
 
-    public function testNullableResponseModelTypeHint()
+    public function testNullableResponseModelReturnType()
     {
         $reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('nullableResponseModelTypeHintAction');
 
         /** @var RestApiBundle\DTO\Docs\ReturnType\ClassType $returnType */
-        $returnType = $this->getReflectionHelper()->getReturnTypeByTypeHint($reflectionMethod);
+        $returnType = $this->getReflectionHelper()->getReturnTypeByReflectionMethod($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ClassType::class, $returnType);
         $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertTrue($returnType->getIsNullable());
     }
 
-    private function getReflectionHelper(): RestApiBundle\Services\Docs\ReflectionHelper
+    private function getReflectionHelper(): RestApiBundle\Services\Docs\TypeHintHelper
     {
-        $value = $this->getContainer()->get(RestApiBundle\Services\Docs\ReflectionHelper::class);
-        if (!$value instanceof RestApiBundle\Services\Docs\ReflectionHelper) {
+        $value = $this->getContainer()->get(RestApiBundle\Services\Docs\TypeHintHelper::class);
+        if (!$value instanceof RestApiBundle\Services\Docs\TypeHintHelper) {
             throw new \InvalidArgumentException();
         }
 

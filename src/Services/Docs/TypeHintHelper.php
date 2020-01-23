@@ -4,9 +4,9 @@ namespace RestApiBundle\Services\Docs;
 
 use RestApiBundle;
 
-class ReflectionHelper
+class TypeHintHelper
 {
-    public function getReturnTypeByTypeHint(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface
+    public function getReturnTypeByReflectionMethod(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface
     {
         if (!$reflectionMethod->getReturnType()) {
             return null;
