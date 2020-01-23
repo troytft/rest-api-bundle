@@ -15,28 +15,19 @@ class RouteDataExtractor
     private $router;
 
     /**
-     * @var RestApiBundle\Services\Docs\DocBlockHelper
+     * @var RestApiBundle\Services\Docs\TypeReader
      */
-    private $docBlockHelper;
-
-    /**
-     * @var RestApiBundle\Services\Docs\TypeHintHelper
-     */
-    private $typeHintHelper;
+    private $typeReader;
 
     /**
      * @var AnnotationReader
      */
     private $annotationReader;
 
-    public function __construct(
-        RouterInterface $router,
-        RestApiBundle\Services\Docs\DocBlockHelper $docBlockHelper,
-        RestApiBundle\Services\Docs\TypeHintHelper $typeHintHelper
-    ) {
+    public function __construct(RouterInterface $router, RestApiBundle\Services\Docs\TypeReader $typeReader)
+    {
         $this->router = $router;
-        $this->docBlockHelper = $docBlockHelper;
-        $this->typeHintHelper = $typeHintHelper;
+        $this->typeReader = $typeReader;
         $this->annotationReader = new AnnotationReader();
     }
 
@@ -66,17 +57,21 @@ class RouteDataExtractor
                 ->setPath($route->getPath())
                 ->setMethods($route->getMethods());
 
+//            var_dump($route->getRequirements(), $reflectionMethod->getParameters());
+
+//            foreach ($reflectionMethod->getParameters() as $actionParameter) {
+//                //$pathParam = new RestApiBundle\DTO\Docs\PathParameter($actionParameter->getName())
+////                $actionParameter->getName()
+//            }
+
             try {
-                $returnTypeByDocBlock = $this->docBlockHelper->getReturnTypeByReturnTag($reflectionMethod);
-                $returnTypeByTypeHint = $this->typeHintHelper->getReturnTypeByReflectionMethod($reflectionMethod);
+                $returnType = $this->typeReader->getReturnTypeByReflectionMethod($reflectionMethod);
             } catch (RestApiBundle\Exception\Docs\InvalidDefinition\InvalidDefinitionExceptionInterface $exception) {
                 throw new RestApiBundle\Exception\Docs\InvalidEndpointException($exception->getMessage(), $controllerClass, $actionName);
             }
 
-            if ($returnTypeByDocBlock) {
-                $routeData->setReturnType($returnTypeByDocBlock);
-            } elseif ($returnTypeByTypeHint) {
-                $routeData->setReturnType($returnTypeByTypeHint);
+            if ($returnType) {
+                $routeData->setReturnType($returnType);
             } else {
                 throw new RestApiBundle\Exception\Docs\InvalidEndpointException('Return type not found in docBlock and type-hint.', $controllerClass, $actionName);
             }

@@ -1,10 +1,10 @@
 <?php
 
-namespace RestApiBundle\DTO\Docs\ReturnType;
+namespace RestApiBundle\DTO\Docs\Type;
 
 use RestApiBundle;
 
-class StringType implements RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface
+class StringType implements RestApiBundle\DTO\Docs\Type\TypeInterface
 {
     /**
      * @var bool

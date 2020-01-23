@@ -30,7 +30,7 @@ class DocBlockHelper
         $this->docBlockFactory = DocBlockFactory::createInstance();
     }
 
-    public function getReturnTypeByReturnTag(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface
+    public function getReturnTypeByReturnTag(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Type\TypeInterface
     {
         if (!$reflectionMethod->getDocComment()) {
             return null;
@@ -72,10 +72,10 @@ class DocBlockHelper
 
     private function convertNullTypeToReturnType(Null_ $type)
     {
-        return new RestApiBundle\DTO\Docs\ReturnType\NullType();
+        return new RestApiBundle\DTO\Docs\Type\NullType();
     }
 
-    private function convertCompoundTypeToReturnType(Compound $type): RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface
+    private function convertCompoundTypeToReturnType(Compound $type): RestApiBundle\DTO\Docs\Type\TypeInterface
     {
         $compoundTypes = (array) $type->getIterator();
         if (count($compoundTypes) > 2) {
@@ -120,7 +120,7 @@ class DocBlockHelper
 
         $responseModelObject = $this->responseModelHelper->getObjectTypeByClass($class);
 
-        return new RestApiBundle\DTO\Docs\ReturnType\ObjectType($responseModelObject->getProperties(), $isNullable);
+        return new RestApiBundle\DTO\Docs\Type\ObjectType($responseModelObject->getProperties(), $isNullable);
     }
 
     private function convertArrayTypeToReturnType(Array_ $type, bool $isNullable)
@@ -132,6 +132,6 @@ class DocBlockHelper
 
         $objectReturnType = $this->convertObjectTypeToReturnType($valueType, $isNullable);
 
-        return new RestApiBundle\DTO\Docs\ReturnType\CollectionType($objectReturnType, $isNullable);
+        return new RestApiBundle\DTO\Docs\Type\CollectionType($objectReturnType, $isNullable);
     }
 }

@@ -32,9 +32,14 @@ class RouteData
     private $methods;
 
     /**
-     * @var RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface
+     * @var RestApiBundle\DTO\Docs\Type\TypeInterface
      */
     private $returnType;
+
+    /**
+     * @var RestApiBundle\DTO\Docs\PathParameter[]
+     */
+    private $pathParams = [];
 
     public function getTitle(): string
     {
@@ -96,15 +101,28 @@ class RouteData
         return $this;
     }
 
-    public function getReturnType(): ReturnType\ReturnTypeInterface
+    public function getReturnType(): Type\TypeInterface
     {
         return $this->returnType;
     }
 
-    public function setReturnType(ReturnType\ReturnTypeInterface $returnType)
+    public function setReturnType(Type\TypeInterface $returnType)
     {
         $this->returnType = $returnType;
 
         return $this;
+    }
+
+    /**
+     * @return RestApiBundle\DTO\Docs\PathParameter[]
+     */
+    public function getPathParams(): array
+    {
+        return $this->pathParams;
+    }
+
+    public function addPathParam(RestApiBundle\DTO\Docs\PathParameter $pathParam)
+    {
+        $this->pathParams[] = $pathParam;
     }
 }

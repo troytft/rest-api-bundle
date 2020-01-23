@@ -34,14 +34,14 @@ class TypeHintHelperTest extends Tests\BaseBundleTestCase
         $reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('notNullableResponseModelTypeHintAction');
 
-        /** @var RestApiBundle\DTO\Docs\ReturnType\ObjectType $returnType */
+        /** @var RestApiBundle\DTO\Docs\Type\ObjectType $returnType */
         $returnType = $this->getReflectionHelper()->getReturnTypeByReflectionMethod($reflectionMethod);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ObjectType::class, $returnType);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ObjectType::class, $returnType);
         $this->assertSame(['id', 'slug', '__typename',], array_keys($returnType->getProperties()));
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\IntegerType::class, $returnType->getProperties()['id']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $returnType->getProperties()['slug']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $returnType->getProperties()['__typename']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\IntegerType::class, $returnType->getProperties()['id']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\StringType::class, $returnType->getProperties()['slug']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\StringType::class, $returnType->getProperties()['__typename']);
         $this->assertFalse($returnType->getIsNullable());
     }
 
@@ -50,14 +50,14 @@ class TypeHintHelperTest extends Tests\BaseBundleTestCase
         $reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('nullableResponseModelTypeHintAction');
 
-        /** @var RestApiBundle\DTO\Docs\ReturnType\ObjectType $returnType */
+        /** @var RestApiBundle\DTO\Docs\Type\ObjectType $returnType */
         $returnType = $this->getReflectionHelper()->getReturnTypeByReflectionMethod($reflectionMethod);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ObjectType::class, $returnType);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ObjectType::class, $returnType);
         $this->assertSame(['id', 'slug', '__typename',], array_keys($returnType->getProperties()));
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\IntegerType::class, $returnType->getProperties()['id']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $returnType->getProperties()['slug']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $returnType->getProperties()['__typename']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\IntegerType::class, $returnType->getProperties()['id']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\StringType::class, $returnType->getProperties()['slug']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\StringType::class, $returnType->getProperties()['__typename']);
         $this->assertTrue($returnType->getIsNullable());
     }
 
