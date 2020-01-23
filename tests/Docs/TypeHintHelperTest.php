@@ -15,8 +15,8 @@ class TypeHintHelperTest extends Tests\BaseBundleTestCase
         try {
             $this->getReflectionHelper()->getReturnTypeByReflectionMethod($reflectionMethod);
             $this->fail();
-        } catch (RestApiBundle\Exception\Docs\ValidationException $validationException) {
-            $this->assertSame('Unsupported return type.', $validationException->getMessage());
+        } catch (RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException $exception) {
+            $this->assertSame('Unsupported return type.', $exception->getMessage());
         }
     }
 

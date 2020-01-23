@@ -15,7 +15,7 @@ class TypeHintHelper
         $class = (string) $reflectionMethod->getReturnType();
 
         if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($class)) {
-            throw new RestApiBundle\Exception\Docs\ValidationException('Unsupported return type.');
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
         return new RestApiBundle\DTO\Docs\ReturnType\ClassType($class, $reflectionMethod->getReturnType()->allowsNull());

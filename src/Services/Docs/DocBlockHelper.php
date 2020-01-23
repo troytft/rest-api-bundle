@@ -35,7 +35,7 @@ class DocBlockHelper
         }
 
         if ($count > 1) {
-            throw new RestApiBundle\Exception\Docs\ValidationException('DocBlock contains more then one @return tag.');
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\TwoOrMoreReturnTagsException();
         }
 
         $returnTag = $docBlock->getTagsByName('return')[0];
@@ -54,7 +54,7 @@ class DocBlockHelper
         } elseif ($type instanceof Compound) {
             $types = (array) $type->getIterator();
             if (count($types) > 2) {
-                throw new RestApiBundle\Exception\Docs\ValidationException('Unsupported return type.');
+                throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
             if ($types[0] instanceof Object_ && $types[1] instanceof Null_) {
@@ -66,10 +66,10 @@ class DocBlockHelper
             } elseif ($types[1] instanceof Array_ && $types[0] instanceof Null_) {
                 $result = $this->convertArrayTypeToReturnType($types[1], true);
             } else {
-                throw new RestApiBundle\Exception\Docs\ValidationException('Unsupported return type.');
+                throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
         } else {
-            throw new RestApiBundle\Exception\Docs\ValidationException('Unsupported return type.');
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
         return $result;
@@ -84,7 +84,7 @@ class DocBlockHelper
     {
         $class = ltrim((string) $type, '\\');
         if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($class)) {
-            throw new RestApiBundle\Exception\Docs\ValidationException('Unsupported return type.');
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
         return new RestApiBundle\DTO\Docs\ReturnType\ClassType($class, $isNullable);
@@ -94,7 +94,7 @@ class DocBlockHelper
     {
         $valueType = $type->getValueType();
         if (!$valueType instanceof Object_) {
-            throw new RestApiBundle\Exception\Docs\ValidationException('Unsupported return type.');
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
         $objectReturnType = $this->convertObjectTypeToReturnType($valueType, $isNullable);

@@ -69,8 +69,8 @@ class RouteDataExtractor
             try {
                 $returnTypeByDocBlock = $this->docBlockHelper->getReturnTypeByReturnTag($reflectionMethod);
                 $returnTypeByReflection = $this->reflectionHelper->getReturnTypeByReflectionMethod($reflectionMethod);
-            } catch (RestApiBundle\Exception\Docs\ValidationException $validationException) {
-                throw new RestApiBundle\Exception\Docs\InvalidEndpointException($validationException->getMessage(), $controllerClass, $actionName);
+            } catch (RestApiBundle\Exception\Docs\InvalidDefinition\InvalidDefinitionExceptionInterface $exception) {
+                throw new RestApiBundle\Exception\Docs\InvalidEndpointException($exception->getMessage(), $controllerClass, $actionName);
             }
 
             if ($returnTypeByDocBlock) {
