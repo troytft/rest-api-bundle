@@ -16,16 +16,10 @@ class PathParameter
      */
     private $type;
 
-    /**
-     * @var string|null
-     */
-    private $format;
-
-    public function __construct(string $name, ?RestApiBundle\DTO\Docs\Type\TypeInterface $type, ?string $format)
+    public function __construct(string $name, ?RestApiBundle\DTO\Docs\Type\TypeInterface $type)
     {
         $this->name = $name;
         $this->type = $type;
-        $this->format = $format;
     }
 
     public function getName(): string
@@ -36,10 +30,5 @@ class PathParameter
     public function getType(): ?Type\TypeInterface
     {
         return $this->type;
-    }
-
-    public function getFormat(): ?string
-    {
-        return $this->format;
     }
 }

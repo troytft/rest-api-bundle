@@ -2,6 +2,7 @@
 
 namespace RestApiBundle\Services\Docs;
 
+use Doctrine\ORM\EntityManagerInterface;
 use RestApiBundle;
 
 class TypeReader
@@ -16,12 +17,19 @@ class TypeReader
      */
     private $typeHintHelper;
 
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
     public function __construct(
         RestApiBundle\Services\Docs\DocBlockHelper $docBlockHelper,
-        RestApiBundle\Services\Docs\TypeHintHelper $typeHintHelper
+        RestApiBundle\Services\Docs\TypeHintHelper $typeHintHelper,
+        EntityManagerInterface $entityManager
     ) {
         $this->docBlockHelper = $docBlockHelper;
         $this->typeHintHelper = $typeHintHelper;
+        $this->entityManager = $entityManager;
     }
 
     public function getReturnTypeByReflectionMethod(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Type\TypeInterface
@@ -70,7 +78,6 @@ class TypeReader
 
             default:
                 $result = new RestApiBundle\DTO\Docs\Type\UnknownClassType($value, $isNullable);
-
         }
 
         return $result;

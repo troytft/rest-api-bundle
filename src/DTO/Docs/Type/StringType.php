@@ -11,6 +11,11 @@ class StringType implements RestApiBundle\DTO\Docs\Type\TypeInterface, RestApiBu
      */
     private $isNullable;
 
+    /**
+     * @var string|null
+     */
+    private $format;
+
     public function __construct(bool $isNullable)
     {
         $this->isNullable = $isNullable;
@@ -19,5 +24,17 @@ class StringType implements RestApiBundle\DTO\Docs\Type\TypeInterface, RestApiBu
     public function getIsNullable(): bool
     {
         return $this->isNullable;
+    }
+
+    public function getFormat(): ?string
+    {
+        return $this->format;
+    }
+
+    public function setFormat(?string $format)
+    {
+        $this->format = $format;
+
+        return $this;
     }
 }
