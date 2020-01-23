@@ -28,8 +28,8 @@ paths:
                 -
                     name: genre
                     in: path
+                    description: 'String regex format is "\d+".'
                     required: true
                     schema:
                         type: string
                         nullable: false
-                        format: \d+

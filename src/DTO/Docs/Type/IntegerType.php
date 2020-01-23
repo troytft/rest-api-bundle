@@ -11,11 +11,6 @@ class IntegerType implements RestApiBundle\DTO\Docs\Type\TypeInterface, RestApiB
      */
     private $isNullable;
 
-    /**
-     * @var string|null
-     */
-    private $format;
-
     public function __construct(bool $isNullable)
     {
         $this->isNullable = $isNullable;
@@ -24,17 +19,5 @@ class IntegerType implements RestApiBundle\DTO\Docs\Type\TypeInterface, RestApiB
     public function getIsNullable(): bool
     {
         return $this->isNullable;
-    }
-
-    public function getFormat(): ?string
-    {
-        return $this->format;
-    }
-
-    public function setFormat(?string $format)
-    {
-        $this->format = $format;
-
-        return $this;
     }
 }

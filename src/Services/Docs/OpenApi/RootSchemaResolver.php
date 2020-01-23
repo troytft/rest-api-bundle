@@ -64,6 +64,7 @@ class RootSchemaResolver
                 $pathParameter = new OpenApi\Parameter([
                     'in' => 'path',
                     'name' => $routeDataPathParameter->getName(),
+                    'description' => $routeDataPathParameter->getDescription(),
                     'required' => true,
                 ]);
 

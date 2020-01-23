@@ -6,6 +6,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use RestApiBundle;
 use Symfony\Component\Routing\RouterInterface;
 use function explode;
+use function sprintf;
 
 class RouteDataExtractor
 {
@@ -65,9 +66,9 @@ class RouteDataExtractor
                 }
 
                 $type = new RestApiBundle\DTO\Docs\Type\StringType($reflectionParameter->allowsNull());
-                $type->setFormat($route->getRequirements()[$reflectionParameter->getName()]);
+                $pathParameterDescription = sprintf('String regex format is "%s".', $route->getRequirement($reflectionParameter->getName()));
 
-                $routeData->addPathParameter(new RestApiBundle\DTO\Docs\PathParameter($reflectionParameter->getName(), $type));
+                $routeData->addPathParameter(new RestApiBundle\DTO\Docs\PathParameter($reflectionParameter->getName(), $type, $pathParameterDescription));
             }
 
             try {

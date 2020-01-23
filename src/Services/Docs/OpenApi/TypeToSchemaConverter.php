@@ -56,30 +56,18 @@ class TypeToSchemaConverter
 
     private function convertStringType(RestApiBundle\DTO\Docs\Type\StringType $stringType): OpenApi\Schema
     {
-        $schema = new OpenApi\Schema([
+        return new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
             'nullable' => $stringType->getIsNullable(),
         ]);
-
-        if ($stringType->getFormat()) {
-            $schema->format = $stringType->getFormat();
-        }
-
-        return $schema;
     }
 
     private function convertIntegerType(RestApiBundle\DTO\Docs\Type\IntegerType $integerType): OpenApi\Schema
     {
-        $schema = new OpenApi\Schema([
+        return new OpenApi\Schema([
             'type' => OpenApi\Type::INTEGER,
             'nullable' => $integerType->getIsNullable(),
         ]);
-
-        if ($integerType->getFormat()) {
-            $schema->format = $integerType->getFormat();
-        }
-
-        return $schema;
     }
 
     private function convertFloatType(RestApiBundle\DTO\Docs\Type\FloatType $floatType): OpenApi\Schema
