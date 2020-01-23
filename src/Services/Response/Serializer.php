@@ -13,10 +13,7 @@ class Serializer
 
     public function __construct()
     {
-        $dateTimeNormalizer = new \Symfony\Component\Serializer\Normalizer\DateTimeNormalizer([
-            \Symfony\Component\Serializer\Normalizer\DateTimeNormalizer::FORMAT_KEY => \DATE_ATOM,
-            \Symfony\Component\Serializer\Normalizer\DateTimeNormalizer::TIMEZONE_KEY => new \DateTimeZone('UTC'),
-        ]);
+        $dateTimeNormalizer = new \Symfony\Component\Serializer\Normalizer\DateTimeNormalizer(\DATE_ATOM, new \DateTimeZone('UTC'));
 
         $normalizers = [
             new RestApiBundle\Services\Response\GetSetMethodNormalizer(),
