@@ -25,23 +25,33 @@ class ResponseModelHelper
             }
 
             $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
-
-
             $returnType = $reflectionClass->getMethod($reflectionMethod->getName())->getReturnType();
 
             switch ((string) $returnType) {
-                case 'int':
-                    $properties[$propertyName] = new RestApiBundle\DTO\Docs\ReturnType\IntegerType($returnType->allowsNull());
-
-                    break;
-
                 case 'string':
                     $properties[$propertyName] = new RestApiBundle\DTO\Docs\ReturnType\StringType($returnType->allowsNull());
 
                     break;
 
+                case 'int':
+                case 'integer':
+                    $properties[$propertyName] = new RestApiBundle\DTO\Docs\ReturnType\IntegerType($returnType->allowsNull());
+
+                    break;
+
+                case 'float':
+                    $properties[$propertyName] = new RestApiBundle\DTO\Docs\ReturnType\FloatType($returnType->allowsNull());
+
+                    break;
+
+                case 'bool':
+                case 'boolean':
+                    $properties[$propertyName] = new RestApiBundle\DTO\Docs\ReturnType\BooleanType($returnType->allowsNull());
+
+                    break;
+
                 default:
-                    throw new \InvalidArgumentException('Not implemented.');
+                    $properties[$propertyName] = $this->extractReturnTypeObjectFromResponseModelClass((string) $returnType);
             }
         }
 
