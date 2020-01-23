@@ -8,15 +8,19 @@ paths:
             summary: 'Genre response model details'
             responses:
                 '200':
-                    description: Success
+                    description: 'Success response with body'
                     content:
                         application/json:
                             schema:
                                 type: object
                                 properties:
                                     id:
-                                        type: number
+                                        type: integer
+                                        nullable: false
                                     slug:
                                         type: string
+                                        nullable: false
                                     __typename:
                                         type: string
+                                        nullable: false
+                                nullable: false

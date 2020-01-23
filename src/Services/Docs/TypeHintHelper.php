@@ -6,6 +6,16 @@ use RestApiBundle;
 
 class TypeHintHelper
 {
+    /**
+     * @var RestApiBundle\Services\Docs\ResponseModelHelper
+     */
+    private $responseModelHelper;
+
+    public function __construct(RestApiBundle\Services\Docs\ResponseModelHelper $responseModelHelper)
+    {
+        $this->responseModelHelper = $responseModelHelper;
+    }
+
     public function getReturnTypeByReflectionMethod(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface
     {
         if (!$reflectionMethod->getReturnType()) {
@@ -18,6 +28,12 @@ class TypeHintHelper
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
-        return new RestApiBundle\DTO\Docs\ReturnType\ObjectType($class, $reflectionMethod->getReturnType()->allowsNull());
+        $objectType = $this->responseModelHelper->extractReturnTypeObjectFromResponseModelClass($class);
+
+        if ($reflectionMethod->getReturnType()->allowsNull()) {
+            $objectType->setIsNullable(true);
+        }
+
+        return $objectType;
     }
 }

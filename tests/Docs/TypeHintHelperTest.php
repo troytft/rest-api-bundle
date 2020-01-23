@@ -4,6 +4,7 @@ namespace Tests\Docs;
 
 use Tests;
 use RestApiBundle;
+use function array_keys;
 
 class TypeHintHelperTest extends Tests\BaseBundleTestCase
 {
@@ -37,7 +38,10 @@ class TypeHintHelperTest extends Tests\BaseBundleTestCase
         $returnType = $this->getReflectionHelper()->getReturnTypeByReflectionMethod($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ObjectType::class, $returnType);
-        $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
+        $this->assertSame(['id', 'slug', '__typename',], array_keys($returnType->getProperties()));
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\IntegerType::class, $returnType->getProperties()['id']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $returnType->getProperties()['slug']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $returnType->getProperties()['__typename']);
         $this->assertFalse($returnType->getIsNullable());
     }
 
@@ -50,7 +54,10 @@ class TypeHintHelperTest extends Tests\BaseBundleTestCase
         $returnType = $this->getReflectionHelper()->getReturnTypeByReflectionMethod($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ObjectType::class, $returnType);
-        $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
+        $this->assertSame(['id', 'slug', '__typename',], array_keys($returnType->getProperties()));
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\IntegerType::class, $returnType->getProperties()['id']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $returnType->getProperties()['slug']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $returnType->getProperties()['__typename']);
         $this->assertTrue($returnType->getIsNullable());
     }
 

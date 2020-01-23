@@ -9,15 +9,19 @@ use function strtolower;
 class RootSchemaResolver
 {
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\ResponsesResolver
+     * @var RestApiBundle\Services\Docs\OpenApi\ReturnTypeToSchemaConverter
      */
-    private $responsesResolver;
+    private $returnTypeToSchemaConverter;
 
-    public function __construct(RestApiBundle\Services\Docs\OpenApi\ResponsesResolver $responsesResolver)
+    public function __construct(RestApiBundle\Services\Docs\OpenApi\ReturnTypeToSchemaConverter $returnTypeToSchemaConverter)
     {
-        $this->responsesResolver = $responsesResolver;
+        $this->returnTypeToSchemaConverter = $returnTypeToSchemaConverter;
     }
 
+    /**
+     * @param RestApiBundle\DTO\Docs\RouteData[] $routeDataItems
+     * @return OpenApi\OpenApi
+     */
     public function resolve(array $routeDataItems): OpenApi\OpenApi
     {
         $root = new OpenApi\OpenApi([
@@ -31,15 +35,27 @@ class RootSchemaResolver
 
         foreach ($routeDataItems as $routeData) {
             $returnType = $routeData->getReturnType();
-            if (!$returnType instanceof RestApiBundle\DTO\Docs\ReturnType\ObjectType) {
-                throw new \InvalidArgumentException('Not implemented.');
+
+            $responses = new OpenApi\Responses([]);
+
+            if ($returnType->getIsNullable()) {
+                $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
             }
 
-
+            if ($returnType instanceof RestApiBundle\DTO\Docs\ReturnType\NullType) {
+                $responses->addResponse('200', new OpenApi\Response([
+                    'description' => 'Success response with body',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => $this->returnTypeToSchemaConverter->convert($returnType)
+                        ]
+                    ]
+                ]));
+            }
 
             $operation = new OpenApi\Operation([
                 'summary' => $routeData->getTitle(),
-                'responses' => $this->responsesResolver->resolve($returnType),
+                'responses' => $responses,
             ]);
 
             if ($routeData->getTags()) {

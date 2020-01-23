@@ -6,10 +6,6 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use RestApiBundle;
 use Symfony\Component\Routing\RouterInterface;
 use function explode;
-use function lcfirst;
-use function strpos;
-use function substr;
-use function var_dump;
 
 class RouteDataExtractor
 {
@@ -77,7 +73,6 @@ class RouteDataExtractor
                 throw new RestApiBundle\Exception\Docs\InvalidEndpointException($exception->getMessage(), $controllerClass, $actionName);
             }
 
-            var_dump($returnTypeByDocBlock);die();
             if ($returnTypeByDocBlock) {
                 $routeData->setReturnType($returnTypeByDocBlock);
             } elseif ($returnTypeByTypeHint) {
@@ -90,60 +85,5 @@ class RouteDataExtractor
         }
 
         return $items;
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return RestApiBundle\DTO\Docs\ReturnType\ReturnTypeInterface[]
-     */
-    private function getReturnTypesByResponseModelClass(string $class): array
-    {
-        $reflectionClass = new \ReflectionClass($class);
-
-        if (!$reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class)) {
-            throw new \InvalidArgumentException();
-        }
-
-        $properties = [];
-        $reflectionMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
-
-        foreach ($reflectionMethods as $reflectionMethod) {
-            if (strpos($reflectionMethod->getName(), 'get') !== 0) {
-                continue;
-            }
-
-            $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
-
-            var_dump($this->docBlockHelper->getReturnTypeByReturnTag($reflectionMethod));die();
-
-            $returnType = (string) $reflectionClass->getMethod($reflectionMethod->getName())->getReturnType();
-
-            switch ($returnType) {
-                case 'int':
-                    $properties[$propertyName] = [
-                        'type' => 'number',
-                    ];
-
-                    break;
-
-                case 'string':
-                    $properties[$propertyName] = [
-                        'type' => 'string',
-                    ];
-
-                    break;
-
-                default:
-                    throw new \InvalidArgumentException('Not implemented.');
-            }
-        }
-
-        $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = [
-            'type' => 'string',
-        ];
-
-        return $properties;
-
     }
 }

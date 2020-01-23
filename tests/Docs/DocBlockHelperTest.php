@@ -72,12 +72,15 @@ class DocBlockHelperTest extends Tests\BaseBundleTestCase
         /** @var RestApiBundle\DTO\Docs\ReturnType\CollectionType $returnType */
         $returnType = $this->getDocBlockHelper()->getReturnTypeByReturnTag($reflectionMethod);
 
+        /** @var RestApiBundle\DTO\Docs\ReturnType\ObjectType $innerType */
+        $innerType = $returnType->getType();
+
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\CollectionType::class, $returnType);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ObjectType::class, $returnType->getType());
-        $this->assertSame(['id', 'slug', '__typename',], array_keys($returnType->getType()->getProperties()));
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\IntegerType::class, $returnType->getType()->getProperties()['id']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $returnType->getType()->getProperties()['slug']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $returnType->getType()->getProperties()['__typename']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ObjectType::class, $innerType);
+        $this->assertSame(['id', 'slug', '__typename',], array_keys($innerType->getProperties()));
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\IntegerType::class, $innerType->getProperties()['id']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $innerType->getProperties()['slug']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $innerType->getProperties()['__typename']);
         $this->assertFalse($returnType->getIsNullable());
     }
 
@@ -88,12 +91,15 @@ class DocBlockHelperTest extends Tests\BaseBundleTestCase
         /** @var RestApiBundle\DTO\Docs\ReturnType\CollectionType $returnType */
         $returnType = $this->getDocBlockHelper()->getReturnTypeByReturnTag($reflectionMethod);
 
+        /** @var RestApiBundle\DTO\Docs\ReturnType\ObjectType $innerType */
+        $innerType = $returnType->getType();
+
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\CollectionType::class, $returnType);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ObjectType::class, $returnType->getType());
-        $this->assertSame(['id', 'slug', '__typename',], array_keys($returnType->getType()->getProperties()));
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\IntegerType::class, $returnType->getType()->getProperties()['id']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $returnType->getType()->getProperties()['slug']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $returnType->getType()->getProperties()['__typename']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\ObjectType::class, $innerType);
+        $this->assertSame(['id', 'slug', '__typename',], array_keys($innerType->getProperties()));
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\IntegerType::class, $innerType->getProperties()['id']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $innerType->getProperties()['slug']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\ReturnType\StringType::class, $innerType->getProperties()['__typename']);
         $this->assertTrue($returnType->getIsNullable());
     }
 
