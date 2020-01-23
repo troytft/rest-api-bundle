@@ -6,6 +6,8 @@ use Tests;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Yaml\Yaml;
+use function file_get_contents;
+use function var_dump;
 
 class GenerateDocsCommandTest extends Tests\BaseBundleTestCase
 {
@@ -18,6 +20,7 @@ class GenerateDocsCommandTest extends Tests\BaseBundleTestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(['--output' => $temporaryOutputFile]);
 
+        var_dump(file_get_contents($temporaryOutputFile));
         $generatedData = Yaml::parseFile($temporaryOutputFile);
         $preparedData = Yaml::parseFile(__DIR__ . '/../data/openapi.yaml');
 

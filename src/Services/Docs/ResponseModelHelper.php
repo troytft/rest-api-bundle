@@ -23,10 +23,10 @@ class ResponseModelHelper
             return $this->objectClassCache[$class];
         }
 
-        $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
-        if (!$reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class)) {
-            throw new \InvalidArgumentException();
-        }
+            $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
+            if (!$reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class)) {
+                throw new \InvalidArgumentException();
+            }
 
         $properties = [];
         $reflectionMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);

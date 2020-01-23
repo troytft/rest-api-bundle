@@ -6,6 +6,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use RestApiBundle;
 use Symfony\Component\Routing\RouterInterface;
 use function explode;
+use function var_dump;
 
 class RouteDataExtractor
 {
@@ -57,12 +58,16 @@ class RouteDataExtractor
                 ->setPath($route->getPath())
                 ->setMethods($route->getMethods());
 
-//            var_dump($route->getRequirements(), $reflectionMethod->getParameters());
+            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+                $type = $this->typeReader->getTypeByReflectionParameter($reflectionParameter);
 
-//            foreach ($reflectionMethod->getParameters() as $actionParameter) {
-//                //$pathParam = new RestApiBundle\DTO\Docs\PathParameter($actionParameter->getName())
-////                $actionParameter->getName()
-//            }
+                if ($type instanceof RestApiBundle\DTO\Docs\Type\ScalarInterface) {
+                    $pathParameterFormat = $route->getRequirement($reflectionParameter->getName());
+
+                    $routeData
+                        ->addPathParameter(new RestApiBundle\DTO\Docs\PathParameter($reflectionParameter->getName(), $type, $pathParameterFormat));
+                }
+            }
 
             try {
                 $returnType = $this->typeReader->getReturnTypeByReflectionMethod($reflectionMethod);

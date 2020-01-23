@@ -4,7 +4,7 @@ namespace RestApiBundle\DTO\Docs\Type;
 
 use RestApiBundle;
 
-class BooleanType implements RestApiBundle\DTO\Docs\Type\TypeInterface
+class BooleanType implements RestApiBundle\DTO\Docs\Type\TypeInterface, RestApiBundle\DTO\Docs\Type\ScalarInterface
 {
     /**
      * @var bool

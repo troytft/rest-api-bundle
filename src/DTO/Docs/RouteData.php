@@ -39,7 +39,7 @@ class RouteData
     /**
      * @var RestApiBundle\DTO\Docs\PathParameter[]
      */
-    private $pathParams = [];
+    private $pathParameters = [];
 
     public function getTitle(): string
     {
@@ -116,13 +116,13 @@ class RouteData
     /**
      * @return RestApiBundle\DTO\Docs\PathParameter[]
      */
-    public function getPathParams(): array
+    public function getPathParameters(): array
     {
-        return $this->pathParams;
+        return $this->pathParameters;
     }
 
-    public function addPathParam(RestApiBundle\DTO\Docs\PathParameter $pathParam)
+    public function addPathParameter(RestApiBundle\DTO\Docs\PathParameter $pathParameter)
     {
-        $this->pathParams[] = $pathParam;
+        $this->pathParameters[] = $pathParameter;
     }
 }
