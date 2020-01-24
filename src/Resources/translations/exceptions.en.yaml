@@ -10,3 +10,4 @@ Mapper\Exception\Transformer\InvalidDateFormatException: This value should be va
 Mapper\Exception\Transformer\InvalidDateTimeFormatException: This value should be valid date time with format "{format}".
 RestApiBundle\Exception\RequestModel\EntityNotFoundException: An entity with specified value not found.
 RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException: One entity of entities collection not found.
+RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException: An entity ​​should not be repeated.

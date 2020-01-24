@@ -73,4 +73,17 @@ class EntitiesCollectionTest extends BaseBundleTestCase
             $this->assertSame(['fieldWithCollectionOfEntities.1' => ['This value should be an integer.']], $exception->getProperties());
         }
     }
+
+    public function testRepeatableEntity()
+    {
+        try {
+            $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithCollectionOfEntities();
+            $this->getRequestModelManager()->handle($model, [
+                'fieldWithCollectionOfEntities' => [1, 1]
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $this->assertSame(['fieldWithCollectionOfEntities' => ['An entity ​​should not be repeated.']], $exception->getProperties());
+        }
+    }
 }
