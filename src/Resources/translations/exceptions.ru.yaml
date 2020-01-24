@@ -10,4 +10,4 @@ Mapper\Exception\Transformer\InvalidDateFormatException: Это значение
 Mapper\Exception\Transformer\InvalidDateTimeFormatException: Это значение должно быть датой и временем в формате "{format}".
 RestApiBundle\Exception\RequestModel\EntityNotFoundException: Сущность не найдена.
 RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException: Одна из сущностей коллекции не найдена.
-RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException: Сущности не должны повторяться.
+RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException: Значения должны должны быть уникальными.
