@@ -29,6 +29,10 @@ class EntitiesCollectionTransformer implements Mapper\Transformer\TransformerInt
         $class = $options[static::CLASS_OPTION];
         $field = $options[static::FIELD_OPTION];
 
+        if (count($value) !== count(array_unique($value))) {
+            throw new RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException();
+        }
+
         /** @var EntityRepository $repository */
         $repository = $this->entityManager->getRepository($class);
         $results = $repository->findBy([$field => $value]);
