@@ -29,7 +29,7 @@ class EntitiesCollectionTransformer implements Mapper\Transformer\TransformerInt
         $class = $options[static::CLASS_OPTION];
         $field = $options[static::FIELD_OPTION];
 
-        if (count($value) !== array_unique($value)) {
+        if (count($value) !== count(array_unique($value))) {
             throw new RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException();
         }
 

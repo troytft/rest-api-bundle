@@ -83,7 +83,7 @@ class EntitiesCollectionTest extends BaseBundleTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['fieldWithCollectionOfEntities' => ['An entity ​​should not be repeated.']], $exception->getProperties());
+            $this->assertSame(['fieldWithCollectionOfEntities' => ['Values ​​should be unique.']], $exception->getProperties());
         }
     }
 }
