@@ -15,15 +15,23 @@ class GenerateDocsCommand extends Command
     protected static $defaultName = 'rest-api:generate-docs';
 
     /**
-     * @var RestApiBundle\Services\Docs\DocsGenerator
+     * @var RestApiBundle\Services\Docs\RouteDataExtractor
      */
-    private $docsGenerator;
+    private $routeDataExtractor;
 
-    public function __construct(RestApiBundle\Services\Docs\DocsGenerator $docsGenerator)
-    {
-        $this->docsGenerator = $docsGenerator;
+    /**
+     * @var RestApiBundle\Services\Docs\OpenApi\RootSchemaResolver
+     */
+    private $openApiRootSchemaResolver;
 
+    public function __construct(
+        RestApiBundle\Services\Docs\RouteDataExtractor $routeDataExtractor,
+        RestApiBundle\Services\Docs\OpenApi\RootSchemaResolver $openApiRootSchemaResolver
+    ) {
         parent::__construct();
+
+        $this->routeDataExtractor = $routeDataExtractor;
+        $this->openApiRootSchemaResolver = $openApiRootSchemaResolver;
     }
 
     protected function configure()
@@ -41,7 +49,10 @@ class GenerateDocsCommand extends Command
             return 100;
         }
 
-        $this->docsGenerator->writeToFile($input->getOption(static::OUTPUT_OPTION));
+        $routeDataItems = $this->routeDataExtractor->getItems();
+        $rootSchema = $this->openApiRootSchemaResolver->resolve($routeDataItems);
+
+        \cebe\openapi\Writer::writeToYamlFile($rootSchema, $input->getOption(static::OUTPUT_OPTION));
 
         return 0;
     }
