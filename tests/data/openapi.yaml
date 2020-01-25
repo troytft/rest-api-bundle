@@ -33,3 +33,9 @@ paths:
                     schema:
                         type: string
                         nullable: false
+            tags:
+                - demo
+tags:
+    -
+        name: demo
+

@@ -4,6 +4,8 @@ namespace RestApiBundle\Services\Docs\OpenApi;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
+use function array_merge;
+use function array_values;
 use function strtolower;
 
 class RootSchemaResolver
@@ -33,7 +35,18 @@ class RootSchemaResolver
             'paths' => [],
         ]);
 
+        $tags = [];
+
         foreach ($routeDataItems as $routeData) {
+            foreach ($routeData->getTags() as $tag) {
+                if (isset($tags[$tag])) {
+
+                }
+
+                $tags[$tag] = [
+                    'name' => $tag,
+                ];
+            }
             $returnType = $routeData->getReturnType();
 
             $responses = new OpenApi\Responses([]);
@@ -95,6 +108,8 @@ class RootSchemaResolver
 
             $root->paths->addPath($routeData->getPath(), $pathItem);
         }
+
+        $root->tags = array_values($tags);
 
         return $root;
     }
