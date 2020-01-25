@@ -15,7 +15,7 @@ class ResponseModelHelper
      */
     private $objectClassCache = [];
 
-    public function getObjectTypeByClass(string $class): RestApiBundle\DTO\Docs\Type\ObjectType
+    public function getObjectTypeByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Type\ObjectType
     {
         $class = ltrim($class, '\\');
 
@@ -63,13 +63,14 @@ class ResponseModelHelper
                     break;
 
                 default:
-                    $properties[$propertyName] = $this->getObjectTypeByClass((string) $returnType);
+                    $class = (string) $returnType;
+                    $properties[$propertyName] = $this->getObjectTypeByClass($class, $returnType->allowsNull());
             }
         }
 
         $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\Docs\Type\StringType(false);
 
-        $this->objectClassCache[$class] = new RestApiBundle\DTO\Docs\Type\ObjectType($properties, false);
+        $this->objectClassCache[$class] = new RestApiBundle\DTO\Docs\Type\ObjectType($properties, $isNullable);
 
         return $this->objectClassCache[$class];
     }

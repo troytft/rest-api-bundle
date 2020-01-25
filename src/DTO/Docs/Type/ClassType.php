@@ -4,7 +4,7 @@ namespace RestApiBundle\DTO\Docs\Type;
 
 use RestApiBundle;
 
-class UnknownClassType implements RestApiBundle\DTO\Docs\Type\TypeInterface
+class ClassType implements RestApiBundle\DTO\Docs\Type\TypeInterface
 {
     /**
      * @var string
