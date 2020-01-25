@@ -46,25 +46,30 @@ class TypeReader
             $result = $this->typeHintHelper->getReturnTypeByReflectionMethod($reflectionMethod);
         }
 
-        if ($result instanceof RestApiBundle\DTO\Docs\Type\ClassType || $result instanceof RestApiBundle\DTO\Docs\Type\ClassesCollectionType) {
-            if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($result->getClass())) {
-                throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
-            }
-
-            $objectType = $this->responseModelHelper->getObjectTypeByClass($result->getClass(), $result->getIsNullable());
-
-            if ($result instanceof RestApiBundle\DTO\Docs\Type\ClassesCollectionType) {
-                $result = new RestApiBundle\DTO\Docs\Type\CollectionType($objectType, $result->getIsNullable());
-            } else {
-                $result = $objectType;
-            }
-        }
-
-        return $result;
+        return $this->normalizeReturnType($result);
     }
 
     public function getTypeByReflectionParameter(\ReflectionParameter $reflectionParameter): ?RestApiBundle\DTO\Docs\Type\TypeInterface
     {
         return $this->typeHintHelper->getParameterTypeByReflectionParameter($reflectionParameter);
+    }
+
+    private function normalizeReturnType(?RestApiBundle\DTO\Docs\Type\TypeInterface $type): ?RestApiBundle\DTO\Docs\Type\TypeInterface
+    {
+        $result = $type;
+
+        if ($type instanceof RestApiBundle\DTO\Docs\Type\ClassType || $type instanceof RestApiBundle\DTO\Docs\Type\ClassesCollectionType) {
+            if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($type->getClass())) {
+                throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
+            }
+
+            $result = $this->responseModelHelper->getObjectTypeByClass($type->getClass(), $type->getIsNullable());
+
+            if ($type instanceof RestApiBundle\DTO\Docs\Type\ClassesCollectionType) {
+                $result = new RestApiBundle\DTO\Docs\Type\CollectionType($result, $type->getIsNullable());
+            }
+        }
+
+        return $result;
     }
 }

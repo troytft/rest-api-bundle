@@ -16,7 +16,7 @@ class RouteDataExtractor
     private $router;
 
     /**
-     * @var RestApiBundle\Services\Docs\TypeReader
+     * @var RestApiBundle\Services\Docs\Type\TypeReader
      */
     private $typeReader;
 
@@ -27,7 +27,7 @@ class RouteDataExtractor
 
     public function __construct(
         RouterInterface $router,
-        RestApiBundle\Services\Docs\TypeReader $typeReader
+        RestApiBundle\Services\Docs\Type\TypeReader $typeReader
     ) {
         $this->router = $router;
         $this->typeReader = $typeReader;
