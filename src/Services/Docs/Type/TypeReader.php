@@ -63,7 +63,7 @@ class TypeReader
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
-            $result = $this->responseModelHelper->getObjectTypeByClass($type->getClass(), $type->getIsNullable());
+            $result = $this->responseModelHelper->resolveObjectTypeByClassType(new RestApiBundle\DTO\Docs\Type\ClassType($type->getClass(), $type->getIsNullable()));
 
             if ($type instanceof RestApiBundle\DTO\Docs\Type\ClassesCollectionType) {
                 $result = new RestApiBundle\DTO\Docs\Type\CollectionType($result, $type->getIsNullable());
