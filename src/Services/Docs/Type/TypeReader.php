@@ -54,7 +54,7 @@ class TypeReader
         return $this->typeHintHelper->getParameterTypeByReflectionParameter($reflectionParameter);
     }
 
-    private function normalizeReturnType(?RestApiBundle\DTO\Docs\Type\TypeInterface $type): ?RestApiBundle\DTO\Docs\Type\TypeInterface
+    public function normalizeReturnType(?RestApiBundle\DTO\Docs\Type\TypeInterface $type): ?RestApiBundle\DTO\Docs\Type\TypeInterface
     {
         $result = $type;
 
