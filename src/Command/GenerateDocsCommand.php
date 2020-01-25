@@ -11,6 +11,7 @@ use Symfony\Component\Console\Command\Command;
 class GenerateDocsCommand extends Command
 {
     private const OUTPUT_OPTION = 'output';
+    private const CONTROLLER_NAMESPACE_PREFIX_OPTION = 'controller-namespace-prefix';
 
     protected static $defaultName = 'rest-api:generate-docs';
 
@@ -37,7 +38,8 @@ class GenerateDocsCommand extends Command
     protected function configure()
     {
         $this
-            ->addOption(static::OUTPUT_OPTION, 'o', InputOption::VALUE_REQUIRED, 'Path to output file.');
+            ->addOption(static::OUTPUT_OPTION, null, InputOption::VALUE_REQUIRED, 'Path to output file.')
+            ->addOption(static::CONTROLLER_NAMESPACE_PREFIX_OPTION, null, InputOption::VALUE_REQUIRED, 'Prefix for controller namespace.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -49,7 +51,7 @@ class GenerateDocsCommand extends Command
             return 100;
         }
 
-        $routeDataItems = $this->routeDataExtractor->getItems();
+        $routeDataItems = $this->routeDataExtractor->getItems($input->getOption(static::CONTROLLER_NAMESPACE_PREFIX_OPTION));
         $rootSchema = $this->openApiRootSchemaResolver->resolve($routeDataItems);
 
         \cebe\openapi\Writer::writeToYamlFile($rootSchema, $input->getOption(static::OUTPUT_OPTION));
