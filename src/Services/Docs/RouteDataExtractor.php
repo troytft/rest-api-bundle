@@ -7,6 +7,7 @@ use RestApiBundle;
 use Symfony\Component\Routing\RouterInterface;
 use function explode;
 use function sprintf;
+use function strpos;
 
 class RouteDataExtractor
 {
@@ -37,12 +38,16 @@ class RouteDataExtractor
     /**
      * @return RestApiBundle\DTO\Docs\RouteData[]
      */
-    public function getItems(): array
+    public function getItems(?string $controllerNamespacePrefix): array
     {
         $items = [];
 
         foreach ($this->router->getRouteCollection() as $route) {
             [$controllerClass, $actionName] = explode('::', $route->getDefault('_controller'));
+
+            if ($controllerNamespacePrefix && strpos($controllerClass, $controllerNamespacePrefix) !== 0) {
+                continue;
+            }
 
             $controllerReflectionClass = RestApiBundle\Services\ReflectionClassStore::get($controllerClass);
             $reflectionMethod = $controllerReflectionClass->getMethod($actionName);

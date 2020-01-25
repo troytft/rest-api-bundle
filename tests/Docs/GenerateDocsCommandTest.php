@@ -16,7 +16,10 @@ class GenerateDocsCommandTest extends Tests\BaseBundleTestCase
         $application = new Application($this->getKernel());
         $command = $application->find('rest-api:generate-docs');
         $commandTester = new CommandTester($command);
-        $commandTester->execute(['--output' => $temporaryOutputFile]);
+        $commandTester->execute([
+            '--output' => $temporaryOutputFile,
+            '--controller-namespace-prefix' => Tests\DemoApp\DemoBundle\Controller\DemoController::class,
+        ]);
 
         $generatedData = Yaml::parseFile($temporaryOutputFile);
 
