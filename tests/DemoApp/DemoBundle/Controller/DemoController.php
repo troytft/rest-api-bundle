@@ -84,7 +84,7 @@ class DemoController extends BaseController
     }
 
     /**
-     * @Docs\Endpoint(title="Genre response model details")
+     * @Docs\Endpoint(title="Genre response model details", tags={"demo"})
      *
      * @Route("/genres/by-slug/{genre}", methods="GET", requirements={"genre": "\d+"})
      *
