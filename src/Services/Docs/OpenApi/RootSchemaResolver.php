@@ -4,7 +4,6 @@ namespace RestApiBundle\Services\Docs\OpenApi;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
-use function array_merge;
 use function array_values;
 use function strtolower;
 
