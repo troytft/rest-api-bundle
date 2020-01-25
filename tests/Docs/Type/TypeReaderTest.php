@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Docs;
+namespace Tests\Docs\Type;
 
 use Tests;
 use RestApiBundle;
 use function array_keys;
 
-class DocBlockHelperTest extends Tests\BaseBundleTestCase
+class TypeReaderTest extends Tests\BaseBundleTestCase
 {
     /**
      * @var \ReflectionClass
@@ -20,27 +20,12 @@ class DocBlockHelperTest extends Tests\BaseBundleTestCase
         $this->reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
     }
 
-    public function testMethodWithoutReturnTag()
+    public function testSingleResponseModelNormalization()
     {
-        $reflectionMethod = $this->reflectionClass->getMethod('methodWithoutReturnTag');
-
-        $this->assertNull($this->getDocBlockHelper()->getReturnTypeByReturnTag($reflectionMethod));
-    }
-
-    public function testMethodWithNullReturnTag()
-    {
-        $reflectionMethod = $this->reflectionClass->getMethod('methodWithNullReturnTag');
-        $returnType = $this->getDocBlockHelper()->getReturnTypeByReturnTag($reflectionMethod);
-
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\NullType::class, $returnType);
-    }
-
-    public function testSingleResponseModelReturnTag()
-    {
-        $reflectionMethod = $this->reflectionClass->getMethod('methodWithSingleResponseModelReturnTag');
+        $classType = new RestApiBundle\DTO\Docs\Type\ClassType(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, false);
 
         /** @var RestApiBundle\DTO\Docs\Type\ObjectType $returnType */
-        $returnType = $this->getDocBlockHelper()->getReturnTypeByReturnTag($reflectionMethod);
+        $returnType = $this->getTypeReader()->normalizeReturnType($classType);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ObjectType::class, $returnType);
         $this->assertSame(['id', 'slug', '__typename',], array_keys($returnType->getProperties()));
@@ -50,12 +35,12 @@ class DocBlockHelperTest extends Tests\BaseBundleTestCase
         $this->assertFalse($returnType->getIsNullable());
     }
 
-    public function testNullableSingleResponseModelReturnTag()
+    public function testNullableSingleResponseModelNormalization()
     {
-        $reflectionMethod = $this->reflectionClass->getMethod('methodWithNullableSingleResponseModelReturnTag');
+        $classType = new RestApiBundle\DTO\Docs\Type\ClassType(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, true);
 
         /** @var RestApiBundle\DTO\Docs\Type\ObjectType $returnType */
-        $returnType = $this->getDocBlockHelper()->getReturnTypeByReturnTag($reflectionMethod);
+        $returnType = $this->getTypeReader()->normalizeReturnType($classType);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ObjectType::class, $returnType);
         $this->assertSame(['id', 'slug', '__typename',], array_keys($returnType->getProperties()));
@@ -65,12 +50,12 @@ class DocBlockHelperTest extends Tests\BaseBundleTestCase
         $this->assertTrue($returnType->getIsNullable());
     }
 
-    public function testArrayOfResponseModelsReturnTag()
+    public function testArrayOfResponseModelsNormalization()
     {
-        $reflectionMethod = $this->reflectionClass->getMethod('methodWithArrayOfResponseModelsReturnTag');
+        $classesCollectionType = new RestApiBundle\DTO\Docs\Type\ClassesCollectionType(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, false);
 
         /** @var RestApiBundle\DTO\Docs\Type\CollectionType $returnType */
-        $returnType = $this->getDocBlockHelper()->getReturnTypeByReturnTag($reflectionMethod);
+        $returnType = $this->getTypeReader()->normalizeReturnType($classesCollectionType);
 
         /** @var RestApiBundle\DTO\Docs\Type\ObjectType $innerType */
         $innerType = $returnType->getType();
@@ -84,12 +69,12 @@ class DocBlockHelperTest extends Tests\BaseBundleTestCase
         $this->assertFalse($returnType->getIsNullable());
     }
 
-    public function testNullableArrayOfResponseModelsReturnTag()
+    public function testNullableArrayOfResponseModelsNormalization()
     {
-        $reflectionMethod = $this->reflectionClass->getMethod('methodWithNullableArrayOfResponseModelsReturnTag');
+        $classesCollectionType = new RestApiBundle\DTO\Docs\Type\ClassesCollectionType(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, true);
 
         /** @var RestApiBundle\DTO\Docs\Type\CollectionType $returnType */
-        $returnType = $this->getDocBlockHelper()->getReturnTypeByReturnTag($reflectionMethod);
+        $returnType = $this->getTypeReader()->normalizeReturnType($classesCollectionType);
 
         /** @var RestApiBundle\DTO\Docs\Type\ObjectType $innerType */
         $innerType = $returnType->getType();
@@ -103,13 +88,11 @@ class DocBlockHelperTest extends Tests\BaseBundleTestCase
         $this->assertTrue($returnType->getIsNullable());
     }
 
-    private function getDocBlockHelper(): RestApiBundle\Services\Docs\DocBlockHelper
+    private function getTypeReader(): RestApiBundle\Services\Docs\Type\TypeReader
     {
-        $value = $this->getContainer()->get(RestApiBundle\Services\Docs\DocBlockHelper::class);
-        if (!$value instanceof RestApiBundle\Services\Docs\DocBlockHelper) {
-            throw new \InvalidArgumentException();
-        }
+        /** @var RestApiBundle\Services\Docs\Type\TypeReader $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Type\TypeReader::class);
 
-        return $value;
+        return $result;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs;
+namespace RestApiBundle\Services\Docs\Type;
 
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
@@ -15,18 +15,12 @@ use function ltrim;
 class DocBlockHelper
 {
     /**
-     * @var RestApiBundle\Services\Docs\ResponseModelHelper
-     */
-    private $responseModelHelper;
-
-    /**
      * @var DocBlockFactory
      */
     private $docBlockFactory;
 
-    public function __construct(RestApiBundle\Services\Docs\ResponseModelHelper $responseModelHelper)
+    public function __construct()
     {
-        $this->responseModelHelper = $responseModelHelper;
         $this->docBlockFactory = DocBlockFactory::createInstance();
     }
 
@@ -58,9 +52,9 @@ class DocBlockHelper
         if ($type instanceof Null_) {
             $result = $this->convertNullTypeToReturnType($type);
         } elseif ($type instanceof Object_) {
-            $result = $this->convertObjectTypeToReturnType($type, false);
+            $result = $this->convertObjectTypeToClassType($type, false);
         } elseif ($type instanceof Array_) {
-            $result = $this->convertArrayTypeToReturnType($type, false);
+            $result = $this->convertArrayTypeToClassesCollectionType($type, false);
         } elseif ($type instanceof Compound) {
             $result = $this->convertCompoundTypeToReturnType($type);
         } else {
@@ -94,9 +88,9 @@ class DocBlockHelper
 
         foreach ($compoundTypes as $compoundType) {
             if ($compoundType instanceof Object_) {
-                $result = $this->convertObjectTypeToReturnType($compoundType, true);
+                $result = $this->convertObjectTypeToClassType($compoundType, true);
             } elseif ($compoundType instanceof Array_) {
-                $result = $this->convertArrayTypeToReturnType($compoundType, true);
+                $result = $this->convertArrayTypeToClassesCollectionType($compoundType, true);
             } elseif ($compoundType instanceof Null_) {
                 continue;
             } else {
@@ -111,27 +105,22 @@ class DocBlockHelper
         return $result;
     }
 
-    private function convertObjectTypeToReturnType(Object_ $type, bool $isNullable)
+    private function convertObjectTypeToClassType(Object_ $type, bool $isNullable)
     {
         $class = ltrim((string) $type, '\\');
-        if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($class)) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
-        }
 
-        $responseModelObject = $this->responseModelHelper->getObjectTypeByClass($class);
-
-        return new RestApiBundle\DTO\Docs\Type\ObjectType($responseModelObject->getProperties(), $isNullable);
+        return new RestApiBundle\DTO\Docs\Type\ClassType($class, $isNullable);
     }
 
-    private function convertArrayTypeToReturnType(Array_ $type, bool $isNullable)
+    private function convertArrayTypeToClassesCollectionType(Array_ $type, bool $isNullable)
     {
         $valueType = $type->getValueType();
         if (!$valueType instanceof Object_) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
-        $objectReturnType = $this->convertObjectTypeToReturnType($valueType, $isNullable);
+        $classType = $this->convertObjectTypeToClassType($valueType, $isNullable);
 
-        return new RestApiBundle\DTO\Docs\Type\CollectionType($objectReturnType, $isNullable);
+        return new RestApiBundle\DTO\Docs\Type\ClassesCollectionType($classType->getClass(), $isNullable);
     }
 }
