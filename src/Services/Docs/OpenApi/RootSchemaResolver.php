@@ -37,15 +37,16 @@ class RootSchemaResolver
         $tags = [];
 
         foreach ($routeDataItems as $routeData) {
-            foreach ($routeData->getTags() as $tag) {
-                if (isset($tags[$tag])) {
-
+            foreach ($routeData->getTags() as $tagName) {
+                if (isset($tags[$tagName])) {
+                    continue;
                 }
 
-                $tags[$tag] = [
-                    'name' => $tag,
-                ];
+                $tags[$tagName] = new OpenApi\Tag([
+                    'name' => $tagName,
+                ]);
             }
+            
             $returnType = $routeData->getReturnType();
 
             $responses = new OpenApi\Responses([]);
