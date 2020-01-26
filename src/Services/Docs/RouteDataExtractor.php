@@ -2,8 +2,8 @@
 
 namespace RestApiBundle\Services\Docs;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use RestApiBundle;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Routing\RouterInterface;
 use function explode;
 use function sprintf;
@@ -17,9 +17,19 @@ class RouteDataExtractor
     private $router;
 
     /**
-     * @var RestApiBundle\Services\Docs\Type\TypeReader
+     * @var RestApiBundle\Services\Docs\Type\DocBlockReader
      */
-    private $typeReader;
+    private $docBlockReader;
+
+    /**
+     * @var RestApiBundle\Services\Docs\Type\TypeHintReader
+     */
+    private $typeHintReader;
+
+    /**
+     * @var RestApiBundle\Services\Docs\Type\ResponseModelReader
+     */
+    private $responseModelReader;
 
     /**
      * @var AnnotationReader
@@ -28,10 +38,14 @@ class RouteDataExtractor
 
     public function __construct(
         RouterInterface $router,
-        RestApiBundle\Services\Docs\Type\TypeReader $typeReader
+        RestApiBundle\Services\Docs\Type\DocBlockReader $docBlockReader,
+        RestApiBundle\Services\Docs\Type\TypeHintReader $typeHintReader,
+        RestApiBundle\Services\Docs\Type\ResponseModelReader $responseModelReader
     ) {
         $this->router = $router;
-        $this->typeReader = $typeReader;
+        $this->docBlockReader = $docBlockReader;
+        $this->typeHintReader = $typeHintReader;
+        $this->responseModelReader = $responseModelReader;
         $this->annotationReader = new AnnotationReader();
     }
 
@@ -77,16 +91,37 @@ class RouteDataExtractor
             }
 
             try {
-                $returnType = $this->typeReader->getReturnTypeByReflectionMethod($reflectionMethod);
+                $returnType = $this->docBlockReader->getReturnTypeByReturnTag($reflectionMethod);
+                if (!$returnType) {
+                    $returnType = $this->typeHintReader->getReturnTypeByReflectionMethod($reflectionMethod);
+                }
             } catch (RestApiBundle\Exception\Docs\InvalidDefinition\InvalidDefinitionExceptionInterface $exception) {
                 throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception->getMessage(), $controllerClass, $actionName);
             }
 
-            if ($returnType) {
-                $routeData->setReturnType($returnType);
-            } else {
+            if (!$returnType) {
                 throw new RestApiBundle\Exception\Docs\InvalidDefinitionException('Return type not found in docBlock and type-hint.', $controllerClass, $actionName);
             }
+
+            if ($returnType instanceof RestApiBundle\DTO\Docs\Type\ClassType) {
+                if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($returnType->getClass())) {
+                    throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
+                }
+
+                $returnType = $this->responseModelReader->resolveObjectTypeByClass($returnType->getClass(), $returnType->getIsNullable());
+            }
+
+            if ($returnType instanceof RestApiBundle\DTO\Docs\Type\ClassesCollectionType) {
+                if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($returnType->getClass())) {
+                    throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
+                }
+
+                $objectType = $this->responseModelReader->resolveObjectTypeByClass($returnType->getClass(), $returnType->getIsNullable());
+                $returnType = new RestApiBundle\DTO\Docs\Type\CollectionType($objectType, $objectType->getIsNullable());
+            }
+
+            $routeData
+                ->setReturnType($returnType);
 
             $items[] = $routeData;
         }

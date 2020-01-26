@@ -12,7 +12,7 @@ use RestApiBundle;
 use function count;
 use function ltrim;
 
-class DocBlockHelper
+class DocBlockReader
 {
     /**
      * @var DocBlockFactory

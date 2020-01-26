@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs;
+namespace RestApiBundle\Services\Docs\Type;
 
 use RestApiBundle;
 use function lcfirst;
@@ -8,7 +8,7 @@ use function ltrim;
 use function strpos;
 use function substr;
 
-class ResponseModelHelper
+class ResponseModelReader
 {
     /**
      * @var array<string, RestApiBundle\DTO\Docs\Type\ObjectType>
@@ -17,7 +17,12 @@ class ResponseModelHelper
 
     public function resolveObjectTypeByClassType(RestApiBundle\DTO\Docs\Type\ClassType $classType): RestApiBundle\DTO\Docs\Type\ObjectType
     {
-        $class = ltrim($classType->getClass(), '\\');
+        return $this->resolveObjectTypeByClass($classType->getClass(), $classType->getIsNullable());
+    }
+
+    public function resolveObjectTypeByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Type\ObjectType
+    {
+        $class = ltrim($class, '\\');
 
         if (isset($this->objectClassCache[$class])) {
             return $this->objectClassCache[$class];
@@ -43,7 +48,7 @@ class ResponseModelHelper
 
         $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\Docs\Type\StringType(false);
 
-        $this->objectClassCache[$class] = new RestApiBundle\DTO\Docs\Type\ObjectType($properties, $classType->getIsNullable());
+        $this->objectClassCache[$class] = new RestApiBundle\DTO\Docs\Type\ObjectType($properties, $isNullable);
 
         return $this->objectClassCache[$class];
     }
