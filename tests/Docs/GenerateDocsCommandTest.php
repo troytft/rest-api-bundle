@@ -103,7 +103,7 @@ class GenerateDocsCommandTest extends Tests\BaseBundleTestCase
         ]);
 
         $this->assertSame(100, $commandTester->getStatusCode());
-        $this->assertStringContainsString('[ERROR] Original Error Message: Return type not found in docBlock and type-hint.', $commandTester->getDisplay());
+        $this->assertStringContainsString('[ERROR] Error: Return type not found in docBlock and type-hint.', $commandTester->getDisplay());
         $this->assertStringContainsString('Controller: Tests\DemoApp\DemoBundle\Controller\InvalidDefinition\UnknownReturnTypeController', $commandTester->getDisplay());
         $this->assertStringContainsString('Action: getGenreAction ', $commandTester->getDisplay());
     }
