@@ -31,7 +31,7 @@ info:
     title: 'Open API Specification'
     version: 1.0.0
 paths:
-    '/genres/by-slug/{genre}':
+    '/genres/by-slug/{slug}':
         get:
             summary: 'Genre response model details'
             responses:
@@ -54,9 +54,9 @@ paths:
                                 nullable: false
             parameters:
                 -
-                    name: genre
+                    name: slug
                     in: path
-                    description: 'String regex format is "\d+".'
+                    description: 'Parameter regex format is "[\w-]+".'
                     required: true
                     schema:
                         type: string
@@ -69,7 +69,9 @@ tags:
 
 YAML;
 
-        $this->assertSame($expextedYaml, file_get_contents($outputFile));
+        $outputFileContent = file_get_contents($outputFile);
+
+        $this->assertSame($expextedYaml, $outputFileContent);
     }
 
     public function testInvalidDefinitionError()
