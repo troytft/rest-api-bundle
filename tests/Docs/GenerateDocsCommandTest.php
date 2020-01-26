@@ -6,7 +6,6 @@ use Tests;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Yaml\Yaml;
-use function str_replace;
 use function sys_get_temp_dir;
 use function tempnam;
 
@@ -106,7 +105,7 @@ class GenerateDocsCommandTest extends Tests\BaseBundleTestCase
         $this->assertSame(100, $commandTester->getStatusCode());
         $this->assertStringContainsString('Message: Return type not found in docBlock and type-hint.', $commandTester->getDisplay());
         $this->assertStringContainsString('Controller: Tests\DemoApp\DemoBundle\Controller\InvalidDefinition\UnknownReturnTypeController', $commandTester->getDisplay());
-        $this->assertStringContainsString('Action: getGenreAction ', $commandTester->getDisplay());
+        $this->assertStringContainsString('Action: getGenreAction', $commandTester->getDisplay());
     }
 
     private function getOutputFile(): string
