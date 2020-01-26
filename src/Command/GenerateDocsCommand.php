@@ -57,13 +57,12 @@ class GenerateDocsCommand extends Command
 
         try {
             $routeDataItems = $this->routeDataExtractor->getItems($input->getOption(static::CONTROLLER_NAMESPACE_PREFIX_OPTION));
-        } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $invalidDefinitionException) {
-            $io->error(sprintf(
-                "Error: %s\nController: %s\nAction: %s",
-                $invalidDefinitionException->getOriginalErrorMessage(),
-                $invalidDefinitionException->getControllerClass(),
-                $invalidDefinitionException->getActionName()
-            ));
+        } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
+            $io->error([
+                sprintf("Error: %s", $exception->getOriginalErrorMessage()),
+                sprintf("Controller: %s", $exception->getControllerClass()),
+                sprintf("Action: %s", $exception->getActionName()),
+            ]);
 
             return 100;
         }
