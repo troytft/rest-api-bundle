@@ -28,44 +28,44 @@ class GenerateDocsCommandTest extends Tests\BaseBundleTestCase
         $expextedYaml = <<<YAML
 openapi: 3.0.0
 info:
-  title: 'Open API Specification'
-  version: 1.0.0
+    title: 'Open API Specification'
+    version: 1.0.0
 paths:
-  '/genres/by-slug/{genre}':
-    get:
-      summary: 'Genre response model details'
-      responses:
-        '200':
-          description: 'Success response with body'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    nullable: false
-                  slug:
-                    type: string
-                    nullable: false
-                  __typename:
-                    type: string
-                    nullable: false
-                nullable: false
-      parameters:
-        -
-          name: genre
-          in: path
-          description: 'String regex format is "\d+".'
-          required: true
-          schema:
-            type: string
-            nullable: false
-      tags:
-        - demo
+    '/genres/by-slug/{genre}':
+        get:
+            summary: 'Genre response model details'
+            responses:
+                '200':
+                    description: 'Success response with body'
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                        nullable: false
+                                    slug:
+                                        type: string
+                                        nullable: false
+                                    __typename:
+                                        type: string
+                                        nullable: false
+                                nullable: false
+            parameters:
+                -
+                    name: genre
+                    in: path
+                    description: 'String regex format is "\d+".'
+                    required: true
+                    schema:
+                        type: string
+                        nullable: false
+            tags:
+                - demo
 tags:
-  -
-    name: demo
+    -
+        name: demo
 
 YAML;
 
