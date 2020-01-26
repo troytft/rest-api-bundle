@@ -86,13 +86,13 @@ class DemoController extends BaseController
     /**
      * @Docs\Endpoint(title="Genre response model details", tags={"demo"})
      *
-     * @Route("/genres/by-slug/{genre}", methods="GET", requirements={"genre": "\d+"})
+     * @Route("/genres/by-slug/{slug}", methods="GET", requirements={"slug": "[\w-]+"})
      *
      * @return Tests\DemoApp\DemoBundle\ResponseModel\Genre
      */
-    public function detailsBySlugAction(Tests\DemoApp\DemoBundle\Entity\Genre $genre)
+    public function detailsBySlugAction(string $slug)
     {
-        return new Tests\DemoApp\DemoBundle\ResponseModel\Genre($genre);
+        return $this->getGenreResponseModel(1, $slug);
     }
 
     private function getGenreResponseModel(int $id, string $slug): Tests\DemoApp\DemoBundle\ResponseModel\Genre

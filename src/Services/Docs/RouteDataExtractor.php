@@ -103,10 +103,20 @@ class RouteDataExtractor
                 continue;
             }
 
-            $type = new RestApiBundle\DTO\Docs\Type\StringType($reflectionParameter->allowsNull());
-            $pathParameterDescription = sprintf('String regex format is "%s".', $route->getRequirement($reflectionParameter->getName()));
+            $parameterType = $this->typeHintReader->getParameterTypeByReflectionParameter($reflectionParameter);
+            if (!$parameterType || $parameterType instanceof RestApiBundle\DTO\Docs\Type\NullType) {
+                continue;
+            }
 
-            $routeData->addPathParameter(new RestApiBundle\DTO\Docs\PathParameter($reflectionParameter->getName(), $type, $pathParameterDescription));
+            if ($parameterType instanceof RestApiBundle\DTO\Docs\Type\ScalarInterface) {
+                $pathParameterDescription = sprintf('Parameter regex format is "%s".', $route->getRequirement($reflectionParameter->getName()));
+
+                $routeData->addPathParameter(new RestApiBundle\DTO\Docs\PathParameter($reflectionParameter->getName(), $parameterType, $pathParameterDescription));
+
+                continue;
+            }
+
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedParameterTypeException();
         }
 
         $returnType = $this->docBlockReader->getReturnTypeByReturnTag($reflectionMethod);
