@@ -103,7 +103,7 @@ class GenerateDocsCommandTest extends Tests\BaseBundleTestCase
             '--controller-namespace-prefix' => Tests\DemoApp\DemoBundle\Controller\InvalidDefinition\UnknownReturnTypeController::class,
         ]);
 
-        $commandDisplay = str_replace("\n", '', $commandTester->getDisplay());
+        $commandDisplay = str_replace(\PHP_EOL, '', $commandTester->getDisplay());
 
         $this->assertSame(100, $commandTester->getStatusCode());
         $this->assertStringContainsString('[ERROR] Error: Return type not found in docBlock and type-hint.', $commandDisplay);
