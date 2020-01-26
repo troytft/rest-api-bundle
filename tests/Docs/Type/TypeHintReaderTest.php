@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Tests;
 use RestApiBundle;
 
-class TypeHintHelperTest extends Tests\BaseBundleTestCase
+class TypeHintReaderTest extends Tests\BaseBundleTestCase
 {
     public function testUnsupportedReturnType()
     {
@@ -55,10 +55,10 @@ class TypeHintHelperTest extends Tests\BaseBundleTestCase
         $this->assertTrue($returnType->getIsNullable());
     }
 
-    private function getReflectionHelper(): RestApiBundle\Services\Docs\Type\TypeHintHelper
+    private function getReflectionHelper(): RestApiBundle\Services\Docs\Type\TypeHintReader
     {
-        /** @var RestApiBundle\Services\Docs\Type\TypeHintHelper $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Type\TypeHintHelper::class);
+        /** @var RestApiBundle\Services\Docs\Type\TypeHintReader $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Type\TypeHintReader::class);
 
         return $result;
     }

@@ -5,7 +5,7 @@ namespace Tests\Docs\Type;
 use Tests;
 use RestApiBundle;
 
-class DocBlockHelperTest extends Tests\BaseBundleTestCase
+class DocBlockReaderTest extends Tests\BaseBundleTestCase
 {
     /**
      * @var \ReflectionClass
@@ -82,10 +82,10 @@ class DocBlockHelperTest extends Tests\BaseBundleTestCase
         $this->assertTrue($returnType->getIsNullable());
     }
 
-    private function getDocBlockHelper(): RestApiBundle\Services\Docs\Type\DocBlockHelper
+    private function getDocBlockHelper(): RestApiBundle\Services\Docs\Type\DocBlockReader
     {
-        /** @var RestApiBundle\Services\Docs\Type\DocBlockHelper $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Type\DocBlockHelper::class);
+        /** @var RestApiBundle\Services\Docs\Type\DocBlockReader $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Type\DocBlockReader::class);
 
         return $result;
     }

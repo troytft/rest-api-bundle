@@ -4,7 +4,7 @@ namespace RestApiBundle\Services\Docs\Type;
 
 use RestApiBundle;
 
-class TypeHintHelper
+class TypeHintReader
 {
     public function getReturnTypeByReflectionMethod(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Type\TypeInterface
     {
