@@ -79,13 +79,13 @@ class RouteDataExtractor
             try {
                 $returnType = $this->typeReader->getReturnTypeByReflectionMethod($reflectionMethod);
             } catch (RestApiBundle\Exception\Docs\InvalidDefinition\InvalidDefinitionExceptionInterface $exception) {
-                throw new RestApiBundle\Exception\Docs\InvalidEndpointException($exception->getMessage(), $controllerClass, $actionName);
+                throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception->getMessage(), $controllerClass, $actionName);
             }
 
             if ($returnType) {
                 $routeData->setReturnType($returnType);
             } else {
-                throw new RestApiBundle\Exception\Docs\InvalidEndpointException('Return type not found in docBlock and type-hint.', $controllerClass, $actionName);
+                throw new RestApiBundle\Exception\Docs\InvalidDefinitionException('Return type not found in docBlock and type-hint.', $controllerClass, $actionName);
             }
 
             $items[] = $routeData;
