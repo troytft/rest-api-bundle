@@ -103,12 +103,10 @@ class GenerateDocsCommandTest extends Tests\BaseBundleTestCase
             '--controller-namespace-prefix' => Tests\DemoApp\DemoBundle\Controller\InvalidDefinition\UnknownReturnTypeController::class,
         ]);
 
-        $commandDisplay = str_replace(\PHP_EOL, '', $commandTester->getDisplay());
-
         $this->assertSame(100, $commandTester->getStatusCode());
-        $this->assertStringContainsString('[ERROR] Error: Return type not found in docBlock and type-hint.', $commandDisplay);
-        $this->assertStringContainsString('Controller: Tests\DemoApp\DemoBundle\Controller\InvalidDefinition\UnknownReturnTypeController', $commandDisplay);
-        $this->assertStringContainsString('Action: getGenreAction ', $commandDisplay);
+        $this->assertStringContainsString('Message: Return type not found in docBlock and type-hint.', $commandTester->getDisplay());
+        $this->assertStringContainsString('Controller: Tests\DemoApp\DemoBundle\Controller\InvalidDefinition\UnknownReturnTypeController', $commandTester->getDisplay());
+        $this->assertStringContainsString('Action: getGenreAction ', $commandTester->getDisplay());
     }
 
     private function getOutputFile(): string
