@@ -13,6 +13,16 @@ class RouteDataExtractorTest extends Tests\BaseBundleTestCase
         $this->assertCount(1, $this->getRouteDataExtractor()->getItems('Tests\DemoApp\DemoBundle\Controller\Tags\Tag1'));
     }
 
+    public function testSameCountOfPathParametersAndPathRequirements()
+    {
+        try {
+            $this->getRouteDataExtractor()->getItems(Tests\DemoApp\DemoBundle\Controller\InvalidDefinition\EmptyRouteRequirementsController::class);
+            $this->fail();
+        } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
+            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\InvalidPathParametersException::class, $exception->getPrevious());
+        }
+    }
+
     private function getRouteDataExtractor(): RestApiBundle\Services\Docs\RouteDataExtractor
     {
         /** @var RestApiBundle\Services\Docs\RouteDataExtractor $result */

@@ -58,7 +58,7 @@ class GenerateDocsCommand extends Command
             $output
                 ->writeln('Output file option not specified.');
 
-            return 100;
+            return 1;
         }
 
         try {
@@ -71,7 +71,7 @@ class GenerateDocsCommand extends Command
                 sprintf("Action: %s", $exception->getActionName()),
             ]);
 
-            return 100;
+            return 1;
         }
 
         $rootSchema = $this->openApiRootSchemaResolver->resolve($routeDataItems);

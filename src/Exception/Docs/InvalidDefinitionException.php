@@ -21,9 +21,9 @@ class InvalidDefinitionException extends \Exception
      */
     private $actionName;
 
-    public function __construct(string $originalErrorMessage, string $controllerClass, string $actionName)
+    public function __construct(\Throwable $previousException, string $controllerClass, string $actionName)
     {
-        $this->originalErrorMessage = $originalErrorMessage;
+        $this->originalErrorMessage = $previousException->getMessage();
         $this->controllerClass = $controllerClass;
         $this->actionName = $actionName;
 
@@ -32,7 +32,7 @@ class InvalidDefinitionException extends \Exception
             $this->originalErrorMessage,
             $this->controllerClass,
             $this->actionName
-        ));
+        ), 0, $previousException);
     }
 
     public function getOriginalErrorMessage(): string
