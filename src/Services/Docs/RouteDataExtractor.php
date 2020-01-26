@@ -6,9 +6,11 @@ use RestApiBundle;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
+use function count;
 use function explode;
 use function sprintf;
 use function strpos;
+use function substr_count;
 
 class RouteDataExtractor
 {
@@ -75,7 +77,7 @@ class RouteDataExtractor
             try {
                 $items[] = $this->buildRouteData($reflectionMethod, $route, $annotation);
             } catch (RestApiBundle\Exception\Docs\InvalidDefinition\InvalidDefinitionExceptionInterface $exception) {
-                throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception->getMessage(), $controllerClass, $actionName);
+                throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $controllerClass, $actionName);
             }
         }
 
@@ -91,6 +93,10 @@ class RouteDataExtractor
             ->setTags($annotation->tags)
             ->setPath($route->getPath())
             ->setMethods($route->getMethods());
+
+        if (substr_count($route->getPath(), '{') !== count($route->getRequirements())) {
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidPathParametersException();
+        }
 
         foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
             if (!isset($route->getRequirements()[$reflectionParameter->getName()])) {
