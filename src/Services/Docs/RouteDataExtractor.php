@@ -99,24 +99,22 @@ class RouteDataExtractor
         }
 
         foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-            if (!isset($route->getRequirements()[$reflectionParameter->getName()])) {
-                continue;
-            }
-
             $parameterType = $this->typeHintReader->getParameterTypeByReflectionParameter($reflectionParameter);
             if (!$parameterType || $parameterType instanceof RestApiBundle\DTO\Docs\Type\NullType) {
                 continue;
             }
 
-            if ($parameterType instanceof RestApiBundle\DTO\Docs\Type\ScalarInterface) {
-                $pathParameterDescription = sprintf('Parameter regex format is "%s".', $route->getRequirement($reflectionParameter->getName()));
+            if (isset($route->getRequirements()[$reflectionParameter->getName()])) {
+                if ($parameterType instanceof RestApiBundle\DTO\Docs\Type\ScalarInterface) {
+                    $pathParameterDescription = sprintf('Parameter regex format is "%s".', $route->getRequirement($reflectionParameter->getName()));
 
-                $routeData->addPathParameter(new RestApiBundle\DTO\Docs\PathParameter($reflectionParameter->getName(), $parameterType, $pathParameterDescription));
+                    $routeData->addPathParameter(new RestApiBundle\DTO\Docs\PathParameter($reflectionParameter->getName(), $parameterType, $pathParameterDescription));
 
-                continue;
+                    continue;
+                } else {
+                    throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedParameterTypeException();
+                }
             }
-
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedParameterTypeException();
         }
 
         $returnType = $this->docBlockReader->getReturnTypeByReturnTag($reflectionMethod);
