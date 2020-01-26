@@ -9,7 +9,6 @@ class RouteDataExtractorTest extends Tests\BaseBundleTestCase
 {
     public function testControllerClassFilter()
     {
-        $this->assertCount(3, $this->getRouteDataExtractor()->getItems(null));
         $this->assertCount(2, $this->getRouteDataExtractor()->getItems('Tests\DemoApp\DemoBundle\Controller\Tags'));
         $this->assertCount(1, $this->getRouteDataExtractor()->getItems('Tests\DemoApp\DemoBundle\Controller\Tags\Tag1'));
     }
