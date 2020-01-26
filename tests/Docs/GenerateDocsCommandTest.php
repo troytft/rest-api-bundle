@@ -85,7 +85,7 @@ YAML;
             '--controller-namespace-prefix' => Tests\DemoApp\DemoBundle\Controller\InvalidDefinition\UnknownReturnTypeController::class,
         ]);
 
-        $this->assertSame(100, $commandTester->getStatusCode());
+        $this->assertSame(1, $commandTester->getStatusCode());
         $this->assertStringContainsString('Message: Return type not found in docBlock and type-hint.', $commandTester->getDisplay());
         $this->assertStringContainsString('Controller: Tests\DemoApp\DemoBundle\Controller\InvalidDefinition\UnknownReturnTypeController', $commandTester->getDisplay());
         $this->assertStringContainsString('Action: getGenreAction', $commandTester->getDisplay());
