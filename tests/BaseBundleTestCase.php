@@ -4,7 +4,7 @@ namespace Tests;
 
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use RestApiBundle;
-use Tests\DemoApp;
+use Tests\TestApp;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
@@ -29,10 +29,10 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     protected function createKernel()
     {
         $this->kernel = parent::createKernel();
-        $this->kernel->setRootDir(__DIR__ . '/DemoApp');
-        $this->kernel->addBundle(DemoApp\DemoBundle\DemoBundle::class);
+        $this->kernel->setRootDir(__DIR__ . '/TestApp');
+        $this->kernel->addBundle(TestApp\TestBundle\TestBundle::class);
         $this->kernel->addBundle(DoctrineBundle::class);
-        $this->kernel->addConfigFile(__DIR__ . '/DemoApp/config/config.yaml');
+        $this->kernel->addConfigFile(__DIR__ . '/TestApp/config/config.yaml');
 
         return $this->kernel;
     }

@@ -9,28 +9,28 @@ class EntityTransformerTest extends BaseBundleTestCase
 {
     public function testSuccessById()
     {
-        $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithEntityById();
+        $model = new Tests\TestApp\TestBundle\RequestModel\ModelWithEntityById();
         $this->getRequestModelManager()->handle($model, [
             'fieldWithEntity' => 1
         ]);
-        $this->assertTrue($model->getFieldWithEntity() instanceof Tests\DemoApp\DemoBundle\Entity\Genre);
+        $this->assertTrue($model->getFieldWithEntity() instanceof Tests\TestApp\TestBundle\Entity\Genre);
         $this->assertSame(1, $model->getFieldWithEntity()->getId());
     }
 
     public function testSuccessBySlug()
     {
-        $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithEntityBySlug();
+        $model = new Tests\TestApp\TestBundle\RequestModel\ModelWithEntityBySlug();
         $this->getRequestModelManager()->handle($model, [
             'fieldWithEntity' => 'action'
         ]);
-        $this->assertTrue($model->getFieldWithEntity() instanceof Tests\DemoApp\DemoBundle\Entity\Genre);
+        $this->assertTrue($model->getFieldWithEntity() instanceof Tests\TestApp\TestBundle\Entity\Genre);
         $this->assertSame('action', $model->getFieldWithEntity()->getSlug());
     }
 
     public function testEntityNotFoundById()
     {
         try {
-            $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithEntityById();
+            $model = new Tests\TestApp\TestBundle\RequestModel\ModelWithEntityById();
             $this->getRequestModelManager()->handle($model, [
                 'fieldWithEntity' => 3
             ]);
@@ -43,7 +43,7 @@ class EntityTransformerTest extends BaseBundleTestCase
     public function testEntityNotFoundBySlug()
     {
         try {
-            $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithEntityBySlug();
+            $model = new Tests\TestApp\TestBundle\RequestModel\ModelWithEntityBySlug();
             $this->getRequestModelManager()->handle($model, [
                 'fieldWithEntity' => 'wrong_slug'
             ]);
@@ -56,7 +56,7 @@ class EntityTransformerTest extends BaseBundleTestCase
     public function testNull()
     {
         try {
-            $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithEntityById();
+            $model = new Tests\TestApp\TestBundle\RequestModel\ModelWithEntityById();
             $this->getRequestModelManager()->handle($model, [
                 'fieldWithEntity' => null
             ]);
@@ -69,7 +69,7 @@ class EntityTransformerTest extends BaseBundleTestCase
     public function testWrongValueTypeById()
     {
         try {
-            $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithEntityById();
+            $model = new Tests\TestApp\TestBundle\RequestModel\ModelWithEntityById();
             $this->getRequestModelManager()->handle($model, [
                 'fieldWithEntity' => 'string'
             ]);
@@ -82,7 +82,7 @@ class EntityTransformerTest extends BaseBundleTestCase
     public function testWrongValueTypeBySlug()
     {
         try {
-            $model = new Tests\DemoApp\DemoBundle\RequestModel\ModelWithEntityBySlug();
+            $model = new Tests\TestApp\TestBundle\RequestModel\ModelWithEntityBySlug();
             $this->getRequestModelManager()->handle($model, [
                 'fieldWithEntity' => 10
             ]);
