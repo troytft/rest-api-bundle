@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests;
+namespace Tests\Services\Request\Mapper;
 
 use RestApiBundle;
 use Tests;
 
-class EntitiesCollectionTest extends BaseBundleTestCase
+class EntitiesCollectionTest extends Tests\BaseBundleTestCase
 {
     public function testSuccess()
     {

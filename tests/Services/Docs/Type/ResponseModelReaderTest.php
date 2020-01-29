@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Docs\Type;
+namespace Tests\Services\Docs\Type;
 
 use Tests;
 use RestApiBundle;
