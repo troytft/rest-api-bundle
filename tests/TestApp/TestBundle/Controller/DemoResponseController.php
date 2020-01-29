@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\DemoApp\DemoBundle\Controller;
+namespace Tests\TestApp\TestBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Tests\DemoApp\DemoBundle as App;
+use Tests\TestApp\TestBundle as App;
 use function range;
 use function sprintf;
 

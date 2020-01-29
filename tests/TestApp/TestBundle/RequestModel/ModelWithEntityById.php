@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\DemoApp\DemoBundle\RequestModel;
+namespace Tests\TestApp\TestBundle\RequestModel;
 
 use RestApiBundle\Annotation\Request as Mapper;
 use RestApiBundle\RequestModelInterface;
@@ -8,18 +8,18 @@ use RestApiBundle\RequestModelInterface;
 class ModelWithEntityById implements RequestModelInterface
 {
     /**
-     * @var \Tests\DemoApp\DemoBundle\Entity\Genre
+     * @var \Tests\TestApp\TestBundle\Entity\Genre
      *
-     * @Mapper\Entity(class="\Tests\DemoApp\DemoBundle\Entity\Genre")
+     * @Mapper\Entity(class="\Tests\TestApp\TestBundle\Entity\Genre")
      */
     private $fieldWithEntity;
 
-    public function getFieldWithEntity(): \Tests\DemoApp\DemoBundle\Entity\Genre
+    public function getFieldWithEntity(): \Tests\TestApp\TestBundle\Entity\Genre
     {
         return $this->fieldWithEntity;
     }
 
-    public function setFieldWithEntity(\Tests\DemoApp\DemoBundle\Entity\Genre $fieldWithEntity)
+    public function setFieldWithEntity(\Tests\TestApp\TestBundle\Entity\Genre $fieldWithEntity)
     {
         $this->fieldWithEntity = $fieldWithEntity;
 

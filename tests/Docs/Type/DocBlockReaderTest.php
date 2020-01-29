@@ -16,7 +16,7 @@ class DocBlockReaderTest extends Tests\BaseBundleTestCase
     {
         parent::__construct();
 
-        $this->reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
+        $this->reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
     }
 
     public function testMethodWithoutReturnTag()
@@ -42,7 +42,7 @@ class DocBlockReaderTest extends Tests\BaseBundleTestCase
         $returnType = $this->getDocBlockHelper()->getReturnTypeByReturnTag($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ClassType::class, $returnType);
-        $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
+        $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertFalse($returnType->getIsNullable());
     }
 
@@ -54,7 +54,7 @@ class DocBlockReaderTest extends Tests\BaseBundleTestCase
         $returnType = $this->getDocBlockHelper()->getReturnTypeByReturnTag($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ClassType::class, $returnType);
-        $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
+        $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertTrue($returnType->getIsNullable());
     }
 
@@ -66,7 +66,7 @@ class DocBlockReaderTest extends Tests\BaseBundleTestCase
         $returnType = $this->getDocBlockHelper()->getReturnTypeByReturnTag($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ClassesCollectionType::class, $returnType);
-        $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
+        $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertFalse($returnType->getIsNullable());
     }
 
@@ -78,7 +78,7 @@ class DocBlockReaderTest extends Tests\BaseBundleTestCase
         $returnType = $this->getDocBlockHelper()->getReturnTypeByReturnTag($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ClassesCollectionType::class, $returnType);
-        $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
+        $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertTrue($returnType->getIsNullable());
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\DemoApp\DemoBundle\Controller\Tags;
+namespace Tests\TestApp\TestBundle\Controller\Tags;
 
 use Tests;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
@@ -17,18 +17,18 @@ class Tag2Controller extends BaseController
      *
      * @Route(methods="GET")
      */
-    public function getGenreAction(): Tests\DemoApp\DemoBundle\ResponseModel\Genre
+    public function getGenreAction(): Tests\TestApp\TestBundle\ResponseModel\Genre
     {
         return $this->getGenreResponseModel(1, 'test-genre');
     }
 
-    private function getGenreResponseModel(int $id, string $slug): Tests\DemoApp\DemoBundle\ResponseModel\Genre
+    private function getGenreResponseModel(int $id, string $slug): Tests\TestApp\TestBundle\ResponseModel\Genre
     {
-        $entity = new Tests\DemoApp\DemoBundle\Entity\Genre();
+        $entity = new Tests\TestApp\TestBundle\Entity\Genre();
         $entity
             ->setId($id)
             ->setSlug($slug);
 
-        return new Tests\DemoApp\DemoBundle\ResponseModel\Genre($entity);
+        return new Tests\TestApp\TestBundle\ResponseModel\Genre($entity);
     }
 }

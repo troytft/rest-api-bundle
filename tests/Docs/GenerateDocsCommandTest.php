@@ -20,7 +20,7 @@ class GenerateDocsCommandTest extends Tests\BaseBundleTestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             '--output' => $outputFile,
-            '--controller-namespace-prefix' => Tests\DemoApp\DemoBundle\Controller\DemoController::class,
+            '--controller-namespace-prefix' => Tests\TestApp\TestBundle\Controller\DemoController::class,
         ]);
 
         $this->assertSame(0, $commandTester->getStatusCode());
@@ -84,12 +84,12 @@ YAML;
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             '--output' => $outputFile,
-            '--controller-namespace-prefix' => Tests\DemoApp\DemoBundle\Controller\InvalidDefinition\UnknownReturnTypeController::class,
+            '--controller-namespace-prefix' => Tests\TestApp\TestBundle\Controller\InvalidDefinition\UnknownReturnTypeController::class,
         ]);
 
         $this->assertSame(1, $commandTester->getStatusCode());
         $this->assertStringContainsString('Message: Return type not found in docBlock and type-hint.', $commandTester->getDisplay());
-        $this->assertStringContainsString('Controller: Tests\DemoApp\DemoBundle\Controller\InvalidDefinition\UnknownReturnTypeController', $commandTester->getDisplay());
+        $this->assertStringContainsString('Controller: Tests\TestApp\TestBundle\Controller\InvalidDefinition\UnknownReturnTypeController', $commandTester->getDisplay());
         $this->assertStringContainsString('Action: getGenreAction', $commandTester->getDisplay());
     }
 

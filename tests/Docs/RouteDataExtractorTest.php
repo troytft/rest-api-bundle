@@ -9,14 +9,14 @@ class RouteDataExtractorTest extends Tests\BaseBundleTestCase
 {
     public function testControllerClassFilter()
     {
-        $this->assertCount(2, $this->getRouteDataExtractor()->getItems('Tests\DemoApp\DemoBundle\Controller\Tags'));
-        $this->assertCount(1, $this->getRouteDataExtractor()->getItems('Tests\DemoApp\DemoBundle\Controller\Tags\Tag1'));
+        $this->assertCount(2, $this->getRouteDataExtractor()->getItems('Tests\TestApp\TestBundle\Controller\Tags'));
+        $this->assertCount(1, $this->getRouteDataExtractor()->getItems('Tests\TestApp\TestBundle\Controller\Tags\Tag1'));
     }
 
     public function testSameCountOfPathParametersAndPathRequirements()
     {
         try {
-            $this->getRouteDataExtractor()->getItems(Tests\DemoApp\DemoBundle\Controller\InvalidDefinition\EmptyRouteRequirementsController::class);
+            $this->getRouteDataExtractor()->getItems(Tests\TestApp\TestBundle\Controller\InvalidDefinition\EmptyRouteRequirementsController::class);
             $this->fail();
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
             $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\InvalidPathParametersException::class, $exception->getPrevious());

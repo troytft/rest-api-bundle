@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\DemoApp\DemoBundle\Entity;
+namespace Tests\TestApp\TestBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="Tests\DemoApp\DemoBundle\Repository\GenreRepository")
+ * @ORM\Entity(repositoryClass="Tests\TestApp\TestBundle\Repository\GenreRepository")
  */
 class Genre
 {

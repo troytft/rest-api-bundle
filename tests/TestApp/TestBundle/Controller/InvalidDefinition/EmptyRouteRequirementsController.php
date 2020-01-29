@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\DemoApp\DemoBundle\Controller\InvalidDefinition;
+namespace Tests\TestApp\TestBundle\Controller\InvalidDefinition;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\Routing\Annotation\Route;

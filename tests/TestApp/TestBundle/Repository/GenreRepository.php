@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\DemoApp\DemoBundle\Repository;
+namespace Tests\TestApp\TestBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Tests\DemoApp\DemoBundle\Entity\Genre;
+use Tests\TestApp\TestBundle\Entity\Genre;
 use function in_array;
 
 class GenreRepository extends EntityRepository

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\DemoApp\DemoBundle\RequestModel;
+namespace Tests\TestApp\TestBundle\RequestModel;
 
 use Tests;
 use RestApiBundle\Annotation\Request as Mapper;
@@ -9,14 +9,14 @@ use RestApiBundle\RequestModelInterface;
 class ModelWithCollectionOfEntities implements RequestModelInterface
 {
     /**
-     * @var \Tests\DemoApp\DemoBundle\Entity\Genre[]
+     * @var \Tests\TestApp\TestBundle\Entity\Genre[]
      *
-     * @Mapper\EntitiesCollection(class="Tests\DemoApp\DemoBundle\Entity\Genre")
+     * @Mapper\EntitiesCollection(class="Tests\TestApp\TestBundle\Entity\Genre")
      */
     private $fieldWithCollectionOfEntities;
 
     /**
-     * @return Tests\DemoApp\DemoBundle\Entity\Genre[]
+     * @return Tests\TestApp\TestBundle\Entity\Genre[]
      */
     public function getFieldWithCollectionOfEntities(): array
     {

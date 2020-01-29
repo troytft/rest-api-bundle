@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\DemoApp\DemoBundle\Controller;
+namespace Tests\TestApp\TestBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Tests;
@@ -13,7 +13,7 @@ class DemoController extends BaseController
     /**
      * @Route("/register", methods="POST")
      */
-    public function registerAction(Tests\DemoApp\DemoBundle\RequestModel\ModelWithValidation $model): Response
+    public function registerAction(Tests\TestApp\TestBundle\RequestModel\ModelWithValidation $model): Response
     {
         if ($model->getStringField() === '') {
             throw new \InvalidArgumentException();
@@ -26,12 +26,12 @@ class DemoController extends BaseController
     {
     }
 
-    public function notNullableResponseModelTypeHintAction(): Tests\DemoApp\DemoBundle\ResponseModel\Genre
+    public function notNullableResponseModelTypeHintAction(): Tests\TestApp\TestBundle\ResponseModel\Genre
     {
         return $this->getGenreResponseModel(1, 'test-genre');
     }
 
-    public function nullableResponseModelTypeHintAction(): ?Tests\DemoApp\DemoBundle\ResponseModel\Genre
+    public function nullableResponseModelTypeHintAction(): ?Tests\TestApp\TestBundle\ResponseModel\Genre
     {
         return $this->getGenreResponseModel(1, 'test-genre');
     }
@@ -52,7 +52,7 @@ class DemoController extends BaseController
     }
 
     /**
-     * @return Tests\DemoApp\DemoBundle\ResponseModel\Genre
+     * @return Tests\TestApp\TestBundle\ResponseModel\Genre
      */
     public function methodWithSingleResponseModelReturnTag()
     {
@@ -60,7 +60,7 @@ class DemoController extends BaseController
     }
 
     /**
-     * @return Tests\DemoApp\DemoBundle\ResponseModel\Genre|null
+     * @return Tests\TestApp\TestBundle\ResponseModel\Genre|null
      */
     public function methodWithNullableSingleResponseModelReturnTag()
     {
@@ -68,7 +68,7 @@ class DemoController extends BaseController
     }
 
     /**
-     * @return Tests\DemoApp\DemoBundle\ResponseModel\Genre[]
+     * @return Tests\TestApp\TestBundle\ResponseModel\Genre[]
      */
     public function methodWithArrayOfResponseModelsReturnTag()
     {
@@ -76,7 +76,7 @@ class DemoController extends BaseController
     }
 
     /**
-     * @return Tests\DemoApp\DemoBundle\ResponseModel\Genre[]|null
+     * @return Tests\TestApp\TestBundle\ResponseModel\Genre[]|null
      */
     public function methodWithNullableArrayOfResponseModelsReturnTag()
     {
@@ -88,20 +88,20 @@ class DemoController extends BaseController
      *
      * @Route("/genres/by-slug/{slug}", methods="GET", requirements={"slug": "[\w-]+"})
      *
-     * @return Tests\DemoApp\DemoBundle\ResponseModel\Genre
+     * @return Tests\TestApp\TestBundle\ResponseModel\Genre
      */
     public function detailsBySlugAction(string $slug)
     {
         return $this->getGenreResponseModel(1, $slug);
     }
 
-    private function getGenreResponseModel(int $id, string $slug): Tests\DemoApp\DemoBundle\ResponseModel\Genre
+    private function getGenreResponseModel(int $id, string $slug): Tests\TestApp\TestBundle\ResponseModel\Genre
     {
-        $entity = new Tests\DemoApp\DemoBundle\Entity\Genre();
+        $entity = new Tests\TestApp\TestBundle\Entity\Genre();
         $entity
             ->setId($id)
             ->setSlug($slug);
 
-        return new Tests\DemoApp\DemoBundle\ResponseModel\Genre($entity);
+        return new Tests\TestApp\TestBundle\ResponseModel\Genre($entity);
     }
 }

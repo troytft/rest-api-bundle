@@ -1,17 +1,17 @@
 <?php
 
-namespace Tests\DemoApp\DemoBundle\ResponseModel;
+namespace Tests\TestApp\TestBundle\ResponseModel;
 
 use RestApiBundle;
 
 class Genre implements RestApiBundle\ResponseModelInterface
 {
     /**
-     * @var \Tests\DemoApp\DemoBundle\Entity\Genre
+     * @var \Tests\TestApp\TestBundle\Entity\Genre
      */
     private $genre;
 
-    public function __construct(\Tests\DemoApp\DemoBundle\Entity\Genre $genre)
+    public function __construct(\Tests\TestApp\TestBundle\Entity\Genre $genre)
     {
         $this->genre = $genre;
     }

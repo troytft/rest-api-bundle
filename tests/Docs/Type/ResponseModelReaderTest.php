@@ -17,12 +17,12 @@ class ResponseModelReaderTest extends Tests\BaseBundleTestCase
     {
         parent::__construct();
 
-        $this->reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
+        $this->reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
     }
 
     public function testSingleResponseModelNormalization()
     {
-        $classType = new RestApiBundle\DTO\Docs\Type\ClassType(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, false);
+        $classType = new RestApiBundle\DTO\Docs\Type\ClassType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, false);
         $objectType = $this->getResponseModelReader()->resolveObjectTypeByClassType($classType);
 
         $this->assertSame(['id', 'slug', '__typename',], array_keys($objectType->getProperties()));
@@ -34,7 +34,7 @@ class ResponseModelReaderTest extends Tests\BaseBundleTestCase
 
     public function testNullableSingleResponseModelNormalization()
     {
-        $classType = new RestApiBundle\DTO\Docs\Type\ClassType(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, true);
+        $classType = new RestApiBundle\DTO\Docs\Type\ClassType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, true);
         $objectType = $this->getResponseModelReader()->resolveObjectTypeByClassType($classType);
 
         $this->assertSame(['id', 'slug', '__typename',], array_keys($objectType->getProperties()));
@@ -46,7 +46,7 @@ class ResponseModelReaderTest extends Tests\BaseBundleTestCase
 
     public function testArrayOfResponseModelsNormalization()
     {
-        $classesCollectionType = new RestApiBundle\DTO\Docs\Type\ClassesCollectionType(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, false);
+        $classesCollectionType = new RestApiBundle\DTO\Docs\Type\ClassesCollectionType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, false);
         $collectionType = $this->getResponseModelReader()->resolveCollectionTypeByClassesCollectionType($classesCollectionType);
 
         /** @var RestApiBundle\DTO\Docs\Type\ObjectType $collectionInnerType */
@@ -62,7 +62,7 @@ class ResponseModelReaderTest extends Tests\BaseBundleTestCase
 
     public function testNullableArrayOfResponseModelsNormalization()
     {
-        $classesCollectionType = new RestApiBundle\DTO\Docs\Type\ClassesCollectionType(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, true);
+        $classesCollectionType = new RestApiBundle\DTO\Docs\Type\ClassesCollectionType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, true);
         $collectionType = $this->getResponseModelReader()->resolveCollectionTypeByClassesCollectionType($classesCollectionType);
 
         /** @var RestApiBundle\DTO\Docs\Type\ObjectType $collectionInnerType */

@@ -10,7 +10,7 @@ class TypeHintReaderTest extends Tests\BaseBundleTestCase
 {
     public function testUnsupportedReturnType()
     {
-        $reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
+        $reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('registerAction');
 
         /** @var RestApiBundle\DTO\Docs\Type\ClassType $returnType */
@@ -23,7 +23,7 @@ class TypeHintReaderTest extends Tests\BaseBundleTestCase
 
     public function testEmptyReturnType()
     {
-        $reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
+        $reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('methodWithEmptyTypeHintAction');
 
         $this->assertNull($this->getReflectionHelper()->getReturnTypeByReflectionMethod($reflectionMethod));
@@ -31,27 +31,27 @@ class TypeHintReaderTest extends Tests\BaseBundleTestCase
 
     public function testResponseModelReturnType()
     {
-        $reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
+        $reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('notNullableResponseModelTypeHintAction');
 
         /** @var RestApiBundle\DTO\Docs\Type\ClassType $returnType */
         $returnType = $this->getReflectionHelper()->getReturnTypeByReflectionMethod($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ClassType::class, $returnType);
-        $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
+        $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertFalse($returnType->getIsNullable());
     }
 
     public function testNullableResponseModelReturnType()
     {
-        $reflectionClass = new \ReflectionClass(Tests\DemoApp\DemoBundle\Controller\DemoController::class);
+        $reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('nullableResponseModelTypeHintAction');
 
         /** @var RestApiBundle\DTO\Docs\Type\ClassType $returnType */
         $returnType = $this->getReflectionHelper()->getReturnTypeByReflectionMethod($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ClassType::class, $returnType);
-        $this->assertSame(Tests\DemoApp\DemoBundle\ResponseModel\Genre::class, $returnType->getClass());
+        $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertTrue($returnType->getIsNullable());
     }
 
