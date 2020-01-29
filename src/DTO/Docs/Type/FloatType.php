@@ -9,15 +9,15 @@ class FloatType implements RestApiBundle\DTO\Docs\Type\TypeInterface, RestApiBun
     /**
      * @var bool
      */
-    private $isNullable;
+    private $nullable;
 
-    public function __construct(bool $isNullable)
+    public function __construct(bool $nullable)
     {
-        $this->isNullable = $isNullable;
+        $this->nullable = $nullable;
     }
 
-    public function getIsNullable(): bool
+    public function getNullable(): bool
     {
-        return $this->isNullable;
+        return $this->nullable;
     }
 }

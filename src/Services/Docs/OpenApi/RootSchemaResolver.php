@@ -51,7 +51,7 @@ class RootSchemaResolver
 
             $responses = new OpenApi\Responses([]);
 
-            if ($returnType->getIsNullable()) {
+            if ($returnType->getNullable()) {
                 $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
             }
 

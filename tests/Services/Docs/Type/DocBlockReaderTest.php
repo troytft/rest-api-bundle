@@ -43,7 +43,7 @@ class DocBlockReaderTest extends Tests\BaseBundleTestCase
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ClassType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
-        $this->assertFalse($returnType->getIsNullable());
+        $this->assertFalse($returnType->getNullable());
     }
 
     public function testNullableSingleResponseModelReturnTag()
@@ -55,31 +55,31 @@ class DocBlockReaderTest extends Tests\BaseBundleTestCase
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ClassType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
-        $this->assertTrue($returnType->getIsNullable());
+        $this->assertTrue($returnType->getNullable());
     }
 
     public function testArrayOfResponseModelsReturnTag()
     {
         $reflectionMethod = $this->reflectionClass->getMethod('methodWithArrayOfResponseModelsReturnTag');
 
-        /** @var RestApiBundle\DTO\Docs\Type\ClassesCollectionType $returnType */
+        /** @var RestApiBundle\DTO\Docs\Type\ArrayOfClassesType $returnType */
         $returnType = $this->getDocBlockHelper()->getReturnTypeByReturnTag($reflectionMethod);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ClassesCollectionType::class, $returnType);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ArrayOfClassesType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
-        $this->assertFalse($returnType->getIsNullable());
+        $this->assertFalse($returnType->getNullable());
     }
 
     public function testNullableArrayOfResponseModelsReturnTag()
     {
         $reflectionMethod = $this->reflectionClass->getMethod('methodWithNullableArrayOfResponseModelsReturnTag');
 
-        /** @var RestApiBundle\DTO\Docs\Type\ClassesCollectionType $returnType */
+        /** @var RestApiBundle\DTO\Docs\Type\ArrayOfClassesType $returnType */
         $returnType = $this->getDocBlockHelper()->getReturnTypeByReturnTag($reflectionMethod);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ClassesCollectionType::class, $returnType);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ArrayOfClassesType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
-        $this->assertTrue($returnType->getIsNullable());
+        $this->assertTrue($returnType->getNullable());
     }
 
     private function getDocBlockHelper(): RestApiBundle\Services\Docs\Type\DocBlockReader

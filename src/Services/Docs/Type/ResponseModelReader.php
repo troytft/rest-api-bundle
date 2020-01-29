@@ -17,7 +17,7 @@ class ResponseModelReader
 
     public function resolveObjectTypeByClassType(RestApiBundle\DTO\Docs\Type\ClassType $classType): RestApiBundle\DTO\Docs\Type\ObjectType
     {
-        return $this->resolveObjectTypeByClass($classType->getClass(), $classType->getIsNullable());
+        return $this->resolveObjectTypeByClass($classType->getClass(), $classType->getNullable());
     }
 
     public function resolveObjectTypeByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Type\ObjectType
@@ -53,11 +53,11 @@ class ResponseModelReader
         return $this->objectClassCache[$class];
     }
 
-    public function resolveCollectionTypeByClassesCollectionType(RestApiBundle\DTO\Docs\Type\ClassesCollectionType $classesCollectionType): RestApiBundle\DTO\Docs\Type\CollectionType
+    public function resolveCollectionTypeByClassesCollectionType(RestApiBundle\DTO\Docs\Type\ArrayOfClassesType $classesCollectionType): RestApiBundle\DTO\Docs\Type\ArrayType
     {
-        $objectType = $this->resolveObjectTypeByClassType(new RestApiBundle\DTO\Docs\Type\ClassType($classesCollectionType->getClass(), $classesCollectionType->getIsNullable()));
+        $objectType = $this->resolveObjectTypeByClassType(new RestApiBundle\DTO\Docs\Type\ClassType($classesCollectionType->getClass(), $classesCollectionType->getNullable()));
 
-        return  new RestApiBundle\DTO\Docs\Type\CollectionType($objectType, $classesCollectionType->getIsNullable());
+        return  new RestApiBundle\DTO\Docs\Type\ArrayType($objectType, $classesCollectionType->getNullable());
     }
 
     private function resolveTypeByReflectionType(\ReflectionType $reflectionType): RestApiBundle\DTO\Docs\Type\TypeInterface

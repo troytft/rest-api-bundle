@@ -131,16 +131,16 @@ class RouteDataExtractor
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
-            $returnType = $this->responseModelReader->resolveObjectTypeByClass($returnType->getClass(), $returnType->getIsNullable());
+            $returnType = $this->responseModelReader->resolveObjectTypeByClass($returnType->getClass(), $returnType->getNullable());
         }
 
-        if ($returnType instanceof RestApiBundle\DTO\Docs\Type\ClassesCollectionType) {
+        if ($returnType instanceof RestApiBundle\DTO\Docs\Type\ArrayOfClassesType) {
             if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($returnType->getClass())) {
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
-            $objectType = $this->responseModelReader->resolveObjectTypeByClass($returnType->getClass(), $returnType->getIsNullable());
-            $returnType = new RestApiBundle\DTO\Docs\Type\CollectionType($objectType, $objectType->getIsNullable());
+            $objectType = $this->responseModelReader->resolveObjectTypeByClass($returnType->getClass(), $returnType->getNullable());
+            $returnType = new RestApiBundle\DTO\Docs\Type\ArrayType($objectType, $objectType->getNullable());
         }
 
         $routeData

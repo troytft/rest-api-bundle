@@ -121,6 +121,6 @@ class DocBlockReader
 
         $classType = $this->convertObjectTypeToClassType($valueType, $isNullable);
 
-        return new RestApiBundle\DTO\Docs\Type\ClassesCollectionType($classType->getClass(), $isNullable);
+        return new RestApiBundle\DTO\Docs\Type\ArrayOfClassesType($classType->getClass(), $isNullable);
     }
 }

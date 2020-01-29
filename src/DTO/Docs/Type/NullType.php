@@ -6,7 +6,7 @@ use RestApiBundle;
 
 class NullType implements RestApiBundle\DTO\Docs\Type\TypeInterface
 {
-    public function getIsNullable(): bool
+    public function getNullable(): bool
     {
         return true;
     }
