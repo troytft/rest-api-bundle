@@ -21,7 +21,7 @@ class ModelWithValidation implements RequestModelInterface
     /**
      * @var InnerModelWithValidation
      *
-     * @Mapper\Model(class="Tests\TestApp\TestBundle\RequestModel\InnerModelWithValidation")
+     * @Mapper\RequestModelType(class="Tests\TestApp\TestBundle\RequestModel\InnerModelWithValidation")
      *
      * @Assert\Valid()
      */
@@ -30,7 +30,7 @@ class ModelWithValidation implements RequestModelInterface
     /**
      * @var array
      *
-     * @Mapper\Collection(type=@Mapper\Model(class="Tests\TestApp\TestBundle\RequestModel\InnerModelWithValidation"))
+     * @Mapper\ArrayType(type=@Mapper\RequestModelType(class="Tests\TestApp\TestBundle\RequestModel\InnerModelWithValidation"))
      *
      * @Assert\Valid()
      */
@@ -39,7 +39,7 @@ class ModelWithValidation implements RequestModelInterface
     /**
      * @var int[]
      *
-     * @Mapper\Collection(type=@Mapper\IntegerType())
+     * @Mapper\ArrayType(type=@Mapper\IntegerType())
      *
      * @Assert\All(constraints={
      *     @Assert\Range(min=10)

@@ -5,6 +5,6 @@ namespace RestApiBundle\Annotation\Request;
 /**
  * @Annotation
  */
-class Model extends \Mapper\Annotation\ObjectType
+class RequestModelType extends \Mapper\Annotation\ObjectType
 {
 }

@@ -10,7 +10,7 @@ class ModelWithEntityBySlug implements RequestModelInterface
     /**
      * @var \Tests\TestApp\TestBundle\Entity\Genre
      *
-     * @Mapper\Entity(class="\Tests\TestApp\TestBundle\Entity\Genre", field="slug")
+     * @Mapper\EntityType(class="\Tests\TestApp\TestBundle\Entity\Genre", field="slug")
      */
     private $fieldWithEntity;
 
