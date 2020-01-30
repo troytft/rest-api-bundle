@@ -29,7 +29,7 @@ class ResponseModelReaderTest extends Tests\BaseBundleTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\IntegerType::class, $objectType->getProperties()['id']);
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\StringType::class, $objectType->getProperties()['slug']);
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\StringType::class, $objectType->getProperties()['__typename']);
-        $this->assertFalse($objectType->getIsNullable());
+        $this->assertFalse($objectType->getNullable());
     }
 
     public function testNullableSingleResponseModelNormalization()
@@ -41,39 +41,39 @@ class ResponseModelReaderTest extends Tests\BaseBundleTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\IntegerType::class, $objectType->getProperties()['id']);
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\StringType::class, $objectType->getProperties()['slug']);
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\StringType::class, $objectType->getProperties()['__typename']);
-        $this->assertTrue($objectType->getIsNullable());
+        $this->assertTrue($objectType->getNullable());
     }
 
     public function testArrayOfResponseModelsNormalization()
     {
-        $classesCollectionType = new RestApiBundle\DTO\Docs\Type\ClassesCollectionType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, false);
+        $classesCollectionType = new RestApiBundle\DTO\Docs\Type\ArrayOfClassesType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, false);
         $collectionType = $this->getResponseModelReader()->resolveCollectionTypeByClassesCollectionType($classesCollectionType);
 
         /** @var RestApiBundle\DTO\Docs\Type\ObjectType $collectionInnerType */
-        $collectionInnerType = $collectionType->getType();
+        $collectionInnerType = $collectionType->getInnerType();
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ObjectType::class, $collectionInnerType);
         $this->assertSame(['id', 'slug', '__typename',], array_keys($collectionInnerType->getProperties()));
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\IntegerType::class, $collectionInnerType->getProperties()['id']);
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\StringType::class, $collectionInnerType->getProperties()['slug']);
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\StringType::class, $collectionInnerType->getProperties()['__typename']);
-        $this->assertFalse($collectionType->getIsNullable());
+        $this->assertFalse($collectionType->getNullable());
     }
 
     public function testNullableArrayOfResponseModelsNormalization()
     {
-        $classesCollectionType = new RestApiBundle\DTO\Docs\Type\ClassesCollectionType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, true);
+        $classesCollectionType = new RestApiBundle\DTO\Docs\Type\ArrayOfClassesType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, true);
         $collectionType = $this->getResponseModelReader()->resolveCollectionTypeByClassesCollectionType($classesCollectionType);
 
         /** @var RestApiBundle\DTO\Docs\Type\ObjectType $collectionInnerType */
-        $collectionInnerType = $collectionType->getType();
+        $collectionInnerType = $collectionType->getInnerType();
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ObjectType::class, $collectionInnerType);
         $this->assertSame(['id', 'slug', '__typename',], array_keys($collectionInnerType->getProperties()));
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\IntegerType::class, $collectionInnerType->getProperties()['id']);
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\StringType::class, $collectionInnerType->getProperties()['slug']);
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\StringType::class, $collectionInnerType->getProperties()['__typename']);
-        $this->assertTrue($collectionType->getIsNullable());
+        $this->assertTrue($collectionType->getNullable());
     }
 
     private function getResponseModelReader(): RestApiBundle\Services\Docs\Type\ResponseModelReader

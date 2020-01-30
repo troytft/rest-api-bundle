@@ -38,28 +38,28 @@ class ModelWithAllTypes implements RequestModelInterface
     /**
      * @var InnerModel
      *
-     * @Mapper\Model(class="Tests\TestApp\TestBundle\RequestModel\InnerModel")
+     * @Mapper\RequestModelType(class="Tests\TestApp\TestBundle\RequestModel\InnerModel")
      */
     private $model;
 
     /**
      * @var array
      *
-     * @Mapper\Collection(type=@Mapper\IntegerType())
+     * @Mapper\ArrayType(type=@Mapper\IntegerType())
      */
     private $collection;
 
     /**
      * @var \DateTime
      *
-     * @Mapper\Date()
+     * @Mapper\DateType()
      */
     private $date;
 
     /**
      * @var \DateTime
      *
-     * @Mapper\DateTime()
+     * @Mapper\DateTimeType()
      */
     private $dateTime;
 

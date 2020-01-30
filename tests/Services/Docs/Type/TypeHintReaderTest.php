@@ -18,7 +18,7 @@ class TypeHintReaderTest extends Tests\BaseBundleTestCase
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ClassType::class, $returnType);
         $this->assertSame(Response::class, $returnType->getClass());
-        $this->assertFalse($returnType->getIsNullable());
+        $this->assertFalse($returnType->getNullable());
     }
 
     public function testEmptyReturnType()
@@ -39,7 +39,7 @@ class TypeHintReaderTest extends Tests\BaseBundleTestCase
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ClassType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
-        $this->assertFalse($returnType->getIsNullable());
+        $this->assertFalse($returnType->getNullable());
     }
 
     public function testNullableResponseModelReturnType()
@@ -52,7 +52,7 @@ class TypeHintReaderTest extends Tests\BaseBundleTestCase
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Type\ClassType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
-        $this->assertTrue($returnType->getIsNullable());
+        $this->assertTrue($returnType->getNullable());
     }
 
     private function getReflectionHelper(): RestApiBundle\Services\Docs\Type\TypeHintReader

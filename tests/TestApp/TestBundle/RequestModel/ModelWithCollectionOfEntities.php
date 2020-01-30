@@ -11,7 +11,7 @@ class ModelWithCollectionOfEntities implements RequestModelInterface
     /**
      * @var \Tests\TestApp\TestBundle\Entity\Genre[]
      *
-     * @Mapper\EntitiesCollection(class="Tests\TestApp\TestBundle\Entity\Genre")
+     * @Mapper\ArrayOfEntitiesType(class="Tests\TestApp\TestBundle\Entity\Genre")
      */
     private $fieldWithCollectionOfEntities;
 

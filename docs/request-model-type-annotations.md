@@ -24,8 +24,8 @@ Accepts integer
 ##### Options:
  * **nullable** – is null allowed
 
-### RestApiBundle\Annotation\RequestModel\Collection
-Accepts collection with item type, specified by option type
+### RestApiBundle\Annotation\RequestModel\ArrayType
+Accepts array with item type, specified by option type
 
 ##### Options:
  * **nullable** – is null allowed
@@ -33,8 +33,8 @@ Accepts collection with item type, specified by option type
  
 All types are available.
 
-### RestApiBundle\Annotation\RequestModel\Model
-Accepts object with data and map to model, specified by option `class`.
+### RestApiBundle\Annotation\RequestModel\RequestModelType
+Accepts data and map to request model, specified by option `class`.
 
 ##### Options:
  * **nullable** – is null allowed
@@ -42,7 +42,7 @@ Accepts object with data and map to model, specified by option `class`.
 
 If you want validate inner level model, add symfony validation annotation `@Assert\Valid`.
 
-### RestApiBundle\Annotation\RequestModel\Date
+### RestApiBundle\Annotation\RequestModel\DateType
 Accepts string with format, and converts to \DateTime
 
 ##### Options:
@@ -50,24 +50,24 @@ Accepts string with format, and converts to \DateTime
  * **format** – string format for date and time, default: `Y-m-d\TH:i:sP`
  * **forceLocalTimezone** – is force \DateTime to local timezone, default: true
 
-### RestApiBundle\Annotation\RequestModel\DateTime
+### RestApiBundle\Annotation\RequestModel\DateTimeType
 Accepts JSON string with format, and converts to a \DateTime
 
 ##### Options:
  * **format** – string format for date and time, default: `Y-m-d`
 
-### RestApiBundle\Annotation\RequestModel\Timestamp
+### RestApiBundle\Annotation\RequestModel\TimestampType
 Accepts integer, and converts to a \DateTime
 
-### RestApiBundle\Annotation\RequestModel\Entity
+### RestApiBundle\Annotation\RequestModel\EntityType
 Accepts scalar, and find an entity by `field`
 
 ##### Options:
  * **class** – class name of an entity
  * **field** – field specified for find an entity, default: `id`
  
- ### RestApiBundle\Annotation\RequestModel\EntitiesCollection
- Accepts collection of scalars, and find items by `field`
+ ### RestApiBundle\Annotation\RequestModel\ArrayOfEntitiesType
+ Accepts array of scalars, and find items by `field`
  
  ##### Options:
   * **class** – class name of an entity

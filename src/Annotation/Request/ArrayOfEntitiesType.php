@@ -10,7 +10,7 @@ use Mapper\DTO\Mapping\TypeInterface;
 /**
  * @Annotation
  */
-class EntitiesCollection implements CollectionTypeInterface
+class ArrayOfEntitiesType implements CollectionTypeInterface
 {
     use NullableTrait;
 

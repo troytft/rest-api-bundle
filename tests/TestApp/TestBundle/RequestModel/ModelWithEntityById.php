@@ -10,7 +10,7 @@ class ModelWithEntityById implements RequestModelInterface
     /**
      * @var \Tests\TestApp\TestBundle\Entity\Genre
      *
-     * @Mapper\Entity(class="\Tests\TestApp\TestBundle\Entity\Genre")
+     * @Mapper\EntityType(class="\Tests\TestApp\TestBundle\Entity\Genre")
      */
     private $fieldWithEntity;
 

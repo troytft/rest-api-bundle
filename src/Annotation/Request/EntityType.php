@@ -9,7 +9,7 @@ use Mapper\DTO\Mapping\ScalarTypeInterface;
 /**
  * @Annotation
  */
-class Entity implements ScalarTypeInterface
+class EntityType implements ScalarTypeInterface
 {
     use NullableTrait;
 

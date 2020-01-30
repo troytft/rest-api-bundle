@@ -14,12 +14,12 @@ class ClassType implements RestApiBundle\DTO\Docs\Type\TypeInterface
     /**
      * @var bool
      */
-    private $isNullable;
+    private $nullable;
 
-    public function __construct(string $class, bool $isNullable)
+    public function __construct(string $class, bool $nullable)
     {
         $this->class = $class;
-        $this->isNullable = $isNullable;
+        $this->nullable = $nullable;
     }
 
     public function getClass(): string
@@ -27,8 +27,8 @@ class ClassType implements RestApiBundle\DTO\Docs\Type\TypeInterface
         return $this->class;
     }
 
-    public function getIsNullable(): bool
+    public function getNullable(): bool
     {
-        return $this->isNullable;
+        return $this->nullable;
     }
 }

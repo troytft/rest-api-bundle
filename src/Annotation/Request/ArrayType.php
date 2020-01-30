@@ -5,6 +5,6 @@ namespace RestApiBundle\Annotation\Request;
 /**
  * @Annotation
  */
-class Collection extends \Mapper\Annotation\CollectionType
+class ArrayType extends \Mapper\Annotation\CollectionType
 {
 }

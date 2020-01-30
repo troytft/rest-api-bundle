@@ -5,6 +5,6 @@ namespace RestApiBundle\Annotation\Request;
 /**
  * @Annotation
  */
-class Timestamp extends \Mapper\Annotation\TimestampType
+class TimestampType extends \Mapper\Annotation\TimestampType
 {
 }

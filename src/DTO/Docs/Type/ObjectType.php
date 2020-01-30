@@ -14,12 +14,12 @@ class ObjectType implements RestApiBundle\DTO\Docs\Type\TypeInterface
     /**
      * @var bool
      */
-    private $isNullable;
+    private $nullable;
 
-    public function __construct(array $properties, bool $isNullable)
+    public function __construct(array $properties, bool $nullable)
     {
         $this->properties = $properties;
-        $this->isNullable = $isNullable;
+        $this->nullable = $nullable;
     }
 
     /**
@@ -30,14 +30,14 @@ class ObjectType implements RestApiBundle\DTO\Docs\Type\TypeInterface
         return $this->properties;
     }
 
-    public function getIsNullable(): bool
+    public function getNullable(): bool
     {
-        return $this->isNullable;
+        return $this->nullable;
     }
 
-    public function setIsNullable(bool $isNullable)
+    public function setNullable(bool $nullable)
     {
-        $this->isNullable = $isNullable;
+        $this->nullable = $nullable;
 
         return $this;
     }

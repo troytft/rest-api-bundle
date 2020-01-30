@@ -11,7 +11,7 @@ class TypeToSchemaConverter
     {
         if ($returnType instanceof RestApiBundle\DTO\Docs\Type\ObjectType) {
             $result = $this->convertObjectType($returnType);
-        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\Type\CollectionType) {
+        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\Type\ArrayType) {
             $result = $this->convertCollectionType($returnType);
         } elseif ($returnType instanceof RestApiBundle\DTO\Docs\Type\StringType) {
             $result = $this->convertStringType($returnType);
@@ -38,18 +38,18 @@ class TypeToSchemaConverter
 
         return new OpenApi\Schema([
             'type' => OpenApi\Type::OBJECT,
-            'nullable' => $objectType->getIsNullable(),
+            'nullable' => $objectType->getNullable(),
             'properties' => $properties,
         ]);
     }
 
-    private function convertCollectionType(RestApiBundle\DTO\Docs\Type\CollectionType $collectionType): OpenApi\Schema
+    private function convertCollectionType(RestApiBundle\DTO\Docs\Type\ArrayType $collectionType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
-            'nullable' => $collectionType->getIsNullable(),
+            'nullable' => $collectionType->getNullable(),
             'items' => [
-                $this->convert($collectionType->getType())
+                $this->convert($collectionType->getInnerType())
             ]
         ]);
     }
@@ -58,7 +58,7 @@ class TypeToSchemaConverter
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
-            'nullable' => $stringType->getIsNullable(),
+            'nullable' => $stringType->getNullable(),
         ]);
     }
 
@@ -66,7 +66,7 @@ class TypeToSchemaConverter
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::INTEGER,
-            'nullable' => $integerType->getIsNullable(),
+            'nullable' => $integerType->getNullable(),
         ]);
     }
 
@@ -75,7 +75,7 @@ class TypeToSchemaConverter
         return new OpenApi\Schema([
             'type' => OpenApi\Type::NUMBER,
             'format' => 'double',
-            'nullable' => $floatType->getIsNullable(),
+            'nullable' => $floatType->getNullable(),
         ]);
     }
 
@@ -83,7 +83,7 @@ class TypeToSchemaConverter
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::BOOLEAN,
-            'nullable' => $booleanType->getIsNullable(),
+            'nullable' => $booleanType->getNullable(),
         ]);
     }
 }
