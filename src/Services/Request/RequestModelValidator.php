@@ -32,7 +32,7 @@ class RequestModelValidator
     }
 
     /**
-     * @return string[]
+     * @return array<string, string[]>
      */
     public function validate(RestApiBundle\RequestModelInterface $requestModel): array
     {
