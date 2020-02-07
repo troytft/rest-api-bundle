@@ -1,10 +1,10 @@
 <?php
 
-namespace RestApiBundle\Services\Request\Mapper;
+namespace RestApiBundle\Services\Request\MapperTransformer;
 
 use RestApiBundle;
 
-class DateTimeTransformer extends \Mapper\Transformer\DateTimeTransformer
+class DateTransformer extends \Mapper\Transformer\DateTransformer
 {
     /**
      * @var RestApiBundle\Services\SettingsProvider
@@ -19,11 +19,7 @@ class DateTimeTransformer extends \Mapper\Transformer\DateTimeTransformer
     public function transform($value, array $options = [])
     {
         if (!isset($options[static::FORMAT_OPTION_NAME])) {
-            $options[static::FORMAT_OPTION_NAME] = $this->settingsProvider->getDefaultRequestDatetimeFormat();
-        }
-
-        if (!isset($options[static::FORCE_LOCAL_TIMEZONE_OPTION_NAME])) {
-            $options[static::FORCE_LOCAL_TIMEZONE_OPTION_NAME] = $this->settingsProvider->isForceRequestDatetimeToLocalTimezone();
+            $options[static::FORMAT_OPTION_NAME] = $this->settingsProvider->getDefaultRequestDateFormat();
         }
 
         return parent::transform($value, $options);
@@ -31,6 +27,6 @@ class DateTimeTransformer extends \Mapper\Transformer\DateTimeTransformer
 
     public static function getName(): string
     {
-        return \Mapper\Transformer\DateTimeTransformer::getName();
+        return \Mapper\Transformer\DateTransformer::getName();
     }
 }

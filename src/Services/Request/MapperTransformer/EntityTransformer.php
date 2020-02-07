@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Request\Mapper;
+namespace RestApiBundle\Services\Request\MapperTransformer;
 
 use Mapper;
 use Doctrine\ORM\EntityRepository;

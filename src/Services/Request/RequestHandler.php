@@ -18,11 +18,6 @@ use function strpos;
 class RequestHandler
 {
     /**
-     * @var Mapper\Mapper
-     */
-    private $mapper;
-
-    /**
      * @var TranslatorInterface
      */
     private $translator;
@@ -33,6 +28,11 @@ class RequestHandler
     private $validator;
 
     /**
+     * @var RestApiBundle\Services\Request\MapperInitiator
+     */
+    private $mapperInitiator;
+
+    /**
      * @var RestApiBundle\Services\SettingsProvider
      */
     private $settingsProvider;
@@ -40,21 +40,13 @@ class RequestHandler
     public function __construct(
         TranslatorInterface $translator,
         ValidatorInterface $validator,
+        RestApiBundle\Services\Request\MapperInitiator $mapperInitiator,
         RestApiBundle\Services\SettingsProvider $settingsProvider
     ) {
         $this->translator = $translator;
         $this->validator = $validator;
+        $this->mapperInitiator = $mapperInitiator;
         $this->settingsProvider = $settingsProvider;
-        $this->mapper = new Mapper\Mapper();
-        $this->mapper->getSettings()
-            ->setIsPropertiesNullableByDefault($this->settingsProvider->isRequestPropertiesNullableByDefault())
-            ->setIsAllowedUndefinedKeysInData($this->settingsProvider->isRequestUndefinedKeysAllowed())
-            ->setIsClearMissing($this->settingsProvider->isRequestClearMissingEnabled());
-    }
-
-    public function addTransformer(Mapper\Transformer\TransformerInterface $transformer): void
-    {
-        $this->mapper->addTransformer($transformer);
     }
 
     /**
@@ -72,7 +64,7 @@ class RequestHandler
     private function map(RestApiBundle\RequestModelInterface $requestModel, array $data): void
     {
         try {
-            $this->mapper->map($requestModel, $data);
+            $this->mapperInitiator->getMapper()->map($requestModel, $data);
         } catch (Mapper\Exception\ExceptionInterface $exception) {
             $translationParameters = [];
 
@@ -114,23 +106,29 @@ class RequestHandler
      */
     private function validate(RestApiBundle\RequestModelInterface $requestModel): void
     {
-        $violations = $this->validator->validate($requestModel);
+        $errors = $this->getValidationErrorsByRequestModel($requestModel);
 
-        if ($violations->count()) {
-            $errors = [];
-
-            /** @var ConstraintViolationInterface $violation */
-            foreach ($violations as $violation) {
-                $path = $this->normalizeConstraintViolationPath($violation);
-                if (!isset($errors[$path])) {
-                    $errors[$path] = [];
-                }
-
-                $errors[$path][] = $violation->getMessage();
-            }
-
+        if ($errors) {
             throw new RestApiBundle\Exception\RequestModelMappingException($errors);
         }
+    }
+
+    private function getValidationErrorsByRequestModel(RestApiBundle\RequestModelInterface $requestModel): array
+    {
+        $errors = [];
+        $violations = $this->validator->validate($requestModel);
+
+        /** @var ConstraintViolationInterface $violation */
+        foreach ($violations as $violation) {
+            $path = $this->normalizeConstraintViolationPath($violation);
+            if (!isset($errors[$path])) {
+                $errors[$path] = [];
+            }
+
+            $errors[$path][] = $violation->getMessage();
+        }
+
+        return $errors;
     }
 
     private function normalizeConstraintViolationPath(ConstraintViolationInterface $constraintViolation): string
@@ -144,7 +142,8 @@ class RequestHandler
         $lastPartKey = array_key_last($pathParts);
 
         $isProperty = $this
-            ->mapper
+            ->mapperInitiator
+            ->getMapper()
             ->getSchemaGenerator()
             ->isModelHasProperty($constraintViolation->getRoot(), $pathParts[$lastPartKey]);
 
