@@ -5,15 +5,8 @@ namespace RestApiBundle\Services\Request;
 use Mapper;
 use RestApiBundle;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use function array_key_last;
-use function explode;
 use function get_class;
-use function implode;
 use function sprintf;
-use function str_replace;
-use function strpos;
 
 class RequestHandler
 {
@@ -21,11 +14,6 @@ class RequestHandler
      * @var TranslatorInterface
      */
     private $translator;
-
-    /**
-     * @var ValidatorInterface
-     */
-    private $validator;
 
     /**
      * @var RestApiBundle\Services\Request\MapperInitiator
@@ -37,16 +25,21 @@ class RequestHandler
      */
     private $settingsProvider;
 
+    /**
+     * @var RestApiBundle\Services\Request\RequestModelValidator
+     */
+    private $requestModelValidator;
+
     public function __construct(
         TranslatorInterface $translator,
-        ValidatorInterface $validator,
         RestApiBundle\Services\Request\MapperInitiator $mapperInitiator,
-        RestApiBundle\Services\SettingsProvider $settingsProvider
+        RestApiBundle\Services\SettingsProvider $settingsProvider,
+        RestApiBundle\Services\Request\RequestModelValidator $requestModelValidator
     ) {
         $this->translator = $translator;
-        $this->validator = $validator;
         $this->mapperInitiator = $mapperInitiator;
         $this->settingsProvider = $settingsProvider;
+        $this->requestModelValidator = $requestModelValidator;
     }
 
     /**
@@ -55,7 +48,11 @@ class RequestHandler
     public function handle(RestApiBundle\RequestModelInterface $requestModel, array $data): void
     {
         $this->map($requestModel, $data);
-        $this->validate($requestModel);
+
+        $validationErrors = $this->requestModelValidator->validate($requestModel);
+        if ($validationErrors) {
+            throw new RestApiBundle\Exception\RequestModelMappingException($validationErrors);
+        }
     }
 
     /**
@@ -99,61 +96,5 @@ class RequestHandler
 
             throw new RestApiBundle\Exception\RequestModelMappingException([$path => [$message]]);
         }
-    }
-
-    /**
-     * @throws RestApiBundle\Exception\RequestModelMappingException
-     */
-    private function validate(RestApiBundle\RequestModelInterface $requestModel): void
-    {
-        $errors = $this->getValidationErrorsByRequestModel($requestModel);
-
-        if ($errors) {
-            throw new RestApiBundle\Exception\RequestModelMappingException($errors);
-        }
-    }
-
-    private function getValidationErrorsByRequestModel(RestApiBundle\RequestModelInterface $requestModel): array
-    {
-        $errors = [];
-        $violations = $this->validator->validate($requestModel);
-
-        /** @var ConstraintViolationInterface $violation */
-        foreach ($violations as $violation) {
-            $path = $this->normalizeConstraintViolationPath($violation);
-            if (!isset($errors[$path])) {
-                $errors[$path] = [];
-            }
-
-            $errors[$path][] = $violation->getMessage();
-        }
-
-        return $errors;
-    }
-
-    private function normalizeConstraintViolationPath(ConstraintViolationInterface $constraintViolation): string
-    {
-        $path = $constraintViolation->getPropertyPath();
-        if (strpos($path, '[') !== false) {
-            $path = str_replace(['[', ']'], ['.', ''], $path);
-        }
-
-        $pathParts = explode('.', $path);
-        $lastPartKey = array_key_last($pathParts);
-
-        $isProperty = $this
-            ->mapperInitiator
-            ->getMapper()
-            ->getSchemaGenerator()
-            ->isModelHasProperty($constraintViolation->getRoot(), $pathParts[$lastPartKey]);
-
-        $isItemOfCollection = is_numeric($pathParts[$lastPartKey]);
-
-        if (!$isProperty && !$isItemOfCollection) {
-            $pathParts[$lastPartKey] = '*';
-            $path = implode('.', $pathParts);
-        }
-
-        return $path;
     }
 }
