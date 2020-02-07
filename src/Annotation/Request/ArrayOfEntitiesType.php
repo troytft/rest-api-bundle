@@ -41,14 +41,14 @@ class ArrayOfEntitiesType implements CollectionTypeInterface
 
     public function getTransformerName(): ?string
     {
-        return RestApiBundle\Services\Request\Mapper\EntitiesCollectionTransformer::getName();
+        return RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::getName();
     }
 
     public function getTransformerOptions(): array
     {
         return [
-            RestApiBundle\Services\Request\Mapper\EntitiesCollectionTransformer::CLASS_OPTION => $this->class,
-            RestApiBundle\Services\Request\Mapper\EntitiesCollectionTransformer::FIELD_OPTION => $this->field,
+            RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::CLASS_OPTION => $this->class,
+            RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::FIELD_OPTION => $this->field,
         ];
     }
 }

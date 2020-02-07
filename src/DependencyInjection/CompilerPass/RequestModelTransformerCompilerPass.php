@@ -13,11 +13,11 @@ class RequestModelTransformerCompilerPass implements CompilerPassInterface
 
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has(RestApiBundle\Services\Request\RequestHandler::class)) {
+        if (!$container->has(RestApiBundle\Services\Request\MapperInitiator::class)) {
             return;
         }
 
-        $definition = $container->findDefinition(RestApiBundle\Services\Request\RequestHandler::class);
+        $definition = $container->findDefinition(RestApiBundle\Services\Request\MapperInitiator::class);
         $taggedServices = $container->findTaggedServiceIds(static::TAG);
 
         foreach ($taggedServices as $id => $tags) {
