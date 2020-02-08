@@ -22,8 +22,6 @@ class ModelWithValidation implements RequestModelInterface
      * @var InnerModelWithValidation
      *
      * @Mapper\RequestModelType(class="Tests\TestApp\TestBundle\RequestModel\InnerModelWithValidation")
-     *
-     * @Assert\Valid()
      */
     private $modelField;
 
@@ -31,8 +29,6 @@ class ModelWithValidation implements RequestModelInterface
      * @var array
      *
      * @Mapper\ArrayType(type=@Mapper\RequestModelType(class="Tests\TestApp\TestBundle\RequestModel\InnerModelWithValidation"))
-     *
-     * @Assert\Valid()
      */
     private $collectionField;
 
