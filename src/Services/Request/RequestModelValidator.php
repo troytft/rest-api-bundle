@@ -15,6 +15,7 @@ use function sprintf;
 use function str_replace;
 use function strpos;
 use function ucfirst;
+use function var_dump;
 
 class RequestModelValidator
 {
@@ -77,8 +78,10 @@ class RequestModelValidator
             ->getSchemaGenerator()
             ->generate($requestModel);
 
+        var_dump($schema->getProperties());
         foreach ($schema->getProperties() as $propertyName => $propertyType) {
             if ($propertyType instanceof ObjectType) {
+                var_dump('ss');
                 $propertyValue = $this->getPropertyValueFromInstance($requestModel, $propertyName);
                 if (!$propertyValue) {
                     continue;
@@ -109,11 +112,12 @@ class RequestModelValidator
             return [];
         }
 
-        return array_merge_recursive(...$result);
+        var_dump($result);
+        return array_merge(...$result);
     }
 
     /**
-     * @param RestApiBundle\RequestModelInterface $requestModel
+     * @param RestApiBundle\RequestModelInterface $instance
      * @param string $propertyName
      *
      * @return RestApiBundle\RequestModelInterface|RestApiBundle\RequestModelInterface[]:null
