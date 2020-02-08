@@ -6,11 +6,14 @@ use RestApiBundle;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
+use function array_diff;
+use function array_keys;
 use function count;
 use function explode;
 use function sprintf;
 use function strpos;
 use function substr_count;
+use function var_dump;
 
 class RouteDataExtractor
 {
@@ -84,6 +87,21 @@ class RouteDataExtractor
         return $items;
     }
 
+    /**
+     * @param string $path
+     *
+     * @return string[]
+     */
+    private function getParameterNamesByRoutePath(string $path): array
+    {
+        $matches = null;
+        if (!preg_match_all('/{([^}]+)}/', $path, $matches)) {
+            return [];
+        }
+
+        return $matches[1];
+    }
+
     private function buildRouteData(\ReflectionMethod $reflectionMethod, Route $route, RestApiBundle\Annotation\Docs\Endpoint $annotation): RestApiBundle\DTO\Docs\RouteData
     {
         $routeData = new RestApiBundle\DTO\Docs\RouteData();
@@ -94,7 +112,9 @@ class RouteDataExtractor
             ->setPath($route->getPath())
             ->setMethods($route->getMethods());
 
-        if (substr_count($route->getPath(), '{') !== count($route->getRequirements())) {
+        $parameterNames = $this->getParameterNamesByRoutePath($route->getPath());
+
+        if (array_diff($parameterNames, array_keys($route->getRequirements()))) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidPathParametersException();
         }
 
