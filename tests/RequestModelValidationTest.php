@@ -25,28 +25,40 @@ class RequestModelValidationTest extends BaseBundleTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $expected = [
-                'stringField' => [
-                    'This value is too short. It should have 6 characters or more.',
-                    'This value is not a valid email address.',
-                ],
-                'modelField.stringField' => [
-                    'This value is too short. It should have 3 characters or more.',
-                ],
-                'collectionField.0.stringField' => [
-                    'This value is too short. It should have 3 characters or more.',
-                ],
-                'collectionOfIntegers.0' => [
-                    'This value should be 10 or more.'
-                ],
-                'collectionOfIntegers.2' => [
-                    'This value should be 10 or more.'
-                ],
-                '*' => [
-                    'Example message without property'
-                ]
-            ];
-            $this->assertSame($expected, $exception->getProperties());
+            $value = $exception->getProperties();
+
+            $this->assertCount(6, $value);
+
+            $this->assertArrayHasKey('stringField', $value);
+            $this->assertSame([
+                'This value is too short. It should have 6 characters or more.',
+                'This value is not a valid email address.',
+            ], $value['stringField']);
+
+            $this->assertArrayHasKey('modelField.stringField', $value);
+            $this->assertSame([
+                'This value is too short. It should have 3 characters or more.',
+            ], $value['modelField.stringField']);
+
+            $this->assertArrayHasKey('collectionField.0.stringField', $value);
+            $this->assertSame([
+                'This value is too short. It should have 3 characters or more.',
+            ], $value['collectionField.0.stringField']);
+
+            $this->assertArrayHasKey('collectionOfIntegers.0', $value);
+            $this->assertSame([
+                'This value should be 10 or more.'
+            ], $value['collectionOfIntegers.0']);
+
+            $this->assertArrayHasKey('collectionOfIntegers.2', $value);
+            $this->assertSame([
+                'This value should be 10 or more.'
+            ], $value['collectionOfIntegers.2']);
+
+            $this->assertArrayHasKey('*', $value);
+            $this->assertSame([
+                'Example message without property',
+            ], $value['*']);
         }
     }
 }

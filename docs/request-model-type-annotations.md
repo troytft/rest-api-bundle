@@ -40,8 +40,6 @@ Accepts data and map to request model, specified by option `class`.
  * **nullable** – is null allowed
  * **class** – require class name implementing `RestApiBundle\RequestModelInterface`
 
-If you want validate inner level model, add symfony validation annotation `@Assert\Valid`.
-
 ### RestApiBundle\Annotation\RequestModel\DateType
 Accepts string with format, and converts to \DateTime
 
