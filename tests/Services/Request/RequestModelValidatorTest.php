@@ -4,7 +4,6 @@ namespace Tests\Services\Request;
 
 use Tests;
 use RestApiBundle;
-use function var_dump;
 
 class RequestModelValidatorTest extends Tests\BaseBundleTestCase
 {
