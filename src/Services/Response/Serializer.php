@@ -19,15 +19,15 @@ class Serializer
             new RestApiBundle\Services\Response\GetSetMethodNormalizer(),
             $dateTimeNormalizer
         ];
-        $encoder = new \Symfony\Component\Serializer\Encoder\JsonEncoder(
-            new \Symfony\Component\Serializer\Encoder\JsonEncode([JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES])
-        );
+        $encoder = new \Symfony\Component\Serializer\Encoder\JsonEncoder();
 
         $this->serializer = new \Symfony\Component\Serializer\Serializer($normalizers, [$encoder]);
     }
 
     public function toJson(RestApiBundle\ResponseModelInterface $responseModel): string
     {
-        return $this->serializer->serialize($responseModel, 'json');
+        return $this->serializer->serialize($responseModel, 'json', [
+            'json_encode_options' => JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+        ]);
     }
 }
