@@ -8,12 +8,9 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
 use function array_diff;
 use function array_keys;
-use function count;
 use function explode;
 use function sprintf;
 use function strpos;
-use function substr_count;
-use function var_dump;
 
 class RouteDataExtractor
 {
@@ -112,9 +109,7 @@ class RouteDataExtractor
             ->setPath($route->getPath())
             ->setMethods($route->getMethods());
 
-        $parameterNames = $this->getParameterNamesByRoutePath($route->getPath());
-
-        if (array_diff($parameterNames, array_keys($route->getRequirements()))) {
+        if (array_diff($this->getParameterNamesByRoutePath($route->getPath()), array_keys($route->getRequirements()))) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidPathParametersException();
         }
 
