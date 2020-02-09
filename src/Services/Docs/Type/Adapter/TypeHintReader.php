@@ -1,12 +1,12 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Type;
+namespace RestApiBundle\Services\Docs\Type\Adapter;
 
 use RestApiBundle;
 
 class TypeHintReader
 {
-    public function getReturnTypeByReflectionMethod(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Type\TypeInterface
+    public function getReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Type\TypeInterface
     {
         $returnType = $reflectionMethod->getReturnType();
         if (!$returnType) {

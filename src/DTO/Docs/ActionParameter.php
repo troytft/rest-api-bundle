@@ -4,7 +4,7 @@ namespace RestApiBundle\DTO\Docs;
 
 use RestApiBundle;
 
-class PathParameter
+class ActionParameter
 {
     /**
      * @var string
@@ -16,16 +16,10 @@ class PathParameter
      */
     private $type;
 
-    /**
-     * @var string
-     */
-    private $description;
-
-    public function __construct(string $name, ?RestApiBundle\DTO\Docs\Type\TypeInterface $type, string $description)
+    public function __construct(string $name, ?RestApiBundle\DTO\Docs\Type\TypeInterface $type)
     {
         $this->name = $name;
         $this->type = $type;
-        $this->description = $description;
     }
 
     public function getName(): string
@@ -33,13 +27,8 @@ class PathParameter
         return $this->name;
     }
 
-    public function getType(): ?Type\TypeInterface
+    public function getType(): ?RestApiBundle\DTO\Docs\Type\TypeInterface
     {
         return $this->type;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
     }
 }

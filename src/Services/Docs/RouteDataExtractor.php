@@ -6,11 +6,10 @@ use RestApiBundle;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
-use function count;
+use function array_diff;
+use function array_keys;
 use function explode;
-use function sprintf;
 use function strpos;
-use function substr_count;
 
 class RouteDataExtractor
 {
@@ -20,19 +19,9 @@ class RouteDataExtractor
     private $router;
 
     /**
-     * @var RestApiBundle\Services\Docs\Type\DocBlockReader
+     * @var RestApiBundle\Services\Docs\Type\TypeReader
      */
-    private $docBlockReader;
-
-    /**
-     * @var RestApiBundle\Services\Docs\Type\TypeHintReader
-     */
-    private $typeHintReader;
-
-    /**
-     * @var RestApiBundle\Services\Docs\Type\ResponseModelReader
-     */
-    private $responseModelReader;
+    private $typeReader;
 
     /**
      * @var AnnotationReader
@@ -41,14 +30,10 @@ class RouteDataExtractor
 
     public function __construct(
         RouterInterface $router,
-        RestApiBundle\Services\Docs\Type\DocBlockReader $docBlockReader,
-        RestApiBundle\Services\Docs\Type\TypeHintReader $typeHintReader,
-        RestApiBundle\Services\Docs\Type\ResponseModelReader $responseModelReader
+        RestApiBundle\Services\Docs\Type\TypeReader $typeReader
     ) {
         $this->router = $router;
-        $this->docBlockReader = $docBlockReader;
-        $this->typeHintReader = $typeHintReader;
-        $this->responseModelReader = $responseModelReader;
+        $this->typeReader = $typeReader;
         $this->annotationReader = new AnnotationReader();
     }
 
@@ -84,66 +69,44 @@ class RouteDataExtractor
         return $items;
     }
 
+    /**
+     * @param string $path
+     *
+     * @return string[]
+     */
+    private function parseRoutePathParameterNames(string $path): array
+    {
+        $matches = null;
+        if (!preg_match_all('/{([^}]+)}/', $path, $matches)) {
+            return [];
+        }
+
+        return $matches[1];
+    }
+
     private function buildRouteData(\ReflectionMethod $reflectionMethod, Route $route, RestApiBundle\Annotation\Docs\Endpoint $annotation): RestApiBundle\DTO\Docs\RouteData
     {
+        $routePathParameterNames = $this->parseRoutePathParameterNames($route->getPath());
+        if (array_diff(array_keys($route->getRequirements()), $routePathParameterNames)) {
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException();
+        }
+
+//        $actionParameters = $this->typeReader->getActionParametersByReflectionMethod($reflectionMethod);
+
+//        var_dump(array_keys($actionParameters));
+
+        $returnType = $this->typeReader->getReturnTypeByReflectionMethod($reflectionMethod);
+        if (!$returnType) {
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
+        }
+
         $routeData = new RestApiBundle\DTO\Docs\RouteData();
         $routeData
             ->setTitle($annotation->title)
             ->setDescription($annotation->description)
             ->setTags($annotation->tags)
             ->setPath($route->getPath())
-            ->setMethods($route->getMethods());
-
-        if (substr_count($route->getPath(), '{') !== count($route->getRequirements())) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidPathParametersException();
-        }
-
-        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-            $parameterType = $this->typeHintReader->getParameterTypeByReflectionParameter($reflectionParameter);
-            if (!$parameterType || $parameterType instanceof RestApiBundle\DTO\Docs\Type\NullType) {
-                continue;
-            }
-
-            if (isset($route->getRequirements()[$reflectionParameter->getName()])) {
-                if ($parameterType instanceof RestApiBundle\DTO\Docs\Type\ScalarInterface) {
-                    $pathParameterDescription = sprintf('Parameter regex format is "%s".', $route->getRequirement($reflectionParameter->getName()));
-
-                    $routeData->addPathParameter(new RestApiBundle\DTO\Docs\PathParameter($reflectionParameter->getName(), $parameterType, $pathParameterDescription));
-
-                    continue;
-                } else {
-                    throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedParameterTypeException();
-                }
-            }
-        }
-
-        $returnType = $this->docBlockReader->getReturnTypeByReturnTag($reflectionMethod);
-        if (!$returnType) {
-            $returnType = $this->typeHintReader->getReturnTypeByReflectionMethod($reflectionMethod);
-        }
-
-        if (!$returnType) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
-        }
-
-        if ($returnType instanceof RestApiBundle\DTO\Docs\Type\ClassType) {
-            if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($returnType->getClass())) {
-                throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
-            }
-
-            $returnType = $this->responseModelReader->resolveObjectTypeByClass($returnType->getClass(), $returnType->getNullable());
-        }
-
-        if ($returnType instanceof RestApiBundle\DTO\Docs\Type\ArrayOfClassesType) {
-            if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($returnType->getClass())) {
-                throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
-            }
-
-            $objectType = $this->responseModelReader->resolveObjectTypeByClass($returnType->getClass(), $returnType->getNullable());
-            $returnType = new RestApiBundle\DTO\Docs\Type\ArrayType($objectType, $objectType->getNullable());
-        }
-
-        $routeData
+            ->setMethods($route->getMethods())
             ->setReturnType($returnType);
 
         return $routeData;

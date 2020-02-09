@@ -52,15 +52,6 @@ paths:
                                         type: string
                                         nullable: false
                                 nullable: false
-            parameters:
-                -
-                    name: slug
-                    in: path
-                    description: 'Parameter regex format is "[\w-]+".'
-                    required: true
-                    schema:
-                        type: string
-                        nullable: false
             tags:
                 - demo
 tags:

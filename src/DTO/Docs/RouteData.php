@@ -37,7 +37,7 @@ class RouteData
     private $returnType;
 
     /**
-     * @var RestApiBundle\DTO\Docs\PathParameter[]
+     * @var RestApiBundle\DTO\Docs\RouteParameter[]
      */
     private $pathParameters = [];
 
@@ -114,14 +114,14 @@ class RouteData
     }
 
     /**
-     * @return RestApiBundle\DTO\Docs\PathParameter[]
+     * @return RestApiBundle\DTO\Docs\RouteParameter[]
      */
     public function getPathParameters(): array
     {
         return $this->pathParameters;
     }
 
-    public function addPathParameter(RestApiBundle\DTO\Docs\PathParameter $pathParameter)
+    public function addPathParameter(RestApiBundle\DTO\Docs\RouteParameter $pathParameter)
     {
         $this->pathParameters[] = $pathParameter;
     }

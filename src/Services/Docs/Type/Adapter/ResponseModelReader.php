@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Type;
+namespace RestApiBundle\Services\Docs\Type\Adapter;
 
 use RestApiBundle;
 use function lcfirst;
@@ -17,10 +17,10 @@ class ResponseModelReader
 
     public function resolveObjectTypeByClassType(RestApiBundle\DTO\Docs\Type\ClassType $classType): RestApiBundle\DTO\Docs\Type\ObjectType
     {
-        return $this->resolveObjectTypeByClass($classType->getClass(), $classType->getNullable());
+        return $this->getTypeByClass($classType->getClass(), $classType->getNullable());
     }
 
-    public function resolveObjectTypeByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Type\ObjectType
+    public function getTypeByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Type\ObjectType
     {
         $class = ltrim($class, '\\');
 

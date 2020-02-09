@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Type;
+namespace RestApiBundle\Services\Docs\Type\Adapter;
 
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
@@ -24,7 +24,7 @@ class DocBlockReader
         $this->docBlockFactory = DocBlockFactory::createInstance();
     }
 
-    public function getReturnTypeByReturnTag(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Type\TypeInterface
+    public function getReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Type\TypeInterface
     {
         if (!$reflectionMethod->getDocComment()) {
             return null;
