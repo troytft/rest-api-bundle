@@ -13,7 +13,7 @@ class RouteDataExtractorTest extends Tests\BaseBundleTestCase
         $this->assertCount(1, $this->getRouteDataExtractor()->getItems('Tests\TestApp\TestBundle\Controller\Tags\Tag1'));
     }
 
-    public function testSameCountOfPathParametersAndPathRequirements()
+    public function testRouteRequirementsParameterNotPresentedInRoutePath()
     {
         try {
             $this->getRouteDataExtractor()->getItems(Tests\TestApp\TestBundle\Controller\InvalidDefinition\EmptyRouteRequirementsController::class);

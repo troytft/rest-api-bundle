@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Type;
+namespace RestApiBundle\Services\Docs\Type\Adapter;
 
 use RestApiBundle;
 

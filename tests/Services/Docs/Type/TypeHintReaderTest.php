@@ -55,10 +55,10 @@ class TypeHintReaderTest extends Tests\BaseBundleTestCase
         $this->assertTrue($returnType->getNullable());
     }
 
-    private function getReflectionHelper(): RestApiBundle\Services\Docs\Type\TypeHintReader
+    private function getReflectionHelper(): RestApiBundle\Services\Docs\Type\Adapter\TypeHintReader
     {
-        /** @var RestApiBundle\Services\Docs\Type\TypeHintReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Type\TypeHintReader::class);
+        /** @var RestApiBundle\Services\Docs\Type\Adapter\TypeHintReader $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Type\Adapter\TypeHintReader::class);
 
         return $result;
     }

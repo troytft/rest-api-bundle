@@ -73,24 +73,24 @@ class RootSchemaResolver
 
             $parameters = [];
 
-            foreach ($routeData->getPathParameters() as $routeDataPathParameter) {
-                $pathParameter = new OpenApi\Parameter([
-                    'in' => 'path',
-                    'name' => $routeDataPathParameter->getName(),
-                    'description' => $routeDataPathParameter->getDescription(),
-                    'required' => true,
-                ]);
+//            foreach ($routeData->getPathParameters() as $routeDataPathParameter) {
+//                $pathParameter = new OpenApi\Parameter([
+//                    'in' => 'path',
+//                    'name' => $routeDataPathParameter->getName(),
+//                    'description' => $routeDataPathParameter->getDescription(),
+//                    'required' => true,
+//                ]);
+//
+//                if ($routeDataPathParameter->getType()) {
+//                    $pathParameter->schema = $this->typeToSchemaConverter->convert($routeDataPathParameter->getType());
+//                }
+//
+//                $parameters[] = $pathParameter;
+//            }
 
-                if ($routeDataPathParameter->getType()) {
-                    $pathParameter->schema = $this->typeToSchemaConverter->convert($routeDataPathParameter->getType());
-                }
-
-                $parameters[] = $pathParameter;
-            }
-
-            if ($parameters) {
-                $operation->parameters = $parameters;
-            }
+//            if ($parameters) {
+//                $operation->parameters = $parameters;
+//            }
 
             if ($routeData->getTags()) {
                 $operation->tags = $routeData->getTags();

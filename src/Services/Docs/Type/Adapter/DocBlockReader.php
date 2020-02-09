@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Type;
+namespace RestApiBundle\Services\Docs\Type\Adapter;
 
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
