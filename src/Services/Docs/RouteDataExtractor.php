@@ -9,7 +9,6 @@ use Symfony\Component\Routing\RouterInterface;
 use function array_diff;
 use function array_keys;
 use function explode;
-use function sprintf;
 use function strpos;
 
 class RouteDataExtractor
@@ -89,7 +88,7 @@ class RouteDataExtractor
      *
      * @return string[]
      */
-    private function parseParametersFromRoutePath(string $path): array
+    private function parseRoutePathParameters(string $path): array
     {
         $matches = null;
         if (!preg_match_all('/{([^}]+)}/', $path, $matches)) {
@@ -109,57 +108,47 @@ class RouteDataExtractor
             ->setPath($route->getPath())
             ->setMethods($route->getMethods());
 
-        if (array_diff($this->parseParametersFromRoutePath($route->getPath()), array_keys($route->getRequirements()))) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidPathParametersException();
+        $routePathParameters = $this->parseRoutePathParameters($route->getPath());
+        if (array_diff(array_keys($route->getRequirements()), $routePathParameters)) {
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException();
         }
 
-        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-            $parameterType = $this->typeHintReader->getParameterTypeByReflectionParameter($reflectionParameter);
-            if (!$parameterType || $parameterType instanceof RestApiBundle\DTO\Docs\Type\NullType) {
-                continue;
-            }
+//        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+//            $parameterType = $this->typeHintReader->getParameterTypeByReflectionParameter($reflectionParameter);
+//            if (!$parameterType || $parameterType instanceof RestApiBundle\DTO\Docs\Type\NullType) {
+//                continue;
+//            }
+//
+//            if (isset($route->getRequirements()[$reflectionParameter->getName()])) {
+//                if ($parameterType instanceof RestApiBundle\DTO\Docs\Type\ScalarInterface) {
+//
+//                    $routeData->addPathParameter(new RestApiBundle\DTO\Docs\RouteParameter(RestApiBundle\Enum\Docs\RouteParameterType::PATH, $reflectionParameter->getName(), $parameterType));
+//
+//                    continue;
+//                } else {
+//                    throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedParameterTypeException();
+//                }
+//            }
+//        }
 
-            if (isset($route->getRequirements()[$reflectionParameter->getName()])) {
-                if ($parameterType instanceof RestApiBundle\DTO\Docs\Type\ScalarInterface) {
-                    $pathParameterDescription = sprintf('Parameter regex format is "%s".', $route->getRequirement($reflectionParameter->getName()));
-
-                    $routeData->addPathParameter(new RestApiBundle\DTO\Docs\PathParameter($reflectionParameter->getName(), $parameterType, $pathParameterDescription));
-
-                    continue;
-                } else {
-                    throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedParameterTypeException();
-                }
-            }
-        }
-
-        $returnType = $this->docBlockReader->getReturnTypeByReturnTag($reflectionMethod);
-        if (!$returnType) {
-            $returnType = $this->typeHintReader->getReturnTypeByReflectionMethod($reflectionMethod);
-        }
-
-        if (!$returnType) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
-        }
+        $returnType = $this->docBlockReader->getReturnType($reflectionMethod) ?: $this->typeHintReader->getReturnType($reflectionMethod);
 
         if ($returnType instanceof RestApiBundle\DTO\Docs\Type\ClassType) {
             if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($returnType->getClass())) {
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
-            $returnType = $this->responseModelReader->resolveObjectTypeByClass($returnType->getClass(), $returnType->getNullable());
-        }
-
-        if ($returnType instanceof RestApiBundle\DTO\Docs\Type\ArrayOfClassesType) {
+            $routeData->setReturnType($this->responseModelReader->getTypeByClass($returnType->getClass(), $returnType->getNullable()));
+        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\Type\ArrayOfClassesType) {
             if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($returnType->getClass())) {
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
-            $objectType = $this->responseModelReader->resolveObjectTypeByClass($returnType->getClass(), $returnType->getNullable());
-            $returnType = new RestApiBundle\DTO\Docs\Type\ArrayType($objectType, $objectType->getNullable());
+            $objectType = $this->responseModelReader->getTypeByClass($returnType->getClass(), $returnType->getNullable());
+            $routeData->setReturnType(new RestApiBundle\DTO\Docs\Type\ArrayType($objectType, $objectType->getNullable()));
+        } elseif (!$returnType) {
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
         }
-
-        $routeData
-            ->setReturnType($returnType);
 
         return $routeData;
     }

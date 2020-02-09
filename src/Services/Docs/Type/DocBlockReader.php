@@ -24,7 +24,7 @@ class DocBlockReader
         $this->docBlockFactory = DocBlockFactory::createInstance();
     }
 
-    public function getReturnTypeByReturnTag(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Type\TypeInterface
+    public function getReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Type\TypeInterface
     {
         if (!$reflectionMethod->getDocComment()) {
             return null;

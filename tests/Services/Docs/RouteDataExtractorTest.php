@@ -19,7 +19,7 @@ class RouteDataExtractorTest extends Tests\BaseBundleTestCase
             $this->getRouteDataExtractor()->getItems(Tests\TestApp\TestBundle\Controller\InvalidDefinition\EmptyRouteRequirementsController::class);
             $this->fail();
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
-            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\InvalidPathParametersException::class, $exception->getPrevious());
+            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException::class, $exception->getPrevious());
         }
     }
 
