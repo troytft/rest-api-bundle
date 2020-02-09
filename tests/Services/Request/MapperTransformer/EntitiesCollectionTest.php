@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Services\Request\Mapper;
+namespace Tests\Services\Request\MapperTransformer;
 
 use RestApiBundle;
 use Tests;
