@@ -89,7 +89,7 @@ class RouteDataExtractor
      *
      * @return string[]
      */
-    private function getParameterNamesByRoutePath(string $path): array
+    private function parseParametersFromRoutePath(string $path): array
     {
         $matches = null;
         if (!preg_match_all('/{([^}]+)}/', $path, $matches)) {
@@ -109,7 +109,7 @@ class RouteDataExtractor
             ->setPath($route->getPath())
             ->setMethods($route->getMethods());
 
-        if (array_diff($this->getParameterNamesByRoutePath($route->getPath()), array_keys($route->getRequirements()))) {
+        if (array_diff($this->parseParametersFromRoutePath($route->getPath()), array_keys($route->getRequirements()))) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidPathParametersException();
         }
 

@@ -8,6 +8,6 @@ class InvalidPathParametersException extends RestApiBundle\Exception\Docs\Invali
 {
     public function __construct()
     {
-        parent::__construct('Route requirements count is not the same as route path parameters count.');
+        parent::__construct('Route path parameters do not match parameters from route requirements.');
     }
 }
