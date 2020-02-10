@@ -76,10 +76,10 @@ class ResponseModelReaderTest extends Tests\BaseBundleTestCase
         $this->assertTrue($collectionType->getNullable());
     }
 
-    private function getResponseModelReader(): RestApiBundle\Services\Docs\Type\Adapter\ResponseModelReader
+    private function getResponseModelReader(): RestApiBundle\Services\Docs\Type\Adapter\ResponseModelAdapter
     {
-        /** @var RestApiBundle\Services\Docs\Type\Adapter\ResponseModelReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Type\Adapter\ResponseModelReader::class);
+        /** @var RestApiBundle\Services\Docs\Type\Adapter\ResponseModelAdapter $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Type\Adapter\ResponseModelAdapter::class);
 
         return $result;
     }

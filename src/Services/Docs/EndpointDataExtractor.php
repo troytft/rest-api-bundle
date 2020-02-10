@@ -6,12 +6,10 @@ use RestApiBundle;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
-use function array_diff;
-use function array_keys;
 use function explode;
 use function strpos;
 
-class RouteDataExtractor
+class EndpointDataExtractor
 {
     /**
      * @var RouterInterface
@@ -38,9 +36,9 @@ class RouteDataExtractor
     }
 
     /**
-     * @return RestApiBundle\DTO\Docs\RouteData[]
+     * @return RestApiBundle\DTO\Docs\EndpointData[]
      */
-    public function getItems(?string $controllerNamespacePrefix = null): array
+    public function findItems(?string $controllerNamespacePrefix = null): array
     {
         $items = [];
 
@@ -69,38 +67,16 @@ class RouteDataExtractor
         return $items;
     }
 
-    /**
-     * @param string $path
-     *
-     * @return string[]
-     */
-    private function parseRoutePathParameterNames(string $path): array
+    private function buildRouteData(\ReflectionMethod $reflectionMethod, Route $route, RestApiBundle\Annotation\Docs\Endpoint $annotation): RestApiBundle\DTO\Docs\EndpointData
     {
-        $matches = null;
-        if (!preg_match_all('/{([^}]+)}/', $path, $matches)) {
-            return [];
-        }
-
-        return $matches[1];
-    }
-
-    private function buildRouteData(\ReflectionMethod $reflectionMethod, Route $route, RestApiBundle\Annotation\Docs\Endpoint $annotation): RestApiBundle\DTO\Docs\RouteData
-    {
-        $routePathParameterNames = $this->parseRoutePathParameterNames($route->getPath());
-        if (array_diff(array_keys($route->getRequirements()), $routePathParameterNames)) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException();
-        }
-
 //        $actionParameters = $this->typeReader->getActionParametersByReflectionMethod($reflectionMethod);
-
-//        var_dump(array_keys($actionParameters));
 
         $returnType = $this->typeReader->getReturnTypeByReflectionMethod($reflectionMethod);
         if (!$returnType) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
         }
 
-        $routeData = new RestApiBundle\DTO\Docs\RouteData();
+        $routeData = new RestApiBundle\DTO\Docs\EndpointData();
         $routeData
             ->setTitle($annotation->title)
             ->setDescription($annotation->description)

@@ -9,24 +9,24 @@ class RouteDataExtractorTest extends Tests\BaseBundleTestCase
 {
     public function testControllerClassFilter()
     {
-        $this->assertCount(2, $this->getRouteDataExtractor()->getItems('Tests\TestApp\TestBundle\Controller\Tags'));
-        $this->assertCount(1, $this->getRouteDataExtractor()->getItems('Tests\TestApp\TestBundle\Controller\Tags\Tag1'));
+        $this->assertCount(2, $this->getRouteDataExtractor()->findItems('Tests\TestApp\TestBundle\Controller\Tags'));
+        $this->assertCount(1, $this->getRouteDataExtractor()->findItems('Tests\TestApp\TestBundle\Controller\Tags\Tag1'));
     }
 
     public function testRouteRequirementsParameterNotPresentedInRoutePath()
     {
         try {
-            $this->getRouteDataExtractor()->getItems(Tests\TestApp\TestBundle\Controller\InvalidDefinition\EmptyRouteRequirementsController::class);
+            $this->getRouteDataExtractor()->findItems(Tests\TestApp\TestBundle\Controller\InvalidDefinition\EmptyRouteRequirementsController::class);
             $this->fail();
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
             $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException::class, $exception->getPrevious());
         }
     }
 
-    private function getRouteDataExtractor(): RestApiBundle\Services\Docs\RouteDataExtractor
+    private function getRouteDataExtractor(): RestApiBundle\Services\Docs\EndpointDataExtractor
     {
-        /** @var RestApiBundle\Services\Docs\RouteDataExtractor $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\RouteDataExtractor::class);
+        /** @var RestApiBundle\Services\Docs\EndpointDataExtractor $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\EndpointDataExtractor::class);
 
         return $result;
     }

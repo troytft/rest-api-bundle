@@ -4,7 +4,7 @@ namespace RestApiBundle\DTO\Docs;
 
 use RestApiBundle;
 
-class RouteData
+class EndpointData
 {
     /**
      * @var string

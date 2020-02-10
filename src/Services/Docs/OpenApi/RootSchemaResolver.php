@@ -20,7 +20,7 @@ class RootSchemaResolver
     }
 
     /**
-     * @param RestApiBundle\DTO\Docs\RouteData[] $routeDataItems
+     * @param RestApiBundle\DTO\Docs\EndpointData[] $routeDataItems
      * @return OpenApi\OpenApi
      */
     public function resolve(array $routeDataItems): OpenApi\OpenApi

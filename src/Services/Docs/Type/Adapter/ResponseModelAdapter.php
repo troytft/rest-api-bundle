@@ -8,7 +8,7 @@ use function ltrim;
 use function strpos;
 use function substr;
 
-class ResponseModelReader
+class ResponseModelAdapter
 {
     /**
      * @var array<string, RestApiBundle\DTO\Docs\Type\ObjectType>

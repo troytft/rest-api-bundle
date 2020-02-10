@@ -82,10 +82,10 @@ class DocBlockReaderTest extends Tests\BaseBundleTestCase
         $this->assertTrue($returnType->getNullable());
     }
 
-    private function getDocBlockHelper(): RestApiBundle\Services\Docs\Type\Adapter\DocBlockReader
+    private function getDocBlockHelper(): RestApiBundle\Services\Docs\Type\Adapter\DocBlockAdapter
     {
-        /** @var RestApiBundle\Services\Docs\Type\Adapter\DocBlockReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Type\Adapter\DocBlockReader::class);
+        /** @var RestApiBundle\Services\Docs\Type\Adapter\DocBlockAdapter $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Type\Adapter\DocBlockAdapter::class);
 
         return $result;
     }

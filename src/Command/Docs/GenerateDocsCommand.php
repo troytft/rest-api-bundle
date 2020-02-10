@@ -18,7 +18,7 @@ class GenerateDocsCommand extends Command
     protected static $defaultName = 'rest-api:generate-docs';
 
     /**
-     * @var RestApiBundle\Services\Docs\RouteDataExtractor
+     * @var RestApiBundle\Services\Docs\EndpointDataExtractor
      */
     private $routeDataExtractor;
 
@@ -33,7 +33,7 @@ class GenerateDocsCommand extends Command
     private $schemaFileWriter;
 
     public function __construct(
-        RestApiBundle\Services\Docs\RouteDataExtractor $routeDataExtractor,
+        RestApiBundle\Services\Docs\EndpointDataExtractor $routeDataExtractor,
         RestApiBundle\Services\Docs\OpenApi\RootSchemaResolver $openApiRootSchemaResolver,
         RestApiBundle\Services\Docs\OpenApi\SchemaFileWriter $schemaFileWriter
     ) {
@@ -62,7 +62,7 @@ class GenerateDocsCommand extends Command
         }
 
         try {
-            $routeDataItems = $this->routeDataExtractor->getItems($input->getOption(static::CONTROLLER_NAMESPACE_PREFIX_OPTION));
+            $routeDataItems = $this->routeDataExtractor->findItems($input->getOption(static::CONTROLLER_NAMESPACE_PREFIX_OPTION));
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
             $output->writeln([
                 'Invalid Definition Exception',
