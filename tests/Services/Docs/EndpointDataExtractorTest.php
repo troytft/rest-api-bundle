@@ -2,23 +2,46 @@
 
 namespace Tests\Services\Docs;
 
+use Symfony\Component\Routing\Route;
 use Tests;
 use RestApiBundle;
+use function count;
 
 class EndpointDataExtractorTest extends Tests\BaseBundleTestCase
 {
-    public function testRouteRequirementsParameterNotPresentedInRoutePath()
+    public function testInvalidRouteRequirementsException()
     {
-        $routes = $this->getRouteFinder()->find(Tests\TestApp\TestBundle\Controller\InvalidDefinition\EmptyRouteRequirementsController::class);
-
-        $this->assertCount(1, $routes);
+        $route = $this->getSingleRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\InvalidDefinition\EmptyRouteRequirementsController::class);
 
         try {
-            $this->getEndpointDataExtractor()->extractFromRoute($routes[0]);
+            $this->getEndpointDataExtractor()->extractFromRoute($route);
             $this->fail();
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
             $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException::class, $exception->getPrevious());
         }
+    }
+
+    public function testInvalidParameterTypeException()
+    {
+        $route = $this->getSingleRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\InvalidDefinition\InvalidParameterTypeController::class);
+
+        try {
+            $this->getEndpointDataExtractor()->extractFromRoute($route);
+            $this->fail();
+        } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
+            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\InvalidParameterTypeException::class, $exception->getPrevious());
+        }
+    }
+
+    private function getSingleRouteFromControllerClass(string $class): Route
+    {
+        $routes = $this->getRouteFinder()->find($class);
+
+        if (count($routes) !== 1) {
+            throw new \InvalidArgumentException('Controller class contains two or more routes.');
+        }
+
+        return $routes[0];
     }
 
     private function getEndpointDataExtractor(): RestApiBundle\Services\Docs\EndpointDataExtractor

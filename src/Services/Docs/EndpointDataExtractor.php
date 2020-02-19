@@ -86,10 +86,8 @@ class EndpointDataExtractor
             $parameterInnerType = $parameterSchema->getType();
             if ($parameterInnerType instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
                 $directNamedParameters[$parameterSchema->getType()] = $parameterSchema->getType();
-            } elseif ($parameterInnerType instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
-                
             } else {
-                // throw exception
+                throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidParameterTypeException();
             }
 
             var_dump($parameterSchema->getName(), $parameterSchema->getType());

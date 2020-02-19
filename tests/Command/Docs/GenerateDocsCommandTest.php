@@ -75,7 +75,7 @@ YAML;
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             'output' => $outputFile,
-            '--namespace-filter' => Tests\TestApp\TestBundle\Controller\InvalidDefinition\UnknownReturnTypeController::class,
+            '--namespace-filter' => Tests\TestApp\TestBundle\Controller\InvalidDefinition\InvalidReturnTypeController::class,
         ]);
 
         $this->assertSame(1, $commandTester->getStatusCode());
