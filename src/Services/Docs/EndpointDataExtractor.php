@@ -9,6 +9,7 @@ use function array_diff;
 use function array_keys;
 use function explode;
 use function preg_match_all;
+use function var_dump;
 
 class EndpointDataExtractor
 {
@@ -72,9 +73,28 @@ class EndpointDataExtractor
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException();
         }
 
-//        $actionParameters = $this->getActionParametersByReflectionMethod($reflectionMethod);
+        $parametersSchemas = $this->getFunctionParametersSchemas($reflectionMethod);
 
-//        var_dump(array_keys($actionParameters));
+        $entities = [];
+        $directNamedParameters = [];
+
+        foreach ($parametersSchemas as $parameterSchema) {
+            if (!$parameterSchema instanceof RestApiBundle\DTO\Docs\Schema\NamedType) {
+                throw new \InvalidArgumentException();
+            }
+
+            $parameterInnerType = $parameterSchema->getType();
+            if ($parameterInnerType instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
+                $directNamedParameters[$parameterSchema->getType()] = $parameterSchema->getType();
+            } elseif ($parameterInnerType instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
+                
+            } else {
+                // throw exception
+            }
+
+            var_dump($parameterSchema->getName(), $parameterSchema->getType());
+        }
+
 
         $returnType = $this->getReturnTypeByReflectionMethod($reflectionMethod);
         if (!$returnType) {
@@ -135,7 +155,7 @@ class EndpointDataExtractor
      *
      * @return RestApiBundle\DTO\Docs\Schema\NamedType[]
      */
-    private function getActionParametersByReflectionMethod(\ReflectionMethod $reflectionMethod): array
+    private function getFunctionParametersSchemas(\ReflectionMethod $reflectionMethod): array
     {
         $result = [];
 
