@@ -31,7 +31,7 @@ class GenerateDocsCommand extends Command
     protected function configure()
     {
         $this
-            ->addArgument(static::ARGUMENT_OUTPUT, null, InputArgument::REQUIRED, 'Path to output file.')
+            ->addArgument(static::ARGUMENT_OUTPUT, InputArgument::REQUIRED, 'Path to output file.')
             ->addOption(static::OPTION_NAMESPACE_FILTER, null, InputOption::VALUE_REQUIRED, 'Prefix for controller namespace filter.');
     }
 
@@ -40,6 +40,19 @@ class GenerateDocsCommand extends Command
         $outputFileName = $input->getArgument(static::ARGUMENT_OUTPUT);
         $namespaceFilter = $input->getOption(static::OPTION_NAMESPACE_FILTER);
 
-        $this->docsGenerator->generate($outputFileName, $namespaceFilter);
+        try {
+            $this->docsGenerator->writeToFile($outputFileName, $namespaceFilter);
+        } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
+            $output->writeln([
+                'Invalid Definition Exception',
+                sprintf("Message: %s", $exception->getOriginalErrorMessage()),
+                sprintf("Controller: %s", $exception->getControllerClass()),
+                sprintf("Action: %s", $exception->getActionName()),
+            ]);
+
+            return 1;
+        }
+
+        return 0;
     }
 }

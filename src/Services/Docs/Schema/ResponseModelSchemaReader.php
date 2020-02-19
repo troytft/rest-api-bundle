@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Type\Adapter;
+namespace RestApiBundle\Services\Docs\Schema;
 
 use RestApiBundle;
 use function lcfirst;
@@ -8,7 +8,7 @@ use function ltrim;
 use function strpos;
 use function substr;
 
-class ResponseModelReader
+class ResponseModelSchemaReader
 {
     /**
      * @var array<string, RestApiBundle\DTO\Docs\Schema\ObjectType>

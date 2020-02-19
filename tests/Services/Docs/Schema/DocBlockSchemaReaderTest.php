@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Services\Docs\Type;
+namespace Tests\Services\Docs\Schema;
 
 use Tests;
 use RestApiBundle;
 
-class DocBlockReaderTest extends Tests\BaseBundleTestCase
+class DocBlockSchemaReaderTest extends Tests\BaseBundleTestCase
 {
     /**
      * @var \ReflectionClass
@@ -23,13 +23,13 @@ class DocBlockReaderTest extends Tests\BaseBundleTestCase
     {
         $reflectionMethod = $this->reflectionClass->getMethod('methodWithoutReturnTag');
 
-        $this->assertNull($this->getDocBlockHelper()->getReturnType($reflectionMethod));
+        $this->assertNull($this->getDocBlockSchemaReader()->getReturnType($reflectionMethod));
     }
 
     public function testMethodWithNullReturnTag()
     {
         $reflectionMethod = $this->reflectionClass->getMethod('methodWithNullReturnTag');
-        $returnType = $this->getDocBlockHelper()->getReturnType($reflectionMethod);
+        $returnType = $this->getDocBlockSchemaReader()->getReturnType($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\NullType::class, $returnType);
     }
@@ -39,7 +39,7 @@ class DocBlockReaderTest extends Tests\BaseBundleTestCase
         $reflectionMethod = $this->reflectionClass->getMethod('methodWithSingleResponseModelReturnTag');
 
         /** @var RestApiBundle\DTO\Docs\Schema\ClassType $returnType */
-        $returnType = $this->getDocBlockHelper()->getReturnType($reflectionMethod);
+        $returnType = $this->getDocBlockSchemaReader()->getReturnType($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ClassType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
@@ -51,7 +51,7 @@ class DocBlockReaderTest extends Tests\BaseBundleTestCase
         $reflectionMethod = $this->reflectionClass->getMethod('methodWithNullableSingleResponseModelReturnTag');
 
         /** @var RestApiBundle\DTO\Docs\Schema\ClassType $returnType */
-        $returnType = $this->getDocBlockHelper()->getReturnType($reflectionMethod);
+        $returnType = $this->getDocBlockSchemaReader()->getReturnType($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ClassType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
@@ -63,7 +63,7 @@ class DocBlockReaderTest extends Tests\BaseBundleTestCase
         $reflectionMethod = $this->reflectionClass->getMethod('methodWithArrayOfResponseModelsReturnTag');
 
         /** @var RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType $returnType */
-        $returnType = $this->getDocBlockHelper()->getReturnType($reflectionMethod);
+        $returnType = $this->getDocBlockSchemaReader()->getReturnType($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
@@ -75,17 +75,17 @@ class DocBlockReaderTest extends Tests\BaseBundleTestCase
         $reflectionMethod = $this->reflectionClass->getMethod('methodWithNullableArrayOfResponseModelsReturnTag');
 
         /** @var RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType $returnType */
-        $returnType = $this->getDocBlockHelper()->getReturnType($reflectionMethod);
+        $returnType = $this->getDocBlockSchemaReader()->getReturnType($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertTrue($returnType->getNullable());
     }
 
-    private function getDocBlockHelper(): RestApiBundle\Services\Docs\Type\Adapter\DocBlockReader
+    private function getDocBlockSchemaReader(): RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader
     {
-        /** @var RestApiBundle\Services\Docs\Type\Adapter\DocBlockReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Type\Adapter\DocBlockReader::class);
+        /** @var RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader::class);
 
         return $result;
     }

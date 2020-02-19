@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Type\Adapter;
+namespace RestApiBundle\Services\Docs\Schema;
 
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
@@ -12,7 +12,7 @@ use RestApiBundle;
 use function count;
 use function ltrim;
 
-class DocBlockReader
+class DocBlockSchemaReader
 {
     /**
      * @var DocBlockFactory

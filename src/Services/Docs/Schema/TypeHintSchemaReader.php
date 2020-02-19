@@ -1,10 +1,10 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Type\Adapter;
+namespace RestApiBundle\Services\Docs\Schema;
 
 use RestApiBundle;
 
-class TypeHintReader
+class TypeHintSchemaReader
 {
     public function getReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
     {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Services\Docs\Type;
+namespace Tests\Services\Docs\Schema;
 
 use Tests;
 use RestApiBundle;
 use function array_keys;
 
-class ResponseModelReaderTest extends Tests\BaseBundleTestCase
+class ResponseModelSchemaReaderTest extends Tests\BaseBundleTestCase
 {
     /**
      * @var \ReflectionClass
@@ -23,7 +23,7 @@ class ResponseModelReaderTest extends Tests\BaseBundleTestCase
     public function testSingleResponseModelNormalization()
     {
         $classType = new RestApiBundle\DTO\Docs\Schema\ClassType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, false);
-        $objectType = $this->getResponseModelReader()->resolveObjectTypeByClassType($classType);
+        $objectType = $this->getResponseModelSchemaReader()->resolveObjectTypeByClassType($classType);
 
         $this->assertSame(['id', 'slug', '__typename',], array_keys($objectType->getProperties()));
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $objectType->getProperties()['id']);
@@ -35,7 +35,7 @@ class ResponseModelReaderTest extends Tests\BaseBundleTestCase
     public function testNullableSingleResponseModelNormalization()
     {
         $classType = new RestApiBundle\DTO\Docs\Schema\ClassType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, true);
-        $objectType = $this->getResponseModelReader()->resolveObjectTypeByClassType($classType);
+        $objectType = $this->getResponseModelSchemaReader()->resolveObjectTypeByClassType($classType);
 
         $this->assertSame(['id', 'slug', '__typename',], array_keys($objectType->getProperties()));
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $objectType->getProperties()['id']);
@@ -47,7 +47,7 @@ class ResponseModelReaderTest extends Tests\BaseBundleTestCase
     public function testArrayOfResponseModelsNormalization()
     {
         $classesCollectionType = new RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, false);
-        $collectionType = $this->getResponseModelReader()->resolveCollectionTypeByClassesCollectionType($classesCollectionType);
+        $collectionType = $this->getResponseModelSchemaReader()->resolveCollectionTypeByClassesCollectionType($classesCollectionType);
 
         /** @var RestApiBundle\DTO\Docs\Schema\ObjectType $collectionInnerType */
         $collectionInnerType = $collectionType->getInnerType();
@@ -63,7 +63,7 @@ class ResponseModelReaderTest extends Tests\BaseBundleTestCase
     public function testNullableArrayOfResponseModelsNormalization()
     {
         $classesCollectionType = new RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, true);
-        $collectionType = $this->getResponseModelReader()->resolveCollectionTypeByClassesCollectionType($classesCollectionType);
+        $collectionType = $this->getResponseModelSchemaReader()->resolveCollectionTypeByClassesCollectionType($classesCollectionType);
 
         /** @var RestApiBundle\DTO\Docs\Schema\ObjectType $collectionInnerType */
         $collectionInnerType = $collectionType->getInnerType();
@@ -76,10 +76,10 @@ class ResponseModelReaderTest extends Tests\BaseBundleTestCase
         $this->assertTrue($collectionType->getNullable());
     }
 
-    private function getResponseModelReader(): RestApiBundle\Services\Docs\Type\Adapter\ResponseModelReader
+    private function getResponseModelSchemaReader(): RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader
     {
-        /** @var RestApiBundle\Services\Docs\Type\Adapter\ResponseModelReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Type\Adapter\ResponseModelReader::class);
+        /** @var RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader::class);
 
         return $result;
     }

@@ -4,24 +4,20 @@ namespace RestApiBundle\Services\Docs;
 
 use cebe\openapi\SpecObjectInterface;
 use RestApiBundle;
-use Symfony\Component\Routing\Route;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Yaml\Yaml;
-use function array_filter;
 use function file_put_contents;
-use function strpos;
 
 class DocsGenerator
 {
     /**
-     * @var RouterInterface
+     * @var RestApiBundle\Services\Docs\RouteFinder
      */
-    private $router;
+    private $routeFinder;
 
     /**
      * @var RestApiBundle\Services\Docs\EndpointDataExtractor
      */
-    private $endpointDataFetcher;
+    private $endpointDataExtractor;
 
     /**
      * @var RestApiBundle\Services\Docs\OpenApi\SchemaGenerator
@@ -29,29 +25,30 @@ class DocsGenerator
     private $openApiSchemaGenerator;
 
     public function __construct(
-        RouterInterface $router,
-        RestApiBundle\Services\Docs\EndpointDataExtractor $endpointDataFetcher,
+        RestApiBundle\Services\Docs\RouteFinder $routeFinder,
+        RestApiBundle\Services\Docs\EndpointDataExtractor $endpointDataExtractor,
         RestApiBundle\Services\Docs\OpenApi\SchemaGenerator $openApiSchemaGenerator
     ) {
-        $this->router = $router;
-        $this->endpointDataFetcher = $endpointDataFetcher;
+        $this->routeFinder = $routeFinder;
+        $this->endpointDataExtractor = $endpointDataExtractor;
         $this->openApiSchemaGenerator = $openApiSchemaGenerator;
     }
 
-    public function generate(string $fileName, ?string $namespaceFilter = null): void
+    public function writeToFile(string $fileName, ?string $namespaceFilter = null): void
     {
-        $items = [];
+        $routes = $this->routeFinder->find($namespaceFilter);
+        $endpoints = [];
 
-        foreach ($this->getFilteredRoutes($namespaceFilter) as $route) {
-            $endpointData = $this->endpointDataFetcher->extractFromRoute($route);
+        foreach ($routes as $route) {
+            $endpointData = $this->endpointDataExtractor->extractFromRoute($route);
             if (!$endpointData) {
                 continue;
             }
 
-            $items[] = $endpointData;
+            $endpoints[] = $endpointData;
         }
 
-        $openAPISchema = $this->openApiSchemaGenerator->resolve($items);
+        $openAPISchema = $this->openApiSchemaGenerator->resolve($endpoints);
 
         $this->writeSchemaToYamlFile($openAPISchema, $fileName);
     }
@@ -60,21 +57,8 @@ class DocsGenerator
     {
         $data = Yaml::dump($object->getSerializableData(), 256, 4, Yaml::DUMP_OBJECT_AS_MAP);
 
-        if (file_put_contents($fileName, $data)) {
+        if (!file_put_contents($fileName, $data)) {
             throw new \RuntimeException();
         }
-    }
-
-    private function getFilteredRoutes(?string $namespaceFilter = null): array
-    {
-        $routes = $this->router->getRouteCollection()->all();
-
-        if ($namespaceFilter) {
-            $routes = array_filter($routes, function (Route $route) use ($namespaceFilter) {
-                return strpos($route->getDefault('_controller'), $namespaceFilter) === 0;
-            });
-        }
-
-        return $routes;
     }
 }
