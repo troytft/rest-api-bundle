@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\TestApp\TestBundle\Controller\InvalidDefinition;
+namespace Tests\TestApp\TestBundle\Controller\ActionParameters;
 
 use Tests;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
@@ -8,9 +8,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Annotation\Docs;
 
 /**
- * @Route("/invalid-definition/invalid-parameter-type")
+ * @Route("/action-parameters/invalid-parameter-type-exception")
  */
-class InvalidParameterTypeController extends BaseController
+class InvalidParameterTypeExceptionController extends BaseController
 {
     /**
      * @Docs\Endpoint(title="Title", tags={"tag"})

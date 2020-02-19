@@ -11,7 +11,7 @@ class EndpointDataExtractorTest extends Tests\BaseBundleTestCase
 {
     public function testInvalidRouteRequirementsException()
     {
-        $route = $this->getSingleRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\InvalidDefinition\EmptyRouteRequirementsController::class);
+        $route = $this->getSingleRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\ActionParameters\EmptyRouteRequirementsExceptionController::class);
 
         try {
             $this->getEndpointDataExtractor()->extractFromRoute($route);
@@ -23,7 +23,7 @@ class EndpointDataExtractorTest extends Tests\BaseBundleTestCase
 
     public function testInvalidParameterTypeException()
     {
-        $route = $this->getSingleRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\InvalidDefinition\InvalidParameterTypeController::class);
+        $route = $this->getSingleRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\ActionParameters\InvalidParameterTypeExceptionController::class);
 
         try {
             $this->getEndpointDataExtractor()->extractFromRoute($route);
