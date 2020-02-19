@@ -4,6 +4,7 @@ namespace RestApiBundle\Services\Docs\Schema;
 
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
+use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types\Array_;
 use phpDocumentor\Reflection\Types\Compound;
 use phpDocumentor\Reflection\Types\Null_;
@@ -24,7 +25,7 @@ class DocBlockSchemaReader
         $this->docBlockFactory = DocBlockFactory::createInstance();
     }
 
-    public function getReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
+    public function getFunctionReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
     {
         if (!$reflectionMethod->getDocComment()) {
             return null;
@@ -47,16 +48,19 @@ class DocBlockSchemaReader
             throw new \InvalidArgumentException();
         }
 
-        $type = $returnTag->getType();
+        return $this->convertTypeToSchema($returnTag->getType());
+    }
 
+    private function convertTypeToSchema(Type $type): RestApiBundle\DTO\Docs\Schema\TypeInterface
+    {
         if ($type instanceof Null_) {
-            $result = $this->convertNullTypeToReturnType($type);
+            $result = new RestApiBundle\DTO\Docs\Schema\NullType();
         } elseif ($type instanceof Object_) {
-            $result = $this->convertObjectTypeToClassType($type, false);
+            $result = $this->convertObjectTypeToSchema($type, false);
         } elseif ($type instanceof Array_) {
-            $result = $this->convertArrayTypeToClassesCollectionType($type, false);
+            $result = $this->convertArrayTypeToSchema($type, false);
         } elseif ($type instanceof Compound) {
-            $result = $this->convertCompoundTypeToReturnType($type);
+            $result = $this->convertCompoundTypeToSchema($type);
         } else {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
@@ -64,12 +68,7 @@ class DocBlockSchemaReader
         return $result;
     }
 
-    private function convertNullTypeToReturnType(Null_ $type)
-    {
-        return new RestApiBundle\DTO\Docs\Schema\NullType();
-    }
-
-    private function convertCompoundTypeToReturnType(Compound $type): RestApiBundle\DTO\Docs\Schema\TypeInterface
+    private function convertCompoundTypeToSchema(Compound $type): RestApiBundle\DTO\Docs\Schema\TypeInterface
     {
         $compoundTypes = (array) $type->getIterator();
         if (count($compoundTypes) > 2) {
@@ -88,9 +87,9 @@ class DocBlockSchemaReader
 
         foreach ($compoundTypes as $compoundType) {
             if ($compoundType instanceof Object_) {
-                $result = $this->convertObjectTypeToClassType($compoundType, true);
+                $result = $this->convertObjectTypeToSchema($compoundType, true);
             } elseif ($compoundType instanceof Array_) {
-                $result = $this->convertArrayTypeToClassesCollectionType($compoundType, true);
+                $result = $this->convertArrayTypeToSchema($compoundType, true);
             } elseif ($compoundType instanceof Null_) {
                 continue;
             } else {
@@ -105,21 +104,21 @@ class DocBlockSchemaReader
         return $result;
     }
 
-    private function convertObjectTypeToClassType(Object_ $type, bool $isNullable)
+    private function convertObjectTypeToSchema(Object_ $type, bool $isNullable): RestApiBundle\DTO\Docs\Schema\ClassType
     {
         $class = ltrim((string) $type, '\\');
 
         return new RestApiBundle\DTO\Docs\Schema\ClassType($class, $isNullable);
     }
 
-    private function convertArrayTypeToClassesCollectionType(Array_ $type, bool $isNullable)
+    private function convertArrayTypeToSchema(Array_ $type, bool $isNullable): RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType
     {
         $valueType = $type->getValueType();
         if (!$valueType instanceof Object_) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
-        $classType = $this->convertObjectTypeToClassType($valueType, $isNullable);
+        $classType = $this->convertObjectTypeToSchema($valueType, $isNullable);
 
         return new RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType($classType->getClass(), $isNullable);
     }

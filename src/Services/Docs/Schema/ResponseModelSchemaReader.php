@@ -15,12 +15,12 @@ class ResponseModelSchemaReader
      */
     private $objectClassCache = [];
 
-    public function resolveObjectTypeByClassType(RestApiBundle\DTO\Docs\Schema\ClassType $classType): RestApiBundle\DTO\Docs\Schema\ObjectType
+    public function getSchemaByClassType(RestApiBundle\DTO\Docs\Schema\ClassType $classType): RestApiBundle\DTO\Docs\Schema\ObjectType
     {
-        return $this->getTypeByClass($classType->getClass(), $classType->getNullable());
+        return $this->getSchemaByClass($classType->getClass(), $classType->getNullable());
     }
 
-    public function getTypeByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Schema\ObjectType
+    public function getSchemaByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Schema\ObjectType
     {
         $class = ltrim($class, '\\');
 
@@ -43,7 +43,7 @@ class ResponseModelSchemaReader
 
             $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
             $returnType = $reflectionClass->getMethod($reflectionMethod->getName())->getReturnType();
-            $properties[$propertyName] = $this->resolveTypeByReflectionType($returnType);
+            $properties[$propertyName] = $this->convertReflectionTypeToSchemaType($returnType);
         }
 
         $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\Docs\Schema\StringType(false);
@@ -53,16 +53,18 @@ class ResponseModelSchemaReader
         return $this->objectClassCache[$class];
     }
 
-    public function resolveCollectionTypeByClassesCollectionType(RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType $classesCollectionType): RestApiBundle\DTO\Docs\Schema\ArrayType
+    public function getSchemaByArrayOfClassesType(RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType $arrayOfClassesType): RestApiBundle\DTO\Docs\Schema\ArrayType
     {
-        $objectType = $this->resolveObjectTypeByClassType(new RestApiBundle\DTO\Docs\Schema\ClassType($classesCollectionType->getClass(), $classesCollectionType->getNullable()));
+        $objectType = $this->getSchemaByClassType(new RestApiBundle\DTO\Docs\Schema\ClassType($arrayOfClassesType->getClass(), $arrayOfClassesType->getNullable()));
 
-        return  new RestApiBundle\DTO\Docs\Schema\ArrayType($objectType, $classesCollectionType->getNullable());
+        return new RestApiBundle\DTO\Docs\Schema\ArrayType($objectType, $arrayOfClassesType->getNullable());
     }
 
-    private function resolveTypeByReflectionType(\ReflectionType $reflectionType): RestApiBundle\DTO\Docs\Schema\TypeInterface
+    private function convertReflectionTypeToSchemaType(\ReflectionType $reflectionType): RestApiBundle\DTO\Docs\Schema\TypeInterface
     {
-        switch ((string) $reflectionType) {
+        $typeAsString = (string) $reflectionType;
+
+        switch ($typeAsString) {
             case 'string':
                 $result = new RestApiBundle\DTO\Docs\Schema\StringType($reflectionType->allowsNull());
 
@@ -86,8 +88,7 @@ class ResponseModelSchemaReader
                 break;
 
             default:
-                $class = (string) $reflectionType;
-                $result = $this->resolveObjectTypeByClassType(new RestApiBundle\DTO\Docs\Schema\ClassType($class, $reflectionType->allowsNull()));
+                $result = $this->getSchemaByClassType(new RestApiBundle\DTO\Docs\Schema\ClassType($typeAsString, $reflectionType->allowsNull()));
         }
 
         return $result;

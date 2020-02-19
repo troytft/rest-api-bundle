@@ -110,20 +110,20 @@ class EndpointDataExtractor
 
     private function getReturnTypeByReflectionMethod(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
     {
-        $type = $this->docBlockSchemaReader->getReturnType($reflectionMethod) ?: $this->typeHintSchemaReader->getReturnType($reflectionMethod);
+        $type = $this->docBlockSchemaReader->getFunctionReturnSchema($reflectionMethod) ?: $this->typeHintSchemaReader->getFunctionReturnSchema($reflectionMethod);
 
         if ($type instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
             if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($type->getClass())) {
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
-            $type = $this->responseModelSchemaReader->getTypeByClass($type->getClass(), $type->getNullable());
+            $type = $this->responseModelSchemaReader->getSchemaByClass($type->getClass(), $type->getNullable());
         } elseif ($type instanceof RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType) {
             if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($type->getClass())) {
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
-            $objectType = $this->responseModelSchemaReader->getTypeByClass($type->getClass(), $type->getNullable());
+            $objectType = $this->responseModelSchemaReader->getSchemaByClass($type->getClass(), $type->getNullable());
             $type = new RestApiBundle\DTO\Docs\Schema\ArrayType($objectType, $objectType->getNullable());
         }
 
@@ -140,7 +140,7 @@ class EndpointDataExtractor
         $result = [];
 
         foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-            $type = $this->typeHintSchemaReader->getParameterTypeByReflectionParameter($reflectionParameter);
+            $type = $this->typeHintSchemaReader->getFunctionParameterSchema($reflectionParameter);
             $result[] = new RestApiBundle\DTO\Docs\Schema\NamedType($reflectionParameter->getName(), $type, $reflectionParameter->allowsNull());
         }
 
