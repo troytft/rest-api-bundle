@@ -7,7 +7,7 @@ use cebe\openapi\spec as OpenApi;
 use function array_values;
 use function strtolower;
 
-class RootSchemaResolver
+class SchemaGenerator
 {
     /**
      * @var RestApiBundle\Services\Docs\OpenApi\TypeToSchemaConverter
@@ -20,7 +20,7 @@ class RootSchemaResolver
     }
 
     /**
-     * @param RestApiBundle\DTO\Docs\RouteData[] $routeDataItems
+     * @param RestApiBundle\DTO\Docs\EndpointData[] $routeDataItems
      * @return OpenApi\OpenApi
      */
     public function resolve(array $routeDataItems): OpenApi\OpenApi
@@ -55,7 +55,7 @@ class RootSchemaResolver
                 $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
             }
 
-            if (!$returnType instanceof RestApiBundle\DTO\Docs\Type\NullType) {
+            if (!$returnType instanceof RestApiBundle\DTO\Docs\Schema\NullType) {
                 $responses->addResponse('200', new OpenApi\Response([
                     'description' => 'Success response with body',
                     'content' => [

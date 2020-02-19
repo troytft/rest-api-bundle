@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\DTO\Docs\Type;
+namespace RestApiBundle\DTO\Docs\Schema;
 
 interface TypeInterface
 {

@@ -4,7 +4,7 @@ namespace RestApiBundle\DTO\Docs;
 
 use RestApiBundle;
 
-class RouteData
+class EndpointData
 {
     /**
      * @var string
@@ -32,7 +32,7 @@ class RouteData
     private $methods;
 
     /**
-     * @var RestApiBundle\DTO\Docs\Type\TypeInterface
+     * @var RestApiBundle\DTO\Docs\Schema\TypeInterface
      */
     private $returnType;
 
@@ -101,12 +101,12 @@ class RouteData
         return $this;
     }
 
-    public function getReturnType(): Type\TypeInterface
+    public function getReturnType(): Schema\TypeInterface
     {
         return $this->returnType;
     }
 
-    public function setReturnType(Type\TypeInterface $returnType)
+    public function setReturnType(Schema\TypeInterface $returnType)
     {
         $this->returnType = $returnType;
 

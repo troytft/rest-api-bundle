@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Services\Docs;
+namespace Tests\Command\Docs;
 
 use Tests;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -19,8 +19,8 @@ class GenerateDocsCommandTest extends Tests\BaseBundleTestCase
         $command = $application->find('rest-api:generate-docs');
         $commandTester = new CommandTester($command);
         $commandTester->execute([
-            '--output' => $outputFile,
-            '--controller-namespace-prefix' => Tests\TestApp\TestBundle\Controller\DemoController::class,
+            'output' => $outputFile,
+            '--namespace-filter' => Tests\TestApp\TestBundle\Controller\DemoController::class,
         ]);
 
         $this->assertSame(0, $commandTester->getStatusCode());
@@ -74,8 +74,8 @@ YAML;
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
-            '--output' => $outputFile,
-            '--controller-namespace-prefix' => Tests\TestApp\TestBundle\Controller\InvalidDefinition\UnknownReturnTypeController::class,
+            'output' => $outputFile,
+            '--namespace-filter' => Tests\TestApp\TestBundle\Controller\InvalidDefinition\UnknownReturnTypeController::class,
         ]);
 
         $this->assertSame(1, $commandTester->getStatusCode());
