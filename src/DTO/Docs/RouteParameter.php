@@ -17,7 +17,7 @@ class RouteParameter
     private $name;
 
     /**
-     * @var RestApiBundle\DTO\Docs\Type\TypeInterface
+     * @var RestApiBundle\DTO\Docs\Schema\TypeInterface
      */
     private $type;
 
@@ -26,7 +26,7 @@ class RouteParameter
      */
     private $description;
 
-    public function __construct(string $parameterType, string $name, RestApiBundle\DTO\Docs\Type\TypeInterface $type)
+    public function __construct(string $parameterType, string $name, RestApiBundle\DTO\Docs\Schema\TypeInterface $type)
     {
         $this->parameterType = $parameterType;
         $this->name = $name;
@@ -57,12 +57,12 @@ class RouteParameter
         return $this;
     }
 
-    public function getType(): Type\TypeInterface
+    public function getType(): Schema\TypeInterface
     {
         return $this->type;
     }
 
-    public function setType(Type\TypeInterface $type)
+    public function setType(Schema\TypeInterface $type)
     {
         $this->type = $type;
 

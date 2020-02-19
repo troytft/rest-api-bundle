@@ -10,7 +10,7 @@ use function array_keys;
 use function explode;
 use function preg_match_all;
 
-class EndpointDataFetcher
+class EndpointDataExtractor
 {
     /**
      * @var RestApiBundle\Services\Docs\Type\TypeReader
@@ -22,7 +22,7 @@ class EndpointDataFetcher
      */
     private $annotationReader;
 
-    public function fetchByRoute(Route $route): ?RestApiBundle\DTO\Docs\EndpointData
+    public function extractFromRoute(Route $route): ?RestApiBundle\DTO\Docs\EndpointData
     {
         [$controllerClass, $actionName] = explode('::', $route->getDefault('_controller'));
 

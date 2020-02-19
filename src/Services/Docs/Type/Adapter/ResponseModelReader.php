@@ -11,16 +11,16 @@ use function substr;
 class ResponseModelReader
 {
     /**
-     * @var array<string, RestApiBundle\DTO\Docs\Type\ObjectType>
+     * @var array<string, RestApiBundle\DTO\Docs\Schema\ObjectType>
      */
     private $objectClassCache = [];
 
-    public function resolveObjectTypeByClassType(RestApiBundle\DTO\Docs\Type\ClassType $classType): RestApiBundle\DTO\Docs\Type\ObjectType
+    public function resolveObjectTypeByClassType(RestApiBundle\DTO\Docs\Schema\ClassType $classType): RestApiBundle\DTO\Docs\Schema\ObjectType
     {
         return $this->getTypeByClass($classType->getClass(), $classType->getNullable());
     }
 
-    public function getTypeByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Type\ObjectType
+    public function getTypeByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Schema\ObjectType
     {
         $class = ltrim($class, '\\');
 
@@ -46,48 +46,48 @@ class ResponseModelReader
             $properties[$propertyName] = $this->resolveTypeByReflectionType($returnType);
         }
 
-        $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\Docs\Type\StringType(false);
+        $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\Docs\Schema\StringType(false);
 
-        $this->objectClassCache[$class] = new RestApiBundle\DTO\Docs\Type\ObjectType($properties, $isNullable);
+        $this->objectClassCache[$class] = new RestApiBundle\DTO\Docs\Schema\ObjectType($properties, $isNullable);
 
         return $this->objectClassCache[$class];
     }
 
-    public function resolveCollectionTypeByClassesCollectionType(RestApiBundle\DTO\Docs\Type\ArrayOfClassesType $classesCollectionType): RestApiBundle\DTO\Docs\Type\ArrayType
+    public function resolveCollectionTypeByClassesCollectionType(RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType $classesCollectionType): RestApiBundle\DTO\Docs\Schema\ArrayType
     {
-        $objectType = $this->resolveObjectTypeByClassType(new RestApiBundle\DTO\Docs\Type\ClassType($classesCollectionType->getClass(), $classesCollectionType->getNullable()));
+        $objectType = $this->resolveObjectTypeByClassType(new RestApiBundle\DTO\Docs\Schema\ClassType($classesCollectionType->getClass(), $classesCollectionType->getNullable()));
 
-        return  new RestApiBundle\DTO\Docs\Type\ArrayType($objectType, $classesCollectionType->getNullable());
+        return  new RestApiBundle\DTO\Docs\Schema\ArrayType($objectType, $classesCollectionType->getNullable());
     }
 
-    private function resolveTypeByReflectionType(\ReflectionType $reflectionType): RestApiBundle\DTO\Docs\Type\TypeInterface
+    private function resolveTypeByReflectionType(\ReflectionType $reflectionType): RestApiBundle\DTO\Docs\Schema\TypeInterface
     {
         switch ((string) $reflectionType) {
             case 'string':
-                $result = new RestApiBundle\DTO\Docs\Type\StringType($reflectionType->allowsNull());
+                $result = new RestApiBundle\DTO\Docs\Schema\StringType($reflectionType->allowsNull());
 
                 break;
 
             case 'int':
             case 'integer':
-                $result = new RestApiBundle\DTO\Docs\Type\IntegerType($reflectionType->allowsNull());
+                $result = new RestApiBundle\DTO\Docs\Schema\IntegerType($reflectionType->allowsNull());
 
                 break;
 
             case 'float':
-                $result = new RestApiBundle\DTO\Docs\Type\FloatType($reflectionType->allowsNull());
+                $result = new RestApiBundle\DTO\Docs\Schema\FloatType($reflectionType->allowsNull());
 
                 break;
 
             case 'bool':
             case 'boolean':
-                $result = new RestApiBundle\DTO\Docs\Type\BooleanType($reflectionType->allowsNull());
+                $result = new RestApiBundle\DTO\Docs\Schema\BooleanType($reflectionType->allowsNull());
 
                 break;
 
             default:
                 $class = (string) $reflectionType;
-                $result = $this->resolveObjectTypeByClassType(new RestApiBundle\DTO\Docs\Type\ClassType($class, $reflectionType->allowsNull()));
+                $result = $this->resolveObjectTypeByClassType(new RestApiBundle\DTO\Docs\Schema\ClassType($class, $reflectionType->allowsNull()));
         }
 
         return $result;

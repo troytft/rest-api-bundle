@@ -19,7 +19,7 @@ class DocsGenerator
     private $router;
 
     /**
-     * @var RestApiBundle\Services\Docs\EndpointDataFetcher
+     * @var RestApiBundle\Services\Docs\EndpointDataExtractor
      */
     private $endpointDataFetcher;
 
@@ -30,7 +30,7 @@ class DocsGenerator
 
     public function __construct(
         RouterInterface $router,
-        RestApiBundle\Services\Docs\EndpointDataFetcher $endpointDataFetcher,
+        RestApiBundle\Services\Docs\EndpointDataExtractor $endpointDataFetcher,
         RestApiBundle\Services\Docs\OpenApi\SchemaGenerator $openApiSchemaGenerator
     ) {
         $this->router = $router;
@@ -43,7 +43,7 @@ class DocsGenerator
         $items = [];
 
         foreach ($this->getFilteredRoutes($namespaceFilter) as $route) {
-            $endpointData = $this->endpointDataFetcher->fetchByRoute($route);
+            $endpointData = $this->endpointDataFetcher->extractFromRoute($route);
             if (!$endpointData) {
                 continue;
             }

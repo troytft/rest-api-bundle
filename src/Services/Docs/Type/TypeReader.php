@@ -31,23 +31,23 @@ class TypeReader
         $this->responseModelReader = $responseModelReader;
     }
 
-    public function getReturnTypeByReflectionMethod(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Type\TypeInterface
+    public function getReturnTypeByReflectionMethod(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
     {
         $type = $this->docBlockReader->getReturnType($reflectionMethod) ?: $this->typeHintReader->getReturnType($reflectionMethod);
 
-        if ($type instanceof RestApiBundle\DTO\Docs\Type\ClassType) {
+        if ($type instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
             if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($type->getClass())) {
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
             $type = $this->responseModelReader->getTypeByClass($type->getClass(), $type->getNullable());
-        } elseif ($type instanceof RestApiBundle\DTO\Docs\Type\ArrayOfClassesType) {
+        } elseif ($type instanceof RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType) {
             if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($type->getClass())) {
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
             $objectType = $this->responseModelReader->getTypeByClass($type->getClass(), $type->getNullable());
-            $type = new RestApiBundle\DTO\Docs\Type\ArrayType($objectType, $objectType->getNullable());
+            $type = new RestApiBundle\DTO\Docs\Schema\ArrayType($objectType, $objectType->getNullable());
         }
 
         return $type;
@@ -56,7 +56,7 @@ class TypeReader
     /**
      * @param \ReflectionMethod $reflectionMethod
      *
-     * @return RestApiBundle\DTO\Docs\ActionParameter[]
+     * @return RestApiBundle\DTO\Docs\NamedTyped[]
      */
     public function getActionParametersByReflectionMethod(\ReflectionMethod $reflectionMethod): array
     {
@@ -64,7 +64,7 @@ class TypeReader
 
         foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
             $type = $this->typeHintReader->getParameterTypeByReflectionParameter($reflectionParameter);
-            $result[] = new RestApiBundle\DTO\Docs\ActionParameter($reflectionParameter->getName(), $type);
+            $result[] = new RestApiBundle\DTO\Docs\NamedTyped($reflectionParameter->getName(), $type);
         }
 
         return $result;

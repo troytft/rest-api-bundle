@@ -24,7 +24,7 @@ class DocBlockReader
         $this->docBlockFactory = DocBlockFactory::createInstance();
     }
 
-    public function getReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Type\TypeInterface
+    public function getReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
     {
         if (!$reflectionMethod->getDocComment()) {
             return null;
@@ -66,10 +66,10 @@ class DocBlockReader
 
     private function convertNullTypeToReturnType(Null_ $type)
     {
-        return new RestApiBundle\DTO\Docs\Type\NullType();
+        return new RestApiBundle\DTO\Docs\Schema\NullType();
     }
 
-    private function convertCompoundTypeToReturnType(Compound $type): RestApiBundle\DTO\Docs\Type\TypeInterface
+    private function convertCompoundTypeToReturnType(Compound $type): RestApiBundle\DTO\Docs\Schema\TypeInterface
     {
         $compoundTypes = (array) $type->getIterator();
         if (count($compoundTypes) > 2) {
@@ -109,7 +109,7 @@ class DocBlockReader
     {
         $class = ltrim((string) $type, '\\');
 
-        return new RestApiBundle\DTO\Docs\Type\ClassType($class, $isNullable);
+        return new RestApiBundle\DTO\Docs\Schema\ClassType($class, $isNullable);
     }
 
     private function convertArrayTypeToClassesCollectionType(Array_ $type, bool $isNullable)
@@ -121,6 +121,6 @@ class DocBlockReader
 
         $classType = $this->convertObjectTypeToClassType($valueType, $isNullable);
 
-        return new RestApiBundle\DTO\Docs\Type\ArrayOfClassesType($classType->getClass(), $isNullable);
+        return new RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType($classType->getClass(), $isNullable);
     }
 }

@@ -32,7 +32,7 @@ class EndpointData
     private $methods;
 
     /**
-     * @var RestApiBundle\DTO\Docs\Type\TypeInterface
+     * @var RestApiBundle\DTO\Docs\Schema\TypeInterface
      */
     private $returnType;
 
@@ -101,12 +101,12 @@ class EndpointData
         return $this;
     }
 
-    public function getReturnType(): Type\TypeInterface
+    public function getReturnType(): Schema\TypeInterface
     {
         return $this->returnType;
     }
 
-    public function setReturnType(Type\TypeInterface $returnType)
+    public function setReturnType(Schema\TypeInterface $returnType)
     {
         $this->returnType = $returnType;
 
