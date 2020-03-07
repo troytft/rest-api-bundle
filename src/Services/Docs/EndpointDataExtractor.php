@@ -66,10 +66,7 @@ class EndpointDataExtractor
 
     private function buildEndpointData(Route $route, RestApiBundle\Annotation\Docs\Endpoint $annotation, \ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\EndpointData
     {
-        $routePathParameterNames = $this->parseRoutePathParameterNames($route->getPath());
-        if (array_diff(array_keys($route->getRequirements()), $routePathParameterNames)) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException();
-        }
+        $this->assertValidRouteRequirements($route);
 
         $methodParameters = $this->getMethodParameters($reflectionMethod);
         $pathParameters = $this->getPathParametersFromMethodParameters($methodParameters);
@@ -115,19 +112,18 @@ class EndpointDataExtractor
         return $result;
     }
 
-    /**
-     * @param string $path
-     *
-     * @return string[]
-     */
-    private function parseRoutePathParameterNames(string $path): array
+    private function assertValidRouteRequirements(Route $route): void
     {
         $matches = null;
-        if (!preg_match_all('/{([^}]+)}/', $path, $matches)) {
-            return [];
+        $parameters = [];
+
+        if (preg_match_all('/{([^}]+)}/', $route->getPath(), $matches)) {
+            $parameters = $matches[1];
         }
 
-        return $matches[1];
+        if (array_diff(array_keys($route->getRequirements()), $parameters)) {
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException();
+        }
     }
 
     private function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
