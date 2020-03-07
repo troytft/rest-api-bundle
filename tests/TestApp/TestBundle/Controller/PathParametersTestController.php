@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\TestApp\TestBundle\Controller\ActionParameters;
+namespace Tests\TestApp\TestBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,6 +19,18 @@ class PathParametersTestController extends BaseController
      * @return null
      */
     public function emptyRouteRequirementsExceptionAction()
+    {
+        return null;
+    }
+
+    /**
+     * @Docs\Endpoint(title="Test endpoint", tags={"tag1"})
+     *
+     * @Route("/scalar-parameters/{number}/{string}/", methods="GET", requirements={"number": "\d+", "string": "\w+"})
+     *
+     * @return null
+     */
+    public function scalarParametersAction(int $number, string $string)
     {
         return null;
     }
