@@ -19,14 +19,14 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
         }
     }
 
-    public function testScalarPathParameters()
+    public function testAllowedScalarPathParameters()
     {
-        $route = $this->getRouteByControllerAndAction(Tests\TestApp\TestBundle\Controller\PathParametersTestController::class, 'scalarParametersAction');
+        $route = $this->getRouteByControllerAndAction(Tests\TestApp\TestBundle\Controller\PathParametersTestController::class, 'allowedScalarParametersAction');
         $endpointData = $this->getEndpointDataExtractor()->extractFromRoute($route);
 
         $this->assertCount(2, $endpointData->getPathParameters());
 
-        $this->assertSame('number', $endpointData->getPathParameters()[0]->getName());
+        $this->assertSame('int', $endpointData->getPathParameters()[0]->getName());
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getPathParameters()[0]->getSchema());
         $this->assertFalse($endpointData->getPathParameters()[0]->getSchema()->getNullable());
 

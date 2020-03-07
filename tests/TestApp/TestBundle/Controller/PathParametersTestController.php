@@ -26,11 +26,11 @@ class PathParametersTestController extends BaseController
     /**
      * @Docs\Endpoint(title="Test endpoint", tags={"tag1"})
      *
-     * @Route("/scalar-parameters/{number}/{string}/", methods="GET", requirements={"number": "\d+", "string": "\w+"})
+     * @Route("/allowed-scalar-parameters/{int}/{string}", methods="GET", requirements={"int": "\d+", "string": "\w+"})
      *
      * @return null
      */
-    public function scalarParametersAction(int $number, string $string)
+    public function allowedScalarParametersAction(int $int, string $string)
     {
         return null;
     }
