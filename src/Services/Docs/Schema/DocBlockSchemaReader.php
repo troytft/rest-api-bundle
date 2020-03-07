@@ -25,7 +25,7 @@ class DocBlockSchemaReader
         $this->docBlockFactory = DocBlockFactory::createInstance();
     }
 
-    public function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
+    public function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         if (!$reflectionMethod->getDocComment()) {
             return null;
@@ -51,7 +51,7 @@ class DocBlockSchemaReader
         return $this->convertTypeToSchema($returnTag->getType());
     }
 
-    private function convertTypeToSchema(Type $type): RestApiBundle\DTO\Docs\Schema\TypeInterface
+    private function convertTypeToSchema(Type $type): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         if ($type instanceof Null_) {
             $result = new RestApiBundle\DTO\Docs\Schema\NullType();
@@ -68,7 +68,7 @@ class DocBlockSchemaReader
         return $result;
     }
 
-    private function convertCompoundTypeToSchema(Compound $type): RestApiBundle\DTO\Docs\Schema\TypeInterface
+    private function convertCompoundTypeToSchema(Compound $type): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         $compoundTypes = (array) $type->getIterator();
         if (count($compoundTypes) > 2) {

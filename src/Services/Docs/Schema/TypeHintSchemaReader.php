@@ -6,7 +6,7 @@ use RestApiBundle;
 
 class TypeHintSchemaReader
 {
-    public function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
+    public function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         $returnType = $reflectionMethod->getReturnType();
         if (!$returnType) {
@@ -17,7 +17,7 @@ class TypeHintSchemaReader
         return new RestApiBundle\DTO\Docs\Schema\ClassType((string) $returnType, $returnType->allowsNull());
     }
 
-    public function getMethodParameterSchema(\ReflectionParameter $reflectionParameter): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
+    public function getMethodParameterSchema(\ReflectionParameter $reflectionParameter): ?RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         if (!$reflectionParameter->getType()) {
             return null;
@@ -26,7 +26,7 @@ class TypeHintSchemaReader
         return $this->convertReflectionTypeToSchema($reflectionParameter->getType());
     }
 
-    private function convertReflectionTypeToSchema(\ReflectionType $reflectionType): RestApiBundle\DTO\Docs\Schema\TypeInterface
+    private function convertReflectionTypeToSchema(\ReflectionType $reflectionType): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         $type = (string) $reflectionType;
 

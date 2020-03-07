@@ -32,7 +32,7 @@ class EndpointData
     private $methods;
 
     /**
-     * @var RestApiBundle\DTO\Docs\Schema\TypeInterface
+     * @var RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
      */
     private $responseSchema;
 
@@ -101,12 +101,12 @@ class EndpointData
         return $this;
     }
 
-    public function getResponseSchema(): Schema\TypeInterface
+    public function getResponseSchema(): Schema\SchemaTypeInterface
     {
         return $this->responseSchema;
     }
 
-    public function setResponseSchema(Schema\TypeInterface $responseSchema)
+    public function setResponseSchema(Schema\SchemaTypeInterface $responseSchema)
     {
         $this->responseSchema = $responseSchema;
 

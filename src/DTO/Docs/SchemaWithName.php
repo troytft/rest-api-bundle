@@ -12,11 +12,11 @@ class SchemaWithName
     private $name;
 
     /**
-     * @var RestApiBundle\DTO\Docs\Schema\TypeInterface
+     * @var RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
      */
     private $schema;
 
-    public function __construct(string $name, RestApiBundle\DTO\Docs\Schema\TypeInterface $schema)
+    public function __construct(string $name, RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface $schema)
     {
         $this->name = $name;
         $this->schema = $schema;
@@ -27,7 +27,7 @@ class SchemaWithName
         return $this->name;
     }
 
-    public function getSchema(): RestApiBundle\DTO\Docs\Schema\TypeInterface
+    public function getSchema(): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         return $this->schema;
     }

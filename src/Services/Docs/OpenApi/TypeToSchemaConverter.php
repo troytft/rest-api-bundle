@@ -7,7 +7,7 @@ use cebe\openapi\spec as OpenApi;
 
 class TypeToSchemaConverter
 {
-    public function convert(RestApiBundle\DTO\Docs\Schema\TypeInterface $returnType): OpenApi\Schema
+    public function convert(RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface $returnType): OpenApi\Schema
     {
         if ($returnType instanceof RestApiBundle\DTO\Docs\Schema\ObjectType) {
             $result = $this->convertObjectType($returnType);

@@ -12,11 +12,11 @@ class PathParameter
     private $name;
 
     /**
-     * @var RestApiBundle\DTO\Docs\Schema\TypeInterface
+     * @var RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
      */
     private $schema;
 
-    public function __construct(string $name, RestApiBundle\DTO\Docs\Schema\TypeInterface $schema)
+    public function __construct(string $name, RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface $schema)
     {
         $this->name = $name;
         $this->schema = $schema;
@@ -34,12 +34,12 @@ class PathParameter
         return $this;
     }
 
-    public function getSchema(): Schema\TypeInterface
+    public function getSchema(): Schema\SchemaTypeInterface
     {
         return $this->schema;
     }
 
-    public function setSchema(Schema\TypeInterface $schema)
+    public function setSchema(Schema\SchemaTypeInterface $schema)
     {
         $this->schema = $schema;
 
