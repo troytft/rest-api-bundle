@@ -73,29 +73,26 @@ class EndpointDataExtractor
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException();
         }
 
-        $parametersSchemas = $this->getFunctionParametersSchemas($reflectionMethod);
+        $methodParameters = $this->getMethodParameters($reflectionMethod);
 
-        $entities = [];
         $directNamedParameters = [];
 
-        foreach ($parametersSchemas as $parameterSchema) {
+        foreach ($methodParameters as $parameterSchema) {
             if (!$parameterSchema instanceof RestApiBundle\DTO\Docs\Schema\NamedType) {
                 throw new \InvalidArgumentException();
             }
 
             $parameterInnerType = $parameterSchema->getType();
             if ($parameterInnerType instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
-                $directNamedParameters[$parameterSchema->getType()] = $parameterSchema->getType();
-            } else {
-                throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidParameterTypeException();
+                $directNamedParameters[$parameterSchema->getName()] = $parameterSchema->getType();
             }
 
             var_dump($parameterSchema->getName(), $parameterSchema->getType());
         }
 
 
-        $returnType = $this->getReturnTypeByReflectionMethod($reflectionMethod);
-        if (!$returnType) {
+        $methodReturnType = $this->getMethodReturnType($reflectionMethod);
+        if (!$methodReturnType) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
         }
 
@@ -106,7 +103,7 @@ class EndpointDataExtractor
             ->setTags($annotation->tags)
             ->setPath($route->getPath())
             ->setMethods($route->getMethods())
-            ->setReturnType($returnType);
+            ->setReturnType($methodReturnType);
 
         return $endpointData;
     }
@@ -126,7 +123,7 @@ class EndpointDataExtractor
         return $matches[1];
     }
 
-    private function getReturnTypeByReflectionMethod(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
+    private function getMethodReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
     {
         $type = $this->docBlockSchemaReader->getFunctionReturnSchema($reflectionMethod) ?: $this->typeHintSchemaReader->getFunctionReturnSchema($reflectionMethod);
 
@@ -153,7 +150,7 @@ class EndpointDataExtractor
      *
      * @return RestApiBundle\DTO\Docs\Schema\NamedType[]
      */
-    private function getFunctionParametersSchemas(\ReflectionMethod $reflectionMethod): array
+    private function getMethodParameters(\ReflectionMethod $reflectionMethod): array
     {
         $result = [];
 
