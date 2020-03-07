@@ -34,4 +34,16 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $endpointData->getPathParameters()[1]->getSchema());
         $this->assertFalse($endpointData->getPathParameters()[1]->getSchema()->getNullable());
     }
+
+    public function testNotAllowedFunctionParameterTypeParameter()
+    {
+        $route = $this->getOneRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\PathParameters\NotAllowedFunctionParameterTypeController::class);
+
+        try {
+            $this->getEndpointDataExtractor()->extractFromRoute($route);
+            $this->fail();
+        } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
+            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\NotAllowedFunctionParameterTypeException::class, $exception->getPrevious());
+        }
+    }
 }
