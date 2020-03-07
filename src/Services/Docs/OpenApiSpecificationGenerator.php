@@ -18,9 +18,11 @@ class OpenApiSpecificationGenerator
      */
     public function generateYaml(array $endpoints): string
     {
-        $specification = $this->generateSpecification($endpoints)->getSerializableData();
+        $data = $this
+            ->generateSpecification($endpoints)
+            ->getSerializableData();
 
-        return Yaml::dump($specification, 256, 4, Yaml::DUMP_OBJECT_AS_MAP);
+        return Yaml::dump($data, 256, 4, Yaml::DUMP_OBJECT_AS_MAP);
     }
 
     /**
@@ -30,9 +32,16 @@ class OpenApiSpecificationGenerator
      */
     public function generateJson(array $endpoints): string
     {
-        $specification = $this->generateSpecification($endpoints)->getSerializableData();
+        $data = $this
+            ->generateSpecification($endpoints)
+            ->getSerializableData();
 
-        return json_encode($specification);
+        $result = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \InvalidArgumentException(json_last_error_msg());
+        }
+
+        return $result;
     }
 
     /**

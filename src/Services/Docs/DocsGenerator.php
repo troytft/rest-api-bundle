@@ -2,9 +2,7 @@
 
 namespace RestApiBundle\Services\Docs;
 
-use cebe\openapi\SpecObjectInterface;
 use RestApiBundle;
-use Symfony\Component\Yaml\Yaml;
 use function file_put_contents;
 
 class DocsGenerator
