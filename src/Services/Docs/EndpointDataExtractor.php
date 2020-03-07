@@ -5,12 +5,9 @@ namespace RestApiBundle\Services\Docs;
 use Doctrine\Common\Annotations\AnnotationReader;
 use RestApiBundle;
 use Symfony\Component\Routing\Route;
-use function array_diff;
 use function array_keys;
-use function count;
 use function explode;
 use function preg_match_all;
-use function var_dump;
 
 class EndpointDataExtractor
 {
@@ -65,10 +62,7 @@ class EndpointDataExtractor
 
         return $result;
     }
-
-    /**
-     * @throws RestApiBundle\Exception\Docs\InvalidDefinition\InvalidDefinitionExceptionInterface
-     */
+    
     private function extractData(Route $route, RestApiBundle\Annotation\Docs\Endpoint $annotation, \ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\EndpointData
     {
         $this->assertPathParametersMatchRouteRequirements($route);
