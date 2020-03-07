@@ -4,16 +4,43 @@ namespace RestApiBundle\Services\Docs;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
+use Symfony\Component\Yaml\Yaml;
 use function array_values;
+use function json_encode;
 use function strtolower;
 
 class OpenApiSpecificationGenerator
 {
     /**
+     * @param RestApiBundle\DTO\Docs\EndpointData[] $endpoints
+     *
+     * @return string
+     */
+    public function generateYaml(array $endpoints): string
+    {
+        $specification = $this->generateSpecification($endpoints)->getSerializableData();
+
+        return Yaml::dump($specification, 256, 4, Yaml::DUMP_OBJECT_AS_MAP);
+    }
+
+    /**
+     * @param RestApiBundle\DTO\Docs\EndpointData[] $endpoints
+     *
+     * @return string
+     */
+    public function generateJson(array $endpoints): string
+    {
+        $specification = $this->generateSpecification($endpoints)->getSerializableData();
+
+        return json_encode($specification);
+    }
+
+    /**
      * @param RestApiBundle\DTO\Docs\EndpointData[] $endpointDataItems
+     *
      * @return OpenApi\OpenApi
      */
-    public function generateSpecification(array $endpointDataItems): OpenApi\OpenApi
+    private function generateSpecification(array $endpointDataItems): OpenApi\OpenApi
     {
         $root = new OpenApi\OpenApi([
             'openapi' => '3.0.0',
