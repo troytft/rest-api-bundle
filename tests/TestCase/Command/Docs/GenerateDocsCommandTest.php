@@ -52,6 +52,14 @@ paths:
                                         type: string
                                         nullable: false
                                 nullable: false
+            parameters:
+                -
+                    name: slug
+                    in: path
+                    required: true
+                    schema:
+                        type: string
+                        nullable: false
             tags:
                 - demo
 tags:
