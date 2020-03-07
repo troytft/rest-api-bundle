@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Services\Docs;
+namespace Tests\TestCase\Services\Docs;
 
 use Symfony\Component\Routing\Route;
 use Tests;
 use RestApiBundle;
 use function count;
 
-class EndpointDataExtractorTest extends Tests\BaseBundleTestCase
+class EndpointDataExtractorTest extends Tests\TestCase\BaseBundleTestCase
 {
     public function testInvalidRouteRequirementsException()
     {
@@ -18,18 +18,6 @@ class EndpointDataExtractorTest extends Tests\BaseBundleTestCase
             $this->fail();
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
             $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException::class, $exception->getPrevious());
-        }
-    }
-
-    public function testInvalidParameterTypeException()
-    {
-        $route = $this->getSingleRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\ActionParameters\InvalidParameterTypeExceptionController::class);
-
-        try {
-            $this->getEndpointDataExtractor()->extractFromRoute($route);
-            $this->fail();
-        } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
-            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\InvalidParameterTypeException::class, $exception->getPrevious());
         }
     }
 

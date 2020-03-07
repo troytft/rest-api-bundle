@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Services\Docs;
+namespace Tests\TestCase\Services\Docs;
 
 use Tests;
 use RestApiBundle;
 
-class RouteFinderTest extends Tests\BaseBundleTestCase
+class RouteFinderTest extends Tests\TestCase\BaseBundleTestCase
 {
     public function testNamespaceFilter()
     {

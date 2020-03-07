@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Tests\TestCase;
 
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use RestApiBundle;
@@ -29,10 +29,10 @@ abstract class BaseBundleTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     protected function createKernel()
     {
         $this->kernel = parent::createKernel();
-        $this->kernel->setRootDir(__DIR__ . '/TestApp');
+        $this->kernel->setRootDir(__DIR__ . '/../TestApp');
         $this->kernel->addBundle(TestApp\TestBundle\TestBundle::class);
         $this->kernel->addBundle(DoctrineBundle::class);
-        $this->kernel->addConfigFile(__DIR__ . '/TestApp/config/config.yaml');
+        $this->kernel->addConfigFile(__DIR__ . '/../TestApp/config/config.yaml');
 
         return $this->kernel;
     }

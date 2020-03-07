@@ -9,7 +9,6 @@ use function array_diff;
 use function array_keys;
 use function explode;
 use function preg_match_all;
-use function var_dump;
 
 class EndpointDataExtractor
 {
@@ -39,7 +38,6 @@ class EndpointDataExtractor
         RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader $responseModelSchemaReader
     ) {
         $this->annotationReader = new AnnotationReader();
-
         $this->docBlockSchemaReader = $docBlockSchemaReader;
         $this->typeHintSchemaReader = $typeHintSchemaReader;
         $this->responseModelSchemaReader = $responseModelSchemaReader;
@@ -74,25 +72,10 @@ class EndpointDataExtractor
         }
 
         $methodParameters = $this->getMethodParameters($reflectionMethod);
+        $pathParameters = $this->getPathParametersFromMethodParameters($methodParameters);
 
-        $directNamedParameters = [];
-
-        foreach ($methodParameters as $parameterSchema) {
-            if (!$parameterSchema instanceof RestApiBundle\DTO\Docs\Schema\NamedType) {
-                throw new \InvalidArgumentException();
-            }
-
-            $parameterInnerType = $parameterSchema->getType();
-            if ($parameterInnerType instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
-                $directNamedParameters[$parameterSchema->getName()] = $parameterSchema->getType();
-            }
-
-            var_dump($parameterSchema->getName(), $parameterSchema->getType());
-        }
-
-
-        $methodReturnType = $this->getMethodReturnType($reflectionMethod);
-        if (!$methodReturnType) {
+        $responseSchema = $this->getMethodReturnSchema($reflectionMethod);
+        if (!$responseSchema) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
         }
 
@@ -103,9 +86,33 @@ class EndpointDataExtractor
             ->setTags($annotation->tags)
             ->setPath($route->getPath())
             ->setMethods($route->getMethods())
-            ->setReturnType($methodReturnType);
+            ->setResponseSchema($responseSchema)
+            ->setPathParameters($pathParameters);
 
         return $endpointData;
+    }
+
+    /**
+     * @param RestApiBundle\DTO\Docs\SchemaWithName[] $methodParameters
+     *
+     * @return RestApiBundle\DTO\Docs\PathParameter[]
+     */
+    private function getPathParametersFromMethodParameters(array $methodParameters): array
+    {
+        $result = [];
+
+        foreach ($methodParameters as $methodParameter) {
+            if (!$methodParameter instanceof RestApiBundle\DTO\Docs\SchemaWithName) {
+                throw new \InvalidArgumentException();
+            }
+
+            $parameterInnerType = $methodParameter->getSchema();
+            if ($parameterInnerType instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
+                $result[] = new RestApiBundle\DTO\Docs\PathParameter($methodParameter->getName(), $methodParameter->getSchema());
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -123,9 +130,9 @@ class EndpointDataExtractor
         return $matches[1];
     }
 
-    private function getMethodReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
+    private function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
     {
-        $type = $this->docBlockSchemaReader->getFunctionReturnSchema($reflectionMethod) ?: $this->typeHintSchemaReader->getFunctionReturnSchema($reflectionMethod);
+        $type = $this->docBlockSchemaReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintSchemaReader->getMethodReturnSchema($reflectionMethod);
 
         if ($type instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
             if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($type->getClass())) {
@@ -148,15 +155,15 @@ class EndpointDataExtractor
     /**
      * @param \ReflectionMethod $reflectionMethod
      *
-     * @return RestApiBundle\DTO\Docs\Schema\NamedType[]
+     * @return RestApiBundle\DTO\Docs\SchemaWithName[]
      */
     private function getMethodParameters(\ReflectionMethod $reflectionMethod): array
     {
         $result = [];
 
         foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-            $type = $this->typeHintSchemaReader->getFunctionParameterSchema($reflectionParameter);
-            $result[] = new RestApiBundle\DTO\Docs\Schema\NamedType($reflectionParameter->getName(), $type, $reflectionParameter->allowsNull());
+            $type = $this->typeHintSchemaReader->getMethodParameterSchema($reflectionParameter);
+            $result[] = new RestApiBundle\DTO\Docs\SchemaWithName($reflectionParameter->getName(), $type);
         }
 
         return $result;

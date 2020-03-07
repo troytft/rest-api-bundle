@@ -25,7 +25,7 @@ class DocBlockSchemaReader
         $this->docBlockFactory = DocBlockFactory::createInstance();
     }
 
-    public function getFunctionReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
+    public function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\TypeInterface
     {
         if (!$reflectionMethod->getDocComment()) {
             return null;

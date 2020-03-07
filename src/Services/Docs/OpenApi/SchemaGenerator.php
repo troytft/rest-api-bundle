@@ -47,7 +47,7 @@ class SchemaGenerator
                 ]);
             }
             
-            $returnType = $routeData->getReturnType();
+            $returnType = $routeData->getResponseSchema();
 
             $responses = new OpenApi\Responses([]);
 
