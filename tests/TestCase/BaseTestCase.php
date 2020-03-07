@@ -64,24 +64,19 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $result;
     }
 
-    protected function getRouteByControllerAndAction(string $controller, string $action): Route
+    protected function getOneRouteFromControllerClass(string $class): Route
     {
-        $routes = $this->getRouteFinder()->find($controller);
+        $routes = $this->getRouteFinder()->find($class);
 
-        $result = null;
-        foreach ($routes as $route) {
-            if (explode('::', $route->getDefault('_controller'))[1] === $action) {
-                $result = $route;
-
-                break;
-            }
-        }
-
-        if (!$result) {
+        if (!$routes) {
             throw new \InvalidArgumentException('Route not found.');
         }
 
-        return $result;
+        if (count($routes) > 1) {
+            throw new \InvalidArgumentException('Found two or more routes.');
+        }
+
+        return $routes[0];
     }
 
     protected function getEndpointDataExtractor(): RestApiBundle\Services\Docs\EndpointDataExtractor

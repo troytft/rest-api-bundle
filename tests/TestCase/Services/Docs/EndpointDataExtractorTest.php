@@ -7,21 +7,21 @@ use RestApiBundle;
 
 class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
 {
-    public function testInvalidRouteRequirementsException()
+    public function testPathParametersNotMatchRouteRequirementsException()
     {
-        $route = $this->getRouteByControllerAndAction(Tests\TestApp\TestBundle\Controller\PathParametersTestController::class, 'emptyRouteRequirementsExceptionAction');
+        $route = $this->getOneRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\PathParameters\EmptyRouteRequirementsController::class);
 
         try {
             $this->getEndpointDataExtractor()->extractFromRoute($route);
             $this->fail();
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
-            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException::class, $exception->getPrevious());
+            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\PathParametersNotMatchRouteRequirementsException::class, $exception->getPrevious());
         }
     }
 
     public function testAllowedScalarPathParameters()
     {
-        $route = $this->getRouteByControllerAndAction(Tests\TestApp\TestBundle\Controller\PathParametersTestController::class, 'allowedScalarParametersAction');
+        $route = $this->getOneRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\PathParameters\AllowedScalarParametersController::class);
         $endpointData = $this->getEndpointDataExtractor()->extractFromRoute($route);
 
         $this->assertCount(2, $endpointData->getPathParameters());

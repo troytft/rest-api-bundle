@@ -7,8 +7,10 @@ use RestApiBundle;
 use Symfony\Component\Routing\Route;
 use function array_diff;
 use function array_keys;
+use function count;
 use function explode;
 use function preg_match_all;
+use function var_dump;
 
 class EndpointDataExtractor
 {
@@ -69,7 +71,7 @@ class EndpointDataExtractor
      */
     private function extractData(Route $route, RestApiBundle\Annotation\Docs\Endpoint $annotation, \ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\EndpointData
     {
-        $this->assertValidRouteRequirements($route);
+        $this->assertPathParametersMatchRouteRequirements($route);
 
         $methodParameters = $this->getMethodParameters($reflectionMethod);
         $pathParameters = $this->getPathParameters($methodParameters);
@@ -106,8 +108,12 @@ class EndpointDataExtractor
                 throw new \InvalidArgumentException();
             }
 
-            $parameterInnerType = $methodParameter->getSchema();
-            if ($parameterInnerType instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
+            $schema = $methodParameter->getSchema();
+            if ($schema instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
+                if (!$schema instanceof RestApiBundle\DTO\Docs\Schema\IntegerType && !$schema instanceof RestApiBundle\DTO\Docs\Schema\StringType) {
+                    throw new RestApiBundle\Exception\Docs\InvalidDefinition\NotAllowedFunctionParameterTypeException();
+                }
+
                 $result[] = new RestApiBundle\DTO\Docs\PathParameter($methodParameter->getName(), $methodParameter->getSchema());
             }
         }
@@ -115,7 +121,7 @@ class EndpointDataExtractor
         return $result;
     }
 
-    private function assertValidRouteRequirements(Route $route): void
+    private function assertPathParametersMatchRouteRequirements(Route $route): void
     {
         $matches = null;
         $parameters = [];
@@ -124,8 +130,8 @@ class EndpointDataExtractor
             $parameters = $matches[1];
         }
 
-        if (array_diff(array_keys($route->getRequirements()), $parameters)) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException();
+        if (array_keys($route->getRequirements()) !== $parameters) {
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\PathParametersNotMatchRouteRequirementsException();
         }
     }
 
