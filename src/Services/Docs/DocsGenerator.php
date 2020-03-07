@@ -2,9 +2,7 @@
 
 namespace RestApiBundle\Services\Docs;
 
-use cebe\openapi\SpecObjectInterface;
 use RestApiBundle;
-use Symfony\Component\Yaml\Yaml;
 use function file_put_contents;
 
 class DocsGenerator
@@ -34,7 +32,7 @@ class DocsGenerator
         $this->openApiSpecificationGenerator = $openApiSpecificationGenerator;
     }
 
-    public function writeToFile(string $fileName, ?string $namespaceFilter = null): void
+    public function writeToFile(string $fileName, string $format, ?string $namespaceFilter = null): void
     {
         $routes = $this->routeFinder->find($namespaceFilter);
         $endpoints = [];
@@ -48,16 +46,15 @@ class DocsGenerator
             $endpoints[] = $endpointData;
         }
 
-        $openAPISchema = $this->openApiSpecificationGenerator->generateSpecification($endpoints);
+        if ($format === RestApiBundle\Enum\Docs\FileFormat::YAML) {
+            $content = $this->openApiSpecificationGenerator->generateYaml($endpoints);
+        } elseif ($format === RestApiBundle\Enum\Docs\FileFormat::JSON) {
+            $content = $this->openApiSpecificationGenerator->generateJson($endpoints);
+        } else {
+            throw new \InvalidArgumentException();
+        }
 
-        $this->writeSchemaToYamlFile($openAPISchema, $fileName);
-    }
-
-    private function writeSchemaToYamlFile(SpecObjectInterface $object, string $fileName)
-    {
-        $data = Yaml::dump($object->getSerializableData(), 256, 4, Yaml::DUMP_OBJECT_AS_MAP);
-
-        if (!file_put_contents($fileName, $data)) {
+        if (!file_put_contents($fileName, $content)) {
             throw new \RuntimeException();
         }
     }
