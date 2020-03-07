@@ -5,7 +5,7 @@ namespace Tests\TestCase;
 use Tests;
 use Symfony\Component\HttpFoundation\Request;
 
-class ResponseModelTest extends BaseBundleTestCase
+class ResponseModelTest extends BaseTestCase
 {
     public function testSerializer()
     {

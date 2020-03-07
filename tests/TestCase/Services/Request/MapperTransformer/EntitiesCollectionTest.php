@@ -5,7 +5,7 @@ namespace Tests\TestCase\Services\Request\MapperTransformer;
 use RestApiBundle;
 use Tests;
 
-class EntitiesCollectionTest extends Tests\TestCase\BaseBundleTestCase
+class EntitiesCollectionTest extends Tests\TestCase\BaseTestCase
 {
     public function testSuccess()
     {

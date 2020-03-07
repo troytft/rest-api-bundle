@@ -4,7 +4,7 @@ namespace Tests\TestCase;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class ControllerTest extends BaseBundleTestCase
+class ControllerTest extends BaseTestCase
 {
     public function testRequestEmulation()
     {

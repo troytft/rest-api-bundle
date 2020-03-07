@@ -5,7 +5,7 @@ namespace Tests\TestCase;
 use RestApiBundle;
 use Tests;
 
-class EntityTransformerTest extends BaseBundleTestCase
+class EntityTransformerTest extends BaseTestCase
 {
     public function testSuccessById()
     {

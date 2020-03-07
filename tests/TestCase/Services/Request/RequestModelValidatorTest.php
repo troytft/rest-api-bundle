@@ -3,9 +3,8 @@
 namespace Tests\TestCase\Services\Request;
 
 use Tests;
-use RestApiBundle;
 
-class RequestModelValidatorTest extends Tests\TestCase\BaseBundleTestCase
+class RequestModelValidatorTest extends Tests\TestCase\BaseTestCase
 {
     public function testNestedRequestModel()
     {
@@ -35,13 +34,5 @@ class RequestModelValidatorTest extends Tests\TestCase\BaseBundleTestCase
         $this->assertArrayHasKey('nestedRequestModels.1.field', $value);
         $this->assertSame(['Invalid value.'], $value['nestedRequestModels.0.field']);
         $this->assertSame(['Invalid value.'], $value['nestedRequestModels.1.field']);
-    }
-    
-    private function getRequestModelValidator(): RestApiBundle\Services\Request\RequestModelValidator
-    {
-        /** @var RestApiBundle\Services\Request\RequestModelValidator $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Request\RequestModelValidator::class);
-
-        return $result;
     }
 }

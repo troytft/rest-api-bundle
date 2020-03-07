@@ -5,7 +5,7 @@ namespace Tests\TestCase\Services\Docs\Schema;
 use Tests;
 use RestApiBundle;
 
-class DocBlockSchemaReaderTest extends Tests\TestCase\BaseBundleTestCase
+class DocBlockSchemaReaderTest extends Tests\TestCase\BaseTestCase
 {
     /**
      * @var \ReflectionClass
@@ -80,13 +80,5 @@ class DocBlockSchemaReaderTest extends Tests\TestCase\BaseBundleTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertTrue($returnType->getNullable());
-    }
-
-    private function getDocBlockSchemaReader(): RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader
-    {
-        /** @var RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader::class);
-
-        return $result;
     }
 }

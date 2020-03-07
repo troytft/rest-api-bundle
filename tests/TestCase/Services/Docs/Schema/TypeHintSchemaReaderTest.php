@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Tests;
 use RestApiBundle;
 
-class TypeHintSchemaReaderTest extends Tests\TestCase\BaseBundleTestCase
+class TypeHintSchemaReaderTest extends Tests\TestCase\BaseTestCase
 {
     public function testUnsupportedReturnType()
     {
@@ -53,13 +53,5 @@ class TypeHintSchemaReaderTest extends Tests\TestCase\BaseBundleTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ClassType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertTrue($returnType->getNullable());
-    }
-
-    private function getTypeHintSchemaReader(): RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader
-    {
-        /** @var RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader::class);
-
-        return $result;
     }
 }

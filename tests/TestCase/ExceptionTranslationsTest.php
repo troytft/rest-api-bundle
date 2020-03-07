@@ -5,7 +5,7 @@ namespace Tests\TestCase;
 use Tests;
 use RestApiBundle;
 
-class ExceptionTranslationsTest extends BaseBundleTestCase
+class ExceptionTranslationsTest extends BaseTestCase
 {
     public function testBooleanRequiredException()
     {

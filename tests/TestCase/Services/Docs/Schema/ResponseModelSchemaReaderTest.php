@@ -6,7 +6,7 @@ use Tests;
 use RestApiBundle;
 use function array_keys;
 
-class ResponseModelSchemaReaderTest extends Tests\TestCase\BaseBundleTestCase
+class ResponseModelSchemaReaderTest extends Tests\TestCase\BaseTestCase
 {
     /**
      * @var \ReflectionClass
@@ -74,13 +74,5 @@ class ResponseModelSchemaReaderTest extends Tests\TestCase\BaseBundleTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $collectionInnerType->getProperties()['slug']);
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $collectionInnerType->getProperties()['__typename']);
         $this->assertTrue($collectionType->getNullable());
-    }
-
-    private function getResponseModelSchemaReader(): RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader
-    {
-        /** @var RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader::class);
-
-        return $result;
     }
 }
