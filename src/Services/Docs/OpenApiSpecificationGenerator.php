@@ -50,7 +50,7 @@ class OpenApiSpecificationGenerator
                     'description' => 'Success response with body',
                     'content' => [
                         'application/json' => [
-                            'schema' => $this->typeToSchemaConverter->convert($returnType)
+                            'schema' => $this->convertSchemaType($returnType)
                         ]
                     ]
                 ]));
@@ -63,24 +63,13 @@ class OpenApiSpecificationGenerator
 
             $parameters = [];
 
-//            foreach ($routeData->getPathParameters() as $routeDataPathParameter) {
-//                $pathParameter = new OpenApi\Parameter([
-//                    'in' => 'path',
-//                    'name' => $routeDataPathParameter->getName(),
-//                    'description' => $routeDataPathParameter->getDescription(),
-//                    'required' => true,
-//                ]);
-//
-//                if ($routeDataPathParameter->getType()) {
-//                    $pathParameter->schema = $this->typeToSchemaConverter->convert($routeDataPathParameter->getType());
-//                }
-//
-//                $parameters[] = $pathParameter;
-//            }
+            foreach ($routeData->getPathParameters() as $pathParameter) {
+                $parameters[] = $this->convertPathParameter($pathParameter);
+            }
 
-//            if ($parameters) {
-//                $operation->parameters = $parameters;
-//            }
+            if ($parameters) {
+                $operation->parameters = $parameters;
+            }
 
             if ($routeData->getTags()) {
                 $operation->tags = $routeData->getTags();
@@ -104,12 +93,43 @@ class OpenApiSpecificationGenerator
         return $root;
     }
 
+    private function convertPathParameter(RestApiBundle\DTO\Docs\PathParameter $pathParameter): OpenApi\Parameter
+    {
+        return new OpenApi\Parameter([
+            'in' => 'path',
+            'name' => $pathParameter->getName(),
+            'schema' => $this->convertSchemaType($pathParameter->getSchema()),
+            'required' => !$pathParameter->getSchema()->getNullable(),
+        ]);
+    }
+
+    private function convertSchemaType(RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface $schemaType): OpenApi\Schema
+    {
+        if ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\ObjectType) {
+            $result = $this->convertObjectType($schemaType);
+        } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\ArrayType) {
+            $result = $this->convertCollectionType($schemaType);
+        } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\StringType) {
+            $result = $this->convertStringType($schemaType);
+        } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\IntegerType) {
+            $result = $this->convertIntegerType($schemaType);
+        } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\FloatType) {
+            $result = $this->convertFloatType($schemaType);
+        } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\BooleanType) {
+            $result = $this->convertBooleanType($schemaType);
+        } else {
+            throw new \InvalidArgumentException();
+        }
+
+        return $result;
+    }
+
     private function convertObjectType(RestApiBundle\DTO\Docs\Schema\ObjectType $objectType): OpenApi\Schema
     {
         $properties = [];
 
         foreach ($objectType->getProperties() as $key => $propertyType) {
-            $properties[$key] = $this->convert($propertyType);
+            $properties[$key] = $this->convertSchemaType($propertyType);
         }
 
         return new OpenApi\Schema([
@@ -125,7 +145,7 @@ class OpenApiSpecificationGenerator
             'type' => OpenApi\Type::ARRAY,
             'nullable' => $collectionType->getNullable(),
             'items' => [
-                $this->convert($collectionType->getInnerType())
+                $this->convertSchemaType($collectionType->getInnerType())
             ]
         ]);
     }

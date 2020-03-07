@@ -7,7 +7,6 @@ use RestApiBundle;
 use Symfony\Component\Routing\Route;
 use Tests\TestApp;
 use Symfony\Component\HttpKernel\KernelInterface;
-use function explode;
 use function get_class;
 
 abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
@@ -78,6 +77,11 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         }
 
         return $routes[0];
+    }
+
+    protected function convertStdClassToArray(\stdClass $stdClass): array
+    {
+        return json_decode(json_encode($stdClass), true);
     }
 
     protected function invokePrivateMethod($object, string $methodName, array $parameters = [])
