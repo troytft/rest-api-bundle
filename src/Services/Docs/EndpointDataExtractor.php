@@ -62,7 +62,7 @@ class EndpointDataExtractor
 
         return $result;
     }
-    
+
     private function extractData(Route $route, RestApiBundle\Annotation\Docs\Endpoint $annotation, \ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\EndpointData
     {
         $this->assertPathParametersMatchRouteRequirements($route);

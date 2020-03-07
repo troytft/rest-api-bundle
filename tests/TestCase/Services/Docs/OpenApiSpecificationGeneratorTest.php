@@ -28,10 +28,10 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $this->assertSame($expected, $this->convertStdClassToArray($openApiParameter->getSerializableData()));
     }
 
-    public function testConvertBooleanType()
+    public function testConvertSchemaType()
     {
         $booleanType = new RestApiBundle\DTO\Docs\Schema\BooleanType(false);
-        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertBooleanType', [$booleanType]);
+        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$booleanType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
 
@@ -44,7 +44,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
 
         // nullable
         $booleanType = new RestApiBundle\DTO\Docs\Schema\BooleanType(true);
-        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertBooleanType', [$booleanType]);
+        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$booleanType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
 
