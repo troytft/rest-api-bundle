@@ -4,7 +4,7 @@ namespace RestApiBundle\DTO\Docs\Schema;
 
 use RestApiBundle;
 
-class ArrayOfClassesType implements RestApiBundle\DTO\Docs\Schema\TypeInterface
+class ArrayOfClassesType implements RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
 {
     /**
      * @var string

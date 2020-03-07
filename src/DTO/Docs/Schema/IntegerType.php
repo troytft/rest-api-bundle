@@ -4,7 +4,7 @@ namespace RestApiBundle\DTO\Docs\Schema;
 
 use RestApiBundle;
 
-class IntegerType implements RestApiBundle\DTO\Docs\Schema\TypeInterface, RestApiBundle\DTO\Docs\Schema\ScalarInterface
+class IntegerType implements RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface, RestApiBundle\DTO\Docs\Schema\ScalarInterface
 {
     /**
      * @var bool

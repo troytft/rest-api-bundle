@@ -60,7 +60,7 @@ class ResponseModelSchemaReader
         return new RestApiBundle\DTO\Docs\Schema\ArrayType($objectType, $arrayOfClassesType->getNullable());
     }
 
-    private function convertReflectionTypeToSchemaType(\ReflectionType $reflectionType): RestApiBundle\DTO\Docs\Schema\TypeInterface
+    private function convertReflectionTypeToSchemaType(\ReflectionType $reflectionType): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         $typeAsString = (string) $reflectionType;
 

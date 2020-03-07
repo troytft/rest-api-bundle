@@ -32,12 +32,12 @@ class EndpointData
     private $methods;
 
     /**
-     * @var RestApiBundle\DTO\Docs\Schema\TypeInterface
+     * @var RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
      */
-    private $returnType;
+    private $responseSchema;
 
     /**
-     * @var RestApiBundle\DTO\Docs\RouteParameter[]
+     * @var RestApiBundle\DTO\Docs\PathParameter[]
      */
     private $pathParameters = [];
 
@@ -101,28 +101,35 @@ class EndpointData
         return $this;
     }
 
-    public function getReturnType(): Schema\TypeInterface
+    public function getResponseSchema(): Schema\SchemaTypeInterface
     {
-        return $this->returnType;
+        return $this->responseSchema;
     }
 
-    public function setReturnType(Schema\TypeInterface $returnType)
+    public function setResponseSchema(Schema\SchemaTypeInterface $responseSchema)
     {
-        $this->returnType = $returnType;
+        $this->responseSchema = $responseSchema;
 
         return $this;
     }
 
     /**
-     * @return RestApiBundle\DTO\Docs\RouteParameter[]
+     * @return RestApiBundle\DTO\Docs\PathParameter[]
      */
     public function getPathParameters(): array
     {
         return $this->pathParameters;
     }
 
-    public function addPathParameter(RestApiBundle\DTO\Docs\RouteParameter $pathParameter)
+    /**
+     * @param RestApiBundle\DTO\Docs\PathParameter[] $pathParameters
+     *
+     * @return $this
+     */
+    public function setPathParameters(array $pathParameters)
     {
-        $this->pathParameters[] = $pathParameter;
+        $this->pathParameters = $pathParameters;
+
+        return $this;
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Services\Docs\Schema;
+namespace Tests\TestCase\Services\Docs\Schema;
 
 use Tests;
 use RestApiBundle;
 use function array_keys;
 
-class ResponseModelSchemaReaderTest extends Tests\BaseBundleTestCase
+class ResponseModelSchemaReaderTest extends Tests\TestCase\BaseBundleTestCase
 {
     /**
      * @var \ReflectionClass

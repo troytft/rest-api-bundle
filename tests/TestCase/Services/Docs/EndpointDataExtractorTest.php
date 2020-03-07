@@ -1,24 +1,35 @@
 <?php
 
-namespace Tests\Services\Docs;
+namespace Tests\TestCase\Services\Docs;
 
+use Symfony\Component\Routing\Route;
 use Tests;
 use RestApiBundle;
+use function count;
 
-class EndpointDataExtractorTest extends Tests\BaseBundleTestCase
+class EndpointDataExtractorTest extends Tests\TestCase\BaseBundleTestCase
 {
-    public function testRouteRequirementsParameterNotPresentedInRoutePath()
+    public function testInvalidRouteRequirementsException()
     {
-        $routes = $this->getRouteFinder()->find(Tests\TestApp\TestBundle\Controller\InvalidDefinition\EmptyRouteRequirementsController::class);
-
-        $this->assertCount(1, $routes);
+        $route = $this->getSingleRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\ActionParameters\EmptyRouteRequirementsExceptionController::class);
 
         try {
-            $this->getEndpointDataExtractor()->extractFromRoute($routes[0]);
+            $this->getEndpointDataExtractor()->extractFromRoute($route);
             $this->fail();
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
             $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException::class, $exception->getPrevious());
         }
+    }
+
+    private function getSingleRouteFromControllerClass(string $class): Route
+    {
+        $routes = $this->getRouteFinder()->find($class);
+
+        if (count($routes) !== 1) {
+            throw new \InvalidArgumentException('Controller class contains two or more routes.');
+        }
+
+        return $routes[0];
     }
 
     private function getEndpointDataExtractor(): RestApiBundle\Services\Docs\EndpointDataExtractor

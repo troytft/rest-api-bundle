@@ -4,10 +4,10 @@ namespace RestApiBundle\DTO\Docs\Schema;
 
 use RestApiBundle;
 
-class ObjectType implements RestApiBundle\DTO\Docs\Schema\TypeInterface
+class ObjectType implements RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
 {
     /**
-     * @var array<string, RestApiBundle\DTO\Docs\Schema\TypeInterface>
+     * @var array<string, RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface>
      */
     private $properties;
 
@@ -23,7 +23,7 @@ class ObjectType implements RestApiBundle\DTO\Docs\Schema\TypeInterface
     }
 
     /**
-     * @return array<string, RestApiBundle\DTO\Docs\Schema\TypeInterface>
+     * @return array<string, RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface>
      */
     public function getProperties(): array
     {

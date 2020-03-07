@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Services\Request;
+namespace Tests\TestCase\Services\Request;
 
 use Tests;
 use RestApiBundle;
 
-class RequestModelValidatorTest extends Tests\BaseBundleTestCase
+class RequestModelValidatorTest extends Tests\TestCase\BaseBundleTestCase
 {
     public function testNestedRequestModel()
     {

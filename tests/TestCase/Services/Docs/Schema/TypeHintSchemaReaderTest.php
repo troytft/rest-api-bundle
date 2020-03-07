@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Services\Docs\Schema;
+namespace Tests\TestCase\Services\Docs\Schema;
 
 use Symfony\Component\HttpFoundation\Response;
 use Tests;
 use RestApiBundle;
 
-class TypeHintSchemaReaderTest extends Tests\BaseBundleTestCase
+class TypeHintSchemaReaderTest extends Tests\TestCase\BaseBundleTestCase
 {
     public function testUnsupportedReturnType()
     {
@@ -14,7 +14,7 @@ class TypeHintSchemaReaderTest extends Tests\BaseBundleTestCase
         $reflectionMethod = $reflectionClass->getMethod('registerAction');
 
         /** @var RestApiBundle\DTO\Docs\Schema\ClassType $returnType */
-        $returnType = $this->getTypeHintSchemaReader()->getFunctionReturnSchema($reflectionMethod);
+        $returnType = $this->getTypeHintSchemaReader()->getMethodReturnSchema($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ClassType::class, $returnType);
         $this->assertSame(Response::class, $returnType->getClass());
@@ -26,7 +26,7 @@ class TypeHintSchemaReaderTest extends Tests\BaseBundleTestCase
         $reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('methodWithEmptyTypeHintAction');
 
-        $this->assertNull($this->getTypeHintSchemaReader()->getFunctionReturnSchema($reflectionMethod));
+        $this->assertNull($this->getTypeHintSchemaReader()->getMethodReturnSchema($reflectionMethod));
     }
 
     public function testResponseModelReturnType()
@@ -35,7 +35,7 @@ class TypeHintSchemaReaderTest extends Tests\BaseBundleTestCase
         $reflectionMethod = $reflectionClass->getMethod('notNullableResponseModelTypeHintAction');
 
         /** @var RestApiBundle\DTO\Docs\Schema\ClassType $returnType */
-        $returnType = $this->getTypeHintSchemaReader()->getFunctionReturnSchema($reflectionMethod);
+        $returnType = $this->getTypeHintSchemaReader()->getMethodReturnSchema($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ClassType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
@@ -48,7 +48,7 @@ class TypeHintSchemaReaderTest extends Tests\BaseBundleTestCase
         $reflectionMethod = $reflectionClass->getMethod('nullableResponseModelTypeHintAction');
 
         /** @var RestApiBundle\DTO\Docs\Schema\ClassType $returnType */
-        $returnType = $this->getTypeHintSchemaReader()->getFunctionReturnSchema($reflectionMethod);
+        $returnType = $this->getTypeHintSchemaReader()->getMethodReturnSchema($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ClassType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());

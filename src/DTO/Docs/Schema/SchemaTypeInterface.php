@@ -2,7 +2,7 @@
 
 namespace RestApiBundle\DTO\Docs\Schema;
 
-interface TypeInterface
+interface SchemaTypeInterface
 {
     public function getNullable(): bool;
 }
