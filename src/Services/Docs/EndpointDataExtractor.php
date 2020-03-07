@@ -5,7 +5,6 @@ namespace RestApiBundle\Services\Docs;
 use Doctrine\Common\Annotations\AnnotationReader;
 use RestApiBundle;
 use Symfony\Component\Routing\Route;
-use function array_diff;
 use function array_keys;
 use function explode;
 use function preg_match_all;
@@ -56,7 +55,7 @@ class EndpointDataExtractor
         }
 
         try {
-            $result = $this->buildEndpointData($route, $annotation, $reflectionMethod);
+            $result = $this->extractData($route, $annotation, $reflectionMethod);
         } catch (RestApiBundle\Exception\Docs\InvalidDefinition\InvalidDefinitionExceptionInterface $exception) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $controllerClass, $actionName);
         }
@@ -64,17 +63,14 @@ class EndpointDataExtractor
         return $result;
     }
 
-    private function buildEndpointData(Route $route, RestApiBundle\Annotation\Docs\Endpoint $annotation, \ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\EndpointData
+    private function extractData(Route $route, RestApiBundle\Annotation\Docs\Endpoint $annotation, \ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\EndpointData
     {
-        $routePathParameterNames = $this->parseRoutePathParameterNames($route->getPath());
-        if (array_diff(array_keys($route->getRequirements()), $routePathParameterNames)) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException();
-        }
+        $this->assertPathParametersMatchRouteRequirements($route);
 
         $methodParameters = $this->getMethodParameters($reflectionMethod);
-        $pathParameters = $this->getPathParametersFromMethodParameters($methodParameters);
+        $pathParameters = $this->getPathParameters($methodParameters);
 
-        $responseSchema = $this->getMethodReturnSchema($reflectionMethod);
+        $responseSchema = $this->getResponseSchema($reflectionMethod);
         if (!$responseSchema) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
         }
@@ -97,7 +93,7 @@ class EndpointDataExtractor
      *
      * @return RestApiBundle\DTO\Docs\PathParameter[]
      */
-    private function getPathParametersFromMethodParameters(array $methodParameters): array
+    private function getPathParameters(array $methodParameters): array
     {
         $result = [];
 
@@ -106,8 +102,12 @@ class EndpointDataExtractor
                 throw new \InvalidArgumentException();
             }
 
-            $parameterInnerType = $methodParameter->getSchema();
-            if ($parameterInnerType instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
+            $schema = $methodParameter->getSchema();
+            if ($schema instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
+                if (!$schema instanceof RestApiBundle\DTO\Docs\Schema\IntegerType && !$schema instanceof RestApiBundle\DTO\Docs\Schema\StringType) {
+                    throw new RestApiBundle\Exception\Docs\InvalidDefinition\NotAllowedFunctionParameterTypeException();
+                }
+
                 $result[] = new RestApiBundle\DTO\Docs\PathParameter($methodParameter->getName(), $methodParameter->getSchema());
             }
         }
@@ -115,41 +115,40 @@ class EndpointDataExtractor
         return $result;
     }
 
-    /**
-     * @param string $path
-     *
-     * @return string[]
-     */
-    private function parseRoutePathParameterNames(string $path): array
+    private function assertPathParametersMatchRouteRequirements(Route $route): void
     {
         $matches = null;
-        if (!preg_match_all('/{([^}]+)}/', $path, $matches)) {
-            return [];
+        $parameters = [];
+
+        if (preg_match_all('/{([^}]+)}/', $route->getPath(), $matches)) {
+            $parameters = $matches[1];
         }
 
-        return $matches[1];
+        if (array_keys($route->getRequirements()) !== $parameters) {
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\PathParametersNotMatchRouteRequirementsException();
+        }
     }
 
-    private function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    private function getResponseSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
-        $type = $this->docBlockSchemaReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintSchemaReader->getMethodReturnSchema($reflectionMethod);
+        $schema = $this->docBlockSchemaReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintSchemaReader->getMethodReturnSchema($reflectionMethod);
 
-        if ($type instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
-            if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($type->getClass())) {
+        if ($schema instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
+            if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($schema->getClass())) {
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
-            $type = $this->responseModelSchemaReader->getSchemaByClass($type->getClass(), $type->getNullable());
-        } elseif ($type instanceof RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType) {
-            if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($type->getClass())) {
+            $schema = $this->responseModelSchemaReader->getSchemaByClass($schema->getClass(), $schema->getNullable());
+        } elseif ($schema instanceof RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType) {
+            if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($schema->getClass())) {
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
-            $objectType = $this->responseModelSchemaReader->getSchemaByClass($type->getClass(), $type->getNullable());
-            $type = new RestApiBundle\DTO\Docs\Schema\ArrayType($objectType, $objectType->getNullable());
+            $responseModelSchema = $this->responseModelSchemaReader->getSchemaByClass($schema->getClass(), $schema->getNullable());
+            $schema = new RestApiBundle\DTO\Docs\Schema\ArrayType($responseModelSchema, $schema->getNullable());
         }
 
-        return $type;
+        return $schema;
     }
 
     /**

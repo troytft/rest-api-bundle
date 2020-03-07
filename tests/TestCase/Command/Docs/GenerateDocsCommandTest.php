@@ -9,7 +9,7 @@ use function file_get_contents;
 use function sys_get_temp_dir;
 use function tempnam;
 
-class GenerateDocsCommandTest extends Tests\TestCase\BaseBundleTestCase
+class GenerateDocsCommandTest extends Tests\TestCase\BaseTestCase
 {
     public function testSuccess()
     {
@@ -52,6 +52,14 @@ paths:
                                         type: string
                                         nullable: false
                                 nullable: false
+            parameters:
+                -
+                    name: slug
+                    in: path
+                    required: true
+                    schema:
+                        type: string
+                        nullable: false
             tags:
                 - demo
 tags:

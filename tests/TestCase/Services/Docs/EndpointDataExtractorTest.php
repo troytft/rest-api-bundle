@@ -2,49 +2,48 @@
 
 namespace Tests\TestCase\Services\Docs;
 
-use Symfony\Component\Routing\Route;
 use Tests;
 use RestApiBundle;
-use function count;
 
-class EndpointDataExtractorTest extends Tests\TestCase\BaseBundleTestCase
+class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
 {
-    public function testInvalidRouteRequirementsException()
+    public function testPathParametersNotMatchRouteRequirementsException()
     {
-        $route = $this->getSingleRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\ActionParameters\EmptyRouteRequirementsExceptionController::class);
+        $route = $this->getOneRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\PathParameters\EmptyRouteRequirementsController::class);
 
         try {
             $this->getEndpointDataExtractor()->extractFromRoute($route);
             $this->fail();
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
-            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException::class, $exception->getPrevious());
+            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\PathParametersNotMatchRouteRequirementsException::class, $exception->getPrevious());
         }
     }
 
-    private function getSingleRouteFromControllerClass(string $class): Route
+    public function testAllowedScalarPathParameters()
     {
-        $routes = $this->getRouteFinder()->find($class);
+        $route = $this->getOneRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\PathParameters\AllowedScalarParametersController::class);
+        $endpointData = $this->getEndpointDataExtractor()->extractFromRoute($route);
 
-        if (count($routes) !== 1) {
-            throw new \InvalidArgumentException('Controller class contains two or more routes.');
+        $this->assertCount(2, $endpointData->getPathParameters());
+
+        $this->assertSame('int', $endpointData->getPathParameters()[0]->getName());
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getPathParameters()[0]->getSchema());
+        $this->assertFalse($endpointData->getPathParameters()[0]->getSchema()->getNullable());
+
+        $this->assertSame('string', $endpointData->getPathParameters()[1]->getName());
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $endpointData->getPathParameters()[1]->getSchema());
+        $this->assertFalse($endpointData->getPathParameters()[1]->getSchema()->getNullable());
+    }
+
+    public function testNotAllowedFunctionParameterTypeParameter()
+    {
+        $route = $this->getOneRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\PathParameters\NotAllowedFunctionParameterTypeController::class);
+
+        try {
+            $this->getEndpointDataExtractor()->extractFromRoute($route);
+            $this->fail();
+        } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
+            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\NotAllowedFunctionParameterTypeException::class, $exception->getPrevious());
         }
-
-        return $routes[0];
-    }
-
-    private function getEndpointDataExtractor(): RestApiBundle\Services\Docs\EndpointDataExtractor
-    {
-        /** @var RestApiBundle\Services\Docs\EndpointDataExtractor $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\EndpointDataExtractor::class);
-
-        return $result;
-    }
-
-    private function getRouteFinder(): RestApiBundle\Services\Docs\RouteFinder
-    {
-        /** @var RestApiBundle\Services\Docs\RouteFinder $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\RouteFinder::class);
-
-        return $result;
     }
 }
