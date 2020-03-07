@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Route;
 use Tests\TestApp;
 use Symfony\Component\HttpKernel\KernelInterface;
 use function explode;
+use function get_class;
 
 abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
 {
@@ -79,6 +80,15 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $routes[0];
     }
 
+    protected function invokePrivateMethod($object, string $methodName, array $parameters = [])
+    {
+        $reflection = RestApiBundle\Services\ReflectionClassStore::get(get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($object, $parameters);
+    }
+
     protected function getEndpointDataExtractor(): RestApiBundle\Services\Docs\EndpointDataExtractor
     {
         /** @var RestApiBundle\Services\Docs\EndpointDataExtractor $result */
@@ -123,6 +133,14 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     {
         /** @var RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader $result */
         $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader::class);
+
+        return $result;
+    }
+
+    protected function getOpenApiSpecificationGenerator(): RestApiBundle\Services\Docs\OpenApiSpecificationGenerator
+    {
+        /** @var RestApiBundle\Services\Docs\OpenApiSpecificationGenerator $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\OpenApiSpecificationGenerator::class);
 
         return $result;
     }

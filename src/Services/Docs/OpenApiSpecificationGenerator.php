@@ -1,29 +1,19 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\OpenApi;
+namespace RestApiBundle\Services\Docs;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
 use function array_values;
 use function strtolower;
 
-class SchemaGenerator
+class OpenApiSpecificationGenerator
 {
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\TypeToSchemaConverter
-     */
-    private $typeToSchemaConverter;
-
-    public function __construct(RestApiBundle\Services\Docs\OpenApi\TypeToSchemaConverter $typeToSchemaConverter)
-    {
-        $this->typeToSchemaConverter = $typeToSchemaConverter;
-    }
-
-    /**
-     * @param RestApiBundle\DTO\Docs\EndpointData[] $routeDataItems
+     * @param RestApiBundle\DTO\Docs\EndpointData[] $endpointDataItems
      * @return OpenApi\OpenApi
      */
-    public function resolve(array $routeDataItems): OpenApi\OpenApi
+    public function generateSpecification(array $endpointDataItems): OpenApi\OpenApi
     {
         $root = new OpenApi\OpenApi([
             'openapi' => '3.0.0',
@@ -36,7 +26,7 @@ class SchemaGenerator
 
         $tags = [];
 
-        foreach ($routeDataItems as $routeData) {
+        foreach ($endpointDataItems as $routeData) {
             foreach ($routeData->getTags() as $tagName) {
                 if (isset($tags[$tagName])) {
                     continue;
@@ -112,5 +102,64 @@ class SchemaGenerator
         $root->tags = array_values($tags);
 
         return $root;
+    }
+
+    private function convertObjectType(RestApiBundle\DTO\Docs\Schema\ObjectType $objectType): OpenApi\Schema
+    {
+        $properties = [];
+
+        foreach ($objectType->getProperties() as $key => $propertyType) {
+            $properties[$key] = $this->convert($propertyType);
+        }
+
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::OBJECT,
+            'nullable' => $objectType->getNullable(),
+            'properties' => $properties,
+        ]);
+    }
+
+    private function convertCollectionType(RestApiBundle\DTO\Docs\Schema\ArrayType $collectionType): OpenApi\Schema
+    {
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::ARRAY,
+            'nullable' => $collectionType->getNullable(),
+            'items' => [
+                $this->convert($collectionType->getInnerType())
+            ]
+        ]);
+    }
+
+    private function convertStringType(RestApiBundle\DTO\Docs\Schema\StringType $stringType): OpenApi\Schema
+    {
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::STRING,
+            'nullable' => $stringType->getNullable(),
+        ]);
+    }
+
+    private function convertIntegerType(RestApiBundle\DTO\Docs\Schema\IntegerType $integerType): OpenApi\Schema
+    {
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::INTEGER,
+            'nullable' => $integerType->getNullable(),
+        ]);
+    }
+
+    private function convertFloatType(RestApiBundle\DTO\Docs\Schema\FloatType $floatType): OpenApi\Schema
+    {
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::NUMBER,
+            'format' => 'double',
+            'nullable' => $floatType->getNullable(),
+        ]);
+    }
+
+    private function convertBooleanType(RestApiBundle\DTO\Docs\Schema\BooleanType $booleanType): OpenApi\Schema
+    {
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::BOOLEAN,
+            'nullable' => $booleanType->getNullable(),
+        ]);
     }
 }

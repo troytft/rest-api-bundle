@@ -20,18 +20,18 @@ class DocsGenerator
     private $endpointDataExtractor;
 
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\SchemaGenerator
+     * @var RestApiBundle\Services\Docs\OpenApiSpecificationGenerator
      */
-    private $openApiSchemaGenerator;
+    private $openApiSpecificationGenerator;
 
     public function __construct(
         RestApiBundle\Services\Docs\RouteFinder $routeFinder,
         RestApiBundle\Services\Docs\EndpointDataExtractor $endpointDataExtractor,
-        RestApiBundle\Services\Docs\OpenApi\SchemaGenerator $openApiSchemaGenerator
+        RestApiBundle\Services\Docs\OpenApiSpecificationGenerator $openApiSpecificationGenerator
     ) {
         $this->routeFinder = $routeFinder;
         $this->endpointDataExtractor = $endpointDataExtractor;
-        $this->openApiSchemaGenerator = $openApiSchemaGenerator;
+        $this->openApiSpecificationGenerator = $openApiSpecificationGenerator;
     }
 
     public function writeToFile(string $fileName, ?string $namespaceFilter = null): void
@@ -48,7 +48,7 @@ class DocsGenerator
             $endpoints[] = $endpointData;
         }
 
-        $openAPISchema = $this->openApiSchemaGenerator->resolve($endpoints);
+        $openAPISchema = $this->openApiSpecificationGenerator->generateSpecification($endpoints);
 
         $this->writeSchemaToYamlFile($openAPISchema, $fileName);
     }
