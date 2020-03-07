@@ -40,7 +40,7 @@ class DocsGenerator
         $endpoints = [];
 
         foreach ($routes as $route) {
-            $endpointData = $this->endpointDataExtractor->getFromRoute($route);
+            $endpointData = $this->endpointDataExtractor->extractFromRoute($route);
             if (!$endpointData) {
                 continue;
             }

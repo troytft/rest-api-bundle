@@ -14,7 +14,7 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseBundleTestCase
         $route = $this->getSingleRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\ActionParameters\EmptyRouteRequirementsExceptionController::class);
 
         try {
-            $this->getEndpointDataExtractor()->getFromRoute($route);
+            $this->getEndpointDataExtractor()->extractFromRoute($route);
             $this->fail();
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
             $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\InvalidRouteRequirementsException::class, $exception->getPrevious());

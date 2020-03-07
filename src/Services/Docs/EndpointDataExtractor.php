@@ -43,7 +43,7 @@ class EndpointDataExtractor
         $this->responseModelSchemaReader = $responseModelSchemaReader;
     }
 
-    public function getFromRoute(Route $route): ?RestApiBundle\DTO\Docs\EndpointData
+    public function extractFromRoute(Route $route): ?RestApiBundle\DTO\Docs\EndpointData
     {
         [$controllerClass, $actionName] = explode('::', $route->getDefault('_controller'));
 
