@@ -3,11 +3,13 @@
 namespace RestApiBundle\Services\Docs;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\EntityManagerInterface;
 use RestApiBundle;
 use Symfony\Component\Routing\Route;
-use function array_keys;
 use function explode;
 use function preg_match_all;
+use function sprintf;
+use function var_dump;
 
 class EndpointDataExtractor
 {
@@ -31,15 +33,22 @@ class EndpointDataExtractor
      */
     private $responseModelSchemaReader;
 
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
     public function __construct(
         RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader $docBlockSchemaReader,
         RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader $typeHintSchemaReader,
-        RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader $responseModelSchemaReader
+        RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader $responseModelSchemaReader,
+        EntityManagerInterface $entityManager
     ) {
         $this->annotationReader = new AnnotationReader();
         $this->docBlockSchemaReader = $docBlockSchemaReader;
         $this->typeHintSchemaReader = $typeHintSchemaReader;
         $this->responseModelSchemaReader = $responseModelSchemaReader;
+        $this->entityManager = $entityManager;
     }
 
     public function extractFromRoute(Route $route): ?RestApiBundle\DTO\Docs\EndpointData
@@ -55,67 +64,67 @@ class EndpointDataExtractor
         }
 
         try {
-            $result = $this->extractData($route, $annotation, $reflectionMethod);
+            $endpointData = new RestApiBundle\DTO\Docs\EndpointData();
+            $endpointData
+                ->setTitle($annotation->title)
+                ->setDescription($annotation->description)
+                ->setTags($annotation->tags)
+                ->setPath($route->getPath())
+                ->setMethods($route->getMethods())
+                ->setResponseSchema($this->getResponseSchema($reflectionMethod))
+                ->setPathParameters($this->getPathParameters($route, $reflectionMethod));
         } catch (RestApiBundle\Exception\Docs\InvalidDefinition\InvalidDefinitionExceptionInterface $exception) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $controllerClass, $actionName);
         }
-
-        return $result;
-    }
-
-    private function extractData(Route $route, RestApiBundle\Annotation\Docs\Endpoint $annotation, \ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\EndpointData
-    {
-        $this->assertPathParametersMatchRouteRequirements($route);
-
-        $methodParameters = $this->getMethodParameters($reflectionMethod);
-        $pathParameters = $this->getPathParameters($methodParameters);
-
-        $responseSchema = $this->getResponseSchema($reflectionMethod);
-        if (!$responseSchema) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
-        }
-
-        $endpointData = new RestApiBundle\DTO\Docs\EndpointData();
-        $endpointData
-            ->setTitle($annotation->title)
-            ->setDescription($annotation->description)
-            ->setTags($annotation->tags)
-            ->setPath($route->getPath())
-            ->setMethods($route->getMethods())
-            ->setResponseSchema($responseSchema)
-            ->setPathParameters($pathParameters);
 
         return $endpointData;
     }
 
     /**
-     * @param RestApiBundle\DTO\Docs\SchemaWithName[] $methodParameters
-     *
      * @return RestApiBundle\DTO\Docs\PathParameter[]
      */
-    private function getPathParameters(array $methodParameters): array
+    private function getPathParameters(Route $route, \ReflectionMethod $reflectionMethod): array
     {
         $result = [];
+        $parameterIndex = 0;
+        $placeholders = $this->getRoutePathPlaceholders($route);
 
-        foreach ($methodParameters as $methodParameter) {
-            if (!$methodParameter instanceof RestApiBundle\DTO\Docs\SchemaWithName) {
-                throw new \InvalidArgumentException();
-            }
+        foreach ($placeholders as $placeholder) {
+            $associatedParameter = null;
 
-            $schema = $methodParameter->getSchema();
-            if ($schema instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
-                if (!$schema instanceof RestApiBundle\DTO\Docs\Schema\IntegerType && !$schema instanceof RestApiBundle\DTO\Docs\Schema\StringType) {
-                    throw new RestApiBundle\Exception\Docs\InvalidDefinition\NotAllowedFunctionParameterTypeException();
+            while (true) {
+                if (!isset($reflectionMethod->getParameters()[$parameterIndex])) {
+                    break;
                 }
 
-                $result[] = new RestApiBundle\DTO\Docs\PathParameter($methodParameter->getName(), $methodParameter->getSchema());
+                $associatedParameter = $reflectionMethod->getParameters()[$parameterIndex];
+                $parameterIndex++;
+
+                if (!$associatedParameter->hasType()) {
+                    continue;
+                }
+
+                if ($associatedParameter->getName() === $placeholder || $this->isDoctrineEntity((string) $associatedParameter->getType())) {
+                    break;
+                }
             }
+
+            if (!$associatedParameter) {
+                throw new \InvalidArgumentException(sprintf('Associated parameter for placeholder %s not found.', $placeholder));
+            }
+
+            $result[] = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $this->typeHintSchemaReader->getMethodParameterSchema($associatedParameter));
         }
 
         return $result;
     }
 
-    private function assertPathParametersMatchRouteRequirements(Route $route): void
+    private function isDoctrineEntity(string $className): bool
+    {
+        return !$this->entityManager->getMetadataFactory()->isTransient($className);
+    }
+
+    private function getRoutePathPlaceholders(Route $route): array
     {
         $matches = null;
         $parameters = [];
@@ -124,12 +133,10 @@ class EndpointDataExtractor
             $parameters = $matches[1];
         }
 
-        if (array_keys($route->getRequirements()) !== $parameters) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\PathParametersNotMatchRouteRequirementsException();
-        }
+        return $parameters;
     }
 
-    private function getResponseSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    private function getResponseSchema(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         $schema = $this->docBlockSchemaReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintSchemaReader->getMethodReturnSchema($reflectionMethod);
 
@@ -148,23 +155,10 @@ class EndpointDataExtractor
             $schema = new RestApiBundle\DTO\Docs\Schema\ArrayType($responseModelSchema, $schema->getNullable());
         }
 
-        return $schema;
-    }
-
-    /**
-     * @param \ReflectionMethod $reflectionMethod
-     *
-     * @return RestApiBundle\DTO\Docs\SchemaWithName[]
-     */
-    private function getMethodParameters(\ReflectionMethod $reflectionMethod): array
-    {
-        $result = [];
-
-        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-            $type = $this->typeHintSchemaReader->getMethodParameterSchema($reflectionParameter);
-            $result[] = new RestApiBundle\DTO\Docs\SchemaWithName($reflectionParameter->getName(), $type);
+        if (!$schema) {
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
         }
 
-        return $result;
+        return $schema;
     }
 }
