@@ -3,7 +3,6 @@
 namespace RestApiBundle\Services\Docs;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\ORM\EntityManagerInterface;
 use RestApiBundle;
 use Symfony\Component\Routing\Route;
 use function explode;
@@ -40,14 +39,12 @@ class EndpointDataExtractor
         RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader $docBlockSchemaReader,
         RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader $typeHintSchemaReader,
         RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader $responseModelSchemaReader,
-        EntityManagerInterface $entityManager,
         RestApiBundle\Services\Docs\Schema\DoctrineHelper $doctrineHelper
     ) {
         $this->annotationReader = new AnnotationReader();
         $this->docBlockSchemaReader = $docBlockSchemaReader;
         $this->typeHintSchemaReader = $typeHintSchemaReader;
         $this->responseModelSchemaReader = $responseModelSchemaReader;
-        $this->entityManager = $entityManager;
         $this->doctrineHelper = $doctrineHelper;
     }
 
