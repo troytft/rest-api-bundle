@@ -46,7 +46,7 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getPathParameters()[0]->getSchema());
 
         $this->assertSame('slug', $endpointData->getPathParameters()[1]->getName());
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ClassType::class, $endpointData->getPathParameters()[1]->getSchema());
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $endpointData->getPathParameters()[1]->getSchema());
 
         $this->assertSame('string', $endpointData->getPathParameters()[2]->getName());
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $endpointData->getPathParameters()[2]->getSchema());

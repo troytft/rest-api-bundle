@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Route;
 use function explode;
 use function preg_match_all;
 use function sprintf;
+use function var_dump;
 
 class EndpointDataExtractor
 {
@@ -91,31 +92,38 @@ class EndpointDataExtractor
         $placeholders = $this->getRoutePathPlaceholders($route);
 
         foreach ($placeholders as $placeholder) {
-            $associatedParameter = null;
+            $isMatched = false;
 
             while (true) {
                 if (!isset($reflectionMethod->getParameters()[$parameterIndex])) {
                     break;
                 }
 
-                $associatedParameter = $reflectionMethod->getParameters()[$parameterIndex];
+                $parameter = $reflectionMethod->getParameters()[$parameterIndex];
                 $parameterIndex++;
 
-                if (!$associatedParameter->hasType()) {
+                $parameterSchema = $this->typeHintSchemaReader->getMethodParameterSchema($parameter);
+                if (!$parameterSchema) {
                     continue;
                 }
 
-                $isDoctrineEntity = $this->doctrineHelper->isEntity((string) $associatedParameter->getType());
-                if ($associatedParameter->getName() === $placeholder || $isDoctrineEntity) {
+                if ($parameter->getName() === $placeholder && $parameterSchema instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
+                    $result[] = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $parameterSchema);
+                    $isMatched = true;
+
+                    break;
+                } elseif ($parameterSchema instanceof RestApiBundle\DTO\Docs\Schema\ClassType && $this->doctrineHelper->isEntity($parameterSchema->getClass())) {
+                    $parameterSchema = $this->doctrineHelper->getEntityFieldSchema($parameterSchema->getClass(), $placeholder);
+                    $result[] = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $parameterSchema);
+                    $isMatched = true;
+
                     break;
                 }
             }
 
-            if (!$associatedParameter) {
-                throw new \InvalidArgumentException(sprintf('Associated parameter for placeholder %s not found.', $placeholder));
+            if (!$isMatched) {
+                throw new \InvalidArgumentException(sprintf('Associated parameter for placeholder %s not matched.', $placeholder));
             }
-            
-            $result[] = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $this->typeHintSchemaReader->getMethodParameterSchema($associatedParameter));
         }
 
         return $result;
