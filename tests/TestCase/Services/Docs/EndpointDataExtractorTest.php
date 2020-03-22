@@ -15,7 +15,7 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
             $this->getEndpointDataExtractor()->extractFromRoute($route);
             $this->fail();
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
-            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\PathParametersNotMatchRouteRequirementsException::class, $exception->getPrevious());
+            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\NotMatchedRoutePlaceholderParameterException::class, $exception->getPrevious());
         }
     }
 
@@ -35,15 +35,23 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
         $this->assertFalse($endpointData->getPathParameters()[1]->getSchema()->getNullable());
     }
 
-    public function testNotAllowedFunctionParameterTypeParameter()
+    public function testEntityPathParameters()
     {
-        $route = $this->getOneRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\PathParameters\NotAllowedFunctionParameterTypeController::class);
+        $route = $this->getOneRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\PathParameters\EntityPathParametersController::class);
+        $endpointData = $this->getEndpointDataExtractor()->extractFromRoute($route);
 
-        try {
-            $this->getEndpointDataExtractor()->extractFromRoute($route);
-            $this->fail();
-        } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
-            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\NotAllowedFunctionParameterTypeException::class, $exception->getPrevious());
-        }
+        $this->assertCount(4, $endpointData->getPathParameters());
+
+        $this->assertSame('int', $endpointData->getPathParameters()[0]->getName());
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getPathParameters()[0]->getSchema());
+
+        $this->assertSame('genre', $endpointData->getPathParameters()[1]->getName());
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getPathParameters()[1]->getSchema());
+
+        $this->assertSame('string', $endpointData->getPathParameters()[2]->getName());
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $endpointData->getPathParameters()[2]->getSchema());
+
+        $this->assertSame('slug', $endpointData->getPathParameters()[3]->getName());
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $endpointData->getPathParameters()[3]->getSchema());
     }
 }
