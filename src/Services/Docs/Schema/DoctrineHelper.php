@@ -5,7 +5,6 @@ namespace RestApiBundle\Services\Docs\Schema;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use RestApiBundle;
 use Doctrine\ORM\EntityManagerInterface;
-use function var_dump;
 
 class DoctrineHelper
 {

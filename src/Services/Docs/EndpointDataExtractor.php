@@ -8,8 +8,6 @@ use RestApiBundle;
 use Symfony\Component\Routing\Route;
 use function explode;
 use function preg_match_all;
-use function sprintf;
-use function var_dump;
 
 class EndpointDataExtractor
 {
@@ -92,7 +90,7 @@ class EndpointDataExtractor
         $placeholders = $this->getRoutePathPlaceholders($route);
 
         foreach ($placeholders as $placeholder) {
-            $isMatched = false;
+            $pathParameter = null;
 
             while (true) {
                 if (!isset($reflectionMethod->getParameters()[$parameterIndex])) {
@@ -107,23 +105,26 @@ class EndpointDataExtractor
                     continue;
                 }
 
-                if ($parameter->getName() === $placeholder && $parameterSchema instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
-                    $result[] = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $parameterSchema);
-                    $isMatched = true;
+                $isNameEqualsToPlaceholder = $parameter->getName() === $placeholder;
+
+                if ($isNameEqualsToPlaceholder && $parameterSchema instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
+                    $pathParameter = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $parameterSchema);
 
                     break;
                 } elseif ($parameterSchema instanceof RestApiBundle\DTO\Docs\Schema\ClassType && $this->doctrineHelper->isEntity($parameterSchema->getClass())) {
-                    $parameterSchema = $this->doctrineHelper->getEntityFieldSchema($parameterSchema->getClass(), $placeholder);
-                    $result[] = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $parameterSchema);
-                    $isMatched = true;
+                    $fieldName = $isNameEqualsToPlaceholder ? 'id' : $placeholder;
+                    $parameterSchema = $this->doctrineHelper->getEntityFieldSchema($parameterSchema->getClass(), $fieldName);
+                    $pathParameter = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $parameterSchema);
 
                     break;
                 }
             }
 
-            if (!$isMatched) {
-                throw new \InvalidArgumentException(sprintf('Associated parameter for placeholder %s not matched.', $placeholder));
+            if (!$pathParameter) {
+                throw new RestApiBundle\Exception\Docs\InvalidDefinition\NotMatchedRoutePlaceholderParameterException($placeholder);
             }
+
+            $result[] = $pathParameter;
         }
 
         return $result;
