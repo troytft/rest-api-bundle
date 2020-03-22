@@ -9,7 +9,6 @@ use Symfony\Component\Routing\Route;
 use function explode;
 use function preg_match_all;
 use function sprintf;
-use function var_dump;
 
 class EndpointDataExtractor
 {
@@ -34,21 +33,23 @@ class EndpointDataExtractor
     private $responseModelSchemaReader;
 
     /**
-     * @var EntityManagerInterface
+     * @var RestApiBundle\Services\Docs\Schema\DoctrineHelper
      */
-    private $entityManager;
+    private $doctrineHelper;
 
     public function __construct(
         RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader $docBlockSchemaReader,
         RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader $typeHintSchemaReader,
         RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader $responseModelSchemaReader,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RestApiBundle\Services\Docs\Schema\DoctrineHelper $doctrineHelper
     ) {
         $this->annotationReader = new AnnotationReader();
         $this->docBlockSchemaReader = $docBlockSchemaReader;
         $this->typeHintSchemaReader = $typeHintSchemaReader;
         $this->responseModelSchemaReader = $responseModelSchemaReader;
         $this->entityManager = $entityManager;
+        $this->doctrineHelper = $doctrineHelper;
     }
 
     public function extractFromRoute(Route $route): ?RestApiBundle\DTO\Docs\EndpointData
@@ -104,7 +105,8 @@ class EndpointDataExtractor
                     continue;
                 }
 
-                if ($associatedParameter->getName() === $placeholder || $this->isDoctrineEntity((string) $associatedParameter->getType())) {
+                $isDoctrineEntity = $this->doctrineHelper->isEntity((string) $associatedParameter->getType());
+                if ($associatedParameter->getName() === $placeholder || $isDoctrineEntity) {
                     break;
                 }
             }
@@ -112,16 +114,11 @@ class EndpointDataExtractor
             if (!$associatedParameter) {
                 throw new \InvalidArgumentException(sprintf('Associated parameter for placeholder %s not found.', $placeholder));
             }
-
+            
             $result[] = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $this->typeHintSchemaReader->getMethodParameterSchema($associatedParameter));
         }
 
         return $result;
-    }
-
-    private function isDoctrineEntity(string $className): bool
-    {
-        return !$this->entityManager->getMetadataFactory()->isTransient($className);
     }
 
     private function getRoutePathPlaceholders(Route $route): array

@@ -4,7 +4,6 @@ namespace Tests\TestCase\Services\Docs;
 
 use Tests;
 use RestApiBundle;
-use function var_dump;
 
 class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
 {
