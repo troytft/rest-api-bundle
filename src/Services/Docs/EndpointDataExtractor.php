@@ -139,6 +139,18 @@ class EndpointDataExtractor
         return $parameters;
     }
 
+    private function getRequestModel(\ReflectionMethod $reflectionMethod): ?string
+    {
+        $result = null;
+
+        foreach ($reflectionMethod->getParameters() as $parameter) {
+            $schema = $this->typeHintSchemaReader->getMethodParameterSchema($parameter);
+            if ($schema instanceof RestApiBundle\DTO\Docs\Schema\ClassType && RestApiBundle\Services\Request\RequestModelHelper::isRequestModel($schema->getClass())) {
+                $result
+            }
+        }
+    }
+
     private function getResponseSchema(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         $schema = $this->docBlockSchemaReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintSchemaReader->getMethodReturnSchema($reflectionMethod);
