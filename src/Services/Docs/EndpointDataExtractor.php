@@ -7,6 +7,7 @@ use RestApiBundle;
 use Symfony\Component\Routing\Route;
 use function explode;
 use function preg_match_all;
+use function var_dump;
 
 class EndpointDataExtractor
 {
@@ -59,6 +60,8 @@ class EndpointDataExtractor
         if (!$annotation instanceof RestApiBundle\Annotation\Docs\Endpoint) {
             return null;
         }
+
+        var_dump($this->getRequestModel($reflectionMethod));
 
         try {
             $endpointData = new RestApiBundle\DTO\Docs\EndpointData();
@@ -146,9 +149,13 @@ class EndpointDataExtractor
         foreach ($reflectionMethod->getParameters() as $parameter) {
             $schema = $this->typeHintSchemaReader->getMethodParameterSchema($parameter);
             if ($schema instanceof RestApiBundle\DTO\Docs\Schema\ClassType && RestApiBundle\Services\Request\RequestModelHelper::isRequestModel($schema->getClass())) {
-                $result
+                $result = $schema->getClass();
+
+                break;
             }
         }
+
+        return $result;
     }
 
     private function getResponseSchema(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
