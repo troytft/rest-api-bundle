@@ -3,6 +3,7 @@
 namespace RestApiBundle\Services\Docs;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Mapper\SchemaGenerator;
 use RestApiBundle;
 use Symfony\Component\Routing\Route;
 use function explode;
@@ -36,17 +37,24 @@ class EndpointDataExtractor
      */
     private $doctrineHelper;
 
+    /**
+     * @var SchemaGenerator
+     */
+    private $mapperSchemaGenerator;
+
     public function __construct(
         RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader $docBlockSchemaReader,
         RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader $typeHintSchemaReader,
         RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader $responseModelSchemaReader,
-        RestApiBundle\Services\Docs\Schema\DoctrineHelper $doctrineHelper
+        RestApiBundle\Services\Docs\Schema\DoctrineHelper $doctrineHelper,
+        RestApiBundle\Services\Request\MapperInitiator $mapperInitiator
     ) {
         $this->annotationReader = new AnnotationReader();
         $this->docBlockSchemaReader = $docBlockSchemaReader;
         $this->typeHintSchemaReader = $typeHintSchemaReader;
         $this->responseModelSchemaReader = $responseModelSchemaReader;
         $this->doctrineHelper = $doctrineHelper;
+        $this->mapperSchemaGenerator = $mapperInitiator->getMapper()->getSchemaGenerator();
     }
 
     public function extractFromRoute(Route $route): ?RestApiBundle\DTO\Docs\EndpointData
@@ -61,7 +69,11 @@ class EndpointDataExtractor
             return null;
         }
 
-        var_dump($this->getRequestModel($reflectionMethod));
+        $requestModelClass = $this->getRequestModel($reflectionMethod);
+        if ($requestModelClass) {
+            $requestModelSchema = $this->mapperSchemaGenerator->getSchemaByClassName($requestModelClass);
+        }
+
 
         try {
             $endpointData = new RestApiBundle\DTO\Docs\EndpointData();

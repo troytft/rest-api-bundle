@@ -28,9 +28,7 @@ class TypeHintSchemaReader
 
     private function convertReflectionTypeToSchema(\ReflectionType $reflectionType): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
-        $type = (string) $reflectionType;
-
-        switch ($type) {
+        switch ($reflectionType->getName()) {
             case 'string':
                 $result = new RestApiBundle\DTO\Docs\Schema\StringType($reflectionType->allowsNull());
 
@@ -54,7 +52,7 @@ class TypeHintSchemaReader
                 break;
 
             default:
-                $result = new RestApiBundle\DTO\Docs\Schema\ClassType($type, $reflectionType->allowsNull());
+                $result = new RestApiBundle\DTO\Docs\Schema\ClassType($reflectionType->getName(), $reflectionType->allowsNull());
         }
 
         return $result;

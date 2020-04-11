@@ -4,6 +4,7 @@ namespace Tests\TestCase\Services\Docs;
 
 use Tests;
 use RestApiBundle;
+use function var_dump;
 
 class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
 {
@@ -39,6 +40,29 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
     {
         $route = $this->getOneRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\PathParameters\EntityPathParametersController::class);
         $endpointData = $this->getEndpointDataExtractor()->extractFromRoute($route);
+
+        $this->assertCount(4, $endpointData->getPathParameters());
+
+        $this->assertSame('int', $endpointData->getPathParameters()[0]->getName());
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getPathParameters()[0]->getSchema());
+
+        $this->assertSame('genre', $endpointData->getPathParameters()[1]->getName());
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getPathParameters()[1]->getSchema());
+
+        $this->assertSame('string', $endpointData->getPathParameters()[2]->getName());
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $endpointData->getPathParameters()[2]->getSchema());
+
+        $this->assertSame('slug', $endpointData->getPathParameters()[3]->getName());
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $endpointData->getPathParameters()[3]->getSchema());
+    }
+
+    public function testRequestModelForGetRequest()
+    {
+        $route = $this->getOneRouteFromControllerClass(\Tests\TestApp\TestBundle\Controller\RequestModel\RequestModelForGetRequestController::class);
+        $endpointData = $this->getEndpointDataExtractor()->extractFromRoute($route);
+
+        var_dump($endpointData);die();
+
 
         $this->assertCount(4, $endpointData->getPathParameters());
 
