@@ -61,21 +61,10 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
         $route = $this->getOneRouteFromControllerClass(\Tests\TestApp\TestBundle\Controller\RequestModel\RequestModelForGetRequestController::class);
         $endpointData = $this->getEndpointDataExtractor()->extractFromRoute($route);
 
-        var_dump($endpointData);die();
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ObjectType::class, $endpointData->getRequestModel());
+        $this->assertCount(2, $endpointData->getRequestModel()->getProperties());
 
-
-        $this->assertCount(4, $endpointData->getPathParameters());
-
-        $this->assertSame('int', $endpointData->getPathParameters()[0]->getName());
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getPathParameters()[0]->getSchema());
-
-        $this->assertSame('genre', $endpointData->getPathParameters()[1]->getName());
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getPathParameters()[1]->getSchema());
-
-        $this->assertSame('string', $endpointData->getPathParameters()[2]->getName());
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $endpointData->getPathParameters()[2]->getSchema());
-
-        $this->assertSame('slug', $endpointData->getPathParameters()[3]->getName());
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $endpointData->getPathParameters()[3]->getSchema());
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getRequestModel()->getProperties()[0]);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getRequestModel()->getProperties()[1]);
     }
 }

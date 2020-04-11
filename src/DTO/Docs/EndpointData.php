@@ -42,7 +42,7 @@ class EndpointData
     private $pathParameters = [];
 
     /**
-     * @var RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface|null
+     * @var RestApiBundle\DTO\Docs\Schema\ObjectType|null
      */
     private $requestModel;
 
@@ -138,12 +138,12 @@ class EndpointData
         return $this;
     }
 
-    public function getRequestModel(): ?Schema\SchemaTypeInterface
+    public function getRequestModel(): ?RestApiBundle\DTO\Docs\Schema\ObjectType
     {
         return $this->requestModel;
     }
 
-    public function setRequestModel(?Schema\SchemaTypeInterface $requestModel)
+    public function setRequestModel(?RestApiBundle\DTO\Docs\Schema\ObjectType $requestModel)
     {
         $this->requestModel = $requestModel;
 
