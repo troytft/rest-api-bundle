@@ -3,16 +3,21 @@
 namespace Tests\TestApp\TestBundle\RequestModel;
 
 use RestApiBundle;
+use RestApiBundle\Annotation\Request as Mapper;
 
 class RequestModelForGetRequest implements RestApiBundle\RequestModelInterface
 {
     /**
      * @var int
+     *
+     * @Mapper\IntegerType()
      */
     private $offset;
 
     /**
      * @var int
+     *
+     * @Mapper\IntegerType()
      */
     private $limit;
 

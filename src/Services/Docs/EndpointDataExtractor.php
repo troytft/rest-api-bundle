@@ -3,7 +3,7 @@
 namespace RestApiBundle\Services\Docs;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Mapper\SchemaGenerator;
+use Mapper;
 use RestApiBundle;
 use Symfony\Component\Routing\Route;
 use function explode;
@@ -38,23 +38,23 @@ class EndpointDataExtractor
     private $doctrineHelper;
 
     /**
-     * @var SchemaGenerator
+     * @var RestApiBundle\Services\Docs\Schema\RequestModelHelper
      */
-    private $mapperSchemaGenerator;
+    private $requestModelHelper;
 
     public function __construct(
         RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader $docBlockSchemaReader,
         RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader $typeHintSchemaReader,
         RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader $responseModelSchemaReader,
         RestApiBundle\Services\Docs\Schema\DoctrineHelper $doctrineHelper,
-        RestApiBundle\Services\Request\MapperInitiator $mapperInitiator
+        RestApiBundle\Services\Docs\Schema\RequestModelHelper $requestModelHelper
     ) {
         $this->annotationReader = new AnnotationReader();
         $this->docBlockSchemaReader = $docBlockSchemaReader;
         $this->typeHintSchemaReader = $typeHintSchemaReader;
         $this->responseModelSchemaReader = $responseModelSchemaReader;
         $this->doctrineHelper = $doctrineHelper;
-        $this->mapperSchemaGenerator = $mapperInitiator->getMapper()->getSchemaGenerator();
+        $this->requestModelHelper = $requestModelHelper;
     }
 
     public function extractFromRoute(Route $route): ?RestApiBundle\DTO\Docs\EndpointData
@@ -69,11 +69,11 @@ class EndpointDataExtractor
             return null;
         }
 
+        $requestModelSchema = null;
         $requestModelClass = $this->getRequestModel($reflectionMethod);
         if ($requestModelClass) {
-            $requestModelSchema = $this->mapperSchemaGenerator->getSchemaByClassName($requestModelClass);
+            $requestModelSchema = $this->requestModelHelper->getSchemaByClass($requestModelClass);
         }
-
 
         try {
             $endpointData = new RestApiBundle\DTO\Docs\EndpointData();
@@ -84,7 +84,8 @@ class EndpointDataExtractor
                 ->setPath($route->getPath())
                 ->setMethods($route->getMethods())
                 ->setResponseSchema($this->getResponseSchema($reflectionMethod))
-                ->setPathParameters($this->getPathParameters($route, $reflectionMethod));
+                ->setPathParameters($this->getPathParameters($route, $reflectionMethod))
+                ->setRequestModel($requestModelSchema);
         } catch (RestApiBundle\Exception\Docs\InvalidDefinition\InvalidDefinitionExceptionInterface $exception) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $controllerClass, $actionName);
         }
@@ -168,6 +169,11 @@ class EndpointDataExtractor
         }
 
         return $result;
+    }
+
+    private function convertMapperObjectToSchema(Mapper\DTO\Schema\ObjectType $objectType): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    {
+        $result = new RestApiBundle\DTO\Docs\Schema\ObjectType();
     }
 
     private function getResponseSchema(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface

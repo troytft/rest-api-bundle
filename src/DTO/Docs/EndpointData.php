@@ -41,6 +41,11 @@ class EndpointData
      */
     private $pathParameters = [];
 
+    /**
+     * @var RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface|null
+     */
+    private $requestModel;
+
     public function getTitle(): string
     {
         return $this->title;
@@ -129,6 +134,18 @@ class EndpointData
     public function setPathParameters(array $pathParameters)
     {
         $this->pathParameters = $pathParameters;
+
+        return $this;
+    }
+
+    public function getRequestModel(): ?Schema\SchemaTypeInterface
+    {
+        return $this->requestModel;
+    }
+
+    public function setRequestModel(?Schema\SchemaTypeInterface $requestModel)
+    {
+        $this->requestModel = $requestModel;
 
         return $this;
     }
