@@ -47,7 +47,7 @@ class RequestModelHelper
                     $property->setConstraints(array_merge($property->getConstraints(), $propertyMetadata->getConstraints()));
                 }
             }
-        } elseif ($validationClassMetadata) {
+        } elseif ($validationClassMetadata !== null) {
             throw new \RuntimeException();
         }
 
