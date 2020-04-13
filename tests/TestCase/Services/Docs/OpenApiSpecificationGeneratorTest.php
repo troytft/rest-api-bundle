@@ -59,7 +59,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
     }
 
-    public function testAssertRange()
+    public function testRangeConstraint()
     {
         $constraint = new Symfony\Component\Validator\Constraints\Range([
             'min' => 0,
@@ -81,6 +81,112 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'maximum' => 9223372036854775807,
         ];
 
+        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+    }
+
+    public function testChoiceConstraintWithChoices()
+    {
+        $constraint = new Symfony\Component\Validator\Constraints\Choice([
+            'choices' => Tests\TestApp\TestBundle\Enum\Status::getValues(),
+        ]);
+
+        $stringType = new RestApiBundle\DTO\Docs\Schema\StringType(false);
+        $stringType
+            ->setConstraints([$constraint]);
+
+        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$stringType]);
+
+        $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
+
+        $expected = [
+            'type' => 'string',
+            'nullable' => false,
+            'enum' => [
+                'created',
+                'published',
+                'archived',
+            ],
+        ];
+        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+    }
+
+    public function testChoiceConstraintWithCallback()
+    {
+        $constraint = new Symfony\Component\Validator\Constraints\Choice([
+            'callback' => 'Tests\TestApp\TestBundle\Enum\Status::getValues',
+        ]);
+
+        $stringType = new RestApiBundle\DTO\Docs\Schema\StringType(false);
+        $stringType
+            ->setConstraints([$constraint]);
+
+        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$stringType]);
+
+        $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
+
+        $expected = [
+            'type' => 'string',
+            'nullable' => false,
+            'enum' => [
+                'created',
+                'published',
+                'archived',
+            ],
+        ];
+        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+    }
+
+    public function testCountConstraint()
+    {
+        $constraint = new Symfony\Component\Validator\Constraints\Count([
+            'min' => 1,
+            'max' => 12,
+        ]);
+
+        $arrayType = new RestApiBundle\DTO\Docs\Schema\ArrayType(new RestApiBundle\DTO\Docs\Schema\StringType(false), false);
+        $arrayType
+            ->setConstraints([$constraint]);
+
+        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$arrayType]);
+
+        $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
+
+        $expected = [
+            'type' => 'array',
+            'items' => [
+                [
+                    'type' => 'string',
+                    'nullable' => false,
+                ],
+            ],
+            'nullable' => false,
+            'minItems' => 1,
+            'maxItems' => 12,
+        ];
+        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+    }
+
+    public function testLengthConstraint()
+    {
+        $constraint = new Symfony\Component\Validator\Constraints\Length([
+            'min' => 1,
+            'max' => 12,
+        ]);
+
+        $stringType = new RestApiBundle\DTO\Docs\Schema\StringType(false);
+        $stringType
+            ->setConstraints([$constraint]);
+
+        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$stringType]);
+
+        $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
+
+        $expected = [
+            'type' => 'string',
+            'nullable' => false,
+            'minLength' => 1,
+            'maxLength' => 12,
+        ];
         $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
     }
 
