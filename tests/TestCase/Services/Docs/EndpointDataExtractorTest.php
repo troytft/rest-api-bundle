@@ -54,4 +54,16 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
         $this->assertSame('slug', $endpointData->getPathParameters()[3]->getName());
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $endpointData->getPathParameters()[3]->getSchema());
     }
+
+    public function testRequestModelForGetRequest()
+    {
+        $route = $this->getOneRouteFromControllerClass(\Tests\TestApp\TestBundle\Controller\RequestModel\RequestModelForGetRequestController::class);
+        $endpointData = $this->getEndpointDataExtractor()->extractFromRoute($route);
+
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ObjectType::class, $endpointData->getRequestModel());
+        $this->assertCount(2, $endpointData->getRequestModel()->getProperties());
+
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getRequestModel()->getProperties()['offset']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getRequestModel()->getProperties()['limit']);
+    }
 }

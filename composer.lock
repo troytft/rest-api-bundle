@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e232b045fa04e769a7618526fae7fb9c",
+    "content-hash": "3e7fe5e963387c209040db65317e07a8",
     "packages": [
         {
             "name": "cebe/php-openapi",
@@ -3716,16 +3716,16 @@
         },
         {
             "name": "troytft/mapper",
-            "version": "v1.4.0",
+            "version": "v1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/troytft/mapper.git",
-                "reference": "87dbf1c6a487af15a7e6c1f675ce08f6e9ceeea6"
+                "reference": "91b806b55926e0ab24f9491e48e1bcdd0c67170b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/troytft/mapper/zipball/87dbf1c6a487af15a7e6c1f675ce08f6e9ceeea6",
-                "reference": "87dbf1c6a487af15a7e6c1f675ce08f6e9ceeea6",
+                "url": "https://api.github.com/repos/troytft/mapper/zipball/91b806b55926e0ab24f9491e48e1bcdd0c67170b",
+                "reference": "91b806b55926e0ab24f9491e48e1bcdd0c67170b",
                 "shasum": ""
             },
             "require": {
@@ -3752,7 +3752,7 @@
             "keywords": [
                 "mapper"
             ],
-            "time": "2019-11-10T06:08:15+00:00"
+            "time": "2020-03-22T14:50:02+00:00"
         },
         {
             "name": "webmozart/assert",

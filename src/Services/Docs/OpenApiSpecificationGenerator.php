@@ -5,6 +5,7 @@ namespace RestApiBundle\Services\Docs;
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
 use Symfony\Component\Yaml\Yaml;
+use function array_merge;
 use function array_values;
 use function json_encode;
 use function strtolower;
@@ -92,32 +93,42 @@ class OpenApiSpecificationGenerator
                 ]));
             }
 
-            $operation = new OpenApi\Operation([
-                'summary' => $routeData->getTitle(),
-                'responses' => $responses,
-            ]);
-
-            $parameters = [];
+            $pathParameters = [];
 
             foreach ($routeData->getPathParameters() as $pathParameter) {
-                $parameters[] = $this->convertPathParameter($pathParameter);
-            }
-
-            if ($parameters) {
-                $operation->parameters = $parameters;
-            }
-
-            if ($routeData->getTags()) {
-                $operation->tags = $routeData->getTags();
-            }
-
-            if ($routeData->getDescription()) {
-                $operation->description = $routeData->getDescription();
+                $pathParameters[] = $this->createParameter('path', $pathParameter->getName(), $pathParameter->getSchema());
             }
 
             $pathItem = new OpenApi\PathItem([]);
+
             foreach ($routeData->getMethods() as $method) {
+                $isHttpGetMethod = $method === 'GET';
                 $method = strtolower($method);
+
+                $operation = new OpenApi\Operation([
+                    'summary' => $routeData->getTitle(),
+                    'responses' => $responses,
+                ]);
+
+                if ($routeData->getDescription()) {
+                    $operation->description = $routeData->getDescription();
+                }
+
+                $queryParameters = [];
+                if ($routeData->getRequestModel() && $isHttpGetMethod) {
+                    $queryParameters = $this->convertRequestModelToParameters($routeData->getRequestModel());
+                } elseif ($routeData->getRequestModel() && !$isHttpGetMethod) {
+                    $operation->requestBody = $this->convertRequestModelToRequestBody($routeData->getRequestModel());
+                }
+
+                if ($pathParameters || $queryParameters) {
+                    $operation->parameters = array_merge($pathParameters, $queryParameters);
+                }
+
+                if ($routeData->getTags()) {
+                    $operation->tags = $routeData->getTags();
+                }
+
                 $pathItem->{$method} = $operation;
             }
 
@@ -129,13 +140,48 @@ class OpenApiSpecificationGenerator
         return $root;
     }
 
-    private function convertPathParameter(RestApiBundle\DTO\Docs\PathParameter $pathParameter): OpenApi\Parameter
+    private function convertRequestModelToRequestBody(RestApiBundle\DTO\Docs\Schema\ObjectType $objectType): OpenApi\RequestBody
+    {
+        return new OpenApi\RequestBody([
+            'description' => 'Request body',
+            'required' => $objectType->getNullable(),
+            'content' => [
+                'application/json' => [
+                    'schema' => $this->convertSchemaType($objectType),
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @param RestApiBundle\DTO\Docs\Schema\ObjectType $objectType
+     *
+     * @return OpenApi\Parameter[]
+     */
+    private function convertRequestModelToParameters(RestApiBundle\DTO\Docs\Schema\ObjectType $objectType): array
+    {
+        $result = [];
+
+        foreach ($objectType->getProperties() as $name => $property) {
+            if ($property instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
+                $result[] = $this->createParameter('query', $name, $property);
+            } elseif ($property instanceof RestApiBundle\DTO\Docs\Schema\ArrayType && $property->getInnerType() instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
+                $result[] = $this->createParameter('query', $name, $property->getInnerType());
+            } else {
+                throw new \InvalidArgumentException();
+            }
+        }
+
+        return $result;
+    }
+
+    private function createParameter(string $type, string $name, RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface $schema): OpenApi\Parameter
     {
         return new OpenApi\Parameter([
-            'in' => 'path',
-            'name' => $pathParameter->getName(),
-            'schema' => $this->convertSchemaType($pathParameter->getSchema()),
-            'required' => !$pathParameter->getSchema()->getNullable(),
+            'in' => $type,
+            'name' => $name,
+            'schema' => $this->convertSchemaType($schema),
+            'required' => !$schema->getNullable(),
         ]);
     }
 
@@ -144,7 +190,7 @@ class OpenApiSpecificationGenerator
         if ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\ObjectType) {
             $result = $this->convertObjectType($schemaType);
         } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\ArrayType) {
-            $result = $this->convertCollectionType($schemaType);
+            $result = $this->convertArrayType($schemaType);
         } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\StringType) {
             $result = $this->convertStringType($schemaType);
         } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\IntegerType) {
@@ -175,13 +221,13 @@ class OpenApiSpecificationGenerator
         ]);
     }
 
-    private function convertCollectionType(RestApiBundle\DTO\Docs\Schema\ArrayType $collectionType): OpenApi\Schema
+    private function convertArrayType(RestApiBundle\DTO\Docs\Schema\ArrayType $arrayType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
-            'nullable' => $collectionType->getNullable(),
+            'nullable' => $arrayType->getNullable(),
             'items' => [
-                $this->convertSchemaType($collectionType->getInnerType())
+                $this->convertSchemaType($arrayType->getInnerType())
             ]
         ]);
     }
