@@ -94,4 +94,41 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             ],
         ], $this->convertStdClassToArray($openApiParameters[1]->getSerializableData()));
     }
+
+    public function testConvertRequestModelToRequestBody()
+    {
+        $objectProperties = [
+            'offset' => new RestApiBundle\DTO\Docs\Schema\IntegerType(false),
+            'limit' => new RestApiBundle\DTO\Docs\Schema\IntegerType(false),
+        ];
+        $objectType = new RestApiBundle\DTO\Docs\Schema\ObjectType($objectProperties, false);
+
+        /** @var OpenApi\RequestBody $requestBody */
+        $requestBody = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertRequestModelToRequestBody', [$objectType]);
+
+        $expected = [
+            'description' => 'Request body',
+            'content' => [
+                'application/json' => [
+                    'schema' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'offset' => [
+                                'type' => 'integer',
+                                'nullable' => false,
+                            ],
+                            'limit' => [
+                                'type' => 'integer',
+                                'nullable' => false,
+                            ],
+                        ],
+                        'nullable' => false,
+                    ],
+                ],
+            ],
+            'required' => false,
+        ];
+
+        $this->assertSame($expected, $this->convertStdClassToArray($requestBody->getSerializableData()));
+    }
 }

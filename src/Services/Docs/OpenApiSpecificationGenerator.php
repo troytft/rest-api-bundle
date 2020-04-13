@@ -102,8 +102,8 @@ class OpenApiSpecificationGenerator
             $pathItem = new OpenApi\PathItem([]);
 
             foreach ($routeData->getMethods() as $method) {
+                $isHttpGetMethod = $method === 'GET';
                 $method = strtolower($method);
-                $isHttpGetMethod = $method === 'get';
 
                 $operation = new OpenApi\Operation([
                     'summary' => $routeData->getTitle(),
@@ -121,6 +121,8 @@ class OpenApiSpecificationGenerator
                 $queryParameters = [];
                 if ($routeData->getRequestModel() && $isHttpGetMethod) {
                     $queryParameters = $this->convertRequestModelToParameters($routeData->getRequestModel());
+                } elseif ($routeData->getRequestModel() && !$isHttpGetMethod) {
+                    $operation->requestBody = $this->convertRequestModelToRequestBody($routeData->getRequestModel());
                 }
 
                 if ($pathParameters || $queryParameters) {
@@ -136,6 +138,19 @@ class OpenApiSpecificationGenerator
         $root->tags = array_values($tags);
 
         return $root;
+    }
+
+    private function convertRequestModelToRequestBody(RestApiBundle\DTO\Docs\Schema\ObjectType $objectType): OpenApi\RequestBody
+    {
+        return new OpenApi\RequestBody([
+            'description' => 'Request body',
+            'required' => $objectType->getNullable(),
+            'content' => [
+                'application/json' => [
+                    'schema' => $this->convertSchemaType($objectType),
+                ]
+            ]
+        ]);
     }
 
     /**
