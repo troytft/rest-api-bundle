@@ -5,7 +5,6 @@ namespace Tests\TestCase\Services\Docs;
 use Tests;
 use RestApiBundle;
 use Symfony;
-use function var_dump;
 
 class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
 {

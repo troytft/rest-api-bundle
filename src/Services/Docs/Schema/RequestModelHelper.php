@@ -8,7 +8,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use RestApiBundle;
 use Mapper;
 use function array_merge;
-use function var_dump;
 
 class RequestModelHelper
 {

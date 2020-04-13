@@ -8,10 +8,8 @@ use cebe\openapi\spec as OpenApi;
 use Symfony\Component\Yaml\Yaml;
 use function array_merge;
 use function array_values;
-use function is_numeric;
 use function json_encode;
 use function strtolower;
-use function var_dump;
 
 class OpenApiSpecificationGenerator
 {
