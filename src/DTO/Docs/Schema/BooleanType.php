@@ -5,7 +5,10 @@ namespace RestApiBundle\DTO\Docs\Schema;
 use Symfony\Component\Validator\Constraint;
 use RestApiBundle;
 
-class BooleanType implements RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface, RestApiBundle\DTO\Docs\Schema\ScalarInterface
+class BooleanType implements
+    RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface,
+    RestApiBundle\DTO\Docs\Schema\ScalarInterface,
+    RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface
 {
     /**
      * @var bool

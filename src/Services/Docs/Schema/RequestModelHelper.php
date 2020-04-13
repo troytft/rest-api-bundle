@@ -36,7 +36,7 @@ class RequestModelHelper
 
         if ($validationClassMetadata instanceof ClassMetadata) {
             foreach ($objectType->getProperties() as $name => $property) {
-                if (!$property instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
+                if (!$property instanceof RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface) {
                     continue;
                 }
 

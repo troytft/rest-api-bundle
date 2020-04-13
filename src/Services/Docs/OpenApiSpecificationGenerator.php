@@ -198,6 +198,20 @@ class OpenApiSpecificationGenerator
             throw new \InvalidArgumentException();
         }
 
+        if ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface) {
+            foreach ($schemaType->getConstraints() as $constraint) {
+                if ($constraint instanceof Symfony\Component\Validator\Constraints\Range) {
+                    if ($constraint->min !== null) {
+                        $result->minimum = $constraint->min;
+                    }
+
+                    if ($constraint->max !== null) {
+                        $result->maximum = $constraint->max;
+                    }
+                }
+            }
+        }
+
         return $result;
     }
 
@@ -213,18 +227,6 @@ class OpenApiSpecificationGenerator
             $result = $this->convertBooleanType($scalarType);
         } else {
             throw new \InvalidArgumentException();
-        }
-
-        foreach ($scalarType->getConstraints() as $constraint) {
-            if ($constraint instanceof Symfony\Component\Validator\Constraints\Range) {
-                if ($constraint->min !== null) {
-                    $result->minimum = $constraint->min;
-                }
-
-                if ($constraint->max !== null) {
-                    $result->maximum = $constraint->max;
-                }
-            }
         }
 
         return $result;

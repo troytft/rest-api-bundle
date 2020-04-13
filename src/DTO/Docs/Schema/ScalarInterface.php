@@ -6,13 +6,4 @@ use Symfony\Component\Validator\Constraint;
 
 interface ScalarInterface
 {
-    /**
-     * @return Constraint[]
-     */
-    public function getConstraints(): array;
-
-    /**
-     * @param Constraint[] $constraints
-     */
-    public function setConstraints(array $constraints);
 }
