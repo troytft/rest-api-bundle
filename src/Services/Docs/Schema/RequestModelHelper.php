@@ -4,7 +4,6 @@ namespace RestApiBundle\Services\Docs\Schema;
 
 use RestApiBundle;
 use Mapper;
-use function var_dump;
 
 class RequestModelHelper
 {
@@ -18,9 +17,9 @@ class RequestModelHelper
         $this->schemaGenerator = $mapperInitiator->getMapper()->getSchemaGenerator();
     }
 
-    public function getSchemaByClass(string $class): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    public function getSchemaByClass(string $class): RestApiBundle\DTO\Docs\Schema\ObjectType
     {
-        return $this->convert($this->schemaGenerator->getSchemaByClassName($class));
+        return $this->convertObjectType($this->schemaGenerator->getSchemaByClassName($class));
     }
 
     private function convert(Mapper\DTO\Schema\TypeInterface $type): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
@@ -72,8 +71,8 @@ class RequestModelHelper
     {
         $properties = [];
 
-        foreach ($objectType->getProperties() as $property) {
-            $properties[] = $this->convert($property);
+        foreach ($objectType->getProperties() as $name => $property) {
+            $properties[$name] = $this->convert($property);
         }
 
         return new RestApiBundle\DTO\Docs\Schema\ObjectType($properties, $objectType->getNullable());
