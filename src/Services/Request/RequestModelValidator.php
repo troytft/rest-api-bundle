@@ -9,12 +9,14 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use function array_merge_recursive;
 use function explode;
+use function get_class;
 use function implode;
 use function is_numeric;
 use function sprintf;
 use function str_replace;
 use function strpos;
 use function ucfirst;
+use function var_dump;
 
 class RequestModelValidator
 {
@@ -52,6 +54,7 @@ class RequestModelValidator
         $errors = [];
         $violations = $this->validator->validate($requestModel);
 
+        var_dump($this->validator->getMetadataFor(get_class($requestModel)));
         foreach ($violations as $violation) {
             $path = $this->normalizeConstraintViolationPath($violation);
             if (!isset($errors[$path])) {

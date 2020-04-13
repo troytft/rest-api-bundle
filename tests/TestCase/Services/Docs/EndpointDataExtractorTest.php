@@ -4,6 +4,8 @@ namespace Tests\TestCase\Services\Docs;
 
 use Tests;
 use RestApiBundle;
+use Symfony;
+use function var_dump;
 
 class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
 {
@@ -55,7 +57,7 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $endpointData->getPathParameters()[3]->getSchema());
     }
 
-    public function testRequestModelForGetRequest()
+    public function testRequestModelForRequest()
     {
         $route = $this->getOneRouteFromControllerClass(\Tests\TestApp\TestBundle\Controller\RequestModel\RequestModelForGetRequestController::class);
         $endpointData = $this->getEndpointDataExtractor()->extractFromRoute($route);
@@ -63,7 +65,21 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ObjectType::class, $endpointData->getRequestModel());
         $this->assertCount(2, $endpointData->getRequestModel()->getProperties());
 
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getRequestModel()->getProperties()['offset']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getRequestModel()->getProperties()['limit']);
-    }
+        $this->assertArrayHasKey('offset', $endpointData->getRequestModel()->getProperties());
+        /** @var RestApiBundle\DTO\Docs\Schema\IntegerType $offset */
+        $offset = $endpointData->getRequestModel()->getProperties()['offset'];
+
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $offset);
+        $this->assertCount(2, $offset->getConstraints());
+        $this->assertInstanceOf(Symfony\Component\Validator\Constraints\Range::class, $offset->getConstraints()[0]);
+        $this->assertInstanceOf(Symfony\Component\Validator\Constraints\NotNull::class, $offset->getConstraints()[1]);
+
+        $this->assertArrayHasKey('limit', $endpointData->getRequestModel()->getProperties());
+        /** @var RestApiBundle\DTO\Docs\Schema\IntegerType $limit */
+        $offset = $endpointData->getRequestModel()->getProperties()['limit'];
+
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $offset);
+        $this->assertCount(2, $offset->getConstraints());
+        $this->assertInstanceOf(Symfony\Component\Validator\Constraints\Range::class, $offset->getConstraints()[0]);
+        $this->assertInstanceOf(Symfony\Component\Validator\Constraints\NotNull::class, $offset->getConstraints()[1]);    }
 }
