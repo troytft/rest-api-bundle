@@ -2,8 +2,12 @@
 
 namespace RestApiBundle\Services\Docs\Schema;
 
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Mapping\PropertyMetadata;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use RestApiBundle;
 use Mapper;
+use function array_merge;
 
 class RequestModelHelper
 {
@@ -12,14 +16,42 @@ class RequestModelHelper
      */
     private $schemaGenerator;
 
-    public function __construct(RestApiBundle\Services\Request\MapperInitiator $mapperInitiator)
-    {
+    /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    public function __construct(
+        RestApiBundle\Services\Request\MapperInitiator $mapperInitiator,
+        ValidatorInterface $validator
+    ) {
         $this->schemaGenerator = $mapperInitiator->getMapper()->getSchemaGenerator();
+        $this->validator = $validator;
     }
 
     public function getSchemaByClass(string $class): RestApiBundle\DTO\Docs\Schema\ObjectType
     {
-        return $this->convertObjectType($this->schemaGenerator->getSchemaByClassName($class));
+        $objectType = $this->convertObjectType($this->schemaGenerator->getSchemaByClassName($class));
+        $validationClassMetadata = $this->validator->getMetadataFor($class);
+
+        if ($validationClassMetadata instanceof ClassMetadata) {
+            foreach ($objectType->getProperties() as $name => $property) {
+                if (!$property instanceof RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface) {
+                    continue;
+                }
+
+                $propertyMetadataArray = $validationClassMetadata->getPropertyMetadata($name);
+
+                /** @var PropertyMetadata $propertyMetadata */
+                foreach ($propertyMetadataArray as $propertyMetadata) {
+                    $property->setConstraints(array_merge($property->getConstraints(), $propertyMetadata->getConstraints()));
+                }
+            }
+        } elseif ($validationClassMetadata !== null) {
+            throw new \RuntimeException();
+        }
+
+        return $objectType;
     }
 
     private function convert(Mapper\DTO\Schema\TypeInterface $type): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface

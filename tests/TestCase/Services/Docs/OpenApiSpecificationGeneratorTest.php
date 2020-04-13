@@ -2,6 +2,7 @@
 
 namespace Tests\TestCase\Services\Docs;
 
+use Symfony;
 use RestApiBundle;
 use Tests;
 use cebe\openapi\spec as OpenApi;
@@ -53,6 +54,31 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $expected = [
             'type' => 'boolean',
             'nullable' => true,
+        ];
+
+        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+    }
+
+    public function testAssertRange()
+    {
+        $constraint = new Symfony\Component\Validator\Constraints\Range([
+            'min' => 0,
+            'max' => \PHP_INT_MAX,
+        ]);
+
+        $integerType = new RestApiBundle\DTO\Docs\Schema\IntegerType(false);
+        $integerType
+            ->setConstraints([$constraint]);
+
+        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$integerType]);
+
+        $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
+
+        $expected = [
+            'type' => 'integer',
+            'nullable' => false,
+            'minimum' => 0,
+            'maximum' => 9223372036854775807,
         ];
 
         $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));

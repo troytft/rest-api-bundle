@@ -3,6 +3,7 @@
 namespace RestApiBundle\Services\Docs;
 
 use RestApiBundle;
+use Symfony;
 use cebe\openapi\spec as OpenApi;
 use Symfony\Component\Yaml\Yaml;
 use function array_merge;
@@ -191,14 +192,39 @@ class OpenApiSpecificationGenerator
             $result = $this->convertObjectType($schemaType);
         } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\ArrayType) {
             $result = $this->convertArrayType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\StringType) {
-            $result = $this->convertStringType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\IntegerType) {
-            $result = $this->convertIntegerType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\FloatType) {
-            $result = $this->convertFloatType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\BooleanType) {
-            $result = $this->convertBooleanType($schemaType);
+        } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
+            $result = $this->convertScalarType($schemaType);
+        } else {
+            throw new \InvalidArgumentException();
+        }
+
+        if ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface) {
+            foreach ($schemaType->getConstraints() as $constraint) {
+                if ($constraint instanceof Symfony\Component\Validator\Constraints\Range) {
+                    if ($constraint->min !== null) {
+                        $result->minimum = $constraint->min;
+                    }
+
+                    if ($constraint->max !== null) {
+                        $result->maximum = $constraint->max;
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    private function convertScalarType(RestApiBundle\DTO\Docs\Schema\ScalarInterface $scalarType): OpenApi\Schema
+    {
+        if ($scalarType instanceof RestApiBundle\DTO\Docs\Schema\StringType) {
+            $result = $this->convertStringType($scalarType);
+        } elseif ($scalarType instanceof RestApiBundle\DTO\Docs\Schema\IntegerType) {
+            $result = $this->convertIntegerType($scalarType);
+        } elseif ($scalarType instanceof RestApiBundle\DTO\Docs\Schema\FloatType) {
+            $result = $this->convertFloatType($scalarType);
+        } elseif ($scalarType instanceof RestApiBundle\DTO\Docs\Schema\BooleanType) {
+            $result = $this->convertBooleanType($scalarType);
         } else {
             throw new \InvalidArgumentException();
         }
