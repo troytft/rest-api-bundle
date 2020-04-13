@@ -227,6 +227,14 @@ class OpenApiSpecificationGenerator
                     if ($constraint->max !== null) {
                         $result->maxItems = $constraint->max;
                     }
+                } elseif ($constraint instanceof Symfony\Component\Validator\Constraints\Length) {
+                    if ($constraint->min !== null) {
+                        $result->minLength = $constraint->min;
+                    }
+
+                    if ($constraint->max !== null) {
+                        $result->maxLength = $constraint->max;
+                    }
                 }
             }
         }
