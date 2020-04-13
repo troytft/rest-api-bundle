@@ -54,12 +54,12 @@ class GenerateDocsCommand extends Command
         try {
             $this->docsGenerator->writeToFile($outputFileName, $fileFormat, $namespaceFilter);
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
-            $output->writeln([
-                'Invalid Definition Exception',
-                sprintf("Message: %s", $exception->getOriginalErrorMessage()),
-                sprintf("Controller: %s", $exception->getControllerClass()),
-                sprintf("Action: %s", $exception->getActionName()),
-            ]);
+            $output->writeln(sprintf(
+                'Definition error in %s::%s with message "%s" ',
+                $exception->getControllerClass(),
+                $exception->getActionName(),
+                $exception->getOriginalErrorMessage()
+            ));
 
             return 1;
         }
