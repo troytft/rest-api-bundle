@@ -208,9 +208,7 @@ class OpenApiSpecificationGenerator
                     if ($constraint->max !== null) {
                         $result->maximum = $constraint->max;
                     }
-                }
-
-                if ($constraint instanceof Symfony\Component\Validator\Constraints\Choice) {
+                } elseif ($constraint instanceof Symfony\Component\Validator\Constraints\Choice) {
                     if ($constraint->choices) {
                         $choices = $constraint->choices;
                     } elseif ($constraint->callback) {
@@ -221,6 +219,14 @@ class OpenApiSpecificationGenerator
                     }
 
                     $result->enum = $choices;
+                } elseif ($constraint instanceof Symfony\Component\Validator\Constraints\Count) {
+                    if ($constraint->min !== null) {
+                        $result->minItems = $constraint->min;
+                    }
+
+                    if ($constraint->max !== null) {
+                        $result->maxItems = $constraint->max;
+                    }
                 }
             }
         }

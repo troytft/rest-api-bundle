@@ -136,6 +136,36 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
     }
 
+    public function testAssertCount()
+    {
+        $constraint = new Symfony\Component\Validator\Constraints\Count([
+            'min' => 1,
+            'max' => 12,
+        ]);
+
+        $arrayType = new RestApiBundle\DTO\Docs\Schema\ArrayType(new RestApiBundle\DTO\Docs\Schema\StringType(false), false);
+        $arrayType
+            ->setConstraints([$constraint]);
+
+        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$arrayType]);
+
+        $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
+
+        $expected = [
+            'type' => 'array',
+            'items' => [
+                [
+                    'type' => 'string',
+                    'nullable' => false,
+                ],
+            ],
+            'nullable' => false,
+            'minItems' => 1,
+            'maxItems' => 12,
+        ];
+        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+    }
+
     public function testConvertRequestModelToParameters()
     {
         $objectProperties = [
