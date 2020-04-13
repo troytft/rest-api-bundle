@@ -2,8 +2,8 @@
 
 namespace RestApiBundle\DTO\Docs\Schema;
 
-use Symfony\Component\Validator\Constraint;
 use RestApiBundle;
+use Symfony\Component\Validator\Constraint;
 
 class FloatType implements
     RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface,
