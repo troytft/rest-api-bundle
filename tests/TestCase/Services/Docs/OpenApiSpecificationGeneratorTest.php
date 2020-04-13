@@ -84,6 +84,58 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
     }
 
+    public function testAssertChoiceWithChoices()
+    {
+        $constraint = new Symfony\Component\Validator\Constraints\Choice([
+            'choices' => Tests\TestApp\TestBundle\Enum\Status::getValues(),
+        ]);
+
+        $stringType = new RestApiBundle\DTO\Docs\Schema\StringType(false);
+        $stringType
+            ->setConstraints([$constraint]);
+
+        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$stringType]);
+
+        $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
+
+        $expected = [
+            'type' => 'string',
+            'nullable' => false,
+            'enum' => [
+                'created',
+                'published',
+                'archived',
+            ],
+        ];
+        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+    }
+
+    public function testAssertChoiceWithCallback()
+    {
+        $constraint = new Symfony\Component\Validator\Constraints\Choice([
+            'callback' => 'Tests\TestApp\TestBundle\Enum\Status::getValues',
+        ]);
+
+        $stringType = new RestApiBundle\DTO\Docs\Schema\StringType(false);
+        $stringType
+            ->setConstraints([$constraint]);
+
+        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$stringType]);
+
+        $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
+
+        $expected = [
+            'type' => 'string',
+            'nullable' => false,
+            'enum' => [
+                'created',
+                'published',
+                'archived',
+            ],
+        ];
+        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+    }
+
     public function testConvertRequestModelToParameters()
     {
         $objectProperties = [

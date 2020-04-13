@@ -209,6 +209,19 @@ class OpenApiSpecificationGenerator
                         $result->maximum = $constraint->max;
                     }
                 }
+
+                if ($constraint instanceof Symfony\Component\Validator\Constraints\Choice) {
+                    if ($constraint->choices) {
+                        $choices = $constraint->choices;
+                    } elseif ($constraint->callback) {
+                        $callback = $constraint->callback;
+                        $choices = $callback();
+                    } else {
+                        throw new \InvalidArgumentException();
+                    }
+
+                    $result->enum = $choices;
+                }
             }
         }
 
