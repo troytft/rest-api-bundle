@@ -110,10 +110,6 @@ class OpenApiSpecificationGenerator
                     'responses' => $responses,
                 ]);
 
-                if ($routeData->getTags()) {
-                    $operation->tags = $routeData->getTags();
-                }
-
                 if ($routeData->getDescription()) {
                     $operation->description = $routeData->getDescription();
                 }
@@ -127,6 +123,10 @@ class OpenApiSpecificationGenerator
 
                 if ($pathParameters || $queryParameters) {
                     $operation->parameters = array_merge($pathParameters, $queryParameters);
+                }
+
+                if ($routeData->getTags()) {
+                    $operation->tags = $routeData->getTags();
                 }
 
                 $pathItem->{$method} = $operation;
@@ -156,7 +156,7 @@ class OpenApiSpecificationGenerator
     /**
      * @param RestApiBundle\DTO\Docs\Schema\ObjectType $objectType
      *
-     * @return OpenApi\Parameter
+     * @return OpenApi\Parameter[]
      */
     private function convertRequestModelToParameters(RestApiBundle\DTO\Docs\Schema\ObjectType $objectType): array
     {

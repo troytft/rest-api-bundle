@@ -4,7 +4,6 @@ namespace Tests\TestCase\Services\Docs;
 
 use Tests;
 use RestApiBundle;
-use function var_dump;
 
 class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
 {
@@ -64,7 +63,7 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ObjectType::class, $endpointData->getRequestModel());
         $this->assertCount(2, $endpointData->getRequestModel()->getProperties());
 
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getRequestModel()->getProperties()[0]);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getRequestModel()->getProperties()[1]);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getRequestModel()->getProperties()['offset']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getRequestModel()->getProperties()['limit']);
     }
 }

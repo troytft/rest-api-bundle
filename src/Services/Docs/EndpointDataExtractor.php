@@ -3,12 +3,10 @@
 namespace RestApiBundle\Services\Docs;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Mapper;
 use RestApiBundle;
 use Symfony\Component\Routing\Route;
 use function explode;
 use function preg_match_all;
-use function var_dump;
 
 class EndpointDataExtractor
 {
@@ -169,11 +167,6 @@ class EndpointDataExtractor
         }
 
         return $result;
-    }
-
-    private function convertMapperObjectToSchema(Mapper\DTO\Schema\ObjectType $objectType): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
-    {
-        $result = new RestApiBundle\DTO\Docs\Schema\ObjectType();
     }
 
     private function getResponseSchema(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface

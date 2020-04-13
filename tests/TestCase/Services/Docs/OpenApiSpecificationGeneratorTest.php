@@ -5,15 +5,15 @@ namespace Tests\TestCase\Services\Docs;
 use RestApiBundle;
 use Tests;
 use cebe\openapi\spec as OpenApi;
-use function var_dump;
-use function var_export;
 
 class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
 {
-    public function testConvertPathParameter()
+    public function testCreateParameter()
     {
-        $pathParameter = new RestApiBundle\DTO\Docs\PathParameter('parameterName', new RestApiBundle\DTO\Docs\Schema\StringType(false));
-        $openApiParameter = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertPathParameter', [$pathParameter]);
+        $schema = new RestApiBundle\DTO\Docs\Schema\StringType(false);
+
+        /** @var OpenApi\Parameter $openApiParameter */
+        $openApiParameter = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'createParameter', ['path', 'parameterName', $schema]);
 
         $this->assertInstanceOf(OpenApi\Parameter::class, $openApiParameter);
 
