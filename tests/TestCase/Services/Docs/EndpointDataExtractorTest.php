@@ -74,10 +74,11 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
         $this->assertInstanceOf(Symfony\Component\Validator\Constraints\NotNull::class, $offset->getConstraints()[1]);
 
         $this->assertArrayHasKey('limit', $endpointData->getRequestModel()->getProperties());
+
         /** @var RestApiBundle\DTO\Docs\Schema\IntegerType $limit */
         $limit = $endpointData->getRequestModel()->getProperties()['limit'];
-
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $limit);
+
         $this->assertCount(2, $limit->getConstraints());
         $this->assertInstanceOf(Symfony\Component\Validator\Constraints\Range::class, $limit->getConstraints()[0]);
         $this->assertInstanceOf(Symfony\Component\Validator\Constraints\NotNull::class, $limit->getConstraints()[1]);
