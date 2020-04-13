@@ -10,7 +10,6 @@ use function file_get_contents;
 use function sys_get_temp_dir;
 use function tempnam;
 use function trim;
-use function var_dump;
 
 class GenerateDocsCommandTest extends Tests\TestCase\BaseTestCase
 {
