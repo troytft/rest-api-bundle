@@ -28,7 +28,7 @@ class RouteFinder
         $result = [];
 
         foreach ($this->router->getRouteCollection() as $route) {
-            if (!$namespaceFilter || strpos($route->getDefault('_controller'), $namespaceFilter) !== 0) {
+            if ($namespaceFilter && strpos($route->getDefault('_controller'), $namespaceFilter) !== 0) {
                 continue;
             }
 
