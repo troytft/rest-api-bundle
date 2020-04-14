@@ -7,6 +7,7 @@ use RestApiBundle;
 use Symfony\Component\Routing\Route;
 use function explode;
 use function preg_match_all;
+use function var_dump;
 
 class EndpointDataExtractor
 {
@@ -178,6 +179,7 @@ class EndpointDataExtractor
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
+            var_dump(RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($schema->getClass()));die();
             $schema = $this->responseModelSchemaReader->getSchemaByClass($schema->getClass(), $schema->getNullable());
         } elseif ($schema instanceof RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType) {
             if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($schema->getClass())) {

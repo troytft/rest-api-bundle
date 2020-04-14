@@ -7,6 +7,7 @@ use function lcfirst;
 use function ltrim;
 use function strpos;
 use function substr;
+use function var_dump;
 
 class ResponseModelSchemaReader
 {
@@ -15,12 +16,12 @@ class ResponseModelSchemaReader
      */
     private $objectClassCache = [];
 
-    public function getSchemaByClassType(RestApiBundle\DTO\Docs\Schema\ClassType $classType): RestApiBundle\DTO\Docs\Schema\ObjectType
+    public function getSchemaByClassType(RestApiBundle\DTO\Docs\Schema\ClassType $classType): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         return $this->getSchemaByClass($classType->getClass(), $classType->getNullable());
     }
 
-    public function getSchemaByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Schema\ObjectType
+    public function getSchemaByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         $class = ltrim($class, '\\');
 
@@ -29,10 +30,24 @@ class ResponseModelSchemaReader
         }
 
         $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
-        if (!$reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class)) {
+        if ($reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class)) {
+            $this->objectClassCache[$class] = $this->convertResponseModelReflectionClass($reflectionClass, $isNullable);
+        } elseif ($class === \DateTime::class) {
+            $this->objectClassCache[$class] = $this->convertDateTime($isNullable);
+        } else {
             throw new \InvalidArgumentException();
         }
 
+        return $this->objectClassCache[$class];
+    }
+
+    private function convertDateTime(bool $isNullable): RestApiBundle\DTO\Docs\Schema\DateTimeType
+    {
+        return new RestApiBundle\DTO\Docs\Schema\DateTimeType($isNullable);
+    }
+
+    private function convertResponseModelReflectionClass(\ReflectionClass $reflectionClass, bool $isNullable): RestApiBundle\DTO\Docs\Schema\ObjectType
+    {
         $properties = [];
         $reflectionMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
 
@@ -48,9 +63,7 @@ class ResponseModelSchemaReader
 
         $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\Docs\Schema\StringType(false);
 
-        $this->objectClassCache[$class] = new RestApiBundle\DTO\Docs\Schema\ObjectType($properties, $isNullable);
-
-        return $this->objectClassCache[$class];
+        return new RestApiBundle\DTO\Docs\Schema\ObjectType($properties, $isNullable);
     }
 
     public function getSchemaByArrayOfClassesType(RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType $arrayOfClassesType): RestApiBundle\DTO\Docs\Schema\ArrayType
