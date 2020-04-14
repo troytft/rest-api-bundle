@@ -80,6 +80,6 @@ class ResponseHandler
 
     private function isPlainArray(array $items): bool
     {
-        return array_keys($items) === range(0, count($items) - 1);
+        return empty($array) || array_keys($array) === range(0, count($array) - 1);
     }
 }
