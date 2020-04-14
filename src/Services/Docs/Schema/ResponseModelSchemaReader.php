@@ -7,7 +7,6 @@ use function lcfirst;
 use function ltrim;
 use function strpos;
 use function substr;
-use function var_dump;
 
 class ResponseModelSchemaReader
 {
