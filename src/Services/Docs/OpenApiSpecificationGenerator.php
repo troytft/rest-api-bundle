@@ -194,6 +194,8 @@ class OpenApiSpecificationGenerator
             $result = $this->convertArrayType($schemaType);
         } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
             $result = $this->convertScalarType($schemaType);
+        } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\DateTimeType) {
+            $result = $this->convertDateTimeType($schemaType);
         } else {
             throw new \InvalidArgumentException();
         }
@@ -315,6 +317,15 @@ class OpenApiSpecificationGenerator
         return new OpenApi\Schema([
             'type' => OpenApi\Type::BOOLEAN,
             'nullable' => $booleanType->getNullable(),
+        ]);
+    }
+
+    private function convertDateTimeType(RestApiBundle\DTO\Docs\Schema\DateTimeType $dateTimeType): OpenApi\Schema
+    {
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::STRING,
+            'format' => 'date-time',
+            'nullable' => $dateTimeType->getNullable(),
         ]);
     }
 }
