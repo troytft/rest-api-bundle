@@ -43,7 +43,7 @@ class GenerateDocsCommand extends Command
     {
         $outputFileName = $input->getArgument(static::ARGUMENT_OUTPUT);
         $namespaceFilter = $input->getOption(static::OPTION_NAMESPACE_FILTER);
-        $fileFormat = $input->getOption(static::OPTION_FILE_FORMAT) ?? RestApiBundle\Enum\Docs\FileFormat::YAML;
+        $fileFormat = $input->getOption(static::OPTION_FILE_FORMAT) ?? RestApiBundle\Enum\Docs\FileFormat::JSON;
 
         if (!in_array($fileFormat, [RestApiBundle\Enum\Docs\FileFormat::YAML, RestApiBundle\Enum\Docs\FileFormat::JSON], true)) {
             $output->writeln('Invalid file format.');
