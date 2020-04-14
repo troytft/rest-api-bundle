@@ -24,6 +24,7 @@ class GenerateDocsCommandTest extends Tests\TestCase\BaseTestCase
         $commandTester->execute([
             'output' => $fileName,
             '--namespace-filter' => Tests\TestApp\TestBundle\Controller\DemoController::class,
+            '--file-format' => RestApiBundle\Enum\Docs\FileFormat::YAML,
         ]);
 
         $this->assertSame(0, $commandTester->getStatusCode());
