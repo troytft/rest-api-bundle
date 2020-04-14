@@ -75,4 +75,15 @@ class ResponseModelSchemaReaderTest extends Tests\TestCase\BaseTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $collectionInnerType->getProperties()['__typename']);
         $this->assertTrue($collectionType->getNullable());
     }
+
+    public function testModelWithDateTime()
+    {
+        $classType = new RestApiBundle\DTO\Docs\Schema\ClassType(Tests\TestApp\TestBundle\ResponseModel\TestModelWithDateTime::class, false);
+        $objectType = $this->getResponseModelSchemaReader()->getSchemaByClassType($classType);
+
+        $this->assertSame(['dateTime', '__typename',], array_keys($objectType->getProperties()));
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\DateTimeType::class, $objectType->getProperties()['dateTime']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['__typename']);
+        $this->assertFalse($objectType->getNullable());
+    }
 }

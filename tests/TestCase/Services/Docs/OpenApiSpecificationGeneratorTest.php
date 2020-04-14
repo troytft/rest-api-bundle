@@ -263,4 +263,20 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
 
         $this->assertSame($expected, $this->convertStdClassToArray($requestBody->getSerializableData()));
     }
+
+    public function testConvertResponseModelDateTimeType()
+    {
+        $dateTimeType = new RestApiBundle\DTO\Docs\Schema\DateTimeType(false);
+        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$dateTimeType]);
+
+        $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
+
+        $expected = [
+            'type' => 'string',
+            'format' => 'date-time',
+            'nullable' => false,
+        ];
+
+        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+    }
 }

@@ -87,6 +87,11 @@ class ResponseModelSchemaReader
 
                 break;
 
+            case \DateTime::class:
+                $result = new RestApiBundle\DTO\Docs\Schema\DateTimeType($reflectionType->allowsNull());
+
+                break;
+
             default:
                 $result = $this->getSchemaByClassType(new RestApiBundle\DTO\Docs\Schema\ClassType($typeAsString, $reflectionType->allowsNull()));
         }
