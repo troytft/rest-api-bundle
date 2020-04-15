@@ -7,6 +7,7 @@ use function lcfirst;
 use function ltrim;
 use function strpos;
 use function substr;
+use function var_dump;
 
 class ResponseModelHelper
 {
@@ -33,6 +34,13 @@ class ResponseModelHelper
         $this->docBlockSchemaReader = $docBlockSchemaReader;
     }
 
+    private function assertIsResponseModel(\ReflectionClass $reflectionClass): void
+    {
+        if (!$reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class)) {
+            throw new \InvalidArgumentException();
+        }
+    }
+
     public function getSchemaByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Schema\ObjectType
     {
         $class = ltrim($class, '\\');
@@ -42,9 +50,7 @@ class ResponseModelHelper
         }
 
         $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
-        if (!$reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class)) {
-            throw new \InvalidArgumentException();
-        }
+        $this->assertIsResponseModel($reflectionClass);
 
         $properties = [];
         $reflectionMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
@@ -54,13 +60,8 @@ class ResponseModelHelper
                 continue;
             }
 
-            $returnType = $this->typeHintSchemaReader->getMethodReturnSchema($reflectionMethod) ?? $this->docBlockSchemaReader->getMethodReturnSchema($reflectionMethod);
-            if (!$returnType) {
-                throw new \InvalidArgumentException('Empty return type.'); // @todo: make more informative
-            }
-
             $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
-            $properties[$propertyName] = $returnType;
+            $properties[$propertyName] = $this->getReturnTypeByReflectionMethod($reflectionMethod);
         }
 
         $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\Docs\Schema\StringType(false);
@@ -68,5 +69,26 @@ class ResponseModelHelper
         $this->objectClassCache[$class] = new RestApiBundle\DTO\Docs\Schema\ObjectType($properties, $isNullable);
 
         return $this->objectClassCache[$class];
+    }
+
+    private function getReturnTypeByReflectionMethod(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    {
+        $returnType = $this->typeHintSchemaReader->getMethodReturnSchema($reflectionMethod) ?? $this->docBlockSchemaReader->getMethodReturnSchema($reflectionMethod);
+        if (!$returnType) {
+            throw new \InvalidArgumentException('Empty return type.'); // @todo: make more informative
+        }
+
+        if ($returnType instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
+            $returnType = $this->getSchemaByClass($returnType->getClass(), $returnType->getNullable());
+        } elseif ($returnType instanceof RestApiBundle\DTO\Docs\Schema\ArrayType) {
+            if (!$returnType->getInnerType() instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
+                throw new \InvalidArgumentException();
+            }
+
+            $innerSchema = $this->getSchemaByClass($returnType->getInnerType()->getClass(), $returnType->getInnerType()->getNullable());
+            $returnType = new RestApiBundle\DTO\Docs\Schema\ArrayType($innerSchema, $returnType->getNullable());
+        }
+
+        return $returnType;
     }
 }

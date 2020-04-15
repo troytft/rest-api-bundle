@@ -2,6 +2,7 @@
 
 namespace Tests\TestApp\TestBundle\ResponseModel;
 
+use Tests;
 use RestApiBundle;
 
 class ModelWithDocBlock implements RestApiBundle\ResponseModelInterface
@@ -28,5 +29,21 @@ class ModelWithDocBlock implements RestApiBundle\ResponseModelInterface
     public function getDateTimeField()
     {
         return new \DateTime();
+    }
+
+    /**
+     * @return Tests\TestApp\TestBundle\ResponseModel\CombinedModel
+     */
+    public function getModelField()
+    {
+        return new Tests\TestApp\TestBundle\ResponseModel\CombinedModel();
+    }
+
+    /**
+     * @return Tests\TestApp\TestBundle\ResponseModel\CombinedModel[]
+     */
+    public function getArrayOfModelsField(): array
+    {
+        return [];
     }
 }

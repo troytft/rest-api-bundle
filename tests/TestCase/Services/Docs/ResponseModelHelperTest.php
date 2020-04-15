@@ -30,8 +30,11 @@ class ResponseModelHelperTest extends Tests\TestCase\BaseTestCase
             'stringField',
             'nullableStringField',
             'dateTimeField',
+            'modelField',
             '__typename',
         ], array_keys($objectType->getProperties()));
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['__typename']);
+        $this->assertFalse($objectType->getNullable());
 
         /** @var RestApiBundle\DTO\Docs\Schema\StringType $stringField */
         $stringField = $objectType->getProperties()['stringField'];
@@ -48,8 +51,20 @@ class ResponseModelHelperTest extends Tests\TestCase\BaseTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\DateTimeType::class, $dateTimeField);
         $this->assertFalse($dateTimeField->getNullable());
 
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['__typename']);
-        $this->assertFalse($objectType->getNullable());
+        /** @var RestApiBundle\DTO\Docs\Schema\ObjectType $modelField */
+        $modelField = $objectType->getProperties()['modelField'];
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ObjectType::class, $modelField);
+        $this->assertFalse($modelField->getNullable());
+
+        $this->assertSame([
+            'stringFieldWithTypeHint',
+            'stringFieldWithDocBlock',
+            '__typename',
+        ], array_keys($modelField->getProperties()));
+
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $modelField->getProperties()['stringFieldWithTypeHint']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $modelField->getProperties()['stringFieldWithDocBlock']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $modelField->getProperties()['__typename']);
     }
 
     public function testModelWithDocBlock()
@@ -62,8 +77,12 @@ class ResponseModelHelperTest extends Tests\TestCase\BaseTestCase
             'stringField',
             'nullableStringField',
             'dateTimeField',
+            'modelField',
+            'arrayOfModelsField',
             '__typename',
         ], array_keys($objectType->getProperties()));
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['__typename']);
+        $this->assertFalse($objectType->getNullable());
 
         /** @var RestApiBundle\DTO\Docs\Schema\StringType $stringField */
         $stringField = $objectType->getProperties()['stringField'];
@@ -80,7 +99,36 @@ class ResponseModelHelperTest extends Tests\TestCase\BaseTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\DateTimeType::class, $dateTimeField);
         $this->assertFalse($dateTimeField->getNullable());
 
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['__typename']);
-        $this->assertFalse($objectType->getNullable());
+        /** @var RestApiBundle\DTO\Docs\Schema\ObjectType $modelField */
+        $modelField = $objectType->getProperties()['modelField'];
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ObjectType::class, $modelField);
+        $this->assertFalse($modelField->getNullable());
+
+        $this->assertSame([
+            'stringFieldWithTypeHint',
+            'stringFieldWithDocBlock',
+            '__typename',
+        ], array_keys($modelField->getProperties()));
+
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $modelField->getProperties()['stringFieldWithTypeHint']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $modelField->getProperties()['stringFieldWithDocBlock']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $modelField->getProperties()['__typename']);
+
+        /** @var RestApiBundle\DTO\Docs\Schema\ArrayType $arrayOfModelsField */
+        $arrayOfModelsField = $objectType->getProperties()['arrayOfModelsField'];
+
+        $innerType = $arrayOfModelsField->getInnerType();
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ObjectType::class, $innerType);
+        $this->assertFalse($innerType->getNullable());
+
+        $this->assertSame([
+            'stringFieldWithTypeHint',
+            'stringFieldWithDocBlock',
+            '__typename',
+        ], array_keys($innerType->getProperties()));
+
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $innerType->getProperties()['stringFieldWithTypeHint']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $innerType->getProperties()['stringFieldWithDocBlock']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $innerType->getProperties()['__typename']);
     }
 }
