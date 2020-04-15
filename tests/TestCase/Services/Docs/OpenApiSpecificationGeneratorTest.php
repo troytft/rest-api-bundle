@@ -261,7 +261,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
                     ],
                 ],
             ],
-            'required' => false,
+            'required' => true,
         ];
 
         $this->assertSame($expected, $this->convertOpenApiToArray($requestBody));

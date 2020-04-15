@@ -145,7 +145,7 @@ class OpenApiSpecificationGenerator
     {
         return new OpenApi\RequestBody([
             'description' => 'Request body',
-            'required' => $objectType->getNullable(),
+            'required' => $objectType->getNullable() === false,
             'content' => [
                 'application/json' => [
                     'schema' => $this->convertSchemaType($objectType),
