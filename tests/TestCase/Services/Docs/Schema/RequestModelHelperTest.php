@@ -2,7 +2,6 @@
 
 namespace Tests\TestCase\Services\Docs\Schema;
 
-use Symfony;
 use Mapper;
 use RestApiBundle;
 use Tests;
