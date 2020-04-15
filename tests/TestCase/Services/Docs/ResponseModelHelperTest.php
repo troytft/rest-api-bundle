@@ -20,40 +20,34 @@ class ResponseModelHelperTest extends Tests\TestCase\BaseTestCase
         $this->reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
     }
 
-    public function testSingleResponseModelNormalization()
+    public function testModelWithTypeHint()
     {
         $objectType = $this
             ->getResponseModelHelper()
-            ->getSchemaByClass(Tests\TestApp\TestBundle\ResponseModel\Genre::class, false);
+            ->getSchemaByClass(Tests\TestApp\TestBundle\ResponseModel\ModelWithTypeHint::class, false);
 
-        $this->assertSame(['id', 'slug', '__typename',], array_keys($objectType->getProperties()));
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $objectType->getProperties()['id']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['slug']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['__typename']);
-        $this->assertFalse($objectType->getNullable());
-    }
+        $this->assertSame([
+            'stringField',
+            'nullableStringField',
+            'dateTimeField',
+            '__typename',
+        ], array_keys($objectType->getProperties()));
 
-    public function testNullableSingleResponseModelNormalization()
-    {
-        $objectType = $this
-            ->getResponseModelHelper()
-            ->getSchemaByClass(Tests\TestApp\TestBundle\ResponseModel\Genre::class, false);
+        /** @var RestApiBundle\DTO\Docs\Schema\StringType $stringField */
+        $stringField = $objectType->getProperties()['stringField'];
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $stringField);
+        $this->assertFalse($stringField->getNullable());
 
-        $this->assertSame(['id', 'slug', '__typename',], array_keys($objectType->getProperties()));
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $objectType->getProperties()['id']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['slug']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['__typename']);
-        $this->assertTrue($objectType->getNullable());
-    }
+        /** @var RestApiBundle\DTO\Docs\Schema\StringType $nullableStringField */
+        $nullableStringField = $objectType->getProperties()['nullableStringField'];
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $nullableStringField);
+        $this->assertTrue($nullableStringField->getNullable());
 
-    public function testModelWithDateTime()
-    {
-        $objectType = $this
-            ->getResponseModelHelper()
-            ->getSchemaByClass(Tests\TestApp\TestBundle\ResponseModel\TestModelWithDateTime::class, false);
+        /** @var RestApiBundle\DTO\Docs\Schema\DateTimeType $dateTimeField */
+        $dateTimeField = $objectType->getProperties()['dateTimeField'];
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\DateTimeType::class, $dateTimeField);
+        $this->assertFalse($dateTimeField->getNullable());
 
-        $this->assertSame(['dateTime', '__typename',], array_keys($objectType->getProperties()));
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\DateTimeType::class, $objectType->getProperties()['dateTime']);
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['__typename']);
         $this->assertFalse($objectType->getNullable());
     }
@@ -70,7 +64,22 @@ class ResponseModelHelperTest extends Tests\TestCase\BaseTestCase
             'dateTimeField',
             '__typename',
         ], array_keys($objectType->getProperties()));
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\DateTimeType::class, $objectType->getProperties()['dateTime']);
+
+        /** @var RestApiBundle\DTO\Docs\Schema\StringType $stringField */
+        $stringField = $objectType->getProperties()['stringField'];
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $stringField);
+        $this->assertFalse($stringField->getNullable());
+
+        /** @var RestApiBundle\DTO\Docs\Schema\StringType $nullableStringField */
+        $nullableStringField = $objectType->getProperties()['nullableStringField'];
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $nullableStringField);
+        $this->assertTrue($nullableStringField->getNullable());
+
+        /** @var RestApiBundle\DTO\Docs\Schema\DateTimeType $dateTimeField */
+        $dateTimeField = $objectType->getProperties()['dateTimeField'];
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\DateTimeType::class, $dateTimeField);
+        $this->assertFalse($dateTimeField->getNullable());
+
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['__typename']);
         $this->assertFalse($objectType->getNullable());
     }

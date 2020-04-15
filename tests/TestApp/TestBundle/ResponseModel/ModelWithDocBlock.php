@@ -27,6 +27,6 @@ class ModelWithDocBlock implements RestApiBundle\ResponseModelInterface
      */
     public function getDateTimeField()
     {
-        return null;
+        return new \DateTime();
     }
 }
