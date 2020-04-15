@@ -114,10 +114,10 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $result;
     }
 
-    protected function getDocBlockSchemaReader(): RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader
+    protected function getDocBlockSchemaReader(): RestApiBundle\Services\Docs\Schema\DocBlockReader
     {
-        /** @var RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader::class);
+        /** @var RestApiBundle\Services\Docs\Schema\DocBlockReader $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\DocBlockReader::class);
 
         return $result;
     }
@@ -130,18 +130,18 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $result;
     }
 
-    protected function getResponseModelHelper(): RestApiBundle\Services\Docs\ResponseModelHelper
+    protected function getResponseCollector(): RestApiBundle\Services\Docs\ResponseCollector
     {
-        /** @var RestApiBundle\Services\Docs\ResponseModelHelper $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\ResponseModelHelper::class);
+        /** @var RestApiBundle\Services\Docs\ResponseCollector $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\ResponseCollector::class);
 
         return $result;
     }
 
-    protected function getTypeHintSchemaReader(): RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader
+    protected function getTypeHintSchemaReader(): RestApiBundle\Services\Docs\Schema\TypeHintReader
     {
-        /** @var RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader::class);
+        /** @var RestApiBundle\Services\Docs\Schema\TypeHintReader $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\TypeHintReader::class);
 
         return $result;
     }

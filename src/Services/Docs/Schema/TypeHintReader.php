@@ -4,7 +4,7 @@ namespace RestApiBundle\Services\Docs\Schema;
 
 use RestApiBundle;
 
-class TypeHintSchemaReader extends RestApiBundle\Services\Docs\Schema\BaseSchemaReader
+class TypeHintReader extends RestApiBundle\Services\Docs\Schema\BaseReader
 {
     public function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
@@ -25,12 +25,16 @@ class TypeHintSchemaReader extends RestApiBundle\Services\Docs\Schema\BaseSchema
         return $this->createFromString($reflectionParameter->getType(), $reflectionParameter->allowsNull());
     }
 
-    protected function createFromString(string $type, bool $nullable): ?RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    private function createFromString(string $type, bool $nullable): ?RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         if ($type === 'array') {
-            return null;
+            $result = null;
+        } elseif ($this->isScalarType($type)) {
+            $result = $this->createScalarTypeFromString($type, $nullable);
+        } else {
+            $result = $this->createClassTypeFromString($type, $nullable);
         }
 
-        return parent::createFromString($type, $nullable);
+        return $result;
     }
 }

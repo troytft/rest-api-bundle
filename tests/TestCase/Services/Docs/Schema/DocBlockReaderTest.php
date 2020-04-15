@@ -5,7 +5,7 @@ namespace Tests\TestCase\Services\Docs\Schema;
 use Tests;
 use RestApiBundle;
 
-class DocBlockSchemaReaderTest extends Tests\TestCase\BaseTestCase
+class DocBlockReaderTest extends Tests\TestCase\BaseTestCase
 {
     /**
      * @var \ReflectionClass
