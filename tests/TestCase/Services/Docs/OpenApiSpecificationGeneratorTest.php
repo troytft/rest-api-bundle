@@ -2,10 +2,13 @@
 
 namespace Tests\TestCase\Services\Docs;
 
+use cebe\openapi\SpecObjectInterface;
 use Symfony;
 use RestApiBundle;
 use Tests;
 use cebe\openapi\spec as OpenApi;
+use function json_decode;
+use function json_encode;
 
 class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
 {
@@ -28,7 +31,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             ],
         ];
 
-        $this->assertSame($expected, $this->convertStdClassToArray($openApiParameter->getSerializableData()));
+        $this->assertSame($expected, $this->convertOpenApiToArray($openApiParameter));
     }
 
     public function testConvertSchemaType()
@@ -43,7 +46,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'nullable' => false,
         ];
 
-        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+        $this->assertSame($expected, $this->convertOpenApiToArray($openApiSchema));
 
         // nullable
         $booleanType = new RestApiBundle\DTO\Docs\Schema\BooleanType(true);
@@ -56,7 +59,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'nullable' => true,
         ];
 
-        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+        $this->assertSame($expected, $this->convertOpenApiToArray($openApiSchema));
     }
 
     public function testRangeConstraint()
@@ -81,7 +84,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'maximum' => 9223372036854775807,
         ];
 
-        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+        $this->assertSame($expected, $this->convertOpenApiToArray($openApiSchema));
     }
 
     public function testChoiceConstraintWithChoices()
@@ -107,7 +110,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
                 'archived',
             ],
         ];
-        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+        $this->assertSame($expected, $this->convertOpenApiToArray($openApiSchema));
     }
 
     public function testChoiceConstraintWithCallback()
@@ -133,7 +136,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
                 'archived',
             ],
         ];
-        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+        $this->assertSame($expected, $this->convertOpenApiToArray($openApiSchema));
     }
 
     public function testCountConstraint()
@@ -163,7 +166,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'minItems' => 1,
             'maxItems' => 12,
         ];
-        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+        $this->assertSame($expected, $this->convertOpenApiToArray($openApiSchema));
     }
 
     public function testLengthConstraint()
@@ -187,7 +190,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'minLength' => 1,
             'maxLength' => 12,
         ];
-        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+        $this->assertSame($expected, $this->convertOpenApiToArray($openApiSchema));
     }
 
     public function testConvertRequestModelToParameters()
@@ -213,7 +216,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
                 'type' => 'integer',
                 'nullable' => false,
             ],
-        ], $this->convertStdClassToArray($openApiParameters[0]->getSerializableData()));
+        ], $this->convertOpenApiToArray($openApiParameters[0]));
 
         $this->assertInstanceOf(OpenApi\Parameter::class, $openApiParameters[1]);
         $this->assertSame([
@@ -224,7 +227,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
                 'type' => 'integer',
                 'nullable' => false,
             ],
-        ], $this->convertStdClassToArray($openApiParameters[1]->getSerializableData()));
+        ], $this->convertOpenApiToArray($openApiParameters[1]));
     }
 
     public function testConvertRequestModelToRequestBody()
@@ -261,10 +264,10 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'required' => false,
         ];
 
-        $this->assertSame($expected, $this->convertStdClassToArray($requestBody->getSerializableData()));
+        $this->assertSame($expected, $this->convertOpenApiToArray($requestBody));
     }
 
-    public function testConvertResponseModelDateTimeType()
+    public function testConvertDateTimeType()
     {
         $dateTimeType = new RestApiBundle\DTO\Docs\Schema\DateTimeType(false);
         $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$dateTimeType]);
@@ -277,6 +280,32 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'nullable' => false,
         ];
 
-        $this->assertSame($expected, $this->convertStdClassToArray($openApiSchema->getSerializableData()));
+        $this->assertSame($expected, $this->convertOpenApiToArray($openApiSchema));
+    }
+
+    public function testConvertDateType()
+    {
+        $dateType = new RestApiBundle\DTO\Docs\Schema\DateType(false);
+        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$dateType]);
+
+        $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
+
+        $expected = [
+            'type' => 'string',
+            'format' => 'date',
+            'nullable' => false,
+        ];
+
+        $this->assertSame($expected, $this->convertOpenApiToArray($openApiSchema));
+    }
+
+    protected function convertStdClassToArray(\stdClass $stdClass): array
+    {
+        return json_decode(json_encode($stdClass), true);
+    }
+    
+    private function convertOpenApiToArray(SpecObjectInterface $specObject): array
+    {
+        return $this->convertStdClassToArray($specObject->getSerializableData());
     }
 }

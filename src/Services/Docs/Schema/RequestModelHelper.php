@@ -92,6 +92,16 @@ class RequestModelHelper
 
                 break;
 
+            case Mapper\Transformer\DateTimeTransformer::getName():
+                $result = new RestApiBundle\DTO\Docs\Schema\DateTimeType($scalarType->getNullable());
+
+                break;
+
+            case Mapper\Transformer\DateTransformer::getName():
+                $result = new RestApiBundle\DTO\Docs\Schema\DateType($scalarType->getNullable());
+
+                break;
+
             default:
                 throw new \InvalidArgumentException();
         }

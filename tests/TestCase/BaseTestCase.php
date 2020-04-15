@@ -79,10 +79,7 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $routes[0];
     }
 
-    protected function convertStdClassToArray(\stdClass $stdClass): array
-    {
-        return json_decode(json_encode($stdClass), true);
-    }
+
 
     protected function invokePrivateMethod($object, string $methodName, array $parameters = [])
     {
@@ -121,6 +118,14 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     {
         /** @var RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader $result */
         $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader::class);
+
+        return $result;
+    }
+
+    protected function getRequestModelHelper(): RestApiBundle\Services\Docs\Schema\RequestModelHelper
+    {
+        /** @var RestApiBundle\Services\Docs\Schema\RequestModelHelper $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\RequestModelHelper::class);
 
         return $result;
     }
