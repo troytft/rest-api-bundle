@@ -9,7 +9,6 @@ use RestApiBundle;
 use Mapper;
 use function array_merge;
 use function sprintf;
-use function var_dump;
 
 class RequestModelHelper
 {

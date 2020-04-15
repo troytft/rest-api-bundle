@@ -74,6 +74,5 @@ class RequestModelHelperTest extends Tests\TestCase\BaseTestCase
         $innerType = $docsSchema->getInnerType();
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $innerType);
         $this->assertFalse($innerType->getNullable());
-
     }
 }
