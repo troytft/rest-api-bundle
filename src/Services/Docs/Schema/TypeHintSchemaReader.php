@@ -24,4 +24,13 @@ class TypeHintSchemaReader extends RestApiBundle\Services\Docs\Schema\BaseSchema
 
         return $this->createFromString($reflectionParameter->getType(), $reflectionParameter->allowsNull());
     }
+
+    protected function createFromString(string $type, bool $nullable): ?RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    {
+        if ($type === 'array') {
+            return null;
+        }
+
+        return $this->createFromString($type, $nullable);
+    }
 }
