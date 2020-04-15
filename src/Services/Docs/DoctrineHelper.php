@@ -23,7 +23,7 @@ class DoctrineHelper
         return !$this->entityManager->getMetadataFactory()->isTransient($className);
     }
 
-    public function getEntityFieldSchema(string $className, string $fieldName): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    public function getEntityFieldSchema(string $className, string $fieldName, bool $nullable): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         $metadata = $this->entityManager->getMetadataFactory()->getMetadataFor($className);
         if (!$metadata instanceof ClassMetadata) {
@@ -37,12 +37,12 @@ class DoctrineHelper
 
         switch ($fieldMetadata['type']) {
             case 'string':
-                $schema = new RestApiBundle\DTO\Docs\Schema\StringType(false);
+                $schema = new RestApiBundle\DTO\Docs\Schema\StringType($nullable);
 
                 break;
 
             case 'integer':
-                $schema = new RestApiBundle\DTO\Docs\Schema\IntegerType(false);
+                $schema = new RestApiBundle\DTO\Docs\Schema\IntegerType($nullable);
 
                 break;
 

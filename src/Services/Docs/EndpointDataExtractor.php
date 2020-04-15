@@ -124,7 +124,7 @@ class EndpointDataExtractor
                     break;
                 } elseif ($parameterSchema instanceof RestApiBundle\DTO\Docs\Schema\ClassType && $this->doctrineHelper->isEntity($parameterSchema->getClass())) {
                     $fieldName = $isNameEqualsToPlaceholder ? 'id' : $placeholder;
-                    $parameterSchema = $this->doctrineHelper->getEntityFieldSchema($parameterSchema->getClass(), $fieldName);
+                    $parameterSchema = $this->doctrineHelper->getEntityFieldSchema($parameterSchema->getClass(), $fieldName, false);
                     $pathParameter = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $parameterSchema);
 
                     break;

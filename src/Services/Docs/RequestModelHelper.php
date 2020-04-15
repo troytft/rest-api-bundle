@@ -8,6 +8,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use RestApiBundle;
 use Mapper;
 use function array_merge;
+use function sprintf;
+use function var_dump;
 
 class RequestModelHelper
 {
@@ -21,12 +23,19 @@ class RequestModelHelper
      */
     private $validator;
 
+    /**
+     * @var RestApiBundle\Services\Docs\DoctrineHelper
+     */
+    private $doctrineHelper;
+
     public function __construct(
         RestApiBundle\Services\Request\MapperInitiator $mapperInitiator,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        RestApiBundle\Services\Docs\DoctrineHelper $doctrineHelper
     ) {
         $this->schemaGenerator = $mapperInitiator->getMapper()->getSchemaGenerator();
         $this->validator = $validator;
+        $this->doctrineHelper = $doctrineHelper;
     }
 
     public function getSchemaByClass(string $class): RestApiBundle\DTO\Docs\Schema\ObjectType
@@ -102,8 +111,25 @@ class RequestModelHelper
 
                 break;
 
+            case RestApiBundle\Services\Request\MapperTransformer\EntityTransformer::getName():
+                $className = $scalarType->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntityTransformer::CLASS_OPTION];
+                $fieldName = $scalarType->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntityTransformer::FIELD_OPTION];
+
+                $result = $this->doctrineHelper->getEntityFieldSchema($className, $fieldName, $scalarType->getNullable());
+
+                break;
+
+            case RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::getName():
+                $className = $scalarType->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::CLASS_OPTION];
+                $fieldName = $scalarType->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::FIELD_OPTION];
+
+                $innerSchema = $this->doctrineHelper->getEntityFieldSchema($className, $fieldName, false);
+                $result = new RestApiBundle\DTO\Docs\Schema\ArrayType($innerSchema, $scalarType->getNullable());
+
+                break;
+
             default:
-                throw new \InvalidArgumentException();
+                throw new \InvalidArgumentException(sprintf('Invalid type "%s"', $scalarType->getTransformerName()));
         }
 
         return $result;
