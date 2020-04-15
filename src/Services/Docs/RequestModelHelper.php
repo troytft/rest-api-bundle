@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Schema;
+namespace RestApiBundle\Services\Docs;
 
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\PropertyMetadata;

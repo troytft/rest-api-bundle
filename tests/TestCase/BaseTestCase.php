@@ -122,18 +122,18 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $result;
     }
 
-    protected function getRequestModelHelper(): RestApiBundle\Services\Docs\Schema\RequestModelHelper
+    protected function getRequestModelHelper(): RestApiBundle\Services\Docs\RequestModelHelper
     {
-        /** @var RestApiBundle\Services\Docs\Schema\RequestModelHelper $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\RequestModelHelper::class);
+        /** @var RestApiBundle\Services\Docs\RequestModelHelper $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\RequestModelHelper::class);
 
         return $result;
     }
 
-    protected function getResponseModelSchemaReader(): RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader
+    protected function getResponseModelHelper(): RestApiBundle\Services\Docs\ResponseModelHelper
     {
-        /** @var RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader::class);
+        /** @var RestApiBundle\Services\Docs\ResponseModelHelper $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\ResponseModelHelper::class);
 
         return $result;
     }
