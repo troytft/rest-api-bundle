@@ -31,6 +31,6 @@ class TypeHintSchemaReader extends RestApiBundle\Services\Docs\Schema\BaseSchema
             return null;
         }
 
-        return $this->createFromString($type, $nullable);
+        return parent::createFromString($type, $nullable);
     }
 }
