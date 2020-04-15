@@ -62,23 +62,31 @@ class DocBlockSchemaReaderTest extends Tests\TestCase\BaseTestCase
     {
         $reflectionMethod = $this->reflectionClass->getMethod('methodWithArrayOfResponseModelsReturnTag');
 
-        /** @var RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType $returnType */
+        /** @var RestApiBundle\DTO\Docs\Schema\ArrayType $returnType */
         $returnType = $this->getDocBlockSchemaReader()->getMethodReturnSchema($reflectionMethod);
-
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType::class, $returnType);
-        $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ArrayType::class, $returnType);
         $this->assertFalse($returnType->getNullable());
+
+        /** @var RestApiBundle\DTO\Docs\Schema\ClassType $innerType */
+        $innerType = $returnType->getInnerType();
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ClassType::class, $innerType);
+        $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $innerType->getClass());
+        $this->assertFalse($innerType->getNullable());
     }
 
     public function testNullableArrayOfResponseModelsReturnTag()
     {
         $reflectionMethod = $this->reflectionClass->getMethod('methodWithNullableArrayOfResponseModelsReturnTag');
 
-        /** @var RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType $returnType */
+        /** @var RestApiBundle\DTO\Docs\Schema\ArrayType $returnType */
         $returnType = $this->getDocBlockSchemaReader()->getMethodReturnSchema($reflectionMethod);
-
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType::class, $returnType);
-        $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ArrayType::class, $returnType);
         $this->assertTrue($returnType->getNullable());
+
+        /** @var RestApiBundle\DTO\Docs\Schema\ClassType $innerType */
+        $innerType = $returnType->getInnerType();
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ClassType::class, $innerType);
+        $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $innerType->getClass());
+        $this->assertFalse($innerType->getNullable());
     }
 }

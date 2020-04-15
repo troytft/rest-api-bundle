@@ -3,11 +3,14 @@
 namespace RestApiBundle\Services\Docs\Schema;
 
 use RestApiBundle;
+use function ltrim;
 
 abstract class BaseSchemaReader
 {
     protected function createFromString(string $type, bool $nullable): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
+        $type = ltrim((string) $type, '\\');
+
         switch ($type) {
             case 'string':
                 $result = new RestApiBundle\DTO\Docs\Schema\StringType($nullable);

@@ -179,12 +179,14 @@ class EndpointDataExtractor
             }
 
             $schema = $this->responseModelHelper->getSchemaByClass($schema->getClass(), $schema->getNullable());
-        } elseif ($schema instanceof RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType) {
-            if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($schema->getClass())) {
+        } elseif ($schema instanceof RestApiBundle\DTO\Docs\Schema\ArrayType && $schema->getInnerType() instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
+            /** @var RestApiBundle\DTO\Docs\Schema\ClassType $innerType */
+            $innerType = $schema->getInnerType();
+            if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($innerType->getClass())) {
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
-            $responseModelSchema = $this->responseModelHelper->getSchemaByClass($schema->getClass(), $schema->getNullable());
+            $responseModelSchema = $this->responseModelHelper->getSchemaByClass($innerType->getClass(), $innerType->getNullable());
             $schema = new RestApiBundle\DTO\Docs\Schema\ArrayType($responseModelSchema, $schema->getNullable());
         }
 
