@@ -119,6 +119,7 @@ class ResponseModelHelperTest extends Tests\TestCase\BaseTestCase
         /** @var RestApiBundle\DTO\Docs\Schema\ArrayType $arrayOfModelsField */
         $arrayOfModelsField = $objectType->getProperties()['arrayOfModelsField'];
 
+        /** @var RestApiBundle\DTO\Docs\Schema\ObjectType $innerType */
         $innerType = $arrayOfModelsField->getInnerType();
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ObjectType::class, $innerType);
         $this->assertFalse($innerType->getNullable());
