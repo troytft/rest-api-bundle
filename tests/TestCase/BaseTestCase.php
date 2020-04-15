@@ -79,10 +79,7 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $routes[0];
     }
 
-    protected function convertStdClassToArray(\stdClass $stdClass): array
-    {
-        return json_decode(json_encode($stdClass), true);
-    }
+
 
     protected function invokePrivateMethod($object, string $methodName, array $parameters = [])
     {
