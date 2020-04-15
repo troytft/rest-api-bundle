@@ -7,7 +7,7 @@ use function ltrim;
 
 abstract class BaseSchemaReader
 {
-    protected function createFromString(string $type, bool $nullable): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    protected function createFromString(string $type, bool $nullable): ?RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         $type = ltrim((string) $type, '\\');
 
@@ -31,6 +31,11 @@ abstract class BaseSchemaReader
             case 'bool':
             case 'boolean':
                 $result = new RestApiBundle\DTO\Docs\Schema\BooleanType($nullable);
+
+                break;
+
+            case 'array':
+                $result = null;
 
                 break;
 

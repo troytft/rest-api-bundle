@@ -2,6 +2,7 @@
 
 namespace Tests\TestApp\TestBundle\ResponseModel;
 
+use Tests;
 use RestApiBundle;
 
 class ModelWithTypeHint implements RestApiBundle\ResponseModelInterface
@@ -19,5 +20,13 @@ class ModelWithTypeHint implements RestApiBundle\ResponseModelInterface
     public function getDateTimeField(): \DateTime
     {
         return new \DateTime();
+    }
+
+    /**
+     * @return Tests\TestApp\TestBundle\ResponseModel\CombinedModel
+     */
+    public function getModelField()
+    {
+        return new Tests\TestApp\TestBundle\ResponseModel\CombinedModel();
     }
 }
