@@ -33,6 +33,7 @@ class ResponseModelHelperTest extends Tests\TestCase\BaseTestCase
             'modelField',
             '__typename',
         ], array_keys($objectType->getProperties()));
+
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['__typename']);
         $this->assertFalse($objectType->getNullable());
 
@@ -81,6 +82,7 @@ class ResponseModelHelperTest extends Tests\TestCase\BaseTestCase
             'arrayOfModelsField',
             '__typename',
         ], array_keys($objectType->getProperties()));
+
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['__typename']);
         $this->assertFalse($objectType->getNullable());
 
