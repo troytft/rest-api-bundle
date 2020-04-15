@@ -8,13 +8,12 @@ class TypeHintSchemaReader extends RestApiBundle\Services\Docs\Schema\BaseSchema
 {
     public function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
-        $returnType = $reflectionMethod->getReturnType();
-        if (!$returnType) {
+        if (!$reflectionMethod->getReturnType()) {
             return null;
         }
 
 
-        return new RestApiBundle\DTO\Docs\Schema\ClassType((string) $returnType, $returnType->allowsNull());
+        return $this->createFromString((string) $reflectionMethod->getReturnType(), $reflectionMethod->getReturnType()->allowsNull());
     }
 
     public function getMethodParameterSchema(\ReflectionParameter $reflectionParameter): ?RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
