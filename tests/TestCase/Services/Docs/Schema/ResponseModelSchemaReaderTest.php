@@ -22,8 +22,9 @@ class ResponseModelSchemaReaderTest extends Tests\TestCase\BaseTestCase
 
     public function testSingleResponseModelNormalization()
     {
-        $classType = new RestApiBundle\DTO\Docs\Schema\ClassType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, false);
-        $objectType = $this->getResponseModelSchemaReader()->getSchemaByClassType($classType);
+        $objectType = $this
+            ->getResponseModelSchemaReader()
+            ->getSchemaByClass(Tests\TestApp\TestBundle\ResponseModel\Genre::class, false);
 
         $this->assertSame(['id', 'slug', '__typename',], array_keys($objectType->getProperties()));
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $objectType->getProperties()['id']);
@@ -34,8 +35,9 @@ class ResponseModelSchemaReaderTest extends Tests\TestCase\BaseTestCase
 
     public function testNullableSingleResponseModelNormalization()
     {
-        $classType = new RestApiBundle\DTO\Docs\Schema\ClassType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, true);
-        $objectType = $this->getResponseModelSchemaReader()->getSchemaByClassType($classType);
+        $objectType = $this
+            ->getResponseModelSchemaReader()
+            ->getSchemaByClass(Tests\TestApp\TestBundle\ResponseModel\Genre::class, false);
 
         $this->assertSame(['id', 'slug', '__typename',], array_keys($objectType->getProperties()));
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $objectType->getProperties()['id']);
@@ -44,44 +46,30 @@ class ResponseModelSchemaReaderTest extends Tests\TestCase\BaseTestCase
         $this->assertTrue($objectType->getNullable());
     }
 
-    public function testArrayOfResponseModelsNormalization()
-    {
-        $classesCollectionType = new RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, false);
-        $collectionType = $this->getResponseModelSchemaReader()->getSchemaByArrayOfClassesType($classesCollectionType);
-
-        /** @var RestApiBundle\DTO\Docs\Schema\ObjectType $collectionInnerType */
-        $collectionInnerType = $collectionType->getInnerType();
-
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ObjectType::class, $collectionInnerType);
-        $this->assertSame(['id', 'slug', '__typename',], array_keys($collectionInnerType->getProperties()));
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $collectionInnerType->getProperties()['id']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $collectionInnerType->getProperties()['slug']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $collectionInnerType->getProperties()['__typename']);
-        $this->assertFalse($collectionType->getNullable());
-    }
-
-    public function testNullableArrayOfResponseModelsNormalization()
-    {
-        $classesCollectionType = new RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType(Tests\TestApp\TestBundle\ResponseModel\Genre::class, true);
-        $collectionType = $this->getResponseModelSchemaReader()->getSchemaByArrayOfClassesType($classesCollectionType);
-
-        /** @var RestApiBundle\DTO\Docs\Schema\ObjectType $collectionInnerType */
-        $collectionInnerType = $collectionType->getInnerType();
-
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ObjectType::class, $collectionInnerType);
-        $this->assertSame(['id', 'slug', '__typename',], array_keys($collectionInnerType->getProperties()));
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $collectionInnerType->getProperties()['id']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $collectionInnerType->getProperties()['slug']);
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $collectionInnerType->getProperties()['__typename']);
-        $this->assertTrue($collectionType->getNullable());
-    }
-
     public function testModelWithDateTime()
     {
-        $classType = new RestApiBundle\DTO\Docs\Schema\ClassType(Tests\TestApp\TestBundle\ResponseModel\TestModelWithDateTime::class, false);
-        $objectType = $this->getResponseModelSchemaReader()->getSchemaByClassType($classType);
+        $objectType = $this
+            ->getResponseModelSchemaReader()
+            ->getSchemaByClass(Tests\TestApp\TestBundle\ResponseModel\TestModelWithDateTime::class, false);
 
         $this->assertSame(['dateTime', '__typename',], array_keys($objectType->getProperties()));
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\DateTimeType::class, $objectType->getProperties()['dateTime']);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['__typename']);
+        $this->assertFalse($objectType->getNullable());
+    }
+
+    public function testModelWithDocBlock()
+    {
+        $objectType = $this
+            ->getResponseModelSchemaReader()
+            ->getSchemaByClass(Tests\TestApp\TestBundle\ResponseModel\ModelWithDocBlock::class, false);
+
+        $this->assertSame([
+            'stringField',
+            'nullableStringField',
+            'dateTimeField',
+            '__typename',
+        ], array_keys($objectType->getProperties()));
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\DateTimeType::class, $objectType->getProperties()['dateTime']);
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $objectType->getProperties()['__typename']);
         $this->assertFalse($objectType->getNullable());

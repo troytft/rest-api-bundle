@@ -26,7 +26,7 @@ class EndpointDataExtractor
     private $typeHintSchemaReader;
 
     /**
-     * @var RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader
+     * @var RestApiBundle\Services\Docs\Schema\ResponseModelHelper
      */
     private $responseModelSchemaReader;
 
@@ -43,7 +43,7 @@ class EndpointDataExtractor
     public function __construct(
         RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader $docBlockSchemaReader,
         RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader $typeHintSchemaReader,
-        RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader $responseModelSchemaReader,
+        RestApiBundle\Services\Docs\Schema\ResponseModelHelper $responseModelSchemaReader,
         RestApiBundle\Services\Docs\Schema\DoctrineHelper $doctrineHelper,
         RestApiBundle\Services\Docs\Schema\RequestModelHelper $requestModelHelper
     ) {

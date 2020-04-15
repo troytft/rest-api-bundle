@@ -9,11 +9,12 @@ use phpDocumentor\Reflection\Types\Array_;
 use phpDocumentor\Reflection\Types\Compound;
 use phpDocumentor\Reflection\Types\Null_;
 use phpDocumentor\Reflection\Types\Object_;
+use phpDocumentor\Reflection\Types\String_;
 use RestApiBundle;
 use function count;
 use function ltrim;
 
-class DocBlockSchemaReader
+class DocBlockSchemaReader extends RestApiBundle\Services\Docs\Schema\BaseSchemaReader
 {
     /**
      * @var DocBlockFactory
@@ -61,6 +62,8 @@ class DocBlockSchemaReader
             $result = $this->convertArrayTypeToSchema($type, false);
         } elseif ($type instanceof Compound) {
             $result = $this->convertCompoundTypeToSchema($type);
+        } elseif ($type instanceof String_) {
+            $result = $this->createFromString((string) $type, false);
         } else {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }

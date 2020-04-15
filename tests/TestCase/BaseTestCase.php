@@ -130,10 +130,10 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $result;
     }
 
-    protected function getResponseModelSchemaReader(): RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader
+    protected function getResponseModelSchemaReader(): RestApiBundle\Services\Docs\Schema\ResponseModelHelper
     {
-        /** @var RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\ResponseModelSchemaReader::class);
+        /** @var RestApiBundle\Services\Docs\Schema\ResponseModelHelper $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Schema\ResponseModelHelper::class);
 
         return $result;
     }
