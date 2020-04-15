@@ -6,7 +6,7 @@ use Tests;
 use RestApiBundle;
 use function array_keys;
 
-class ResponseModelHelperTest extends Tests\TestCase\BaseTestCase
+class ResponseCollectorTest extends Tests\TestCase\BaseTestCase
 {
     /**
      * @var \ReflectionClass
@@ -22,9 +22,8 @@ class ResponseModelHelperTest extends Tests\TestCase\BaseTestCase
 
     public function testModelWithTypeHint()
     {
-        $objectType = $this
-            ->getResponseModelHelper()
-            ->getSchemaByClass(Tests\TestApp\TestBundle\ResponseModel\ModelWithTypeHint::class, false);
+        /** @var RestApiBundle\DTO\Docs\Schema\ObjectType $objectType */
+        $objectType = $this->invokePrivateMethod($this->getResponseCollector(), 'getResponseModelSchemaByClass', [Tests\TestApp\TestBundle\ResponseModel\ModelWithTypeHint::class, false]);
 
         $this->assertSame([
             'stringField',
@@ -70,9 +69,8 @@ class ResponseModelHelperTest extends Tests\TestCase\BaseTestCase
 
     public function testModelWithDocBlock()
     {
-        $objectType = $this
-            ->getResponseModelHelper()
-            ->getSchemaByClass(Tests\TestApp\TestBundle\ResponseModel\ModelWithDocBlock::class, false);
+        /** @var RestApiBundle\DTO\Docs\Schema\ObjectType $objectType */
+        $objectType = $this->invokePrivateMethod($this->getResponseCollector(), 'getResponseModelSchemaByClass', [Tests\TestApp\TestBundle\ResponseModel\ModelWithDocBlock::class, false]);
 
         $this->assertSame([
             'stringField',

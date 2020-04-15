@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Tests;
 use RestApiBundle;
 
-class TypeHintSchemaReaderTest extends Tests\TestCase\BaseTestCase
+class TypeHintReaderTest extends Tests\TestCase\BaseTestCase
 {
     public function testUnsupportedReturnType()
     {

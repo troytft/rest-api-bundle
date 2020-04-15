@@ -77,7 +77,7 @@ class OpenApiSpecificationGenerator
                 ]);
             }
 
-            $returnType = $routeData->getResponseSchema();
+            $returnType = $routeData->getResponse();
 
             $responses = new OpenApi\Responses([]);
 
