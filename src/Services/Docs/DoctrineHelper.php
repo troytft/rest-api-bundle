@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Schema;
+namespace RestApiBundle\Services\Docs;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use RestApiBundle;

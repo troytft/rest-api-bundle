@@ -26,31 +26,31 @@ class EndpointDataExtractor
     private $typeHintSchemaReader;
 
     /**
-     * @var RestApiBundle\Services\Docs\Schema\ResponseModelHelper
+     * @var RestApiBundle\Services\Docs\ResponseModelHelper
      */
-    private $responseModelSchemaReader;
+    private $responseModelHelper;
 
     /**
-     * @var RestApiBundle\Services\Docs\Schema\DoctrineHelper
+     * @var RestApiBundle\Services\Docs\DoctrineHelper
      */
     private $doctrineHelper;
 
     /**
-     * @var RestApiBundle\Services\Docs\Schema\RequestModelHelper
+     * @var RestApiBundle\Services\Docs\RequestModelHelper
      */
     private $requestModelHelper;
 
     public function __construct(
         RestApiBundle\Services\Docs\Schema\DocBlockSchemaReader $docBlockSchemaReader,
         RestApiBundle\Services\Docs\Schema\TypeHintSchemaReader $typeHintSchemaReader,
-        RestApiBundle\Services\Docs\Schema\ResponseModelHelper $responseModelSchemaReader,
-        RestApiBundle\Services\Docs\Schema\DoctrineHelper $doctrineHelper,
-        RestApiBundle\Services\Docs\Schema\RequestModelHelper $requestModelHelper
+        RestApiBundle\Services\Docs\ResponseModelHelper $responseModelHelper,
+        RestApiBundle\Services\Docs\DoctrineHelper $doctrineHelper,
+        RestApiBundle\Services\Docs\RequestModelHelper $requestModelHelper
     ) {
         $this->annotationReader = new AnnotationReader();
         $this->docBlockSchemaReader = $docBlockSchemaReader;
         $this->typeHintSchemaReader = $typeHintSchemaReader;
-        $this->responseModelSchemaReader = $responseModelSchemaReader;
+        $this->responseModelHelper = $responseModelHelper;
         $this->doctrineHelper = $doctrineHelper;
         $this->requestModelHelper = $requestModelHelper;
     }
@@ -178,13 +178,13 @@ class EndpointDataExtractor
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
-            $schema = $this->responseModelSchemaReader->getSchemaByClass($schema->getClass(), $schema->getNullable());
+            $schema = $this->responseModelHelper->getSchemaByClass($schema->getClass(), $schema->getNullable());
         } elseif ($schema instanceof RestApiBundle\DTO\Docs\Schema\ArrayOfClassesType) {
             if (!RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($schema->getClass())) {
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
             }
 
-            $responseModelSchema = $this->responseModelSchemaReader->getSchemaByClass($schema->getClass(), $schema->getNullable());
+            $responseModelSchema = $this->responseModelHelper->getSchemaByClass($schema->getClass(), $schema->getNullable());
             $schema = new RestApiBundle\DTO\Docs\Schema\ArrayType($responseModelSchema, $schema->getNullable());
         }
 

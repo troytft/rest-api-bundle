@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\TestCase\Services\Docs\Schema;
+namespace Tests\TestCase\Services\Docs;
 
 use Tests;
 use RestApiBundle;
 use function array_keys;
 
-class ResponseModelSchemaReaderTest extends Tests\TestCase\BaseTestCase
+class ResponseModelHelperTest extends Tests\TestCase\BaseTestCase
 {
     /**
      * @var \ReflectionClass
@@ -23,7 +23,7 @@ class ResponseModelSchemaReaderTest extends Tests\TestCase\BaseTestCase
     public function testSingleResponseModelNormalization()
     {
         $objectType = $this
-            ->getResponseModelSchemaReader()
+            ->getResponseModelHelper()
             ->getSchemaByClass(Tests\TestApp\TestBundle\ResponseModel\Genre::class, false);
 
         $this->assertSame(['id', 'slug', '__typename',], array_keys($objectType->getProperties()));
@@ -36,7 +36,7 @@ class ResponseModelSchemaReaderTest extends Tests\TestCase\BaseTestCase
     public function testNullableSingleResponseModelNormalization()
     {
         $objectType = $this
-            ->getResponseModelSchemaReader()
+            ->getResponseModelHelper()
             ->getSchemaByClass(Tests\TestApp\TestBundle\ResponseModel\Genre::class, false);
 
         $this->assertSame(['id', 'slug', '__typename',], array_keys($objectType->getProperties()));
@@ -49,7 +49,7 @@ class ResponseModelSchemaReaderTest extends Tests\TestCase\BaseTestCase
     public function testModelWithDateTime()
     {
         $objectType = $this
-            ->getResponseModelSchemaReader()
+            ->getResponseModelHelper()
             ->getSchemaByClass(Tests\TestApp\TestBundle\ResponseModel\TestModelWithDateTime::class, false);
 
         $this->assertSame(['dateTime', '__typename',], array_keys($objectType->getProperties()));
@@ -61,7 +61,7 @@ class ResponseModelSchemaReaderTest extends Tests\TestCase\BaseTestCase
     public function testModelWithDocBlock()
     {
         $objectType = $this
-            ->getResponseModelSchemaReader()
+            ->getResponseModelHelper()
             ->getSchemaByClass(Tests\TestApp\TestBundle\ResponseModel\ModelWithDocBlock::class, false);
 
         $this->assertSame([

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\TestCase\Services\Docs\Schema;
+namespace Tests\TestCase\Services\Docs;
 
 use Mapper;
 use RestApiBundle;
