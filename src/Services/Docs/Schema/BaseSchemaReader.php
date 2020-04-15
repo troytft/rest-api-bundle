@@ -34,11 +34,6 @@ abstract class BaseSchemaReader
 
                 break;
 
-            case 'array':
-                $result = null;
-
-                break;
-
             case \DateTime::class:
                 $result = new RestApiBundle\DTO\Docs\Schema\DateTimeType($nullable);
 

@@ -9,6 +9,8 @@ use Symfony\Component\Yaml\Yaml;
 use function array_merge;
 use function array_values;
 use function json_encode;
+use function json_last_error;
+use function json_last_error_msg;
 use function strtolower;
 
 class OpenApiSpecificationGenerator
@@ -74,7 +76,7 @@ class OpenApiSpecificationGenerator
                     'name' => $tagName,
                 ]);
             }
-            
+
             $returnType = $routeData->getResponseSchema();
 
             $responses = new OpenApi\Responses([]);
@@ -100,7 +102,10 @@ class OpenApiSpecificationGenerator
                 $pathParameters[] = $this->createParameter('path', $pathParameter->getName(), $pathParameter->getSchema());
             }
 
-            $pathItem = new OpenApi\PathItem([]);
+            $pathItem = $root->paths->getPath($routeData->getPath());
+            if (!$pathItem) {
+                $pathItem = new OpenApi\PathItem([]);
+            }
 
             foreach ($routeData->getMethods() as $method) {
                 $isHttpGetMethod = $method === 'GET';
