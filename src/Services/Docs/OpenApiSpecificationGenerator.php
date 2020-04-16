@@ -246,6 +246,10 @@ class OpenApiSpecificationGenerator
             }
         }
 
+        if ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\DescriptionAwareInterface && $schemaType->getDescription()) {
+            $result->description = $schemaType->getDescription();
+        }
+
         return $result;
     }
 

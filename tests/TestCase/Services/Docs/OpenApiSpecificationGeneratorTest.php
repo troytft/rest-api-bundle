@@ -15,6 +15,8 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
     public function testCreateParameter()
     {
         $schema = new RestApiBundle\DTO\Docs\Schema\StringType(false);
+        $schema
+            ->setDescription('Description');
 
         /** @var OpenApi\Parameter $openApiParameter */
         $openApiParameter = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'createParameter', ['path', 'parameterName', $schema]);
@@ -28,6 +30,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'schema' => [
                 'type' => 'string',
                 'nullable' => false,
+                'description' => 'Description',
             ],
         ];
 
