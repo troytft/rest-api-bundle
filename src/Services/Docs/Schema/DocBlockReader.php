@@ -4,12 +4,7 @@ namespace RestApiBundle\Services\Docs\Schema;
 
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
-use phpDocumentor\Reflection\Type;
-use phpDocumentor\Reflection\Types\Array_;
-use phpDocumentor\Reflection\Types\Compound;
-use phpDocumentor\Reflection\Types\Null_;
-use phpDocumentor\Reflection\Types\Object_;
-use phpDocumentor\Reflection\Types\String_;
+use phpDocumentor\Reflection as PhpDoc;
 use RestApiBundle;
 use function count;
 
@@ -51,13 +46,13 @@ class DocBlockReader extends RestApiBundle\Services\Docs\Schema\BaseReader
         return $this->convertTypeToSchema($returnTag->getType(), false);
     }
 
-    private function convertTypeToSchema(Type $type, bool $nullable): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    private function convertTypeToSchema(PhpDoc\Type $type, bool $nullable): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
-        if ($type instanceof Null_) {
+        if ($type instanceof PhpDoc\Types\Null_) {
             $result = new RestApiBundle\DTO\Docs\Schema\NullType();
-        } elseif ($type instanceof Array_) {
+        } elseif ($type instanceof PhpDoc\Types\Array_) {
             $result = $this->convertArrayTypeToSchema($type, $nullable);
-        } elseif ($type instanceof Compound) {
+        } elseif ($type instanceof PhpDoc\Types\Compound) {
             $result = $this->convertCompoundTypeToSchema($type);
         } else {
             $type = (string) $type;
@@ -71,7 +66,7 @@ class DocBlockReader extends RestApiBundle\Services\Docs\Schema\BaseReader
         return $result;
     }
 
-    private function convertCompoundTypeToSchema(Compound $type): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    private function convertCompoundTypeToSchema(PhpDoc\Types\Compound $type): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
         $compoundTypes = (array) $type->getIterator();
         if (count($compoundTypes) !== 2) {
@@ -82,14 +77,14 @@ class DocBlockReader extends RestApiBundle\Services\Docs\Schema\BaseReader
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
-        if (!$compoundTypes[0] instanceof Null_ && !$compoundTypes[1] instanceof Null_) {
+        if (!$compoundTypes[0] instanceof PhpDoc\Types\Null_ && !$compoundTypes[1] instanceof PhpDoc\Types\Null_) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
         $result = null;
 
         foreach ($compoundTypes as $compoundType) {
-            if ($compoundType instanceof Null_) {
+            if ($compoundType instanceof PhpDoc\Types\Null_) {
                 continue;
             }
 
@@ -103,7 +98,7 @@ class DocBlockReader extends RestApiBundle\Services\Docs\Schema\BaseReader
         return $result;
     }
 
-    private function convertArrayTypeToSchema(Array_ $type, bool $nullable): RestApiBundle\DTO\Docs\Schema\ArrayType
+    private function convertArrayTypeToSchema(PhpDoc\Types\Array_ $type, bool $nullable): RestApiBundle\DTO\Docs\Schema\ArrayType
     {
         $schemaType = $this->convertTypeToSchema($type->getValueType(), false);
 
