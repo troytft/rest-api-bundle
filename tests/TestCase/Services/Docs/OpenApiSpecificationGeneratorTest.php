@@ -157,10 +157,8 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $expected = [
             'type' => 'array',
             'items' => [
-                [
-                    'type' => 'string',
-                    'nullable' => false,
-                ],
+                'type' => 'string',
+                'nullable' => false,
             ],
             'nullable' => false,
             'minItems' => 1,

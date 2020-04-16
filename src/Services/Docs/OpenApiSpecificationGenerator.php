@@ -288,9 +288,7 @@ class OpenApiSpecificationGenerator
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
             'nullable' => $arrayType->getNullable(),
-            'items' => [
-                $this->convertSchemaType($arrayType->getInnerType())
-            ]
+            'items' => $this->convertSchemaType($arrayType->getInnerType()),
         ]);
     }
 
