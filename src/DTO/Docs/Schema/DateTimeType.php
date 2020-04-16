@@ -7,7 +7,8 @@ use Symfony\Component\Validator\Constraint;
 
 class DateTimeType implements
     RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface,
-    RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface
+    RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface,
+    RestApiBundle\DTO\Docs\Schema\DescriptionAwareInterface
 {
     /**
      * @var bool
@@ -18,6 +19,11 @@ class DateTimeType implements
      * @var Constraint[]
      */
     private $constraints = [];
+
+    /**
+     * @var string|null
+     */
+    private $description;
 
     public function __construct(bool $nullable)
     {
@@ -45,6 +51,18 @@ class DateTimeType implements
     public function setConstraints(array $constraints)
     {
         $this->constraints = $constraints;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description)
+    {
+        $this->description = $description;
 
         return $this;
     }

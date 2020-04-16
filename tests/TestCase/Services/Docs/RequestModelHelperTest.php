@@ -47,10 +47,11 @@ class RequestModelHelperTest extends Tests\TestCase\BaseTestCase
                 RestApiBundle\Services\Request\MapperTransformer\EntityTransformer::FIELD_OPTION => 'slug',
             ]);
 
-        /** @var RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface $docsSchema */
+        /** @var RestApiBundle\DTO\Docs\Schema\StringType $docsSchema */
         $docsSchema = $this->invokePrivateMethod($this->getRequestModelHelper(), 'convert', [$mapperSchema]);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $docsSchema);
+        $this->assertSame('Entity "Genre" by field "slug"', $docsSchema->getDescription());
         $this->assertFalse($docsSchema->getNullable());
     }
 
