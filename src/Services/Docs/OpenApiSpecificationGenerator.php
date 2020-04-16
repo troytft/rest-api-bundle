@@ -169,12 +169,10 @@ class OpenApiSpecificationGenerator
         $result = [];
 
         foreach ($objectType->getProperties() as $name => $property) {
-            if ($property instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
-                $result[] = $this->createParameter('query', $name, $property);
-            } elseif ($property instanceof RestApiBundle\DTO\Docs\Schema\ArrayType && $property->getInnerType() instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
+            if ($property instanceof RestApiBundle\DTO\Docs\Schema\ArrayType && $property->getInnerType() instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
                 $result[] = $this->createParameter('query', $name, $property->getInnerType());
             } else {
-                throw new \InvalidArgumentException();
+                $result[] = $this->createParameter('query', $name, $property);
             }
         }
 
