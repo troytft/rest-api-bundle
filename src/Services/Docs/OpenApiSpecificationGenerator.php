@@ -181,12 +181,24 @@ class OpenApiSpecificationGenerator
 
     private function createParameter(string $type, string $name, RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface $schema): OpenApi\Parameter
     {
-        return new OpenApi\Parameter([
+        $data = [
             'in' => $type,
             'name' => $name,
-            'schema' => $this->convertSchemaType($schema),
             'required' => !$schema->getNullable(),
-        ]);
+        ];
+
+        // Swagger UI does not show schema description in parameters
+        if ($schema instanceof RestApiBundle\DTO\Docs\Schema\DescriptionAwareInterface && $schema->getDescription()) {
+            $descriptionLessSchema = clone $schema;
+            $descriptionLessSchema->setDescription(null);
+
+            $data['description'] = $schema->getDescription();
+            $data['schema'] = $this->convertSchemaType($descriptionLessSchema);
+        } else {
+            $data['schema'] = $this->convertSchemaType($schema);
+        }
+
+        return new OpenApi\Parameter($data);
     }
 
     private function convertSchemaType(RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface $schemaType): OpenApi\Schema

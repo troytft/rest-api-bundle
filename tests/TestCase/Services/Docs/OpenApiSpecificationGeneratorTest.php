@@ -26,11 +26,11 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $expected = [
             'name' => 'parameterName',
             'in' => 'path',
+            'description' => 'Description',
             'required' => true,
             'schema' => [
                 'type' => 'string',
                 'nullable' => false,
-                'description' => 'Description',
             ],
         ];
 

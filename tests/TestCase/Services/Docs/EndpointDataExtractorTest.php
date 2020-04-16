@@ -5,6 +5,7 @@ namespace Tests\TestCase\Services\Docs;
 use Tests;
 use RestApiBundle;
 use Symfony;
+use function var_dump;
 
 class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
 {
@@ -42,7 +43,7 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
         $endpointData = $this->getEndpointDataExtractor()->extractFromRoute($route);
 
         $this->assertCount(4, $endpointData->getPathParameters());
-
+var_dump($endpointData->getPathParameters());
         $this->assertSame('int', $endpointData->getPathParameters()[0]->getName());
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\IntegerType::class, $endpointData->getPathParameters()[0]->getSchema());
 
