@@ -8,7 +8,8 @@ use Symfony\Component\Validator\Constraint;
 class StringType implements
     RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface,
     RestApiBundle\DTO\Docs\Schema\ScalarInterface,
-    RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface
+    RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface,
+    RestApiBundle\DTO\Docs\Schema\DescriptionAwareInterface
 {
     /**
      * @var bool
@@ -19,6 +20,11 @@ class StringType implements
      * @var Constraint[]
      */
     private $constraints = [];
+
+    /**
+     * @var string|null
+     */
+    private $description;
 
     public function __construct(bool $nullable)
     {
@@ -46,6 +52,18 @@ class StringType implements
     public function setConstraints(array $constraints)
     {
         $this->constraints = $constraints;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description)
+    {
+        $this->description = $description;
 
         return $this;
     }
