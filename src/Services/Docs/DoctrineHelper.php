@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use function array_key_last;
 use function explode;
 use function sprintf;
-use function var_dump;
 
 class DoctrineHelper
 {
