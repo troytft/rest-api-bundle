@@ -55,21 +55,17 @@ class DocBlockReader extends RestApiBundle\Services\Docs\Schema\BaseReader
     {
         if ($type instanceof Null_) {
             $result = new RestApiBundle\DTO\Docs\Schema\NullType();
-        } elseif ($type instanceof Object_) {
-            $result = $this->createClassTypeFromString((string) $type, $nullable);
         } elseif ($type instanceof Array_) {
             $result = $this->convertArrayTypeToSchema($type, $nullable);
         } elseif ($type instanceof Compound) {
             $result = $this->convertCompoundTypeToSchema($type);
-        } elseif ($type instanceof String_) {
+        } else {
             $type = (string) $type;
             if ($this->isScalarType($type)) {
                 $result = $this->createScalarTypeFromString($type, $nullable);
             } else {
                 $result = $this->createClassTypeFromString($type, $nullable);
             }
-        } else {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
         return $result;
