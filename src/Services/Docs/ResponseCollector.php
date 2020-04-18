@@ -5,6 +5,7 @@ namespace RestApiBundle\Services\Docs;
 use RestApiBundle;
 use function lcfirst;
 use function ltrim;
+use function sprintf;
 use function strpos;
 use function substr;
 
@@ -35,18 +36,23 @@ class ResponseCollector
 
     public function getByReflectionMethod(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
-        $schema = $this->docBlockReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintReader->getMethodReturnSchema($reflectionMethod);
+        try {
+            $schema = $this->docBlockReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintReader->getMethodReturnSchema($reflectionMethod);
 
-        if (!$schema) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
-        }
+            if (!$schema) {
+                throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
+            }
 
-        if ($schema instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
-            $schema = $this->resolveClassType($schema);
-        } elseif ($schema instanceof RestApiBundle\DTO\Docs\Schema\ArrayType && $schema->getInnerType() instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
-            /** @var RestApiBundle\DTO\Docs\Schema\ClassType $innerType */
-            $innerType = $schema->getInnerType();
-            $schema = new RestApiBundle\DTO\Docs\Schema\ArrayType($this->resolveClassType($innerType), $schema->getNullable());
+            if ($schema instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
+                $schema = $this->resolveClassType($schema);
+            } elseif ($schema instanceof RestApiBundle\DTO\Docs\Schema\ArrayType && $schema->getInnerType() instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
+                /** @var RestApiBundle\DTO\Docs\Schema\ClassType $innerType */
+                $innerType = $schema->getInnerType();
+                $schema = new RestApiBundle\DTO\Docs\Schema\ArrayType($this->resolveClassType($innerType), $schema->getNullable());
+            }
+        } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
+            $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
+            throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $context);
         }
 
         return $schema;

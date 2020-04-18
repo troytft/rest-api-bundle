@@ -4,7 +4,7 @@ namespace RestApiBundle\Exception\Docs\InvalidDefinition;
 
 use RestApiBundle;
 
-class TwoOrMoreReturnTagsException extends RestApiBundle\Exception\Docs\InvalidDefinition\BaseException
+class TwoOrMoreReturnTagsException extends RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException
 {
     public function __construct()
     {

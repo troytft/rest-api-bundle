@@ -2,6 +2,7 @@
 
 namespace RestApiBundle\Exception\Docs;
 
+use RestApiBundle;
 use function sprintf;
 
 class InvalidDefinitionException extends \Exception
@@ -9,44 +10,18 @@ class InvalidDefinitionException extends \Exception
     /**
      * @var string
      */
-    private $originalErrorMessage;
+    private $context;
 
-    /**
-     * @var string
-     */
-    private $controllerClass;
-
-    /**
-     * @var string
-     */
-    private $actionName;
-
-    public function __construct(\Throwable $previousException, string $controllerClass, string $actionName)
+    public function __construct(RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $previous, string $context)
     {
-        $this->originalErrorMessage = $previousException->getMessage();
-        $this->controllerClass = $controllerClass;
-        $this->actionName = $actionName;
+        $this->context = $context;
+        $message = sprintf('Error: %s, Context: %s', $previous->getMessage(), $context);
 
-        parent::__construct(sprintf(
-            'Original Error Message: %s, Controller: %s, Action: %s',
-            $this->originalErrorMessage,
-            $this->controllerClass,
-            $this->actionName
-        ), 0, $previousException);
+        parent::__construct($message, 0, $previous);
     }
 
-    public function getOriginalErrorMessage(): string
+    public function getContext(): string
     {
-        return $this->originalErrorMessage;
-    }
-
-    public function getControllerClass(): string
-    {
-        return $this->controllerClass;
-    }
-
-    public function getActionName(): string
-    {
-        return $this->actionName;
+        return $this->context;
     }
 }
