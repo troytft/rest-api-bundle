@@ -2,7 +2,6 @@
 
 namespace Tests\TestApp\TestBundle\ResponseModel;
 
-use Tests;
 use RestApiBundle;
 
 class ModelWithInvalidReturnType implements RestApiBundle\ResponseModelInterface
