@@ -3,7 +3,6 @@
 namespace RestApiBundle\Services\Docs;
 
 use RestApiBundle;
-use function file_put_contents;
 
 class DocsGenerator
 {
@@ -32,7 +31,7 @@ class DocsGenerator
         $this->openApiSpecificationGenerator = $openApiSpecificationGenerator;
     }
 
-    public function writeToFile(string $fileName, string $format, ?string $namespaceFilter = null): void
+    public function generateSpecification(string $format, ?string $namespaceFilter = null): string
     {
         $routes = $this->routeFinder->find($namespaceFilter);
         $endpoints = [];
@@ -46,16 +45,14 @@ class DocsGenerator
             $endpoints[] = $endpointData;
         }
 
-        if ($format === RestApiBundle\Enum\Docs\FileFormat::YAML) {
+        if ($format === RestApiBundle\Enum\Docs\Format::YAML) {
             $content = $this->openApiSpecificationGenerator->generateYaml($endpoints);
-        } elseif ($format === RestApiBundle\Enum\Docs\FileFormat::JSON) {
+        } elseif ($format === RestApiBundle\Enum\Docs\Format::JSON) {
             $content = $this->openApiSpecificationGenerator->generateJson($endpoints);
         } else {
             throw new \InvalidArgumentException();
         }
 
-        if (!file_put_contents($fileName, $content)) {
-            throw new \RuntimeException();
-        }
+        return $content;
     }
 }
