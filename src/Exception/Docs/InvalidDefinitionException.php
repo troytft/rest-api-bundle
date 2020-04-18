@@ -14,10 +14,10 @@ class InvalidDefinitionException extends \Exception
 
     public function __construct(RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $previous, string $context)
     {
-        $this->previous = $previous;
         $this->context = $context;
+        $message = sprintf('Error: %s, Context: %s', $previous->getMessage(), $context);
 
-        parent::__construct(sprintf('Error: %s, Context: %s', $previous->getMessage(), $context), 0, $previous);
+        parent::__construct($message, 0, $previous);
     }
 
     public function getContext(): string
