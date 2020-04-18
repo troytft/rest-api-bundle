@@ -2,7 +2,7 @@
 
 namespace RestApiBundle\Enum\Docs;
 
-class FileFormat
+class Format
 {
     public const YAML = 'yaml';
     public const JSON = 'json';

@@ -13,9 +13,8 @@ use function sprintf;
 
 class GenerateDocsCommand extends Command
 {
-    private const ARGUMENT_OUTPUT = 'output';
     private const OPTION_NAMESPACE_FILTER = 'namespace-filter';
-    private const OPTION_FILE_FORMAT = 'file-format';
+    private const OPTION_FORMAT = 'format';
 
     protected static $defaultName = 'rest-api:generate-docs';
 
@@ -34,25 +33,23 @@ class GenerateDocsCommand extends Command
     protected function configure()
     {
         $this
-            ->addArgument(static::ARGUMENT_OUTPUT, InputArgument::REQUIRED, 'Path to output file.')
             ->addOption(static::OPTION_NAMESPACE_FILTER, null, InputOption::VALUE_REQUIRED, 'Prefix for controller namespace filter.')
-            ->addOption(static::OPTION_FILE_FORMAT, null, InputOption::VALUE_REQUIRED, 'File format json or yaml.');
+            ->addOption(static::OPTION_FORMAT, null, InputOption::VALUE_REQUIRED, 'File format json or yaml.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $outputFileName = $input->getArgument(static::ARGUMENT_OUTPUT);
         $namespaceFilter = $input->getOption(static::OPTION_NAMESPACE_FILTER);
-        $fileFormat = $input->getOption(static::OPTION_FILE_FORMAT) ?? RestApiBundle\Enum\Docs\FileFormat::YAML;
+        $format = $input->getOption(static::OPTION_FORMAT) ?? RestApiBundle\Enum\Docs\Format::YAML;
 
-        if (!in_array($fileFormat, [RestApiBundle\Enum\Docs\FileFormat::YAML, RestApiBundle\Enum\Docs\FileFormat::JSON], true)) {
-            $output->writeln('Invalid file format.');
+        if (!in_array($format, [RestApiBundle\Enum\Docs\Format::YAML, RestApiBundle\Enum\Docs\Format::JSON], true)) {
+            $output->writeln('Invalid format.');
 
             return 1;
         }
 
         try {
-            $this->docsGenerator->writeToFile($outputFileName, $fileFormat, $namespaceFilter);
+            $specification = $this->docsGenerator->generateSpecification($format, $namespaceFilter);
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
             $output->writeln(sprintf(
                 'Definition error in %s::%s with message "%s" ',
@@ -63,6 +60,8 @@ class GenerateDocsCommand extends Command
 
             return 1;
         }
+
+        $output->write($specification);
 
         return 0;
     }
