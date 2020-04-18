@@ -3,7 +3,6 @@
 namespace RestApiBundle\Services\Docs;
 
 use RestApiBundle;
-use function file_put_contents;
 
 class DocsGenerator
 {
