@@ -51,10 +51,9 @@ class GenerateDocsCommand extends Command
             $specification = $this->docsGenerator->generateSpecification($format, $namespaceFilter);
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
             $output->writeln(sprintf(
-                'Definition error in %s::%s with message "%s" ',
-                $exception->getControllerClass(),
-                $exception->getActionName(),
-                $exception->getOriginalErrorMessage()
+                'Definition error in %s with message "%s"',
+                $exception->getContext(),
+                $exception->getPrevious()->getMessage()
             ));
 
             return 1;

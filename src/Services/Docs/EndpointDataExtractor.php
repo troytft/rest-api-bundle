@@ -7,6 +7,7 @@ use RestApiBundle;
 use Symfony\Component\Routing\Route;
 use function explode;
 use function preg_match_all;
+use function sprintf;
 
 class EndpointDataExtractor
 {
@@ -84,8 +85,9 @@ class EndpointDataExtractor
                 ->setResponse($this->responseCollector->getByReflectionMethod($reflectionMethod))
                 ->setPathParameters($this->getPathParameters($route, $reflectionMethod))
                 ->setRequestModel($requestModelSchema);
-        } catch (RestApiBundle\Exception\Docs\InvalidDefinition\InvalidDefinitionExceptionInterface $exception) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $controllerClass, $actionName);
+        } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
+            $context = sprintf('%s::%s', $controllerClass, $actionName);
+            throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $context);
         }
 
         return $endpointData;

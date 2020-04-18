@@ -2,9 +2,7 @@
 
 namespace RestApiBundle\Exception\Docs\InvalidDefinition;
 
-use RestApiBundle;
-
-class BaseException extends \Exception implements RestApiBundle\Exception\Docs\InvalidDefinition\InvalidDefinitionExceptionInterface
+abstract class BaseInvalidDefinitionException extends \Exception
 {
     public function __construct(string $message)
     {
