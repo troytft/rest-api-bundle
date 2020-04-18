@@ -4,6 +4,7 @@ namespace RestApiBundle\Services\Response;
 
 use RestApiBundle;
 use function array_key_exists;
+use function class_exists;
 
 class ResponseModelHelper
 {
@@ -12,15 +13,19 @@ class ResponseModelHelper
      */
     private static $classNameCache = [];
 
-    public static function isResponseModel(string $className): bool
+    public static function isResponseModel(string $class): bool
     {
-        if (!array_key_exists($className, static::$classNameCache)) {
-            $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($className);
+        if (!class_exists($class)) {
+            return false;
+        }
 
-            static::$classNameCache[$className] = $reflectionClass->isInstantiable()
+        if (!array_key_exists($class, static::$classNameCache)) {
+            $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
+
+            static::$classNameCache[$class] = $reflectionClass->isInstantiable()
                 && $reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class);
         }
 
-        return static::$classNameCache[$className];
+        return static::$classNameCache[$class];
     }
 }
