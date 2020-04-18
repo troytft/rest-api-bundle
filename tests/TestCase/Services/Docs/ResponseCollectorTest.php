@@ -132,4 +132,14 @@ class ResponseCollectorTest extends Tests\TestCase\BaseTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $innerType->getProperties()['stringFieldWithDocBlock']);
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\StringType::class, $innerType->getProperties()['__typename']);
     }
+
+    public function testInvalidDefinationExceptionContext()
+    {
+        try {
+            $this->invokePrivateMethod($this->getResponseCollector(), 'getResponseModelSchemaByClass', [Tests\TestApp\TestBundle\ResponseModel\ModelWithInvalidReturnType::class, false]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
+            $this->assertSame("Error: Unsupported return type., Context: Tests\TestApp\TestBundle\ResponseModel\ModelWithInvalidReturnType::getStringField", $exception->getMessage());
+        }
+    }
 }
