@@ -3,7 +3,6 @@
 namespace RestApiBundle\Services\Docs;
 
 use RestApiBundle;
-use function file_put_contents;
 
 class DocsGenerator
 {
@@ -32,7 +31,7 @@ class DocsGenerator
         $this->openApiSpecificationGenerator = $openApiSpecificationGenerator;
     }
 
-    public function writeToFile(string $fileName, string $format, ?string $namespaceFilter = null): void
+    public function generateSpecification(string $format, ?string $namespaceFilter = null): string
     {
         $routes = $this->routeFinder->find($namespaceFilter);
         $endpoints = [];
@@ -54,8 +53,6 @@ class DocsGenerator
             throw new \InvalidArgumentException();
         }
 
-        if (!file_put_contents($fileName, $content)) {
-            throw new \RuntimeException();
-        }
+        return $content;
     }
 }
