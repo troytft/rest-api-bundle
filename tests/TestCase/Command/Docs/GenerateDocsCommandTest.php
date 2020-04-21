@@ -7,16 +7,22 @@ use RestApiBundle;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use function trim;
+use function file_get_contents;
+use function sys_get_temp_dir;
+use function tempnam;
 
 class GenerateDocsCommandTest extends Tests\TestCase\BaseTestCase
 {
     public function testSuccessYaml()
     {
+        $fileName = $this->getOutputFileName();
+
         $application = new Application($this->getKernel());
         $command = $application->find('rest-api:generate-docs');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
+            'output' => $fileName,
             '--namespace-filter' => Tests\TestApp\TestBundle\Controller\DemoController::class,
             '--format' => RestApiBundle\Enum\Docs\Format::YAML,
         ]);
@@ -65,16 +71,19 @@ tags:
         name: demo
 
 YAML;
-        $this->assertSame($expected, $commandTester->getDisplay());
+        $this->assertSame($expected, file_get_contents($fileName));
     }
 
     public function testSuccessJson()
     {
+        $fileName = $this->getOutputFileName();
+
         $application = new Application($this->getKernel());
         $command = $application->find('rest-api:generate-docs');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
+            'output' => $fileName,
             '--namespace-filter' => Tests\TestApp\TestBundle\Controller\DemoController::class,
             '--format' => RestApiBundle\Enum\Docs\Format::JSON,
         ]);
@@ -143,20 +152,28 @@ YAML;
     ]
 }
 JSON;
-        $this->assertSame($expected, $commandTester->getDisplay());
+        $this->assertSame($expected, file_get_contents($fileName));
     }
 
     public function testInvalidDefinition()
     {
+        $fileName = $this->getOutputFileName();
+
         $application = new Application($this->getKernel());
         $command = $application->find('rest-api:generate-docs');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
+            'output' => $fileName,
             '--namespace-filter' => Tests\TestApp\TestBundle\Controller\PathParameters\EmptyRouteRequirementsController::class,
         ]);
 
         $this->assertSame(1, $commandTester->getStatusCode());
         $this->assertSame('Definition error in Tests\TestApp\TestBundle\Controller\PathParameters\EmptyRouteRequirementsController::testAction with message "Associated parameter for placeholder unknown_parameter not matched."', trim($commandTester->getDisplay()));
+    }
+
+    private function getOutputFileName(): string
+    {
+        return tempnam(sys_get_temp_dir(), 'openapi');
     }
 }
