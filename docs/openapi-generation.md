@@ -5,7 +5,7 @@ You can generate a specification with command `rest-api:generate-docs`, command 
 
 ##### Examples
 ```bash
-bin/console rest-api:generate-docs > docs/openapi.yaml
-bin/console rest-api:generate-docs --format=json > docs/openapi.yaml
-bin/console rest-api:generate-docs --namespace-filter=PublicApp > docs/openapi.yaml
+bin/console rest-api:generate-docs docs/openapi.yaml
+bin/console rest-api:generate-docs docs/openapi.json --format=json
+bin/console rest-api:generate-docs docs/openapi.json --namespace-filter=PublicApp
 ```
