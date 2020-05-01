@@ -24,12 +24,12 @@ class GenerateDocsCommand extends Command
      */
     private $docsGenerator;
 
-    public function __construct(RestApiBundle\Services\Docs\DocsGenerator $docsGenerator)
-    {
-        parent::__construct();
-
-        $this->docsGenerator = $docsGenerator;
-    }
+//    public function __construct(RestApiBundle\Services\Docs\DocsGenerator $docsGenerator)
+//    {
+//        parent::__construct();
+//
+//        $this->docsGenerator = $docsGenerator;
+//    }
 
     protected function configure()
     {
