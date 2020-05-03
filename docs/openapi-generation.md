@@ -1,11 +1,11 @@
 # OpenApi Generation
 
 ### Generate
-You can generate a specification with command `rest-api:generate-docs`, command available in your application after installation.
+You can generate a specification with command `vendor/bin/generate-docs`, command available in your application after installation.
 
 ##### Examples
 ```bash
-bin/console rest-api:generate-docs docs/openapi.yaml
-bin/console rest-api:generate-docs docs/openapi.json --format=json
-bin/console rest-api:generate-docs docs/openapi.json --namespace-filter=PublicApp
+vendor/bin/generate-docs src/Controller docs/openapi.yaml
+vendor/bin/generate-docs src/Controller docs/openapi.json --format=json
+vendor/bin/generate-docs src/Controller docs/openapi.json --namespace-filter=PublicApp
 ```
