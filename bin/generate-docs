@@ -14,5 +14,5 @@ foreach ($files as $file) {
     }
 }
 
-$application = RestApiBundle\Helper\AppKernel::createConsoleApplication();
+$application = \RestApiBundle\Helper\AppKernel::createConsoleApplication();
 $application->run();
