@@ -13,6 +13,7 @@ use function is_string;
 use function preg_match_all;
 use function sprintf;
 use function token_get_all;
+use function var_dump;
 
 class EndpointFinder
 {
@@ -133,15 +134,27 @@ class EndpointFinder
             }
 
             try {
+                if ($controllerRouteAnnotation instanceof Route && $controllerRouteAnnotation->getPath()) {
+                    $path = $controllerRouteAnnotation->getPath();
+
+                    if ($actionRouteAnnotation->getPath()) {
+                        $path .= $actionRouteAnnotation->getPath();
+                    }
+                } elseif ($actionRouteAnnotation->getPath()) {
+                    $path = $actionRouteAnnotation->getPath();
+                } else {
+                    throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyRoutePathException();
+                }
+
                 $endpointData = new RestApiBundle\DTO\Docs\EndpointData();
                 $endpointData
                     ->setTitle($endpointAnnotation->title)
                     ->setDescription($endpointAnnotation->description)
                     ->setTags($endpointAnnotation->tags)
-                    ->setPath($actionRouteAnnotation->getPath())
+                    ->setPath($path)
                     ->setMethods($actionRouteAnnotation->getMethods())
                     ->setResponse($this->responseCollector->getByReflectionMethod($reflectionMethod))
-                    ->setPathParameters($this->getPathParameters($actionRouteAnnotation, $reflectionMethod))
+                    ->setPathParameters($this->getPathParameters($path, $reflectionMethod))
                     ->setRequestModel($requestModelSchema);
 
                 $result[] = $endpointData;
@@ -157,11 +170,11 @@ class EndpointFinder
     /**
      * @return RestApiBundle\DTO\Docs\PathParameter[]
      */
-    private function getPathParameters(Route $route, \ReflectionMethod $reflectionMethod): array
+    private function getPathParameters(string $path, \ReflectionMethod $reflectionMethod): array
     {
         $result = [];
         $parameterIndex = 0;
-        $placeholders = $this->getRoutePathPlaceholders($route);
+        $placeholders = $this->getPathPlaceholders($path);
 
         foreach ($placeholders as $placeholder) {
             $pathParameter = null;
@@ -204,12 +217,12 @@ class EndpointFinder
         return $result;
     }
 
-    private function getRoutePathPlaceholders(Route $route): array
+    private function getPathPlaceholders(string $path): array
     {
         $matches = null;
         $parameters = [];
 
-        if (preg_match_all('/{([^}]+)}/', $route->getPath(), $matches)) {
+        if (preg_match_all('/{([^}]+)}/', $path, $matches)) {
             $parameters = $matches[1];
         }
 
