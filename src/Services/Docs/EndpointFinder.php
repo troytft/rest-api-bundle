@@ -2,16 +2,23 @@
 
 namespace RestApiBundle\Services\Docs;
 
+use Composer\Autoload\ClassLoader;
 use Doctrine\Common\Annotations\AnnotationReader;
 use RestApiBundle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Routing\Annotation\Route;
 use function array_merge;
+use function array_slice;
+use function count;
+use function explode;
+use function implode;
 use function is_array;
 use function is_string;
 use function preg_match_all;
+use function spl_autoload_functions;
 use function sprintf;
+use function substr_count;
 use function token_get_all;
 use function var_dump;
 
@@ -75,8 +82,23 @@ class EndpointFinder
             ->in($directory)
             ->name('*Controller.php');
 
+        $autoloadFixed = false;
+
         foreach ($finder as $fileInfo) {
-            $result[] = $this->extractFromController($this->getClassByFileInfo($fileInfo));
+            $class = $this->getClassByFileInfo($fileInfo);
+
+            if (!$autoloadFixed) {
+                $filePathParts = explode('/', $fileInfo->getPathname());
+                $namespaceDirectory = implode('/', array_slice($filePathParts, 0, count($filePathParts) - substr_count($class, '\\') - 1));
+                $this->getClassLoader()->add("", $namespaceDirectory);
+
+                $autoloadFixed = true;
+            }
+
+            var_dump($fileInfo, $class, $namespaceDirectory);
+
+            $result[] = $this->extractFromController($class);
+
         }
 
         return array_merge(...$result);
@@ -240,6 +262,24 @@ class EndpointFinder
 
                 break;
             }
+        }
+
+        return $result;
+    }
+
+    private function getClassLoader(): ClassLoader
+    {
+        $result = null;
+        foreach (spl_autoload_functions() as $classWithFunction) {
+            if ($classWithFunction[0] instanceof ClassLoader) {
+                $result = $classWithFunction[0];
+
+                break;
+            }
+        }
+
+        if (!$result) {
+            throw new \InvalidArgumentException();
         }
 
         return $result;

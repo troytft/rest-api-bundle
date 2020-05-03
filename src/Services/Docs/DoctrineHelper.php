@@ -2,12 +2,14 @@
 
 namespace RestApiBundle\Services\Docs;
 
+use Composer\Autoload\ClassLoader;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use RestApiBundle;
 use Doctrine\ORM\EntityManagerInterface;
 use function array_key_last;
 use function explode;
 use function sprintf;
+use function var_dump;
 
 class DoctrineHelper
 {
@@ -23,6 +25,8 @@ class DoctrineHelper
 
     public function isEntity(string $className): bool
     {
+
+        var_dump($this->entityManager->getMetadataFactory()->getMetadataFor($className), $className);die();
         return !$this->entityManager->getMetadataFactory()->isTransient($className);
     }
 
