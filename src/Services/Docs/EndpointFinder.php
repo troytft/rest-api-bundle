@@ -3,7 +3,6 @@
 namespace RestApiBundle\Services\Docs;
 
 use Composer\Autoload\ClassLoader;
-use Doctrine\Common\Annotations\AnnotationReader;
 use RestApiBundle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -20,14 +19,13 @@ use function spl_autoload_functions;
 use function sprintf;
 use function substr_count;
 use function token_get_all;
-use function var_dump;
 
 class EndpointFinder
 {
     /**
-     * @var AnnotationReader
+     * @var RestApiBundle\Services\Docs\SilentAnnotationReader
      */
-    private $annotationReader;
+    private $silentAnnotationReader;
 
     /**
      * @var RestApiBundle\Services\Docs\Schema\DocBlockReader
@@ -55,13 +53,14 @@ class EndpointFinder
     private $requestModelHelper;
 
     public function __construct(
+        RestApiBundle\Services\Docs\SilentAnnotationReader $silentAnnotationReader,
         RestApiBundle\Services\Docs\Schema\DocBlockReader $docBlockSchemaReader,
         RestApiBundle\Services\Docs\Schema\TypeHintReader $typeHintSchemaReader,
         RestApiBundle\Services\Docs\ResponseCollector $responseCollector,
         RestApiBundle\Services\Docs\DoctrineHelper $doctrineHelper,
         RestApiBundle\Services\Docs\RequestModelHelper $requestModelHelper
     ) {
-        $this->annotationReader = new AnnotationReader();
+        $this->silentAnnotationReader = $silentAnnotationReader;
         $this->docBlockSchemaReader = $docBlockSchemaReader;
         $this->typeHintSchemaReader = $typeHintSchemaReader;
         $this->responseCollector = $responseCollector;
@@ -94,8 +93,6 @@ class EndpointFinder
 
                 $autoloadFixed = true;
             }
-
-            var_dump($fileInfo, $class, $namespaceDirectory);
 
             $result[] = $this->extractFromController($class);
 
@@ -136,15 +133,15 @@ class EndpointFinder
         $result = [];
 
         $reflectionController = RestApiBundle\Services\ReflectionClassStore::get($class);
-        $controllerRouteAnnotation = $this->annotationReader->getClassAnnotation($reflectionController, Route::class);
+        $controllerRouteAnnotation = $this->silentAnnotationReader->getClassAnnotation($reflectionController, Route::class);
 
         foreach ($reflectionController->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-            $actionRouteAnnotation = $this->annotationReader->getMethodAnnotation($reflectionMethod, Route::class);
+            $actionRouteAnnotation = $this->silentAnnotationReader->getMethodAnnotation($reflectionMethod, Route::class);
             if (!$actionRouteAnnotation instanceof Route) {
                 continue;
             }
 
-            $endpointAnnotation = $this->annotationReader->getMethodAnnotation($reflectionMethod, RestApiBundle\Annotation\Docs\Endpoint::class);
+            $endpointAnnotation = $this->silentAnnotationReader->getMethodAnnotation($reflectionMethod, RestApiBundle\Annotation\Docs\Endpoint::class);
             if (!$endpointAnnotation instanceof RestApiBundle\Annotation\Docs\Endpoint) {
                 continue;
             }

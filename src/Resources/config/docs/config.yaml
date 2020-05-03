@@ -1,8 +1,0 @@
-doctrine:
-    dbal:
-        driver: pdo_sqlite
-        memory: true
-    orm:
-        entity_managers:
-            default:
-                auto_mapping: true
