@@ -4,12 +4,17 @@ namespace RestApiBundle\Services\Docs;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use RestApiBundle;
-use Symfony\Component\Routing\Route;
-use function explode;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Routing\Annotation\Route;
+use function array_merge;
+use function is_array;
+use function is_string;
 use function preg_match_all;
 use function sprintf;
+use function token_get_all;
 
-class EndpointDataExtractor
+class EndpointFinder
 {
     /**
      * @var AnnotationReader
@@ -56,41 +61,97 @@ class EndpointDataExtractor
         $this->requestModelHelper = $requestModelHelper;
     }
 
-    public function extractFromRoute(Route $route): ?RestApiBundle\DTO\Docs\EndpointData
+    /**
+     * @return RestApiBundle\DTO\Docs\EndpointData[]
+     */
+    public function findInDirectory(string $directory): array
     {
-        [$controllerClass, $actionName] = explode('::', $route->getDefault('_controller'));
+        $result = [];
 
-        $reflectionController = RestApiBundle\Services\ReflectionClassStore::get($controllerClass);
-        $reflectionMethod = $reflectionController->getMethod($actionName);
+        $finder = new Finder();
+        $finder
+            ->files()
+            ->in($directory)
+            ->name('*Controller.php');
 
-        $annotation = $this->annotationReader->getMethodAnnotation($reflectionMethod, RestApiBundle\Annotation\Docs\Endpoint::class);
-        if (!$annotation instanceof RestApiBundle\Annotation\Docs\Endpoint) {
-            return null;
+        foreach ($finder as $fileInfo) {
+            $result[] = $this->extractFromController($this->getClassByFileInfo($fileInfo));
         }
 
-        $requestModelSchema = null;
-        $requestModelClass = $this->getRequestModel($reflectionMethod);
-        if ($requestModelClass) {
-            $requestModelSchema = $this->requestModelHelper->getSchemaByClass($requestModelClass);
+        return array_merge(...$result);
+    }
+
+    private function getClassByFileInfo(SplFileInfo $fileInfo): string
+    {
+        $tokens = token_get_all($fileInfo->getContents());
+
+        $namespaceTokenOpened = false;
+        $namespace = '';
+
+        foreach ($tokens as $token) {
+            if (is_array($token) && $token[0] === \T_NAMESPACE) {
+                $namespaceTokenOpened = true;
+            } elseif ($namespaceTokenOpened && is_array($token) && $token[0] !== \T_WHITESPACE) {
+                $namespace .= $token[1];
+            } elseif ($namespaceTokenOpened && is_string($token) && $token === ';') {
+                break;
+            }
         }
 
-        try {
-            $endpointData = new RestApiBundle\DTO\Docs\EndpointData();
-            $endpointData
-                ->setTitle($annotation->title)
-                ->setDescription($annotation->description)
-                ->setTags($annotation->tags)
-                ->setPath($route->getPath())
-                ->setMethods($route->getMethods())
-                ->setResponse($this->responseCollector->getByReflectionMethod($reflectionMethod))
-                ->setPathParameters($this->getPathParameters($route, $reflectionMethod))
-                ->setRequestModel($requestModelSchema);
-        } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
-            $context = sprintf('%s::%s', $controllerClass, $actionName);
-            throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $context);
+        if (!$namespace) {
+            throw new \LogicException();
         }
 
-        return $endpointData;
+        return sprintf('%s\%s', $namespace, $fileInfo->getFilenameWithoutExtension());
+    }
+
+    /**
+     * @return RestApiBundle\DTO\Docs\EndpointData[]
+     */
+    private function extractFromController(string $class): array
+    {
+        $result = [];
+
+        $reflectionController = RestApiBundle\Services\ReflectionClassStore::get($class);
+        $controllerRouteAnnotation = $this->annotationReader->getClassAnnotation($reflectionController, Route::class);
+
+        foreach ($reflectionController->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
+            $actionRouteAnnotation = $this->annotationReader->getMethodAnnotation($reflectionMethod, Route::class);
+            if (!$actionRouteAnnotation instanceof Route) {
+                continue;
+            }
+
+            $endpointAnnotation = $this->annotationReader->getMethodAnnotation($reflectionMethod, RestApiBundle\Annotation\Docs\Endpoint::class);
+            if (!$endpointAnnotation instanceof RestApiBundle\Annotation\Docs\Endpoint) {
+                continue;
+            }
+
+            $requestModelSchema = null;
+            $requestModelClass = $this->getRequestModel($reflectionMethod);
+            if ($requestModelClass) {
+                $requestModelSchema = $this->requestModelHelper->getSchemaByClass($requestModelClass);
+            }
+
+            try {
+                $endpointData = new RestApiBundle\DTO\Docs\EndpointData();
+                $endpointData
+                    ->setTitle($endpointAnnotation->title)
+                    ->setDescription($endpointAnnotation->description)
+                    ->setTags($endpointAnnotation->tags)
+                    ->setPath($actionRouteAnnotation->getPath())
+                    ->setMethods($actionRouteAnnotation->getMethods())
+                    ->setResponse($this->responseCollector->getByReflectionMethod($reflectionMethod))
+                    ->setPathParameters($this->getPathParameters($actionRouteAnnotation, $reflectionMethod))
+                    ->setRequestModel($requestModelSchema);
+
+                $result[] = $endpointData;
+            } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
+                $context = sprintf('%s::%s', $class, $reflectionMethod->getName());
+                throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $context);
+            }
+        }
+
+        return $result;
     }
 
     /**

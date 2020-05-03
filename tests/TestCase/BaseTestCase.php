@@ -90,10 +90,10 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $method->invokeArgs($object, $parameters);
     }
 
-    protected function getEndpointDataExtractor(): RestApiBundle\Services\Docs\EndpointDataExtractor
+    protected function getEndpointDataExtractor(): RestApiBundle\Services\Docs\EndpointFinder
     {
-        /** @var RestApiBundle\Services\Docs\EndpointDataExtractor $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\EndpointDataExtractor::class);
+        /** @var RestApiBundle\Services\Docs\EndpointFinder $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\EndpointFinder::class);
 
         return $result;
     }

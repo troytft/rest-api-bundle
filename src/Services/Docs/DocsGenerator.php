@@ -3,19 +3,14 @@
 namespace RestApiBundle\Services\Docs;
 
 use RestApiBundle;
-use function file_put_contents;
+use Symfony\Component\Filesystem\Filesystem;
 
 class DocsGenerator
 {
     /**
-     * @var RestApiBundle\Services\Docs\RouteFinder
+     * @var RestApiBundle\Services\Docs\EndpointFinder
      */
-    private $routeFinder;
-
-    /**
-     * @var RestApiBundle\Services\Docs\EndpointDataExtractor
-     */
-    private $endpointDataExtractor;
+    private $endpointFinder;
 
     /**
      * @var RestApiBundle\Services\Docs\OpenApiSpecificationGenerator
@@ -23,28 +18,16 @@ class DocsGenerator
     private $openApiSpecificationGenerator;
 
     public function __construct(
-        RestApiBundle\Services\Docs\RouteFinder $routeFinder,
-        RestApiBundle\Services\Docs\EndpointDataExtractor $endpointDataExtractor,
+        RestApiBundle\Services\Docs\EndpointFinder $endpointFinder,
         RestApiBundle\Services\Docs\OpenApiSpecificationGenerator $openApiSpecificationGenerator
     ) {
-        $this->routeFinder = $routeFinder;
-        $this->endpointDataExtractor = $endpointDataExtractor;
+        $this->endpointFinder = $endpointFinder;
         $this->openApiSpecificationGenerator = $openApiSpecificationGenerator;
     }
 
-    public function writeToFile(string $fileName, string $format, ?string $namespaceFilter = null): void
+    public function writeToFile(string $controllersDirectory, string $outputFile, string $format): void
     {
-        $routes = $this->routeFinder->find($namespaceFilter);
-        $endpoints = [];
-
-        foreach ($routes as $route) {
-            $endpointData = $this->endpointDataExtractor->extractFromRoute($route);
-            if (!$endpointData) {
-                continue;
-            }
-
-            $endpoints[] = $endpointData;
-        }
+        $endpoints = $this->endpointFinder->findInDirectory($controllersDirectory);
 
         if ($format === RestApiBundle\Enum\Docs\Format::YAML) {
             $content = $this->openApiSpecificationGenerator->generateYaml($endpoints);
@@ -54,8 +37,7 @@ class DocsGenerator
             throw new \InvalidArgumentException();
         }
 
-        if (!file_put_contents($fileName, $content)) {
-            throw new \RuntimeException();
-        }
+        $filesystem = new Filesystem();
+        $filesystem->dumpFile($outputFile, $content);
     }
 }
