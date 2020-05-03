@@ -1,0 +1,7 @@
+#!/usr/bin/env php
+<?php
+
+$classLoader = require __DIR__.'/../vendor/autoload.php';
+
+$application = RestApiBundle\Helper\AppKernel::createConsoleApplication();
+$application->run();

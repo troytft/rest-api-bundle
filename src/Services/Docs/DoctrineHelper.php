@@ -2,9 +2,8 @@
 
 namespace RestApiBundle\Services\Docs;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
 use RestApiBundle;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine;
 use function array_key_last;
 use function explode;
 use function sprintf;
@@ -12,35 +11,35 @@ use function sprintf;
 class DoctrineHelper
 {
     /**
-     * @var EntityManagerInterface
+     * @var RestApiBundle\Services\Docs\SilentAnnotationReader
      */
-    private $entityManager;
+    private $silentAnnotationReader;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(RestApiBundle\Services\Docs\SilentAnnotationReader $silentAnnotationReader)
     {
-        $this->entityManager = $entityManager;
+        $this->silentAnnotationReader = $silentAnnotationReader;
     }
 
-    public function isEntity(string $className): bool
+    public function isEntity(string $class): bool
     {
-        return !$this->entityManager->getMetadataFactory()->isTransient($className);
+        $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
+
+        return (bool) $this->silentAnnotationReader->getClassAnnotation($reflectionClass, Doctrine\ORM\Mapping\Entity::class);
     }
 
     public function getEntityFieldSchema(string $class, string $field, bool $nullable): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     {
-        $metadata = $this->entityManager->getMetadataFactory()->getMetadataFor($class);
-        if (!$metadata instanceof ClassMetadata) {
-            throw new \InvalidArgumentException();
-        }
+        $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
+        $reflectionProperty = $reflectionClass->getProperty($field);
 
-        $fieldMetadata = $metadata->getFieldMapping($field);
-        if (empty($fieldMetadata['type'])) {
+        $columnAnnotation = $this->silentAnnotationReader->getPropertyAnnotation($reflectionProperty, Doctrine\ORM\Mapping\Column::class);
+        if (!$columnAnnotation instanceof Doctrine\ORM\Mapping\Column) {
             throw new \InvalidArgumentException();
         }
 
         $description = $this->resolveDescription($class, $field);
 
-        switch ($fieldMetadata['type']) {
+        switch ($columnAnnotation->type) {
             case 'string':
                 $schema = new RestApiBundle\DTO\Docs\Schema\StringType($nullable);
                 $schema

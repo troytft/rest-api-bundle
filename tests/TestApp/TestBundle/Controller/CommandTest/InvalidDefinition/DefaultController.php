@@ -1,22 +1,21 @@
 <?php
 
-namespace Tests\TestApp\TestBundle\Controller\RequestModel;
+namespace Tests\TestApp\TestBundle\Controller\CommandTest\InvalidDefinition;
 
-use Tests;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Annotation\Docs;
 
-class RequestModelForGetRequestController extends BaseController
+class DefaultController extends BaseController
 {
     /**
      * @Docs\Endpoint(title="Title", tags={"tag"})
      *
-     * @Route("/test", methods="GET")
+     * @Route("/{unknown_parameter}", methods="GET")
      *
      * @return null
      */
-    public function testAction(Tests\TestApp\TestBundle\RequestModel\RequestModelForGetRequest $requestModel)
+    public function testAction()
     {
         return null;
     }

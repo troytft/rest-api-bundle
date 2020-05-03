@@ -13,8 +13,8 @@ use function sprintf;
 
 class GenerateDocsCommand extends Command
 {
+    private const ARGUMENT_INPUT = 'input';
     private const ARGUMENT_OUTPUT = 'output';
-    private const OPTION_NAMESPACE_FILTER = 'namespace-filter';
     private const OPTION_FORMAT = 'format';
 
     protected static $defaultName = 'rest-api:generate-docs';
@@ -34,15 +34,15 @@ class GenerateDocsCommand extends Command
     protected function configure()
     {
         $this
-            ->addArgument(static::ARGUMENT_OUTPUT, InputArgument::REQUIRED, 'Path to output file.')
-            ->addOption(static::OPTION_NAMESPACE_FILTER, null, InputOption::VALUE_REQUIRED, 'Prefix for controller namespace filter.')
+            ->addArgument(static::ARGUMENT_INPUT, InputArgument::REQUIRED, 'Path to directory with controllers.')
+            ->addArgument(static::ARGUMENT_OUTPUT, InputArgument::REQUIRED, 'Path to specification file.')
             ->addOption(static::OPTION_FORMAT, null, InputOption::VALUE_REQUIRED, 'File format json or yaml.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $outputFileName = $input->getArgument(static::ARGUMENT_OUTPUT);
-        $namespaceFilter = $input->getOption(static::OPTION_NAMESPACE_FILTER);
+        $inputDirectory = $input->getArgument(static::ARGUMENT_INPUT);
+        $outputFile = $input->getArgument(static::ARGUMENT_OUTPUT);
         $format = $input->getOption(static::OPTION_FORMAT) ?? RestApiBundle\Enum\Docs\Format::YAML;
 
         if (!in_array($format, [RestApiBundle\Enum\Docs\Format::YAML, RestApiBundle\Enum\Docs\Format::JSON], true)) {
@@ -52,7 +52,7 @@ class GenerateDocsCommand extends Command
         }
 
         try {
-            $this->docsGenerator->writeToFile($outputFileName, $format, $namespaceFilter);
+            $this->docsGenerator->writeToFile($inputDirectory, $outputFile, $format);
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
             $output->writeln(sprintf(
                 'Definition error in %s with message "%s"',
