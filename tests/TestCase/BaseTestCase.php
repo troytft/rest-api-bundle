@@ -4,7 +4,6 @@ namespace Tests\TestCase;
 
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use RestApiBundle;
-use Symfony\Component\Routing\Route;
 use Tests\TestApp;
 use Symfony\Component\HttpKernel\KernelInterface;
 use function get_class;
@@ -64,23 +63,6 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $result;
     }
 
-    protected function getOneRouteFromControllerClass(string $class): Route
-    {
-        $routes = $this->getRouteFinder()->find($class);
-
-        if (!$routes) {
-            throw new \InvalidArgumentException('Route not found.');
-        }
-
-        if (count($routes) > 1) {
-            throw new \InvalidArgumentException('Found two or more routes.');
-        }
-
-        return $routes[0];
-    }
-
-
-
     protected function invokePrivateMethod($object, string $methodName, array $parameters = [])
     {
         $reflection = RestApiBundle\Services\ReflectionClassStore::get(get_class($object));
@@ -90,18 +72,10 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $method->invokeArgs($object, $parameters);
     }
 
-    protected function getEndpointDataExtractor(): RestApiBundle\Services\Docs\EndpointFinder
+    protected function getEndpointFinder(): RestApiBundle\Services\Docs\EndpointFinder
     {
         /** @var RestApiBundle\Services\Docs\EndpointFinder $result */
         $result = $this->getContainer()->get(RestApiBundle\Services\Docs\EndpointFinder::class);
-
-        return $result;
-    }
-
-    protected function getRouteFinder(): RestApiBundle\Services\Docs\RouteFinder
-    {
-        /** @var RestApiBundle\Services\Docs\RouteFinder $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\RouteFinder::class);
 
         return $result;
     }

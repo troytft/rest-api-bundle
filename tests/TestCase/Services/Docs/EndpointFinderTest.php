@@ -6,14 +6,14 @@ use Tests;
 use RestApiBundle;
 use Symfony;
 
-class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
+class EndpointFinderTest extends Tests\TestCase\BaseTestCase
 {
     public function testPathParametersNotMatchRouteRequirementsException()
     {
-        $route = $this->getOneRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\PathParameters\EmptyRouteRequirementsController::class);
+        $controller = Tests\TestApp\TestBundle\Controller\PathParameters\EmptyRouteRequirementsController::class;
 
         try {
-            $this->getEndpointDataExtractor()->extractFromRoute($route);
+            $this->invokePrivateMethod($this->getEndpointFinder(), 'extractFromController', [$controller]);
             $this->fail();
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
             $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\NotMatchedRoutePlaceholderParameterException::class, $exception->getPrevious());
@@ -22,8 +22,13 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
 
     public function testAllowedScalarPathParameters()
     {
-        $route = $this->getOneRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\PathParameters\AllowedScalarParametersController::class);
-        $endpointData = $this->getEndpointDataExtractor()->extractFromRoute($route);
+        $controller = Tests\TestApp\TestBundle\Controller\PathParameters\AllowedScalarParametersController::class;
+        $result = $this->invokePrivateMethod($this->getEndpointFinder(), 'extractFromController', [$controller]);
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey(0, $result);
+
+        $endpointData = $result[0];
 
         $this->assertCount(2, $endpointData->getPathParameters());
 
@@ -38,8 +43,13 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
 
     public function testEntityPathParameters()
     {
-        $route = $this->getOneRouteFromControllerClass(Tests\TestApp\TestBundle\Controller\PathParameters\EntityPathParametersController::class);
-        $endpointData = $this->getEndpointDataExtractor()->extractFromRoute($route);
+        $controller = Tests\TestApp\TestBundle\Controller\PathParameters\EntityPathParametersController::class;
+        $result = $this->invokePrivateMethod($this->getEndpointFinder(), 'extractFromController', [$controller]);
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey(0, $result);
+
+        $endpointData = $result[0];
 
         $this->assertCount(4, $endpointData->getPathParameters());
 
@@ -58,13 +68,19 @@ class EndpointDataExtractorTest extends Tests\TestCase\BaseTestCase
 
     public function testRequestModelForRequest()
     {
-        $route = $this->getOneRouteFromControllerClass(\Tests\TestApp\TestBundle\Controller\RequestModel\RequestModelForGetRequestController::class);
-        $endpointData = $this->getEndpointDataExtractor()->extractFromRoute($route);
+        $controller = \Tests\TestApp\TestBundle\Controller\RequestModel\RequestModelForGetRequestController::class;
+        $result = $this->invokePrivateMethod($this->getEndpointFinder(), 'extractFromController', [$controller]);
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey(0, $result);
+
+        $endpointData = $result[0];
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ObjectType::class, $endpointData->getRequestModel());
         $this->assertCount(2, $endpointData->getRequestModel()->getProperties());
 
         $this->assertArrayHasKey('offset', $endpointData->getRequestModel()->getProperties());
+
         /** @var RestApiBundle\DTO\Docs\Schema\IntegerType $offset */
         $offset = $endpointData->getRequestModel()->getProperties()['offset'];
 

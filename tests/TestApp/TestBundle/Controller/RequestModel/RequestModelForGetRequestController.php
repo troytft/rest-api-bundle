@@ -12,7 +12,7 @@ class RequestModelForGetRequestController extends BaseController
     /**
      * @Docs\Endpoint(title="Title", tags={"tag"})
      *
-     * @Route(methods="GET")
+     * @Route("/test", methods="GET")
      *
      * @return null
      */
