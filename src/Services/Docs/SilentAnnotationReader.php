@@ -7,6 +7,11 @@ use Doctrine\Common\Annotations\AnnotationReader;
 
 class SilentAnnotationReader
 {
+    /**
+     * @var AnnotationReader
+     */
+    private $annotationReader;
+
     public function __construct()
     {
         $this->annotationReader = new AnnotationReader();
