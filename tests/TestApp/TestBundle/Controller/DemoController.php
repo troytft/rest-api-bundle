@@ -22,10 +22,6 @@ class DemoController extends BaseController
         return new Response('ok');
     }
 
-    public function methodWithEmptyTypeHintAction()
-    {
-    }
-
     public function notNullableResponseModelTypeHintAction(): Tests\TestApp\TestBundle\ResponseModel\Genre
     {
         return $this->getGenreResponseModel(1, 'test-genre');

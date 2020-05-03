@@ -22,8 +22,8 @@ class GenerateDocsCommandTest extends Tests\TestCase\BaseTestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
+            'input' => 'tests/TestApp/TestBundle/Controller/CommandTest/Success',
             'output' => $fileName,
-            '--namespace-filter' => Tests\TestApp\TestBundle\Controller\DemoController::class,
             '--format' => RestApiBundle\Enum\Docs\Format::YAML,
         ]);
 
@@ -83,8 +83,8 @@ YAML;
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
+            'input' => 'tests/TestApp/TestBundle/Controller/CommandTest/Success',
             'output' => $fileName,
-            '--namespace-filter' => Tests\TestApp\TestBundle\Controller\DemoController::class,
             '--format' => RestApiBundle\Enum\Docs\Format::JSON,
         ]);
 
@@ -164,12 +164,12 @@ JSON;
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
+            'input' => 'tests/TestApp/TestBundle/Controller/CommandTest/InvalidDefinition',
             'output' => $fileName,
-            '--namespace-filter' => Tests\TestApp\TestBundle\Controller\PathParameters\EmptyRouteRequirementsController::class,
         ]);
 
         $this->assertSame(1, $commandTester->getStatusCode());
-        $this->assertSame('Definition error in Tests\TestApp\TestBundle\Controller\PathParameters\EmptyRouteRequirementsController::testAction with message "Associated parameter for placeholder unknown_parameter not matched."', trim($commandTester->getDisplay()));
+        $this->assertSame('Definition error in Tests\TestApp\TestBundle\Controller\CommandTest\InvalidDefinition\DefaultController::testAction with message "Associated parameter for placeholder unknown_parameter not matched."', trim($commandTester->getDisplay()));
     }
 
     private function getOutputFileName(): string
