@@ -2,25 +2,23 @@
 
 namespace RestApiBundle\Services\Docs;
 
-use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\Validator\Mapping\PropertyMetadata;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Symfony\Component\Validator\Constraint;
 use RestApiBundle;
 use Mapper;
-use function array_merge;
 use function sprintf;
 
 class RequestModelHelper
 {
     /**
+     * @var AnnotationReader
+     */
+    private $annotationReader;
+
+    /**
      * @var Mapper\SchemaGenerator
      */
     private $schemaGenerator;
-
-    /**
-     * @var ValidatorInterface
-     */
-    private $validator;
 
     /**
      * @var RestApiBundle\Services\Docs\DoctrineHelper
@@ -29,37 +27,42 @@ class RequestModelHelper
 
     public function __construct(
         RestApiBundle\Services\Request\MapperInitiator $mapperInitiator,
-        ValidatorInterface $validator,
         RestApiBundle\Services\Docs\DoctrineHelper $doctrineHelper
     ) {
+        $this->annotationReader = Mapper\Helper\AnnotationReaderFactory::create(true);
         $this->schemaGenerator = $mapperInitiator->getMapper()->getSchemaGenerator();
-        $this->validator = $validator;
         $this->doctrineHelper = $doctrineHelper;
     }
 
     public function getSchemaByClass(string $class): RestApiBundle\DTO\Docs\Schema\ObjectType
     {
         $objectType = $this->convertObjectType($this->schemaGenerator->getSchemaByClassName($class));
-        $validationClassMetadata = $this->validator->getMetadataFor($class);
 
-        if ($validationClassMetadata instanceof ClassMetadata) {
-            foreach ($objectType->getProperties() as $name => $property) {
-                if (!$property instanceof RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface) {
-                    continue;
-                }
-
-                $propertyMetadataArray = $validationClassMetadata->getPropertyMetadata($name);
-
-                /** @var PropertyMetadata $propertyMetadata */
-                foreach ($propertyMetadataArray as $propertyMetadata) {
-                    $property->setConstraints(array_merge($property->getConstraints(), $propertyMetadata->getConstraints()));
-                }
-            }
-        } elseif ($validationClassMetadata !== null) {
-            throw new \RuntimeException();
-        }
+        $this->applyValidationConstraints($objectType, $class);
 
         return $objectType;
+    }
+
+    private function applyValidationConstraints(RestApiBundle\DTO\Docs\Schema\ObjectType $objectType, string $class): void
+    {
+        $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
+
+        foreach ($objectType->getProperties() as $propertyName => $propertySchema) {
+            if (!$propertySchema instanceof RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface) {
+                continue;
+            }
+
+            $constraints = [];
+            $annotations = $this->annotationReader->getPropertyAnnotations($reflectionClass->getProperty($propertyName));
+
+            foreach ($annotations as $annotation) {
+                if ($annotation instanceof Constraint) {
+                    $constraints[] = $annotation;
+                }
+            }
+
+            $propertySchema->setConstraints($constraints);
+        }
     }
 
     private function convert(Mapper\DTO\Schema\TypeInterface $type): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
