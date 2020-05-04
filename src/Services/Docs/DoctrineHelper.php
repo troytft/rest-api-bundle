@@ -2,6 +2,7 @@
 
 namespace RestApiBundle\Services\Docs;
 
+use Mapper\Helper\AnnotationReaderFactory;
 use RestApiBundle;
 use Doctrine;
 use function array_key_last;
@@ -11,20 +12,20 @@ use function sprintf;
 class DoctrineHelper
 {
     /**
-     * @var RestApiBundle\Services\Docs\SilentAnnotationReader
+     * @var Doctrine\Common\Annotations\AnnotationReader
      */
-    private $silentAnnotationReader;
+    private $annotationReader;
 
-    public function __construct(RestApiBundle\Services\Docs\SilentAnnotationReader $silentAnnotationReader)
+    public function __construct()
     {
-        $this->silentAnnotationReader = $silentAnnotationReader;
+        $this->annotationReader = AnnotationReaderFactory::create(true);
     }
 
     public function isEntity(string $class): bool
     {
         $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
 
-        return (bool) $this->silentAnnotationReader->getClassAnnotation($reflectionClass, Doctrine\ORM\Mapping\Entity::class);
+        return (bool) $this->annotationReader->getClassAnnotation($reflectionClass, Doctrine\ORM\Mapping\Entity::class);
     }
 
     public function getEntityFieldSchema(string $class, string $field, bool $nullable): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
@@ -32,7 +33,7 @@ class DoctrineHelper
         $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
         $reflectionProperty = $reflectionClass->getProperty($field);
 
-        $columnAnnotation = $this->silentAnnotationReader->getPropertyAnnotation($reflectionProperty, Doctrine\ORM\Mapping\Column::class);
+        $columnAnnotation = $this->annotationReader->getPropertyAnnotation($reflectionProperty, Doctrine\ORM\Mapping\Column::class);
         if (!$columnAnnotation instanceof Doctrine\ORM\Mapping\Column) {
             throw new \InvalidArgumentException();
         }
