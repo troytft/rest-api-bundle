@@ -18,15 +18,17 @@ class Serializer
 
     public function __construct(RestApiBundle\Services\SettingsProvider $settingsProvider)
     {
-        $dateTimeNormalizer = new \Symfony\Component\Serializer\Normalizer\DateTimeNormalizer(\DATE_ATOM, new \DateTimeZone('UTC'));
+        $this->settingsProvider = $settingsProvider;
 
         $normalizers = [
             new RestApiBundle\Services\Response\GetSetMethodNormalizer(),
-            $dateTimeNormalizer
+            new \Symfony\Component\Serializer\Normalizer\DateTimeNormalizer(\DATE_ATOM, new \DateTimeZone('UTC')),
         ];
-        $encoder = new \Symfony\Component\Serializer\Encoder\JsonEncoder();
+        $encoders = [
+            new \Symfony\Component\Serializer\Encoder\JsonEncoder(),
+        ];
 
-        $this->serializer = new \Symfony\Component\Serializer\Serializer($normalizers, [$encoder]);
+        $this->serializer = new \Symfony\Component\Serializer\Serializer($normalizers, $encoders);
     }
 
     public function toJson(RestApiBundle\ResponseModelInterface $responseModel): string
