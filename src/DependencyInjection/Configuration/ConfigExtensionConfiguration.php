@@ -48,6 +48,9 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
                 ->booleanNode(RestApiBundle\Enum\SettingsKey::IS_RESPONSE_HANDLER_ENABLED)
                     ->defaultTrue()
                 ->end()
+                ->integerNode(RestApiBundle\Enum\SettingsKey::RESPONSE_JSON_ENCODE_OPTIONS)
+                    ->defaultValue(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+                ->end()
             ->end();
 
         return $treeBuilder;

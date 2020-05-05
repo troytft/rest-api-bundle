@@ -56,4 +56,9 @@ class SettingsProvider
     {
         return $this->settings[RestApiBundle\Enum\SettingsKey::IS_RESPONSE_HANDLER_ENABLED];
     }
+
+    public function getResponseJsonEncodeOptions(): int
+    {
+        return $this->settings[RestApiBundle\Enum\SettingsKey::RESPONSE_JSON_ENCODE_OPTIONS];
+    }
 }
