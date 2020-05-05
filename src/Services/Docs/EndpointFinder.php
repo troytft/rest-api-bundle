@@ -123,7 +123,9 @@ class EndpointFinder
             throw new \LogicException();
         }
 
-        return sprintf('%s\%s', $namespace, $fileInfo->getFilenameWithoutExtension());
+        $fileNameWithoutExtension = $fileInfo->getBasename('.' . $fileInfo->getExtension());
+
+        return sprintf('%s\%s', $namespace, $fileNameWithoutExtension);
     }
 
     /**
