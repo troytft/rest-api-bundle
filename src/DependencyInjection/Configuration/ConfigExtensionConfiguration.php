@@ -2,14 +2,9 @@
 
 namespace RestApiBundle\DependencyInjection\Configuration;
 
-use JMS\Serializer\Exception\InvalidArgumentException;
 use RestApiBundle;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use function constant;
-use function defined;
-use function is_numeric;
-use function var_dump;
 
 class ConfigExtensionConfiguration implements ConfigurationInterface
 {

@@ -3,7 +3,6 @@
 namespace RestApiBundle\Services\Response;
 
 use RestApiBundle;
-use function var_dump;
 
 class Serializer
 {
