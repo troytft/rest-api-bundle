@@ -7,9 +7,9 @@ use RestApiBundle;
 class Serializer
 {
     /**
-     * @var int
+     * @var RestApiBundle\Services\SettingsProvider
      */
-    private $jsonEncodeOptions = 0;
+    private $settingsProvider;
 
     /**
      * @var \Symfony\Component\Serializer\Serializer
@@ -18,9 +18,7 @@ class Serializer
 
     public function __construct(RestApiBundle\Services\SettingsProvider $settingsProvider)
     {
-        foreach ($settingsProvider->getResponseJsonEncodeOptions() as $jsonEncodeOption) {
-            $this->jsonEncodeOptions |= $jsonEncodeOption;
-        }
+        $this->settingsProvider = $settingsProvider;
 
         $normalizers = [
             new RestApiBundle\Services\Response\GetSetMethodNormalizer(),
@@ -36,7 +34,7 @@ class Serializer
     public function toJson(RestApiBundle\ResponseModelInterface $responseModel): string
     {
         return $this->serializer->serialize($responseModel, 'json', [
-            'json_encode_options' => $this->jsonEncodeOptions,
+            'json_encode_options' => $this->settingsProvider->getResponseJsonEncodeOptions(),
         ]);
     }
 }
