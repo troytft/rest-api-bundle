@@ -4,6 +4,7 @@ namespace RestApiBundle\Services;
 
 use RestApiBundle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use function var_dump;
 
 class SettingsProvider
 {
@@ -57,7 +58,7 @@ class SettingsProvider
         return $this->settings[RestApiBundle\Enum\SettingsKey::IS_RESPONSE_HANDLER_ENABLED];
     }
 
-    public function getResponseJsonEncodeOptions(): int
+    public function getResponseJsonEncodeOptions(): array
     {
         return $this->settings[RestApiBundle\Enum\SettingsKey::RESPONSE_JSON_ENCODE_OPTIONS];
     }

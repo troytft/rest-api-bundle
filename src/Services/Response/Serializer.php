@@ -3,13 +3,14 @@
 namespace RestApiBundle\Services\Response;
 
 use RestApiBundle;
+use function var_dump;
 
 class Serializer
 {
     /**
-     * @var RestApiBundle\Services\SettingsProvider
+     * @var int
      */
-    private $settingsProvider;
+    private $jsonEncodeOptions = 0;
 
     /**
      * @var \Symfony\Component\Serializer\Serializer
@@ -18,7 +19,9 @@ class Serializer
 
     public function __construct(RestApiBundle\Services\SettingsProvider $settingsProvider)
     {
-        $this->settingsProvider = $settingsProvider;
+        foreach ($settingsProvider->getResponseJsonEncodeOptions() as $jsonEncodeOption) {
+            $this->jsonEncodeOptions |= $jsonEncodeOption;
+        }
 
         $normalizers = [
             new RestApiBundle\Services\Response\GetSetMethodNormalizer(),
@@ -34,7 +37,7 @@ class Serializer
     public function toJson(RestApiBundle\ResponseModelInterface $responseModel): string
     {
         return $this->serializer->serialize($responseModel, 'json', [
-            'json_encode_options' => $this->settingsProvider->getResponseJsonEncodeOptions(),
+            'json_encode_options' => $this->jsonEncodeOptions,
         ]);
     }
 }
