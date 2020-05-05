@@ -5,6 +5,9 @@ namespace RestApiBundle\DependencyInjection\Configuration;
 use RestApiBundle;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use function constant;
+use function defined;
+use function is_int;
 
 class ConfigExtensionConfiguration implements ConfigurationInterface
 {
@@ -48,9 +51,45 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
                 ->booleanNode(RestApiBundle\Enum\SettingsKey::IS_RESPONSE_HANDLER_ENABLED)
                     ->defaultTrue()
                 ->end()
-                ->arrayNode(RestApiBundle\Enum\SettingsKey::RESPONSE_JSON_ENCODE_OPTIONS)
-                    ->scalarPrototype()->end()
-                    ->defaultValue([JSON_UNESCAPED_UNICODE, JSON_UNESCAPED_SLASHES])
+                ->scalarNode(RestApiBundle\Enum\SettingsKey::RESPONSE_JSON_ENCODE_OPTIONS)
+                    ->defaultValue(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+                    ->beforeNormalization()
+                    ->ifArray()->then(function ($options) {
+                        $result = 0;
+                        foreach ($options as $option) {
+                            if (is_int($option)) {
+                                $result |= (int) $option;
+                            } elseif (defined($option)) {
+                                $result |= constant($option);
+                            } else {
+                                throw new \InvalidArgumentException('Expected either an integer representing one of the JSON_ constants, or a string of the constant itself.');
+                            }
+                        }
+
+                        return $result;
+                    })
+                    ->end()
+                    ->beforeNormalization()
+                    ->ifString()->then(function ($options) {
+                        if (is_int($options)) {
+                            $result = (int) $options;
+                        } elseif (defined($options)) {
+                            $result = constant($options);
+                        } else {
+                            throw new \InvalidArgumentException('Expected either an integer representing one of the JSON_ constants, or a string of the constant itself.');
+                        }
+
+                        return $result;
+                    })
+                    ->end()
+                    ->validate()
+                    ->always(function ($v) {
+                        if (!is_int($v)) {
+                            throw new \InvalidArgumentException('Expected either integer value or a array of the JSON_ constants.');
+                        }
+
+                        return $v;
+                    })
                     ->end()
                 ->end()
             ->end();
