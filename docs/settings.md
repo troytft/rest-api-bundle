@@ -12,4 +12,5 @@ rest_api:
         date_time_transformer_force_local_timezone: true
         date_time_transformer_default_format: Y-m-d\TH:i:sP
         date_transformer_default_format: Y-m-d
+        response_json_encode_options: [JSON_UNESCAPED_UNICODE, JSON_UNESCAPED_SLASHES]
 ```
