@@ -36,6 +36,10 @@ class DemoController extends BaseController
         return $this->getGenreResponseModel(1, 'test-genre');
     }
 
+    public function voidReturnTypeAction(): void
+    {
+    }
+
     /**
      *
      */

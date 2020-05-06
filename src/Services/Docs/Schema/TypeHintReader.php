@@ -29,6 +29,8 @@ class TypeHintReader extends RestApiBundle\Services\Docs\Schema\BaseReader
     {
         if ($type === 'array') {
             $result = null;
+        } elseif ($type === 'void') {
+            $result = new RestApiBundle\DTO\Docs\Schema\NullType();
         } elseif ($this->isScalarType($type)) {
             $result = $this->createScalarTypeFromString($type, $nullable);
         } else {
