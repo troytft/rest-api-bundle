@@ -54,4 +54,14 @@ class TypeHintReaderTest extends Tests\TestCase\BaseTestCase
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertTrue($returnType->getNullable());
     }
+
+    public function testVoidReturnType()
+    {
+        $reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
+        $reflectionMethod = $reflectionClass->getMethod('voidReturnTypeAction');
+
+        $returnType = $this->getTypeHintSchemaReader()->getMethodReturnSchema($reflectionMethod);
+
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\NullType::class, $returnType);
+    }
 }
