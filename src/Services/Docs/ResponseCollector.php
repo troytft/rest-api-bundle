@@ -74,9 +74,10 @@ class ResponseCollector
     private function getResponseModelSchemaByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Schema\ObjectType
     {
         $class = ltrim($class, '\\');
+        $cacheKey = sprintf('%s-%d', $class, $isNullable);
 
-        if (isset($this->objectClassCache[$class])) {
-            return $this->objectClassCache[$class];
+        if (isset($this->objectClassCache[$cacheKey])) {
+            return $this->objectClassCache[$cacheKey];
         }
 
         $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
@@ -98,8 +99,8 @@ class ResponseCollector
 
         $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\Docs\Schema\StringType(false);
 
-        $this->objectClassCache[$class] = new RestApiBundle\DTO\Docs\Schema\ObjectType($properties, $isNullable);
+        $this->objectClassCache[$cacheKey] = new RestApiBundle\DTO\Docs\Schema\ObjectType($properties, $isNullable);
 
-        return $this->objectClassCache[$class];
+        return $this->objectClassCache[$cacheKey];
     }
 }
