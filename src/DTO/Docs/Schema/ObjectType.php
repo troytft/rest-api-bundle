@@ -7,6 +7,11 @@ use RestApiBundle;
 class ObjectType implements RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
 {
     /**
+     * @var string
+     */
+    private $name;
+
+    /**
      * @var array<string, RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface>
      */
     private $properties;
@@ -16,10 +21,16 @@ class ObjectType implements RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
      */
     private $nullable;
 
-    public function __construct(array $properties, bool $nullable)
+    public function getName(): string
     {
-        $this->properties = $properties;
-        $this->nullable = $nullable;
+        return $this->name;
+    }
+
+    public function setName(string $name)
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     /**
@@ -28,6 +39,18 @@ class ObjectType implements RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     public function getProperties(): array
     {
         return $this->properties;
+    }
+
+    /**
+     * @param array<string, RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface> $properties
+     *
+     * @return $this
+     */
+    public function setProperties(array $properties)
+    {
+        $this->properties = $properties;
+
+        return $this;
     }
 
     public function getNullable(): bool

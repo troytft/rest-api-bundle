@@ -200,7 +200,11 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'offset' => new RestApiBundle\DTO\Docs\Schema\IntegerType(false),
             'limit' => new RestApiBundle\DTO\Docs\Schema\IntegerType(false),
         ];
-        $objectType = new RestApiBundle\DTO\Docs\Schema\ObjectType($objectProperties, false);
+        $objectType = new RestApiBundle\DTO\Docs\Schema\ObjectType();
+        $objectType
+            ->setName('test')
+            ->setProperties($objectProperties)
+            ->setNullable(false);
 
         /** @var OpenApi\Parameter[] $openApiParameters */
         $openApiParameters = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertRequestModelToParameters', [$objectType]);
@@ -237,7 +241,11 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'offset' => new RestApiBundle\DTO\Docs\Schema\IntegerType(false),
             'limit' => new RestApiBundle\DTO\Docs\Schema\IntegerType(false),
         ];
-        $objectType = new RestApiBundle\DTO\Docs\Schema\ObjectType($objectProperties, false);
+        $objectType = new RestApiBundle\DTO\Docs\Schema\ObjectType();
+        $objectType
+            ->setName('test')
+            ->setProperties($objectProperties)
+            ->setNullable(false);
 
         /** @var OpenApi\RequestBody $requestBody */
         $requestBody = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertRequestModelToRequestBody', [$objectType]);

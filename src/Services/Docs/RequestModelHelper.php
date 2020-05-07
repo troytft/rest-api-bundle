@@ -137,15 +137,21 @@ class RequestModelHelper
         return $result;
     }
 
-    private function convertObjectType(Mapper\DTO\Schema\ObjectTypeInterface $objectType): RestApiBundle\DTO\Docs\Schema\ObjectType
+    private function convertObjectType(Mapper\DTO\Schema\ObjectTypeInterface $mapperType): RestApiBundle\DTO\Docs\Schema\ObjectType
     {
         $properties = [];
 
-        foreach ($objectType->getProperties() as $name => $property) {
+        foreach ($mapperType->getProperties() as $name => $property) {
             $properties[$name] = $this->convert($property);
         }
 
-        return new RestApiBundle\DTO\Docs\Schema\ObjectType($properties, $objectType->getNullable());
+        $schema = new RestApiBundle\DTO\Docs\Schema\ObjectType();
+        $schema
+            ->setName($mapperType->getClassName())
+            ->setProperties($properties)
+            ->setNullable($mapperType->getNullable());
+
+        return $schema;
     }
 
     private function convertCollectionType(Mapper\DTO\Schema\CollectionTypeInterface $collectionType): RestApiBundle\DTO\Docs\Schema\ArrayType
