@@ -22,7 +22,7 @@ class ResponseModelTypenameResolver
             foreach (explode('\\', $class) as $part) {
                 if ($isResponseModel) {
                     $parts[] = $part;
-                } elseif ($part === 'ResponseModel') {
+                } elseif ($part === 'ResponseModel' || $part === 'RequestModel') {
                     $isResponseModel = true;
                 }
             }
