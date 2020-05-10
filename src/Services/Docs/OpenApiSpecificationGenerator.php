@@ -309,9 +309,9 @@ class OpenApiSpecificationGenerator
         $typename = $this->typenameResolver->resolve($objectType->getClass());
 
         if (RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($objectType->getClass())) {
-            $schemaKey = sprintf('%s_ResponseModel', $typename);
+            $schemaKey = sprintf('ResponseModel_%s', $typename);
         } elseif (RestApiBundle\Services\Request\RequestModelHelper::isRequestModel($objectType->getClass())) {
-            $schemaKey = sprintf('%s_RequestModel', $typename);
+            $schemaKey = sprintf('RequestModel_%s', $typename);
         } else {
             throw new \InvalidArgumentException();
         }
