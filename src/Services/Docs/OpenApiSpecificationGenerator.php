@@ -12,6 +12,7 @@ use function get_class;
 use function json_encode;
 use function json_last_error;
 use function json_last_error_msg;
+use function ksort;
 use function sprintf;
 use function str_replace;
 use function strtolower;
@@ -161,6 +162,7 @@ class OpenApiSpecificationGenerator
         }
 
         $root->tags = array_values($tags);
+        ksort($this->schemaByName);
         $root->components->schemas = $this->schemaByName;
 
         return $root;
@@ -307,9 +309,9 @@ class OpenApiSpecificationGenerator
         $typename = $this->typenameResolver->resolve($objectType->getClass());
 
         if (RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($objectType->getClass())) {
-            $schemaKey = sprintf('response-models/%s', $typename);
+            $schemaKey = sprintf('%s_ResponseModel', $typename);
         } elseif (RestApiBundle\Services\Request\RequestModelHelper::isRequestModel($objectType->getClass())) {
-            $schemaKey = sprintf('request-models/%s', $typename);
+            $schemaKey = sprintf('%s_RequestModel', $typename);
         } else {
             throw new \InvalidArgumentException();
         }
