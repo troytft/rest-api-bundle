@@ -8,10 +8,12 @@ use cebe\openapi\spec as OpenApi;
 use Symfony\Component\Yaml\Yaml;
 use function array_merge;
 use function array_values;
+use function get_class;
 use function json_encode;
 use function json_last_error;
 use function json_last_error_msg;
 use function sprintf;
+use function str_replace;
 use function strtolower;
 
 class OpenApiSpecificationGenerator
@@ -20,6 +22,16 @@ class OpenApiSpecificationGenerator
      * @var array<string, OpenApi\Schema>
      */
     private $schemaByName = [];
+
+    /**
+     * @var RestApiBundle\Services\Response\ResponseModelTypenameResolver
+     */
+    private $typenameResolver;
+
+    public function __construct(RestApiBundle\Services\Response\ResponseModelTypenameResolver $typenameResolver)
+    {
+        $this->typenameResolver = $typenameResolver;
+    }
 
     /**
      * @param RestApiBundle\DTO\Docs\EndpointData[] $endpoints
@@ -292,21 +304,31 @@ class OpenApiSpecificationGenerator
 
     private function convertObjectType(RestApiBundle\DTO\Docs\Schema\ObjectType $objectType): OpenApi\Reference
     {
-        if (!isset($this->schemaByName[$objectType->getName()])) {
+        $typename = $this->typenameResolver->resolve($objectType->getClass());
+
+        if (RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($objectType->getClass())) {
+            $schemaKey = sprintf('response-models/%s', $typename);
+        } elseif (RestApiBundle\Services\Request\RequestModelHelper::isRequestModel($objectType->getClass())) {
+            $schemaKey = sprintf('request-models/%s', $typename);
+        } else {
+            throw new \InvalidArgumentException();
+        }
+
+        if (!isset($this->schemaByName[$schemaKey])) {
             $properties = [];
 
             foreach ($objectType->getProperties() as $key => $propertyType) {
                 $properties[$key] = $this->convertSchemaType($propertyType);
             }
 
-            $this->schemaByName[$objectType->getName()] = new OpenApi\Schema([
+            $this->schemaByName[$schemaKey] = new OpenApi\Schema([
                 'type' => OpenApi\Type::OBJECT,
                 'nullable' => $objectType->getNullable(),
                 'properties' => $properties,
             ]);
         }
 
-        return new OpenApi\Reference(['$ref' => sprintf('#/components/schemas/%s', $objectType->getName())], OpenApi\Schema::class);
+        return new OpenApi\Reference(['$ref' => sprintf('#/components/schemas/%s', $schemaKey)], OpenApi\Schema::class);
     }
 
     private function convertArrayType(RestApiBundle\DTO\Docs\Schema\ArrayType $arrayType): OpenApi\Schema

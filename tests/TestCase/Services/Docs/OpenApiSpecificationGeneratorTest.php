@@ -202,7 +202,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         ];
         $objectType = new RestApiBundle\DTO\Docs\Schema\ObjectType();
         $objectType
-            ->setName('test')
+            ->setClass('test')
             ->setProperties($objectProperties)
             ->setNullable(false);
 
@@ -243,7 +243,7 @@ class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         ];
         $objectType = new RestApiBundle\DTO\Docs\Schema\ObjectType();
         $objectType
-            ->setName('test')
+            ->setClass('test')
             ->setProperties($objectProperties)
             ->setNullable(false);
 

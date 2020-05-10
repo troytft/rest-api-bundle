@@ -9,7 +9,7 @@ class ObjectType implements RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
     /**
      * @var string
      */
-    private $name;
+    private $class;
 
     /**
      * @var array<string, RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface>
@@ -21,14 +21,14 @@ class ObjectType implements RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
      */
     private $nullable;
 
-    public function getName(): string
+    public function getClass(): string
     {
-        return $this->name;
+        return $this->class;
     }
 
-    public function setName(string $name)
+    public function setClass(string $class)
     {
-        $this->name = $name;
+        $this->class = $class;
 
         return $this;
     }

@@ -147,7 +147,7 @@ class RequestModelHelper
 
         $schema = new RestApiBundle\DTO\Docs\Schema\ObjectType();
         $schema
-            ->setName($mapperType->getClassName())
+            ->setClass($mapperType->getClassName())
             ->setProperties($properties)
             ->setNullable($mapperType->getNullable());
 

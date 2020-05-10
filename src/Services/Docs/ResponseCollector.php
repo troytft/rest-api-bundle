@@ -101,7 +101,7 @@ class ResponseCollector
 
         $schema = new RestApiBundle\DTO\Docs\Schema\ObjectType();
         $schema
-            ->setName($class)
+            ->setClass($class)
             ->setProperties($properties)
             ->setNullable($nullable);
 
