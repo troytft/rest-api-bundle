@@ -25,7 +25,9 @@ class ArrayOfEntitiesType implements CollectionTypeInterface
     public $field = 'id';
 
     /**
-     * @var TypeInterface
+     * Type hint forced to object, cause annotation reader doesn't support interfaces
+     *
+     * @var object
      */
     public $type;
 
