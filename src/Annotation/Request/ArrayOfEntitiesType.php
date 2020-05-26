@@ -4,13 +4,11 @@ namespace RestApiBundle\Annotation\Request;
 
 use RestApiBundle;
 use Mapper\Annotation\NullableTrait;
-use Mapper\DTO\Mapping\CollectionTypeInterface;
-use Mapper\DTO\Mapping\TypeInterface;
 
 /**
  * @Annotation
  */
-class ArrayOfEntitiesType implements CollectionTypeInterface
+class ArrayOfEntitiesType extends RestApiBundle\Annotation\Request\ArrayType
 {
     use NullableTrait;
 
@@ -24,21 +22,9 @@ class ArrayOfEntitiesType implements CollectionTypeInterface
      */
     public $field = 'id';
 
-    /**
-     * Type hint forced to object, cause annotation reader doesn't support interfaces
-     *
-     * @var object
-     */
-    public $type;
-
     public function __construct()
     {
         $this->type = new IntegerType();
-    }
-
-    public function getType(): TypeInterface
-    {
-        return $this->type;
     }
 
     public function getTransformerName(): ?string
