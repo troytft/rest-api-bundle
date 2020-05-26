@@ -4,6 +4,7 @@ namespace RestApiBundle\Services\Docs;
 
 use RestApiBundle;
 use Symfony\Component\Filesystem\Filesystem;
+use function var_dump;
 
 class DocsGenerator
 {
@@ -36,7 +37,7 @@ class DocsGenerator
         } else {
             throw new \InvalidArgumentException();
         }
-
+var_dump($content);die();
         $filesystem = new Filesystem();
         $filesystem->dumpFile($outputFile, $content);
     }
