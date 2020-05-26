@@ -4,8 +4,12 @@ namespace RestApiBundle\DTO\Docs\Schema;
 
 use RestApiBundle;
 use Symfony\Component\Validator\Constraint;
+use function sprintf;
 
-class ArrayType implements RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface, RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface
+class ArrayType implements
+    RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface,
+    RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface,
+    RestApiBundle\DTO\Docs\Schema\DescriptionAwareInterface
 {
     /**
      * @var RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
@@ -56,5 +60,20 @@ class ArrayType implements RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface, Re
         $this->constraints = $constraints;
 
         return $this;
+    }
+
+    public function setDescription(?string $description)
+    {
+        throw new \LogicException();
+    }
+
+    public function getDescription(): ?string
+    {
+        $innerType = $this->getInnerType();
+        if ($this->innerType instanceof RestApiBundle\DTO\Docs\Schema\DescriptionAwareInterface && $this->innerType->getDescription()) {
+            return sprintf('Array of %s', $this->innerType->getDescription());
+        }
+
+        return null;
     }
 }

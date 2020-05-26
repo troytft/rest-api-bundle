@@ -185,11 +185,8 @@ class OpenApiSpecificationGenerator
 
         // Swagger UI does not show schema description in parameters
         if ($schema instanceof RestApiBundle\DTO\Docs\Schema\DescriptionAwareInterface && $schema->getDescription()) {
-            $descriptionLessSchema = clone $schema;
-            $descriptionLessSchema->setDescription(null);
-
             $data['description'] = $schema->getDescription();
-            $data['schema'] = $this->convertSchemaType($descriptionLessSchema);
+            $data['schema'] = $this->convertSchemaType($schema);
         } else {
             $data['schema'] = $this->convertSchemaType($schema);
         }
@@ -252,10 +249,6 @@ class OpenApiSpecificationGenerator
                     }
                 }
             }
-        }
-
-        if ($schemaType instanceof RestApiBundle\DTO\Docs\Schema\DescriptionAwareInterface && $schemaType->getDescription()) {
-            $result->description = $schemaType->getDescription();
         }
 
         return $result;
