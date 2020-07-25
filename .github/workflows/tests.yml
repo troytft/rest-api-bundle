@@ -39,6 +39,7 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
+        if: steps.composercache.outputs.cache-hit != 'true'
         run: composer install --no-progress --no-suggest --no-interaction
 
       - name: Run PHPUnit
