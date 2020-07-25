@@ -1,6 +1,6 @@
 # REST API Bundle
 
-[![Build Status](https://travis-ci.org/troytft/rest-api-bundle.svg?branch=master)](https://travis-ci.org/troytft/rest-api-bundle)
+[![Build Status](https://github.com/troytft/rest-api-bundle/workflows/tests/badge.svg)](https://github.com/troytft/rest-api-bundle/workflows/tests/badge.svg)
 
 REST API Bundle is abstraction layer for requests and responses.
 
