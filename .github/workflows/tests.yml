@@ -40,5 +40,11 @@ jobs:
       - name: Install dependencies
         run: composer install --no-progress --no-suggest --no-interaction
 
-      - name: Tests
-        run: make test
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit
+
+      - name: Run PHP Code Sniffer
+        run: vendor/bin/phpcs
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse src tests --level=5 --no-progress
