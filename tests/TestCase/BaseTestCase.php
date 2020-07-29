@@ -120,10 +120,10 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $result;
     }
 
-    protected function getOpenApiSpecificationGenerator(): RestApiBundle\Services\Docs\OpenApiSpecificationGenerator
+    protected function getOpenApiSpecificationGenerator(): RestApiBundle\Services\Docs\OpenApi\SpecificationGenerator
     {
-        /** @var RestApiBundle\Services\Docs\OpenApiSpecificationGenerator $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\OpenApiSpecificationGenerator::class);
+        /** @var RestApiBundle\Services\Docs\OpenApi\SpecificationGenerator $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\OpenApi\SpecificationGenerator::class);
 
         return $result;
     }
