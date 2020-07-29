@@ -32,7 +32,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.json') }}
+          key: composer-vendor-cache-${{ hashFiles('**/composer.json') }}
 
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
