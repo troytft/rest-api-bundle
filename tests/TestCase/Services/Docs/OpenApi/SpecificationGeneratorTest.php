@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\TestCase\Services\Docs;
+namespace Tests\TestCase\Services\Docs\OpenApi;
 
 use cebe\openapi\SpecObjectInterface;
 use Symfony;
@@ -10,7 +10,7 @@ use cebe\openapi\spec as OpenApi;
 use function json_decode;
 use function json_encode;
 
-class OpenApiSpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
+class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
 {
     public function testCreateParameter()
     {

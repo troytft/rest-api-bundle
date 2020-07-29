@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs;
+namespace RestApiBundle\Services\Docs\OpenApi;
 
 use RestApiBundle;
 use Symfony;
@@ -13,7 +13,7 @@ use function json_last_error;
 use function json_last_error_msg;
 use function strtolower;
 
-class OpenApiSpecificationGenerator
+class SpecificationGenerator
 {
     /**
      * @param RestApiBundle\DTO\Docs\EndpointData[] $endpoints
