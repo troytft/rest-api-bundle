@@ -34,7 +34,7 @@ class EndpointData
     /**
      * @var RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
      */
-    private $response;
+    private $returnType;
 
     /**
      * @var RestApiBundle\DTO\Docs\PathParameter[]
@@ -106,14 +106,14 @@ class EndpointData
         return $this;
     }
 
-    public function getResponse(): Schema\SchemaTypeInterface
+    public function getReturnType(): Schema\SchemaTypeInterface
     {
-        return $this->response;
+        return $this->returnType;
     }
 
-    public function setResponse(Schema\SchemaTypeInterface $response)
+    public function setReturnType(Schema\SchemaTypeInterface $returnType)
     {
-        $this->response = $response;
+        $this->returnType = $returnType;
 
         return $this;
     }
