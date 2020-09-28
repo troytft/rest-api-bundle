@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\OpenApi;
+namespace RestApiBundle\Services\OpenApi\OpenApi;
 
 use RestApiBundle;
 use Symfony;

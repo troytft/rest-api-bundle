@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs;
+namespace RestApiBundle\Services\OpenApi;
 
 use RestApiBundle;
 use Symfony\Component\Filesystem\Filesystem;
@@ -8,18 +8,18 @@ use Symfony\Component\Filesystem\Filesystem;
 class DocsGenerator
 {
     /**
-     * @var RestApiBundle\Services\Docs\EndpointFinder
+     * @var RestApiBundle\Services\OpenApi\EndpointFinder
      */
     private $endpointFinder;
 
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\SpecificationGenerator
+     * @var RestApiBundle\Services\OpenApi\OpenApi\SpecificationGenerator
      */
     private $openApiSpecificationGenerator;
 
     public function __construct(
-        RestApiBundle\Services\Docs\EndpointFinder $endpointFinder,
-        RestApiBundle\Services\Docs\OpenApi\SpecificationGenerator $openApiSpecificationGenerator
+        RestApiBundle\Services\OpenApi\EndpointFinder $endpointFinder,
+        RestApiBundle\Services\OpenApi\OpenApi\SpecificationGenerator $openApiSpecificationGenerator
     ) {
         $this->endpointFinder = $endpointFinder;
         $this->openApiSpecificationGenerator = $openApiSpecificationGenerator;

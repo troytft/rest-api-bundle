@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Schema;
+namespace RestApiBundle\Services\OpenApi\Schema;
 
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
@@ -8,7 +8,7 @@ use phpDocumentor\Reflection as PhpDoc;
 use RestApiBundle;
 use function count;
 
-class DocBlockReader extends RestApiBundle\Services\Docs\Schema\BaseReader
+class DocBlockReader extends RestApiBundle\Services\OpenApi\Schema\BaseReader
 {
     /**
      * @var DocBlockFactory

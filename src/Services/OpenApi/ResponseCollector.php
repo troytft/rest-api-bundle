@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs;
+namespace RestApiBundle\Services\OpenApi;
 
 use RestApiBundle;
 use function lcfirst;
@@ -17,18 +17,18 @@ class ResponseCollector
     private $objectClassCache = [];
 
     /**
-     * @var RestApiBundle\Services\Docs\Schema\TypeHintReader
+     * @var RestApiBundle\Services\OpenApi\Schema\TypeHintReader
      */
     private $typeHintReader;
 
     /**
-     * @var RestApiBundle\Services\Docs\Schema\DocBlockReader
+     * @var RestApiBundle\Services\OpenApi\Schema\DocBlockReader
      */
     private $docBlockReader;
 
     public function __construct(
-        RestApiBundle\Services\Docs\Schema\TypeHintReader $typeHintReader,
-        RestApiBundle\Services\Docs\Schema\DocBlockReader $docBlockReader
+        RestApiBundle\Services\OpenApi\Schema\TypeHintReader $typeHintReader,
+        RestApiBundle\Services\OpenApi\Schema\DocBlockReader $docBlockReader
     ) {
         $this->typeHintReader = $typeHintReader;
         $this->docBlockReader = $docBlockReader;

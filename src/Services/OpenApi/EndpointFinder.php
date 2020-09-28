@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs;
+namespace RestApiBundle\Services\OpenApi;
 
 use Composer\Autoload\ClassLoader;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -30,36 +30,36 @@ class EndpointFinder
     private $annotationReader;
 
     /**
-     * @var RestApiBundle\Services\Docs\Schema\DocBlockReader
+     * @var RestApiBundle\Services\OpenApi\Schema\DocBlockReader
      */
     private $docBlockSchemaReader;
 
     /**
-     * @var RestApiBundle\Services\Docs\Schema\TypeHintReader
+     * @var RestApiBundle\Services\OpenApi\Schema\TypeHintReader
      */
     private $typeHintSchemaReader;
 
     /**
-     * @var RestApiBundle\Services\Docs\ResponseCollector
+     * @var RestApiBundle\Services\OpenApi\ResponseCollector
      */
     private $responseCollector;
 
     /**
-     * @var RestApiBundle\Services\Docs\DoctrineHelper
+     * @var RestApiBundle\Services\OpenApi\DoctrineHelper
      */
     private $doctrineHelper;
 
     /**
-     * @var RestApiBundle\Services\Docs\RequestModelHelper
+     * @var RestApiBundle\Services\OpenApi\RequestModelHelper
      */
     private $requestModelHelper;
 
     public function __construct(
-        RestApiBundle\Services\Docs\Schema\DocBlockReader $docBlockSchemaReader,
-        RestApiBundle\Services\Docs\Schema\TypeHintReader $typeHintSchemaReader,
-        RestApiBundle\Services\Docs\ResponseCollector $responseCollector,
-        RestApiBundle\Services\Docs\DoctrineHelper $doctrineHelper,
-        RestApiBundle\Services\Docs\RequestModelHelper $requestModelHelper
+        RestApiBundle\Services\OpenApi\Schema\DocBlockReader $docBlockSchemaReader,
+        RestApiBundle\Services\OpenApi\Schema\TypeHintReader $typeHintSchemaReader,
+        RestApiBundle\Services\OpenApi\ResponseCollector $responseCollector,
+        RestApiBundle\Services\OpenApi\DoctrineHelper $doctrineHelper,
+        RestApiBundle\Services\OpenApi\RequestModelHelper $requestModelHelper
     ) {
         $this->annotationReader = AnnotationReaderFactory::create(true);
         $this->docBlockSchemaReader = $docBlockSchemaReader;

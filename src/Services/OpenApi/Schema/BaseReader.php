@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Schema;
+namespace RestApiBundle\Services\OpenApi\Schema;
 
 use RestApiBundle;
 use function in_array;

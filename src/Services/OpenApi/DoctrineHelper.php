@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs;
+namespace RestApiBundle\Services\OpenApi;
 
 use Mapper\Helper\AnnotationReaderFactory;
 use RestApiBundle;

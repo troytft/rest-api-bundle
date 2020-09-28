@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs;
+namespace RestApiBundle\Services\OpenApi;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Validator\Constraint;
@@ -21,13 +21,13 @@ class RequestModelHelper
     private $schemaGenerator;
 
     /**
-     * @var RestApiBundle\Services\Docs\DoctrineHelper
+     * @var RestApiBundle\Services\OpenApi\DoctrineHelper
      */
     private $doctrineHelper;
 
     public function __construct(
         RestApiBundle\Services\Request\MapperInitiator $mapperInitiator,
-        RestApiBundle\Services\Docs\DoctrineHelper $doctrineHelper
+        RestApiBundle\Services\OpenApi\DoctrineHelper $doctrineHelper
     ) {
         $this->annotationReader = Mapper\Helper\AnnotationReaderFactory::create(true);
         $this->schemaGenerator = $mapperInitiator->getMapper()->getSchemaGenerator();
