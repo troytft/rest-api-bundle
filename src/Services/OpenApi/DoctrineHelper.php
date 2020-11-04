@@ -28,7 +28,7 @@ class DoctrineHelper
         return (bool) $this->annotationReader->getClassAnnotation($reflectionClass, Doctrine\ORM\Mapping\Entity::class);
     }
 
-    public function getEntityFieldSchema(string $class, string $field, bool $nullable): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    public function getEntityFieldSchema(string $class, string $field, bool $nullable): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
     {
         $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
         $reflectionProperty = $reflectionClass->getProperty($field);
@@ -42,14 +42,14 @@ class DoctrineHelper
 
         switch ($columnAnnotation->type) {
             case 'string':
-                $schema = new RestApiBundle\DTO\Docs\Schema\StringType($nullable);
+                $schema = new RestApiBundle\DTO\OpenApi\Schema\StringType($nullable);
                 $schema
                     ->setDescription($description);
 
                 break;
 
             case 'integer':
-                $schema = new RestApiBundle\DTO\Docs\Schema\IntegerType($nullable);
+                $schema = new RestApiBundle\DTO\OpenApi\Schema\IntegerType($nullable);
                 $schema
                     ->setDescription($description);
 

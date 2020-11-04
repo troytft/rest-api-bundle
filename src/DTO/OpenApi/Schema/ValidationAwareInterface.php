@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\DTO\Docs\Schema;
+namespace RestApiBundle\DTO\OpenApi\Schema;
 
 use Symfony\Component\Validator\Constraint;
 

@@ -34,7 +34,7 @@ class RequestModelHelper
         $this->doctrineHelper = $doctrineHelper;
     }
 
-    public function getSchemaByClass(string $class): RestApiBundle\DTO\Docs\Schema\ObjectType
+    public function getSchemaByClass(string $class): RestApiBundle\DTO\OpenApi\Schema\ObjectType
     {
         $objectType = $this->convertObjectType($this->schemaGenerator->getSchemaByClassName($class));
 
@@ -43,12 +43,12 @@ class RequestModelHelper
         return $objectType;
     }
 
-    private function applyValidationConstraints(RestApiBundle\DTO\Docs\Schema\ObjectType $objectType, string $class): void
+    private function applyValidationConstraints(RestApiBundle\DTO\OpenApi\Schema\ObjectType $objectType, string $class): void
     {
         $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
 
         foreach ($objectType->getProperties() as $propertyName => $propertySchema) {
-            if (!$propertySchema instanceof RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface) {
+            if (!$propertySchema instanceof RestApiBundle\DTO\OpenApi\Schema\ValidationAwareInterface) {
                 continue;
             }
 
@@ -65,7 +65,7 @@ class RequestModelHelper
         }
     }
 
-    private function convert(Mapper\DTO\Schema\TypeInterface $type): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    private function convert(Mapper\DTO\Schema\TypeInterface $type): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
     {
         if ($type instanceof Mapper\DTO\Schema\ObjectTypeInterface) {
             $result = $this->convertObjectType($type);
@@ -80,36 +80,36 @@ class RequestModelHelper
         return $result;
     }
 
-    private function convertScalar(Mapper\DTO\Schema\ScalarTypeInterface $scalarType): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    private function convertScalar(Mapper\DTO\Schema\ScalarTypeInterface $scalarType): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
     {
         switch ($scalarType->getTransformerName()) {
             case Mapper\Transformer\BooleanTransformer::getName():
-                $result = new RestApiBundle\DTO\Docs\Schema\BooleanType($scalarType->getNullable());
+                $result = new RestApiBundle\DTO\OpenApi\Schema\BooleanType($scalarType->getNullable());
 
                 break;
 
             case Mapper\Transformer\IntegerTransformer::getName():
-                $result = new RestApiBundle\DTO\Docs\Schema\IntegerType($scalarType->getNullable());
+                $result = new RestApiBundle\DTO\OpenApi\Schema\IntegerType($scalarType->getNullable());
 
                 break;
 
             case Mapper\Transformer\StringTransformer::getName():
-                $result = new RestApiBundle\DTO\Docs\Schema\StringType($scalarType->getNullable());
+                $result = new RestApiBundle\DTO\OpenApi\Schema\StringType($scalarType->getNullable());
 
                 break;
 
             case Mapper\Transformer\FloatTransformer::getName():
-                $result = new RestApiBundle\DTO\Docs\Schema\FloatType($scalarType->getNullable());
+                $result = new RestApiBundle\DTO\OpenApi\Schema\FloatType($scalarType->getNullable());
 
                 break;
 
             case Mapper\Transformer\DateTimeTransformer::getName():
-                $result = new RestApiBundle\DTO\Docs\Schema\DateTimeType($scalarType->getNullable());
+                $result = new RestApiBundle\DTO\OpenApi\Schema\DateTimeType($scalarType->getNullable());
 
                 break;
 
             case Mapper\Transformer\DateTransformer::getName():
-                $result = new RestApiBundle\DTO\Docs\Schema\DateType($scalarType->getNullable());
+                $result = new RestApiBundle\DTO\OpenApi\Schema\DateType($scalarType->getNullable());
 
                 break;
 
@@ -126,7 +126,7 @@ class RequestModelHelper
                 $fieldName = $scalarType->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::FIELD_OPTION];
 
                 $innerSchema = $this->doctrineHelper->getEntityFieldSchema($className, $fieldName, false);
-                $result = new RestApiBundle\DTO\Docs\Schema\ArrayType($innerSchema, $scalarType->getNullable());
+                $result = new RestApiBundle\DTO\OpenApi\Schema\ArrayType($innerSchema, $scalarType->getNullable());
 
                 break;
 
@@ -137,7 +137,7 @@ class RequestModelHelper
         return $result;
     }
 
-    private function convertObjectType(Mapper\DTO\Schema\ObjectTypeInterface $objectType): RestApiBundle\DTO\Docs\Schema\ObjectType
+    private function convertObjectType(Mapper\DTO\Schema\ObjectTypeInterface $objectType): RestApiBundle\DTO\OpenApi\Schema\ObjectType
     {
         $properties = [];
 
@@ -145,11 +145,11 @@ class RequestModelHelper
             $properties[$name] = $this->convert($property);
         }
 
-        return new RestApiBundle\DTO\Docs\Schema\ObjectType($properties, $objectType->getNullable());
+        return new RestApiBundle\DTO\OpenApi\Schema\ObjectType($properties, $objectType->getNullable());
     }
 
-    private function convertCollectionType(Mapper\DTO\Schema\CollectionTypeInterface $collectionType): RestApiBundle\DTO\Docs\Schema\ArrayType
+    private function convertCollectionType(Mapper\DTO\Schema\CollectionTypeInterface $collectionType): RestApiBundle\DTO\OpenApi\Schema\ArrayType
     {
-        return new RestApiBundle\DTO\Docs\Schema\ArrayType($this->convert($collectionType->getItems()), $collectionType->getNullable());
+        return new RestApiBundle\DTO\OpenApi\Schema\ArrayType($this->convert($collectionType->getItems()), $collectionType->getNullable());
     }
 }

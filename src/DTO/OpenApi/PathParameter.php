@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\DTO\Docs;
+namespace RestApiBundle\DTO\OpenApi;
 
 use RestApiBundle;
 
@@ -12,11 +12,11 @@ class PathParameter
     private $name;
 
     /**
-     * @var RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+     * @var RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
      */
     private $schema;
 
-    public function __construct(string $name, RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface $schema)
+    public function __construct(string $name, RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface $schema)
     {
         $this->name = $name;
         $this->schema = $schema;

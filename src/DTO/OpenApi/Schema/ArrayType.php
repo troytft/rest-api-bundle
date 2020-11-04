@@ -1,18 +1,18 @@
 <?php
 
-namespace RestApiBundle\DTO\Docs\Schema;
+namespace RestApiBundle\DTO\OpenApi\Schema;
 
 use RestApiBundle;
 use Symfony\Component\Validator\Constraint;
 use function sprintf;
 
 class ArrayType implements
-    RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface,
-    RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface,
-    RestApiBundle\DTO\Docs\Schema\DescriptionAwareInterface
+    RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface,
+    RestApiBundle\DTO\OpenApi\Schema\ValidationAwareInterface,
+    RestApiBundle\DTO\OpenApi\Schema\DescriptionAwareInterface
 {
     /**
-     * @var RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+     * @var RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
      */
     private $innerType;
 
@@ -26,13 +26,13 @@ class ArrayType implements
      */
     private $constraints = [];
 
-    public function __construct(RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface $innerType, bool $nullable)
+    public function __construct(RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface $innerType, bool $nullable)
     {
         $this->innerType = $innerType;
         $this->nullable = $nullable;
     }
 
-    public function getInnerType(): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    public function getInnerType(): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
     {
         return $this->innerType;
     }
@@ -70,7 +70,7 @@ class ArrayType implements
     public function getDescription(): ?string
     {
         $innerType = $this->getInnerType();
-        if ($this->innerType instanceof RestApiBundle\DTO\Docs\Schema\DescriptionAwareInterface && $this->innerType->getDescription()) {
+        if ($this->innerType instanceof RestApiBundle\DTO\OpenApi\Schema\DescriptionAwareInterface && $this->innerType->getDescription()) {
             return sprintf('Array of %s', $this->innerType->getDescription());
         }
 

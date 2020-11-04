@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\TestCase\Services\Docs\Schema;
+namespace Tests\TestCase\Services\OpenApi\Schema;
 
 use Symfony\Component\HttpFoundation\Response;
 use Tests;
@@ -13,10 +13,10 @@ class TypeHintReaderTest extends Tests\TestCase\BaseTestCase
         $reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('registerAction');
 
-        /** @var RestApiBundle\DTO\Docs\Schema\ClassType $returnType */
+        /** @var RestApiBundle\DTO\OpenApi\Schema\ClassType $returnType */
         $returnType = $this->getTypeHintSchemaReader()->getMethodReturnSchema($reflectionMethod);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ClassType::class, $returnType);
+        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\ClassType::class, $returnType);
         $this->assertSame(Response::class, $returnType->getClass());
         $this->assertFalse($returnType->getNullable());
     }
@@ -34,10 +34,10 @@ class TypeHintReaderTest extends Tests\TestCase\BaseTestCase
         $reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('notNullableResponseModelTypeHintAction');
 
-        /** @var RestApiBundle\DTO\Docs\Schema\ClassType $returnType */
+        /** @var RestApiBundle\DTO\OpenApi\Schema\ClassType $returnType */
         $returnType = $this->getTypeHintSchemaReader()->getMethodReturnSchema($reflectionMethod);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ClassType::class, $returnType);
+        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\ClassType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertFalse($returnType->getNullable());
     }
@@ -47,10 +47,10 @@ class TypeHintReaderTest extends Tests\TestCase\BaseTestCase
         $reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('nullableResponseModelTypeHintAction');
 
-        /** @var RestApiBundle\DTO\Docs\Schema\ClassType $returnType */
+        /** @var RestApiBundle\DTO\OpenApi\Schema\ClassType $returnType */
         $returnType = $this->getTypeHintSchemaReader()->getMethodReturnSchema($reflectionMethod);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\ClassType::class, $returnType);
+        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\ClassType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertTrue($returnType->getNullable());
     }
@@ -62,6 +62,6 @@ class TypeHintReaderTest extends Tests\TestCase\BaseTestCase
 
         $returnType = $this->getTypeHintSchemaReader()->getMethodReturnSchema($reflectionMethod);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Schema\NullType::class, $returnType);
+        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\NullType::class, $returnType);
     }
 }

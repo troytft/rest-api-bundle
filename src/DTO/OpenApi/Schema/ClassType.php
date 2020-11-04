@@ -1,16 +1,17 @@
 <?php
 
-namespace RestApiBundle\DTO\Docs\Schema;
+namespace RestApiBundle\DTO\OpenApi\Schema;
 
 use RestApiBundle;
 use Symfony\Component\Validator\Constraint;
 
-class IntegerType implements
-    RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface,
-    RestApiBundle\DTO\Docs\Schema\ScalarInterface,
-    RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface,
-    RestApiBundle\DTO\Docs\Schema\DescriptionAwareInterface
+class ClassType implements RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface, RestApiBundle\DTO\OpenApi\Schema\ValidationAwareInterface
 {
+    /**
+     * @var string
+     */
+    private $class;
+
     /**
      * @var bool
      */
@@ -21,14 +22,15 @@ class IntegerType implements
      */
     private $constraints = [];
 
-    /**
-     * @var string|null
-     */
-    private $description;
-
-    public function __construct(bool $nullable)
+    public function __construct(string $class, bool $nullable)
     {
+        $this->class = $class;
         $this->nullable = $nullable;
+    }
+
+    public function getClass(): string
+    {
+        return $this->class;
     }
 
     public function getNullable(): bool
@@ -52,18 +54,6 @@ class IntegerType implements
     public function setConstraints(array $constraints)
     {
         $this->constraints = $constraints;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description)
-    {
-        $this->description = $description;
 
         return $this;
     }

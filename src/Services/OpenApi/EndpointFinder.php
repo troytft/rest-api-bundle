@@ -70,7 +70,7 @@ class EndpointFinder
     }
 
     /**
-     * @return RestApiBundle\DTO\Docs\EndpointData[]
+     * @return RestApiBundle\DTO\OpenApi\EndpointData[]
      */
     public function findInDirectory(string $directory): array
     {
@@ -129,7 +129,7 @@ class EndpointFinder
     }
 
     /**
-     * @return RestApiBundle\DTO\Docs\EndpointData[]
+     * @return RestApiBundle\DTO\OpenApi\EndpointData[]
      */
     private function extractFromController(string $class): array
     {
@@ -168,7 +168,7 @@ class EndpointFinder
                     throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyRoutePathException();
                 }
 
-                $endpointData = new RestApiBundle\DTO\Docs\EndpointData();
+                $endpointData = new RestApiBundle\DTO\OpenApi\EndpointData();
                 $endpointData
                     ->setTitle($endpointAnnotation->title)
                     ->setDescription($endpointAnnotation->description)
@@ -190,7 +190,7 @@ class EndpointFinder
     }
 
     /**
-     * @return RestApiBundle\DTO\Docs\PathParameter[]
+     * @return RestApiBundle\DTO\OpenApi\PathParameter[]
      */
     private function getPathParameters(string $path, \ReflectionMethod $reflectionMethod): array
     {
@@ -216,14 +216,14 @@ class EndpointFinder
 
                 $isNameEqualsToPlaceholder = $parameter->getName() === $placeholder;
 
-                if ($isNameEqualsToPlaceholder && $parameterSchema instanceof RestApiBundle\DTO\Docs\Schema\ScalarInterface) {
-                    $pathParameter = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $parameterSchema);
+                if ($isNameEqualsToPlaceholder && $parameterSchema instanceof RestApiBundle\DTO\OpenApi\Schema\ScalarInterface) {
+                    $pathParameter = new RestApiBundle\DTO\OpenApi\PathParameter($placeholder, $parameterSchema);
 
                     break;
-                } elseif ($parameterSchema instanceof RestApiBundle\DTO\Docs\Schema\ClassType && $this->doctrineHelper->isEntity($parameterSchema->getClass())) {
+                } elseif ($parameterSchema instanceof RestApiBundle\DTO\OpenApi\Schema\ClassType && $this->doctrineHelper->isEntity($parameterSchema->getClass())) {
                     $fieldName = $isNameEqualsToPlaceholder ? 'id' : $placeholder;
                     $parameterSchema = $this->doctrineHelper->getEntityFieldSchema($parameterSchema->getClass(), $fieldName, false);
-                    $pathParameter = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $parameterSchema);
+                    $pathParameter = new RestApiBundle\DTO\OpenApi\PathParameter($placeholder, $parameterSchema);
 
                     break;
                 }
@@ -257,7 +257,7 @@ class EndpointFinder
 
         foreach ($reflectionMethod->getParameters() as $parameter) {
             $schema = $this->typeHintSchemaReader->getMethodParameterSchema($parameter);
-            if ($schema instanceof RestApiBundle\DTO\Docs\Schema\ClassType && RestApiBundle\Services\Request\RequestModelHelper::isRequestModel($schema->getClass())) {
+            if ($schema instanceof RestApiBundle\DTO\OpenApi\Schema\ClassType && RestApiBundle\Services\Request\RequestModelHelper::isRequestModel($schema->getClass())) {
                 $result = $schema->getClass();
 
                 break;

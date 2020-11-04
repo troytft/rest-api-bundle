@@ -1,15 +1,15 @@
 <?php
 
-namespace RestApiBundle\DTO\Docs\Schema;
+namespace RestApiBundle\DTO\OpenApi\Schema;
 
 use RestApiBundle;
 use Symfony\Component\Validator\Constraint;
 
-class StringType implements
-    RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface,
-    RestApiBundle\DTO\Docs\Schema\ScalarInterface,
-    RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface,
-    RestApiBundle\DTO\Docs\Schema\DescriptionAwareInterface
+class BooleanType implements
+    RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface,
+    RestApiBundle\DTO\OpenApi\Schema\ScalarInterface,
+    RestApiBundle\DTO\OpenApi\Schema\ValidationAwareInterface,
+    RestApiBundle\DTO\OpenApi\Schema\DescriptionAwareInterface
 {
     /**
      * @var bool

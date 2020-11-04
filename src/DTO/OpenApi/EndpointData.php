@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\DTO\Docs;
+namespace RestApiBundle\DTO\OpenApi;
 
 use RestApiBundle;
 
@@ -32,17 +32,17 @@ class EndpointData
     private $methods;
 
     /**
-     * @var RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+     * @var RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
      */
     private $response;
 
     /**
-     * @var RestApiBundle\DTO\Docs\PathParameter[]
+     * @var RestApiBundle\DTO\OpenApi\PathParameter[]
      */
     private $pathParameters = [];
 
     /**
-     * @var RestApiBundle\DTO\Docs\Schema\ObjectType|null
+     * @var RestApiBundle\DTO\OpenApi\Schema\ObjectType|null
      */
     private $requestModel;
 
@@ -119,7 +119,7 @@ class EndpointData
     }
 
     /**
-     * @return RestApiBundle\DTO\Docs\PathParameter[]
+     * @return RestApiBundle\DTO\OpenApi\PathParameter[]
      */
     public function getPathParameters(): array
     {
@@ -127,7 +127,7 @@ class EndpointData
     }
 
     /**
-     * @param RestApiBundle\DTO\Docs\PathParameter[] $pathParameters
+     * @param RestApiBundle\DTO\OpenApi\PathParameter[] $pathParameters
      *
      * @return $this
      */
@@ -138,12 +138,12 @@ class EndpointData
         return $this;
     }
 
-    public function getRequestModel(): ?RestApiBundle\DTO\Docs\Schema\ObjectType
+    public function getRequestModel(): ?RestApiBundle\DTO\OpenApi\Schema\ObjectType
     {
         return $this->requestModel;
     }
 
-    public function setRequestModel(?RestApiBundle\DTO\Docs\Schema\ObjectType $requestModel)
+    public function setRequestModel(?RestApiBundle\DTO\OpenApi\Schema\ObjectType $requestModel)
     {
         $this->requestModel = $requestModel;
 

@@ -1,17 +1,15 @@
 <?php
 
-namespace RestApiBundle\DTO\Docs\Schema;
+namespace RestApiBundle\DTO\OpenApi\Schema;
 
 use RestApiBundle;
 use Symfony\Component\Validator\Constraint;
 
-class ClassType implements RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface, RestApiBundle\DTO\Docs\Schema\ValidationAwareInterface
+class DateType implements
+    RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface,
+    RestApiBundle\DTO\OpenApi\Schema\ValidationAwareInterface,
+    RestApiBundle\DTO\OpenApi\Schema\DescriptionAwareInterface
 {
-    /**
-     * @var string
-     */
-    private $class;
-
     /**
      * @var bool
      */
@@ -22,15 +20,14 @@ class ClassType implements RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface, Re
      */
     private $constraints = [];
 
-    public function __construct(string $class, bool $nullable)
-    {
-        $this->class = $class;
-        $this->nullable = $nullable;
-    }
+    /**
+     * @var string|null
+     */
+    private $description;
 
-    public function getClass(): string
+    public function __construct(bool $nullable)
     {
-        return $this->class;
+        $this->nullable = $nullable;
     }
 
     public function getNullable(): bool
@@ -54,6 +51,18 @@ class ClassType implements RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface, Re
     public function setConstraints(array $constraints)
     {
         $this->constraints = $constraints;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description)
+    {
+        $this->description = $description;
 
         return $this;
     }

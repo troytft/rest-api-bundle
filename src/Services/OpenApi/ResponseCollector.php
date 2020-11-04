@@ -12,7 +12,7 @@ use function substr;
 class ResponseCollector
 {
     /**
-     * @var array<string, RestApiBundle\DTO\Docs\Schema\ObjectType>
+     * @var array<string, RestApiBundle\DTO\OpenApi\Schema\ObjectType>
      */
     private $objectClassCache = [];
 
@@ -34,7 +34,7 @@ class ResponseCollector
         $this->docBlockReader = $docBlockReader;
     }
 
-    public function getByReflectionMethod(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    public function getByReflectionMethod(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
     {
         try {
             $schema = $this->docBlockReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintReader->getMethodReturnSchema($reflectionMethod);
@@ -43,12 +43,12 @@ class ResponseCollector
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
             }
 
-            if ($schema instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
+            if ($schema instanceof RestApiBundle\DTO\OpenApi\Schema\ClassType) {
                 $schema = $this->resolveClassType($schema);
-            } elseif ($schema instanceof RestApiBundle\DTO\Docs\Schema\ArrayType && $schema->getInnerType() instanceof RestApiBundle\DTO\Docs\Schema\ClassType) {
-                /** @var RestApiBundle\DTO\Docs\Schema\ClassType $innerType */
+            } elseif ($schema instanceof RestApiBundle\DTO\OpenApi\Schema\ArrayType && $schema->getInnerType() instanceof RestApiBundle\DTO\OpenApi\Schema\ClassType) {
+                /** @var RestApiBundle\DTO\OpenApi\Schema\ClassType $innerType */
                 $innerType = $schema->getInnerType();
-                $schema = new RestApiBundle\DTO\Docs\Schema\ArrayType($this->resolveClassType($innerType), $schema->getNullable());
+                $schema = new RestApiBundle\DTO\OpenApi\Schema\ArrayType($this->resolveClassType($innerType), $schema->getNullable());
             }
         } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
             $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
@@ -58,10 +58,10 @@ class ResponseCollector
         return $schema;
     }
 
-    private function resolveClassType(RestApiBundle\DTO\Docs\Schema\ClassType $classType): RestApiBundle\DTO\Docs\Schema\SchemaTypeInterface
+    private function resolveClassType(RestApiBundle\DTO\OpenApi\Schema\ClassType $classType): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
     {
         if ($classType->getClass() === \DateTime::class) {
-            $result = new RestApiBundle\DTO\Docs\Schema\DateTimeType($classType->getNullable());
+            $result = new RestApiBundle\DTO\OpenApi\Schema\DateTimeType($classType->getNullable());
         } elseif (RestApiBundle\Services\Response\ResponseModelHelper::isResponseModel($classType->getClass())) {
             $result = $this->getResponseModelSchemaByClass($classType->getClass(), $classType->getNullable());
         } else {
@@ -71,7 +71,7 @@ class ResponseCollector
         return $result;
     }
 
-    private function getResponseModelSchemaByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Schema\ObjectType
+    private function getResponseModelSchemaByClass(string $class, bool $isNullable): RestApiBundle\DTO\OpenApi\Schema\ObjectType
     {
         $class = ltrim($class, '\\');
         $cacheKey = sprintf('%s-%d', $class, $isNullable);
@@ -97,9 +97,9 @@ class ResponseCollector
             $properties[$propertyName] = $this->getByReflectionMethod($reflectionMethod);
         }
 
-        $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\Docs\Schema\StringType(false);
+        $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\OpenApi\Schema\StringType(false);
 
-        $this->objectClassCache[$cacheKey] = new RestApiBundle\DTO\Docs\Schema\ObjectType($properties, $isNullable);
+        $this->objectClassCache[$cacheKey] = new RestApiBundle\DTO\OpenApi\Schema\ObjectType($properties, $isNullable);
 
         return $this->objectClassCache[$cacheKey];
     }
