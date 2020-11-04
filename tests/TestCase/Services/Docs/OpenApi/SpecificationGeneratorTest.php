@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\TestCase\Services\Docs\OpenApi;
+namespace Tests\TestCase\Services\OpenApi;
 
 use cebe\openapi\SpecObjectInterface;
 use Symfony;
@@ -19,7 +19,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             ->setDescription('Description');
 
         /** @var OpenApi\Parameter $openApiParameter */
-        $openApiParameter = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'createParameter', ['path', 'parameterName', $schema]);
+        $openApiParameter = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'createParameter', ['path', 'parameterName', $schema]);
 
         $this->assertInstanceOf(OpenApi\Parameter::class, $openApiParameter);
 
@@ -40,7 +40,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
     public function testConvertSchemaType()
     {
         $booleanType = new RestApiBundle\DTO\Docs\Schema\BooleanType(false);
-        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$booleanType]);
+        $openApiSchema = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertSchemaType', [$booleanType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
 
@@ -53,7 +53,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
 
         // nullable
         $booleanType = new RestApiBundle\DTO\Docs\Schema\BooleanType(true);
-        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$booleanType]);
+        $openApiSchema = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertSchemaType', [$booleanType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
 
@@ -76,7 +76,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $integerType
             ->setConstraints([$constraint]);
 
-        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$integerType]);
+        $openApiSchema = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertSchemaType', [$integerType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
 
@@ -100,7 +100,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $stringType
             ->setConstraints([$constraint]);
 
-        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$stringType]);
+        $openApiSchema = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertSchemaType', [$stringType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
 
@@ -126,7 +126,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $stringType
             ->setConstraints([$constraint]);
 
-        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$stringType]);
+        $openApiSchema = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertSchemaType', [$stringType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
 
@@ -153,7 +153,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $arrayType
             ->setConstraints([$constraint]);
 
-        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$arrayType]);
+        $openApiSchema = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertSchemaType', [$arrayType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
 
@@ -181,7 +181,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $stringType
             ->setConstraints([$constraint]);
 
-        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$stringType]);
+        $openApiSchema = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertSchemaType', [$stringType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
 
@@ -203,7 +203,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $objectType = new RestApiBundle\DTO\Docs\Schema\ObjectType($objectProperties, false);
 
         /** @var OpenApi\Parameter[] $openApiParameters */
-        $openApiParameters = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertRequestModelToParameters', [$objectType]);
+        $openApiParameters = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertRequestModelToParameters', [$objectType]);
 
         $this->assertIsArray($openApiParameters);
         $this->assertCount(2, $openApiParameters);
@@ -240,7 +240,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $objectType = new RestApiBundle\DTO\Docs\Schema\ObjectType($objectProperties, false);
 
         /** @var OpenApi\RequestBody $requestBody */
-        $requestBody = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertRequestModelToRequestBody', [$objectType]);
+        $requestBody = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertRequestModelToRequestBody', [$objectType]);
 
         $expected = [
             'description' => 'Request body',
@@ -271,7 +271,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
     public function testConvertDateTimeType()
     {
         $dateTimeType = new RestApiBundle\DTO\Docs\Schema\DateTimeType(false);
-        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$dateTimeType]);
+        $openApiSchema = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertSchemaType', [$dateTimeType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
 
@@ -287,7 +287,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
     public function testConvertDateType()
     {
         $dateType = new RestApiBundle\DTO\Docs\Schema\DateType(false);
-        $openApiSchema = $this->invokePrivateMethod($this->getOpenApiSpecificationGenerator(), 'convertSchemaType', [$dateType]);
+        $openApiSchema = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertSchemaType', [$dateType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
 
@@ -308,5 +308,13 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
     private function convertOpenApiToArray(SpecObjectInterface $specObject): array
     {
         return $this->convertStdClassToArray($specObject->getSerializableData());
+    }
+
+    private function getSpecificationGenerator(): RestApiBundle\Services\OpenApi\SpecificationGenerator
+    {
+        /** @var RestApiBundle\Services\OpenApi\SpecificationGenerator $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\SpecificationGenerator::class);
+
+        return $result;
     }
 }

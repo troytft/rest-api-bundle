@@ -13,13 +13,13 @@ class DocsGenerator
     private $endpointFinder;
 
     /**
-     * @var RestApiBundle\Services\OpenApi\OpenApi\SpecificationGenerator
+     * @var RestApiBundle\Services\OpenApi\SpecificationGenerator
      */
     private $openApiSpecificationGenerator;
 
     public function __construct(
         RestApiBundle\Services\OpenApi\EndpointFinder $endpointFinder,
-        RestApiBundle\Services\OpenApi\OpenApi\SpecificationGenerator $openApiSpecificationGenerator
+        RestApiBundle\Services\OpenApi\SpecificationGenerator $openApiSpecificationGenerator
     ) {
         $this->endpointFinder = $endpointFinder;
         $this->openApiSpecificationGenerator = $openApiSpecificationGenerator;
