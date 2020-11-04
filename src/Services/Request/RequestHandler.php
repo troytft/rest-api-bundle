@@ -65,7 +65,7 @@ class RequestHandler
         } catch (Mapper\Exception\ExceptionInterface $exception) {
             $translationParameters = [];
 
-            if ($exception instanceof Mapper\Exception\MappingValidation\MappingValidationExceptionInterface || $exception instanceof Mapper\Exception\MappingValidation\UndefinedKeyException) {
+            if ($exception instanceof Mapper\Exception\MappingValidation\MappingValidationExceptionInterface) {
                 $path = $exception->getPathAsString();
                 $translationId = get_class($exception);
             } elseif ($exception instanceof Mapper\Exception\Transformer\WrappedTransformerException) {

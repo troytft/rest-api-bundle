@@ -20,11 +20,11 @@ class GenerateDocsCommand extends Command
     protected static $defaultName = 'rest-api:generate-docs';
 
     /**
-     * @var RestApiBundle\Services\Docs\DocsGenerator
+     * @var RestApiBundle\Services\OpenApi\DocsGenerator
      */
     private $docsGenerator;
 
-    public function __construct(RestApiBundle\Services\Docs\DocsGenerator $docsGenerator)
+    public function __construct(RestApiBundle\Services\OpenApi\DocsGenerator $docsGenerator)
     {
         parent::__construct();
 
