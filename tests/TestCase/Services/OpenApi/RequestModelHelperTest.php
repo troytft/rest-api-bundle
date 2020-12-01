@@ -15,7 +15,7 @@ class RequestModelHelperTest extends Tests\TestCase\BaseTestCase
             ->setNullable(false)
             ->setTransformerName(Mapper\Transformer\DateTimeTransformer::getName());
 
-        /** @var RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface $docsSchema */
+        /** @var RestApiBundle\DTO\OpenApi\Schema\TypeInterface $docsSchema */
         $docsSchema = $this->invokePrivateMethod($this->getRequestModelHelper(), 'convert', [$mapperSchema]);
 
         $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\DateTimeType::class, $docsSchema);
@@ -29,7 +29,7 @@ class RequestModelHelperTest extends Tests\TestCase\BaseTestCase
             ->setNullable(false)
             ->setTransformerName(Mapper\Transformer\DateTransformer::getName());
 
-        /** @var RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface $docsSchema */
+        /** @var RestApiBundle\DTO\OpenApi\Schema\TypeInterface $docsSchema */
         $docsSchema = $this->invokePrivateMethod($this->getRequestModelHelper(), 'convert', [$mapperSchema]);
 
         $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\DateType::class, $docsSchema);

@@ -3,149 +3,99 @@
 namespace RestApiBundle\DTO\OpenApi;
 
 use RestApiBundle;
+use Symfony\Component\Routing\Annotation\Route;
 
 class EndpointData
 {
     /**
-     * @var string
+     * @var RestApiBundle\Annotation\Docs\Endpoint
      */
-    private $title;
+    private $endpointAnnotation;
 
     /**
-     * @var string|null
+     * @var Route|null
      */
-    private $description;
+    private $controllerRouteAnnotation;
 
     /**
-     * @var string[]
+     * @var Route
      */
-    private $tags;
+    private $actionRouteAnnotation;
 
     /**
-     * @var string
+     * @var RestApiBundle\DTO\OpenApi\Schema\TypeInterface
      */
-    private $path;
+    private $returnType;
 
     /**
-     * @var string[]
+     * @var RestApiBundle\DTO\OpenApi\Schema\TypeInterface[]
      */
-    private $methods;
+    private $parameters = [];
 
-    /**
-     * @var RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
-     */
-    private $response;
-
-    /**
-     * @var RestApiBundle\DTO\OpenApi\PathParameter[]
-     */
-    private $pathParameters = [];
-
-    /**
-     * @var RestApiBundle\DTO\OpenApi\Schema\ObjectType|null
-     */
-    private $requestModel;
-
-    public function getTitle(): string
+    public function getEndpointAnnotation(): RestApiBundle\Annotation\Docs\Endpoint
     {
-        return $this->title;
+        return $this->endpointAnnotation;
     }
 
-    public function setTitle(string $title)
+    public function setEndpointAnnotation(RestApiBundle\Annotation\Docs\Endpoint $endpointAnnotation)
     {
-        $this->title = $title;
+        $this->endpointAnnotation = $endpointAnnotation;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getControllerRouteAnnotation(): ?Route
     {
-        return $this->description;
+        return $this->controllerRouteAnnotation;
     }
 
-    public function setDescription(?string $description)
+    public function setControllerRouteAnnotation(?Route $controllerRouteAnnotation)
     {
-        $this->description = $description;
+        $this->controllerRouteAnnotation = $controllerRouteAnnotation;
 
         return $this;
     }
 
-    public function getTags(): array
+    public function getActionRouteAnnotation(): Route
     {
-        return $this->tags;
+        return $this->actionRouteAnnotation;
     }
 
-    public function setTags(array $tags)
+    public function setActionRouteAnnotation(Route $actionRouteAnnotation)
     {
-        $this->tags = $tags;
+        $this->actionRouteAnnotation = $actionRouteAnnotation;
 
         return $this;
     }
 
-    public function getPath(): string
+    public function getReturnType(): Schema\TypeInterface
     {
-        return $this->path;
+        return $this->returnType;
     }
 
-    public function setPath(string $path)
+    public function setReturnType(Schema\TypeInterface $returnType)
     {
-        $this->path = $path;
-
-        return $this;
-    }
-
-    public function getMethods(): array
-    {
-        return $this->methods;
-    }
-
-    public function setMethods(array $methods)
-    {
-        $this->methods = $methods;
-
-        return $this;
-    }
-
-    public function getResponse(): Schema\SchemaTypeInterface
-    {
-        return $this->response;
-    }
-
-    public function setResponse(Schema\SchemaTypeInterface $response)
-    {
-        $this->response = $response;
+        $this->returnType = $returnType;
 
         return $this;
     }
 
     /**
-     * @return RestApiBundle\DTO\OpenApi\PathParameter[]
+     * @return RestApiBundle\DTO\OpenApi\Schema\TypeInterface[]
      */
-    public function getPathParameters(): array
+    public function getParameters(): array
     {
-        return $this->pathParameters;
+        return $this->parameters;
     }
 
     /**
-     * @param RestApiBundle\DTO\OpenApi\PathParameter[] $pathParameters
+     * @param RestApiBundle\DTO\OpenApi\Schema\TypeInterface[] $parameters
      *
      * @return $this
      */
-    public function setPathParameters(array $pathParameters)
+    public function setParameters(array $parameters)
     {
-        $this->pathParameters = $pathParameters;
-
-        return $this;
-    }
-
-    public function getRequestModel(): ?RestApiBundle\DTO\OpenApi\Schema\ObjectType
-    {
-        return $this->requestModel;
-    }
-
-    public function setRequestModel(?RestApiBundle\DTO\OpenApi\Schema\ObjectType $requestModel)
-    {
-        $this->requestModel = $requestModel;
+        $this->parameters = $parameters;
 
         return $this;
     }

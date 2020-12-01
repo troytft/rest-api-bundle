@@ -43,29 +43,8 @@ class RequestModelHelper
         return $objectType;
     }
 
-    private function applyValidationConstraints(RestApiBundle\DTO\OpenApi\Schema\ObjectType $objectType, string $class): void
-    {
-        $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
 
-        foreach ($objectType->getProperties() as $propertyName => $propertySchema) {
-            if (!$propertySchema instanceof RestApiBundle\DTO\OpenApi\Schema\ValidationAwareInterface) {
-                continue;
-            }
-
-            $constraints = [];
-            $annotations = $this->annotationReader->getPropertyAnnotations($reflectionClass->getProperty($propertyName));
-
-            foreach ($annotations as $annotation) {
-                if ($annotation instanceof Constraint) {
-                    $constraints[] = $annotation;
-                }
-            }
-
-            $propertySchema->setConstraints($constraints);
-        }
-    }
-
-    private function convert(Mapper\DTO\Schema\TypeInterface $type): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+    private function convert(Mapper\DTO\Schema\TypeInterface $type): RestApiBundle\DTO\OpenApi\Schema\TypeInterface
     {
         if ($type instanceof Mapper\DTO\Schema\ObjectTypeInterface) {
             $result = $this->convertObjectType($type);
@@ -80,7 +59,7 @@ class RequestModelHelper
         return $result;
     }
 
-    private function convertScalar(Mapper\DTO\Schema\ScalarTypeInterface $scalarType): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+    private function convertScalar(Mapper\DTO\Schema\ScalarTypeInterface $scalarType): RestApiBundle\DTO\OpenApi\Schema\TypeInterface
     {
         switch ($scalarType->getTransformerName()) {
             case Mapper\Transformer\BooleanTransformer::getName():

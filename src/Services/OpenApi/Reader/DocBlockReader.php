@@ -20,7 +20,7 @@ class DocBlockReader extends RestApiBundle\Services\OpenApi\Reader\BaseReader
         $this->docBlockFactory = DocBlockFactory::createInstance();
     }
 
-    public function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+    public function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\OpenApi\Schema\TypeInterface
     {
         if (!$reflectionMethod->getDocComment()) {
             return null;
@@ -46,7 +46,7 @@ class DocBlockReader extends RestApiBundle\Services\OpenApi\Reader\BaseReader
         return $this->convertTypeToSchema($returnTag->getType(), false);
     }
 
-    private function convertTypeToSchema(PhpDoc\Type $type, bool $nullable): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+    private function convertTypeToSchema(PhpDoc\Type $type, bool $nullable): RestApiBundle\DTO\OpenApi\Schema\TypeInterface
     {
         if ($type instanceof PhpDoc\Types\Null_) {
             $result = new RestApiBundle\DTO\OpenApi\Schema\NullType();
@@ -66,7 +66,7 @@ class DocBlockReader extends RestApiBundle\Services\OpenApi\Reader\BaseReader
         return $result;
     }
 
-    private function convertCompoundTypeToSchema(PhpDoc\Types\Compound $type): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+    private function convertCompoundTypeToSchema(PhpDoc\Types\Compound $type): RestApiBundle\DTO\OpenApi\Schema\TypeInterface
     {
         $compoundTypes = (array) $type->getIterator();
         if (count($compoundTypes) !== 2) {
@@ -91,7 +91,7 @@ class DocBlockReader extends RestApiBundle\Services\OpenApi\Reader\BaseReader
             $result = $this->convertTypeToSchema($compoundType, true);
         }
 
-        if (!$result instanceof RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface) {
+        if (!$result instanceof RestApiBundle\DTO\OpenApi\Schema\TypeInterface) {
             throw new \InvalidArgumentException();
         }
 

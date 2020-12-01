@@ -8,7 +8,7 @@ use function ltrim;
 
 abstract class BaseReader
 {
-    protected function createScalarTypeFromString(string $type, bool $nullable): ?RestApiBundle\DTO\OpenApi\Schema\ScalarInterface
+    protected function createScalarTypeFromString(string $type, bool $nullable): ?RestApiBundle\DTO\OpenApi\Schema\TypeInterface
     {
         switch ($type) {
             case RestApiBundle\Enum\Docs\ScalarType::STRING:

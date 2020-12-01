@@ -6,7 +6,7 @@ use RestApiBundle;
 
 class TypeHintReader extends RestApiBundle\Services\OpenApi\Reader\BaseReader
 {
-    public function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+    public function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\OpenApi\Schema\TypeInterface
     {
         if (!$reflectionMethod->getReturnType()) {
             return null;
@@ -16,7 +16,7 @@ class TypeHintReader extends RestApiBundle\Services\OpenApi\Reader\BaseReader
         return $this->createFromString((string) $reflectionMethod->getReturnType(), $reflectionMethod->getReturnType()->allowsNull());
     }
 
-    public function getMethodParameterSchema(\ReflectionParameter $reflectionParameter): ?RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+    public function getTypeByReflectionParameter(\ReflectionParameter $reflectionParameter): ?RestApiBundle\DTO\OpenApi\Schema\TypeInterface
     {
         if (!$reflectionParameter->getType()) {
             return null;
@@ -25,7 +25,7 @@ class TypeHintReader extends RestApiBundle\Services\OpenApi\Reader\BaseReader
         return $this->createFromString($reflectionParameter->getType(), $reflectionParameter->allowsNull());
     }
 
-    private function createFromString(string $type, bool $nullable): ?RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+    private function createFromString(string $type, bool $nullable): ?RestApiBundle\DTO\OpenApi\Schema\TypeInterface
     {
         if ($type === 'array') {
             $result = null;

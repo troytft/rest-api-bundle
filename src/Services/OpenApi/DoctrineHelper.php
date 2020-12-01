@@ -28,7 +28,7 @@ class DoctrineHelper
         return (bool) $this->annotationReader->getClassAnnotation($reflectionClass, Doctrine\ORM\Mapping\Entity::class);
     }
 
-    public function getEntityFieldSchema(string $class, string $field, bool $nullable): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+    public function getEntityFieldSchema(string $class, string $field, bool $nullable): RestApiBundle\DTO\OpenApi\Schema\TypeInterface
     {
         $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
         $reflectionProperty = $reflectionClass->getProperty($field);

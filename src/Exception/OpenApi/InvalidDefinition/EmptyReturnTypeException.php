@@ -4,7 +4,7 @@ namespace RestApiBundle\Exception\OpenApi\InvalidDefinition;
 
 use RestApiBundle;
 
-class EmptyResponseException extends RestApiBundle\Exception\OpenApi\InvalidDefinition\BaseInvalidDefinitionException
+class EmptyReturnTypeException extends RestApiBundle\Exception\OpenApi\InvalidDefinition\BaseInvalidDefinitionException
 {
     public function __construct()
     {

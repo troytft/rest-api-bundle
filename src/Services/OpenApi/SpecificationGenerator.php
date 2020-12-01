@@ -77,7 +77,7 @@ class SpecificationGenerator
                 ]);
             }
 
-            $returnType = $routeData->getResponse();
+            $returnType = $routeData->getReturnType();
 
             $responses = new OpenApi\Responses([]);
 
@@ -98,7 +98,7 @@ class SpecificationGenerator
 
             $pathParameters = [];
 
-            foreach ($routeData->getPathParameters() as $pathParameter) {
+            foreach ($routeData->getParameters() as $pathParameter) {
                 $pathParameters[] = $this->createParameter('path', $pathParameter->getName(), $pathParameter->getSchema());
             }
 
@@ -175,7 +175,7 @@ class SpecificationGenerator
         return $result;
     }
 
-    private function createParameter(string $type, string $name, RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface $schema): OpenApi\Parameter
+    private function createParameter(string $type, string $name, RestApiBundle\DTO\OpenApi\Schema\TypeInterface $schema): OpenApi\Parameter
     {
         $data = [
             'in' => $type,
@@ -194,7 +194,7 @@ class SpecificationGenerator
         return new OpenApi\Parameter($data);
     }
 
-    private function convertSchemaType(RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface $schemaType): OpenApi\Schema
+    private function convertSchemaType(RestApiBundle\DTO\OpenApi\Schema\TypeInterface $schemaType): OpenApi\Schema
     {
         if ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\ObjectType) {
             $result = $this->convertObjectType($schemaType);
