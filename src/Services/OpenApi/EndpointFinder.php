@@ -140,7 +140,7 @@ class EndpointFinder
                     ->setControllerRouteAnnotation($controllerRouteAnnotation)
                     ->setActionRouteAnnotation($actionRouteAnnotation)
                     ->setReturnType($returnType)
-                    ->setParameters($this->getActionParameters($reflectionMethod));
+                    ->setActionParameters($this->getActionParameters($reflectionMethod));
 
                 $result[] = $endpointData;
             } catch (RestApiBundle\Exception\OpenApi\InvalidDefinition\BaseInvalidDefinitionException $exception) {
@@ -153,7 +153,7 @@ class EndpointFinder
     }
 
     /**
-     * @return RestApiBundle\DTO\OpenApi\Schema\TypeInterface[]
+     * @return RestApiBundle\DTO\OpenApi\ActionParameter[]
      */
     private function getActionParameters(\ReflectionMethod $reflectionMethod): array
     {
@@ -161,11 +161,7 @@ class EndpointFinder
 
         foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
             $schema = $this->typeHintReader->getTypeByReflectionParameter($reflectionParameter);
-            if (!$schema) {
-                continue;
-            }
-
-            $result[] = $schema;
+            $result[] = new RestApiBundle\DTO\OpenApi\ActionParameter($reflectionParameter->getName(), $schema);
         }
 
         return $result;

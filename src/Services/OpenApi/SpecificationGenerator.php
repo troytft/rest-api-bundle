@@ -98,7 +98,7 @@ class SpecificationGenerator
 
             $pathParameters = [];
 
-            foreach ($routeData->getParameters() as $pathParameter) {
+            foreach ($routeData->getActionParameters() as $pathParameter) {
                 $pathParameters[] = $this->createParameter('path', $pathParameter->getName(), $pathParameter->getSchema());
             }
 

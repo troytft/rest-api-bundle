@@ -28,9 +28,9 @@ class EndpointData
     private $returnType;
 
     /**
-     * @var RestApiBundle\DTO\OpenApi\Schema\TypeInterface[]
+     * @var RestApiBundle\DTO\OpenApi\ActionParameter[]
      */
-    private $parameters = [];
+    private $actionParameters = [];
 
     public function getEndpointAnnotation(): RestApiBundle\Annotation\Docs\Endpoint
     {
@@ -81,21 +81,21 @@ class EndpointData
     }
 
     /**
-     * @return RestApiBundle\DTO\OpenApi\Schema\TypeInterface[]
+     * @return RestApiBundle\DTO\OpenApi\ActionParameter[]
      */
-    public function getParameters(): array
+    public function getActionParameters(): array
     {
-        return $this->parameters;
+        return $this->actionParameters;
     }
 
     /**
-     * @param RestApiBundle\DTO\OpenApi\Schema\TypeInterface[] $parameters
+     * @param RestApiBundle\DTO\OpenApi\ActionParameter[] $actionParameters
      *
      * @return $this
      */
-    public function setParameters(array $parameters)
+    public function setActionParameters(array $actionParameters)
     {
-        $this->parameters = $parameters;
+        $this->actionParameters = $actionParameters;
 
         return $this;
     }
