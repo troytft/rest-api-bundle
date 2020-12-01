@@ -138,7 +138,7 @@ class ResponseCollectorTest extends Tests\TestCase\BaseTestCase
         try {
             $this->invokePrivateMethod($this->getResponseCollector(), 'getResponseModelSchemaByClass', [Tests\TestApp\TestBundle\ResponseModel\ModelWithInvalidReturnType::class, false]);
             $this->fail();
-        } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
+        } catch (RestApiBundle\Exception\OpenApi\InvalidDefinitionException $exception) {
             $this->assertSame("Error: Unsupported return type., Context: Tests\TestApp\TestBundle\ResponseModel\ModelWithInvalidReturnType::getStringField", $exception->getMessage());
         }
     }

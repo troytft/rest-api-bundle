@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Exception\Docs;
+namespace RestApiBundle\Exception\OpenApi;
 
 use RestApiBundle;
 use function sprintf;
@@ -12,7 +12,7 @@ class InvalidDefinitionException extends \Exception
      */
     private $context;
 
-    public function __construct(RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $previous, string $context)
+    public function __construct(RestApiBundle\Exception\OpenApi\InvalidDefinition\BaseInvalidDefinitionException $previous, string $context)
     {
         $this->context = $context;
         $message = sprintf('Error: %s, Context: %s', $previous->getMessage(), $context);

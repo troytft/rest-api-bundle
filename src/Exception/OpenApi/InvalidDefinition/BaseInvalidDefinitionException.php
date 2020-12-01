@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Exception\Docs\InvalidDefinition;
+namespace RestApiBundle\Exception\OpenApi\InvalidDefinition;
 
 abstract class BaseInvalidDefinitionException extends \Exception
 {

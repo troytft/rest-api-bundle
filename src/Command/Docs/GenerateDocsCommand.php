@@ -53,7 +53,7 @@ class GenerateDocsCommand extends Command
 
         try {
             $this->docsGenerator->writeToFile($inputDirectory, $outputFile, $format);
-        } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
+        } catch (RestApiBundle\Exception\OpenApi\InvalidDefinitionException $exception) {
             $output->writeln(sprintf(
                 'Definition error in %s with message "%s"',
                 $exception->getContext(),

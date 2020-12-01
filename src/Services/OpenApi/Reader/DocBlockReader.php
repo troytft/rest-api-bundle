@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi\Schema;
+namespace RestApiBundle\Services\OpenApi\Reader;
 
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
@@ -8,7 +8,7 @@ use phpDocumentor\Reflection as PhpDoc;
 use RestApiBundle;
 use function count;
 
-class DocBlockReader extends RestApiBundle\Services\OpenApi\Schema\BaseReader
+class DocBlockReader extends RestApiBundle\Services\OpenApi\Reader\BaseReader
 {
     /**
      * @var DocBlockFactory
@@ -35,7 +35,7 @@ class DocBlockReader extends RestApiBundle\Services\OpenApi\Schema\BaseReader
         }
 
         if ($count > 1) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\TwoOrMoreReturnTagsException();
+            throw new RestApiBundle\Exception\OpenApi\InvalidDefinition\TwoOrMoreReturnTagsException();
         }
 
         $returnTag = $docBlock->getTagsByName('return')[0];
@@ -70,15 +70,15 @@ class DocBlockReader extends RestApiBundle\Services\OpenApi\Schema\BaseReader
     {
         $compoundTypes = (array) $type->getIterator();
         if (count($compoundTypes) !== 2) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
+            throw new RestApiBundle\Exception\OpenApi\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
         if ($compoundTypes[0] === $compoundTypes[1]) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
+            throw new RestApiBundle\Exception\OpenApi\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
         if (!$compoundTypes[0] instanceof PhpDoc\Types\Null_ && !$compoundTypes[1] instanceof PhpDoc\Types\Null_) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
+            throw new RestApiBundle\Exception\OpenApi\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
         $result = null;

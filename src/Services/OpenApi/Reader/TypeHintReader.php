@@ -1,10 +1,10 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi\Schema;
+namespace RestApiBundle\Services\OpenApi\Reader;
 
 use RestApiBundle;
 
-class TypeHintReader extends RestApiBundle\Services\OpenApi\Schema\BaseReader
+class TypeHintReader extends RestApiBundle\Services\OpenApi\Reader\BaseReader
 {
     public function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
     {

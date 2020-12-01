@@ -15,8 +15,8 @@ class EndpointFinderTest extends Tests\TestCase\BaseTestCase
         try {
             $this->invokePrivateMethod($this->getEndpointFinder(), 'extractFromController', [$controller]);
             $this->fail();
-        } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
-            $this->assertInstanceOf(RestApiBundle\Exception\Docs\InvalidDefinition\NotMatchedRoutePlaceholderParameterException::class, $exception->getPrevious());
+        } catch (RestApiBundle\Exception\OpenApi\InvalidDefinitionException $exception) {
+            $this->assertInstanceOf(RestApiBundle\Exception\OpenApi\InvalidDefinition\NotMatchedRoutePlaceholderParameterException::class, $exception->getPrevious());
         }
     }
 

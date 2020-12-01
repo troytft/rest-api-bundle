@@ -30,19 +30,14 @@ class EndpointFinder
     private $annotationReader;
 
     /**
-     * @var RestApiBundle\Services\OpenApi\Schema\DocBlockReader
+     * @var RestApiBundle\Services\OpenApi\Reader\DocBlockReader
      */
-    private $docBlockSchemaReader;
+    private $docBlockReader;
 
     /**
-     * @var RestApiBundle\Services\OpenApi\Schema\TypeHintReader
+     * @var RestApiBundle\Services\OpenApi\Reader\TypeHintReader
      */
-    private $typeHintSchemaReader;
-
-    /**
-     * @var RestApiBundle\Services\OpenApi\ResponseCollector
-     */
-    private $responseCollector;
+    private $typeHintReader;
 
     /**
      * @var RestApiBundle\Services\OpenApi\DoctrineHelper
@@ -55,16 +50,14 @@ class EndpointFinder
     private $requestModelHelper;
 
     public function __construct(
-        RestApiBundle\Services\OpenApi\Schema\DocBlockReader $docBlockSchemaReader,
-        RestApiBundle\Services\OpenApi\Schema\TypeHintReader $typeHintSchemaReader,
-        RestApiBundle\Services\OpenApi\ResponseCollector $responseCollector,
+        RestApiBundle\Services\OpenApi\Reader\DocBlockReader $docBlockReader,
+        RestApiBundle\Services\OpenApi\Reader\TypeHintReader $typeHintReader,
         RestApiBundle\Services\OpenApi\DoctrineHelper $doctrineHelper,
         RestApiBundle\Services\OpenApi\RequestModelHelper $requestModelHelper
     ) {
         $this->annotationReader = AnnotationReaderFactory::create(true);
-        $this->docBlockSchemaReader = $docBlockSchemaReader;
-        $this->typeHintSchemaReader = $typeHintSchemaReader;
-        $this->responseCollector = $responseCollector;
+        $this->docBlockReader = $docBlockReader;
+        $this->typeHintReader = $typeHintReader;
         $this->doctrineHelper = $doctrineHelper;
         $this->requestModelHelper = $requestModelHelper;
     }
@@ -165,7 +158,12 @@ class EndpointFinder
                 } elseif ($actionRouteAnnotation->getPath()) {
                     $path = $actionRouteAnnotation->getPath();
                 } else {
-                    throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyRoutePathException();
+                    throw new RestApiBundle\Exception\OpenApi\InvalidDefinition\EmptyRoutePathException();
+                }
+
+                $response = $this->docBlockReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintReader->getMethodReturnSchema($reflectionMethod);
+                if (!$response) {
+                    throw new RestApiBundle\Exception\OpenApi\InvalidDefinition\EmptyResponseException();
                 }
 
                 $endpointData = new RestApiBundle\DTO\OpenApi\EndpointData();
@@ -175,14 +173,14 @@ class EndpointFinder
                     ->setTags($endpointAnnotation->tags)
                     ->setPath($path)
                     ->setMethods($actionRouteAnnotation->getMethods())
-                    ->setResponse($this->responseCollector->getByReflectionMethod($reflectionMethod))
+                    ->setResponse($response)
                     ->setPathParameters($this->getPathParameters($path, $reflectionMethod))
                     ->setRequestModel($requestModelSchema);
 
                 $result[] = $endpointData;
-            } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
+            } catch (RestApiBundle\Exception\OpenApi\InvalidDefinition\BaseInvalidDefinitionException $exception) {
                 $context = sprintf('%s::%s', $class, $reflectionMethod->getName());
-                throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $context);
+                throw new RestApiBundle\Exception\OpenApi\InvalidDefinitionException($exception, $context);
             }
         }
 
@@ -209,7 +207,7 @@ class EndpointFinder
                 $parameter = $reflectionMethod->getParameters()[$parameterIndex];
                 $parameterIndex++;
 
-                $parameterSchema = $this->typeHintSchemaReader->getMethodParameterSchema($parameter);
+                $parameterSchema = $this->typeHintReader->getMethodParameterSchema($parameter);
                 if (!$parameterSchema) {
                     continue;
                 }
@@ -230,7 +228,7 @@ class EndpointFinder
             }
 
             if (!$pathParameter) {
-                throw new RestApiBundle\Exception\Docs\InvalidDefinition\NotMatchedRoutePlaceholderParameterException($placeholder);
+                throw new RestApiBundle\Exception\OpenApi\InvalidDefinition\NotMatchedRoutePlaceholderParameterException($placeholder);
             }
 
             $result[] = $pathParameter;
@@ -256,7 +254,7 @@ class EndpointFinder
         $result = null;
 
         foreach ($reflectionMethod->getParameters() as $parameter) {
-            $schema = $this->typeHintSchemaReader->getMethodParameterSchema($parameter);
+            $schema = $this->typeHintReader->getMethodParameterSchema($parameter);
             if ($schema instanceof RestApiBundle\DTO\OpenApi\Schema\ClassType && RestApiBundle\Services\Request\RequestModelHelper::isRequestModel($schema->getClass())) {
                 $result = $schema->getClass();
 

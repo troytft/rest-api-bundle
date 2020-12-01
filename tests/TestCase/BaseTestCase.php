@@ -88,10 +88,10 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $result;
     }
 
-    protected function getDocBlockSchemaReader(): RestApiBundle\Services\OpenApi\Schema\DocBlockReader
+    protected function getDocBlockSchemaReader(): RestApiBundle\Services\OpenApi\Reader\DocBlockReader
     {
-        /** @var RestApiBundle\Services\OpenApi\Schema\DocBlockReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\Schema\DocBlockReader::class);
+        /** @var RestApiBundle\Services\OpenApi\Reader\DocBlockReader $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\Reader\DocBlockReader::class);
 
         return $result;
     }
@@ -112,10 +112,10 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $result;
     }
 
-    protected function getTypeHintSchemaReader(): RestApiBundle\Services\OpenApi\Schema\TypeHintReader
+    protected function getTypeHintSchemaReader(): RestApiBundle\Services\OpenApi\Reader\TypeHintReader
     {
-        /** @var RestApiBundle\Services\OpenApi\Schema\TypeHintReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\Schema\TypeHintReader::class);
+        /** @var RestApiBundle\Services\OpenApi\Reader\TypeHintReader $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\Reader\TypeHintReader::class);
 
         return $result;
     }
