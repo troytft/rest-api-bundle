@@ -74,29 +74,11 @@ class EndpointFinderTest extends Tests\TestCase\BaseTestCase
         $this->assertIsArray($result);
         $this->assertArrayHasKey(0, $result);
 
-        $endpointData = $result[0];
+        /** @var RestApiBundle\DTO\OpenApi\Schema\ClassType $requestModel */
+        $requestModel = $result[0]->getRequestModel();
 
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\ObjectType::class, $endpointData->getRequestModel());
-        $this->assertCount(2, $endpointData->getRequestModel()->getProperties());
-
-        $this->assertArrayHasKey('offset', $endpointData->getRequestModel()->getProperties());
-
-        /** @var RestApiBundle\DTO\OpenApi\Schema\IntegerType $offset */
-        $offset = $endpointData->getRequestModel()->getProperties()['offset'];
-
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\IntegerType::class, $offset);
-        $this->assertCount(2, $offset->getConstraints());
-        $this->assertInstanceOf(Symfony\Component\Validator\Constraints\Range::class, $offset->getConstraints()[0]);
-        $this->assertInstanceOf(Symfony\Component\Validator\Constraints\NotNull::class, $offset->getConstraints()[1]);
-
-        $this->assertArrayHasKey('limit', $endpointData->getRequestModel()->getProperties());
-
-        /** @var RestApiBundle\DTO\OpenApi\Schema\IntegerType $limit */
-        $limit = $endpointData->getRequestModel()->getProperties()['limit'];
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\IntegerType::class, $limit);
-
-        $this->assertCount(2, $limit->getConstraints());
-        $this->assertInstanceOf(Symfony\Component\Validator\Constraints\Range::class, $limit->getConstraints()[0]);
-        $this->assertInstanceOf(Symfony\Component\Validator\Constraints\NotNull::class, $limit->getConstraints()[1]);
+        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\ClassType::class, $requestModel);
+        $this->assertSame(Tests\TestApp\TestBundle\RequestModel\RequestModelForGetRequest::class, $requestModel->getClass());
+        $this->assertFalse($requestModel->getNullable());
     }
 }

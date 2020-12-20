@@ -196,51 +196,34 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
 
     public function testConvertRequestModelToParameters()
     {
-        $objectProperties = [
-            'offset' => new RestApiBundle\DTO\OpenApi\Schema\IntegerType(false),
-            'limit' => new RestApiBundle\DTO\OpenApi\Schema\IntegerType(false),
-        ];
-        $objectType = new RestApiBundle\DTO\OpenApi\Schema\ObjectType($objectProperties, false);
+        $classType = new RestApiBundle\DTO\OpenApi\Schema\ClassType(Tests\TestApp\TestBundle\RequestModel\InnerModelWithValidation::class, false);
 
         /** @var OpenApi\Parameter[] $openApiParameters */
-        $openApiParameters = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertRequestModelToParameters', [$objectType]);
+        $openApiParameters = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertRequestModelToParameters', [$classType]);
 
         $this->assertIsArray($openApiParameters);
-        $this->assertCount(2, $openApiParameters);
+        $this->assertCount(1, $openApiParameters);
 
         $this->assertInstanceOf(OpenApi\Parameter::class, $openApiParameters[0]);
         $this->assertSame([
-            'name' => 'offset',
+            'name' => 'stringField',
             'in' => 'query',
             'required' => true,
             'schema' => [
-                'type' => 'integer',
+                'type' => 'string',
                 'nullable' => false,
+                'minLength' => 3,
+                'maxLength' => 255,
             ],
         ], $this->convertOpenApiToArray($openApiParameters[0]));
-
-        $this->assertInstanceOf(OpenApi\Parameter::class, $openApiParameters[1]);
-        $this->assertSame([
-            'name' => 'limit',
-            'in' => 'query',
-            'required' => true,
-            'schema' => [
-                'type' => 'integer',
-                'nullable' => false,
-            ],
-        ], $this->convertOpenApiToArray($openApiParameters[1]));
     }
 
     public function testConvertRequestModelToRequestBody()
     {
-        $objectProperties = [
-            'offset' => new RestApiBundle\DTO\OpenApi\Schema\IntegerType(false),
-            'limit' => new RestApiBundle\DTO\OpenApi\Schema\IntegerType(false),
-        ];
-        $objectType = new RestApiBundle\DTO\OpenApi\Schema\ObjectType($objectProperties, false);
+        $classType = new RestApiBundle\DTO\OpenApi\Schema\ClassType(Tests\TestApp\TestBundle\RequestModel\InnerModelWithValidation::class, false);
 
         /** @var OpenApi\RequestBody $requestBody */
-        $requestBody = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertRequestModelToRequestBody', [$objectType]);
+        $requestBody = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertRequestModelToRequestBody', [$classType]);
 
         $expected = [
             'description' => 'Request body',
@@ -249,13 +232,11 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
                     'schema' => [
                         'type' => 'object',
                         'properties' => [
-                            'offset' => [
-                                'type' => 'integer',
+                            'stringField' => [
+                                'type' => 'string',
                                 'nullable' => false,
-                            ],
-                            'limit' => [
-                                'type' => 'integer',
-                                'nullable' => false,
+                                'minLength' => 3,
+                                'maxLength' => 255,
                             ],
                         ],
                         'nullable' => false,

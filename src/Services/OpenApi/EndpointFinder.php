@@ -143,7 +143,7 @@ class EndpointFinder
             if (!$endpointAnnotation instanceof RestApiBundle\Annotation\Docs\Endpoint) {
                 continue;
             }
-            
+
             try {
                 if ($controllerRouteAnnotation instanceof Route && $controllerRouteAnnotation->getPath()) {
                     $path = $controllerRouteAnnotation->getPath();
