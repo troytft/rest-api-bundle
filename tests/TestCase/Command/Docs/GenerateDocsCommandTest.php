@@ -2,6 +2,7 @@
 
 namespace Tests\TestCase\Command\Docs;
 
+use Symfony\Component\Console\Output\OutputInterface;
 use Tests;
 use RestApiBundle;
 use Symfony\Component\Console\Tester\CommandTester;

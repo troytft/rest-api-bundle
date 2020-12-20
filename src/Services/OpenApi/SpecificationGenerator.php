@@ -66,8 +66,8 @@ class SpecificationGenerator
 
         $tags = [];
 
-        foreach ($endpointDataItems as $routeData) {
-            foreach ($routeData->getTags() as $tagName) {
+        foreach ($endpointDataItems as $endpointData) {
+            foreach ($endpointData->getEndpointAnnotation()->tags as $tagName) {
                 if (isset($tags[$tagName])) {
                     continue;
                 }
@@ -77,7 +77,7 @@ class SpecificationGenerator
                 ]);
             }
 
-            $returnType = $routeData->getReturnType();
+            $returnType = $endpointData->getReturnType();
 
             $responses = new OpenApi\Responses([]);
 
@@ -90,7 +90,7 @@ class SpecificationGenerator
                     'description' => 'Success response with body',
                     'content' => [
                         'application/json' => [
-                            'schema' => $this->convertSchemaType($returnType)
+                            'schema' => $this->convertInnerTypeToOpenApiSchema($returnType)
                         ]
                     ]
                 ]));
@@ -98,47 +98,47 @@ class SpecificationGenerator
 
             $pathParameters = [];
 
-            foreach ($routeData->getActionParameters() as $pathParameter) {
+            foreach ($endpointData->getActionParameters() as $pathParameter) {
                 $pathParameters[] = $this->createParameter('path', $pathParameter->getName(), $pathParameter->getSchema());
             }
 
-            $pathItem = $root->paths->getPath($routeData->getPath());
+            $pathItem = $root->paths->getPath($endpointData->getPath());
             if (!$pathItem) {
                 $pathItem = new OpenApi\PathItem([]);
             }
 
-            foreach ($routeData->getMethods() as $method) {
+            foreach ($endpointData->getMethods() as $method) {
                 $isHttpGetMethod = $method === 'GET';
                 $method = strtolower($method);
 
                 $operation = new OpenApi\Operation([
-                    'summary' => $routeData->getTitle(),
+                    'summary' => $endpointData->getTitle(),
                     'responses' => $responses,
                 ]);
 
-                if ($routeData->getDescription()) {
-                    $operation->description = $routeData->getDescription();
+                if ($endpointData->getDescription()) {
+                    $operation->description = $endpointData->getDescription();
                 }
 
                 $queryParameters = [];
-                if ($routeData->getRequestModel() && $isHttpGetMethod) {
-                    $queryParameters = $this->convertRequestModelToParameters($routeData->getRequestModel());
-                } elseif ($routeData->getRequestModel() && !$isHttpGetMethod) {
-                    $operation->requestBody = $this->convertRequestModelToRequestBody($routeData->getRequestModel());
+                if ($endpointData->getRequestModel() && $isHttpGetMethod) {
+                    $queryParameters = $this->convertRequestModelToParameters($endpointData->getRequestModel());
+                } elseif ($endpointData->getRequestModel() && !$isHttpGetMethod) {
+                    $operation->requestBody = $this->convertRequestModelToRequestBody($endpointData->getRequestModel());
                 }
 
                 if ($pathParameters || $queryParameters) {
                     $operation->parameters = array_merge($pathParameters, $queryParameters);
                 }
 
-                if ($routeData->getTags()) {
-                    $operation->tags = $routeData->getTags();
+                if ($endpointData->getTags()) {
+                    $operation->tags = $endpointData->getTags();
                 }
 
                 $pathItem->{$method} = $operation;
             }
 
-            $root->paths->addPath($routeData->getPath(), $pathItem);
+            $root->paths->addPath($endpointData->getPath(), $pathItem);
         }
 
         $root->tags = array_values($tags);
@@ -153,7 +153,7 @@ class SpecificationGenerator
             'required' => $objectType->getNullable() === false,
             'content' => [
                 'application/json' => [
-                    'schema' => $this->convertSchemaType($objectType),
+                    'schema' => $this->convertInnerTypeToOpenApiSchema($objectType),
                 ]
             ]
         ]);
@@ -186,104 +186,31 @@ class SpecificationGenerator
         // Swagger UI does not show schema description in parameters
         if ($schema instanceof RestApiBundle\DTO\OpenApi\Schema\DescriptionAwareInterface && $schema->getDescription()) {
             $data['description'] = $schema->getDescription();
-            $data['schema'] = $this->convertSchemaType($schema);
+            $data['schema'] = $this->convertInnerTypeToOpenApiSchema($schema);
         } else {
-            $data['schema'] = $this->convertSchemaType($schema);
+            $data['schema'] = $this->convertInnerTypeToOpenApiSchema($schema);
         }
 
         return new OpenApi\Parameter($data);
     }
 
-    private function convertSchemaType(RestApiBundle\DTO\OpenApi\Schema\TypeInterface $schemaType): OpenApi\Schema
+    private function convertInnerTypeToOpenApiSchema(RestApiBundle\DTO\OpenApi\Schema\TypeInterface $innerType): OpenApi\Schema
     {
-        if ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\ObjectType) {
-            $result = $this->convertObjectType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\ArrayType) {
-            $result = $this->convertArrayType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\ScalarInterface) {
-            $result = $this->convertScalarType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\DateTimeType) {
-            $result = $this->convertDateTimeType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\DateType) {
-            $result = $this->convertDateType($schemaType);
-        } else {
-            throw new \InvalidArgumentException();
-        }
-
-        if ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\ValidationAwareInterface) {
-            foreach ($schemaType->getConstraints() as $constraint) {
-                if ($constraint instanceof Symfony\Component\Validator\Constraints\Range) {
-                    if ($constraint->min !== null) {
-                        $result->minimum = $constraint->min;
-                    }
-
-                    if ($constraint->max !== null) {
-                        $result->maximum = $constraint->max;
-                    }
-                } elseif ($constraint instanceof Symfony\Component\Validator\Constraints\Choice) {
-                    if ($constraint->choices) {
-                        $choices = $constraint->choices;
-                    } elseif ($constraint->callback) {
-                        $callback = $constraint->callback;
-                        $choices = $callback();
-                    } else {
-                        throw new \InvalidArgumentException();
-                    }
-
-                    $result->enum = $choices;
-                } elseif ($constraint instanceof Symfony\Component\Validator\Constraints\Count) {
-                    if ($constraint->min !== null) {
-                        $result->minItems = $constraint->min;
-                    }
-
-                    if ($constraint->max !== null) {
-                        $result->maxItems = $constraint->max;
-                    }
-                } elseif ($constraint instanceof Symfony\Component\Validator\Constraints\Length) {
-                    if ($constraint->min !== null) {
-                        $result->minLength = $constraint->min;
-                    }
-
-                    if ($constraint->max !== null) {
-                        $result->maxLength = $constraint->max;
-                    }
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    private function convertScalarType(RestApiBundle\DTO\OpenApi\Schema\ScalarInterface $scalarType): OpenApi\Schema
-    {
-        if ($scalarType instanceof RestApiBundle\DTO\OpenApi\Schema\StringType) {
-            $result = $this->convertStringType($scalarType);
-        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Schema\IntegerType) {
-            $result = $this->convertIntegerType($scalarType);
-        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Schema\FloatType) {
-            $result = $this->convertFloatType($scalarType);
-        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Schema\BooleanType) {
-            $result = $this->convertBooleanType($scalarType);
+        if ($innerType instanceof RestApiBundle\DTO\OpenApi\Schema\StringType) {
+            $result = $this->convertStringType($innerType);
+        } elseif ($innerType instanceof RestApiBundle\DTO\OpenApi\Schema\IntegerType) {
+            $result = $this->convertIntegerType($innerType);
+        } elseif ($innerType instanceof RestApiBundle\DTO\OpenApi\Schema\FloatType) {
+            $result = $this->convertFloatType($innerType);
+        } elseif ($innerType instanceof RestApiBundle\DTO\OpenApi\Schema\BooleanType) {
+            $result = $this->convertBooleanType($innerType);
+        } elseif ($innerType instanceof RestApiBundle\DTO\OpenApi\Schema\ArrayType) {
+            $result = $this->convertArrayType($innerType);
         } else {
             throw new \InvalidArgumentException();
         }
 
         return $result;
-    }
-
-    private function convertObjectType(RestApiBundle\DTO\OpenApi\Schema\ObjectType $objectType): OpenApi\Schema
-    {
-        $properties = [];
-
-        foreach ($objectType->getProperties() as $key => $propertyType) {
-            $properties[$key] = $this->convertSchemaType($propertyType);
-        }
-
-        return new OpenApi\Schema([
-            'type' => OpenApi\Type::OBJECT,
-            'nullable' => $objectType->getNullable(),
-            'properties' => $properties,
-        ]);
     }
 
     private function convertArrayType(RestApiBundle\DTO\OpenApi\Schema\ArrayType $arrayType): OpenApi\Schema
@@ -291,7 +218,7 @@ class SpecificationGenerator
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
             'nullable' => $arrayType->getNullable(),
-            'items' => $this->convertSchemaType($arrayType->getInnerType()),
+            'items' => $this->convertInnerTypeToOpenApiSchema($arrayType->getInnerType()),
         ]);
     }
 
@@ -325,24 +252,6 @@ class SpecificationGenerator
         return new OpenApi\Schema([
             'type' => OpenApi\Type::BOOLEAN,
             'nullable' => $booleanType->getNullable(),
-        ]);
-    }
-
-    private function convertDateTimeType(RestApiBundle\DTO\OpenApi\Schema\DateTimeType $dateTimeType): OpenApi\Schema
-    {
-        return new OpenApi\Schema([
-            'type' => OpenApi\Type::STRING,
-            'format' => 'date-time',
-            'nullable' => $dateTimeType->getNullable(),
-        ]);
-    }
-
-    private function convertDateType(RestApiBundle\DTO\OpenApi\Schema\DateType $dateType): OpenApi\Schema
-    {
-        return new OpenApi\Schema([
-            'type' => OpenApi\Type::STRING,
-            'format' => 'date',
-            'nullable' => $dateType->getNullable(),
         ]);
     }
 }
