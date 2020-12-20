@@ -53,15 +53,13 @@ class EndpointFinder
         RestApiBundle\Services\OpenApi\Schema\DocBlockReader $docBlockSchemaReader,
         RestApiBundle\Services\OpenApi\Schema\TypeHintReader $typeHintSchemaReader,
         RestApiBundle\Services\OpenApi\ResponseCollector $responseCollector,
-        RestApiBundle\Services\OpenApi\DoctrineHelper $doctrineHelper,
-        RestApiBundle\Services\OpenApi\RequestModelHelper $requestModelHelper
+        RestApiBundle\Services\OpenApi\DoctrineHelper $doctrineHelper
     ) {
         $this->annotationReader = AnnotationReaderFactory::create(true);
         $this->docBlockSchemaReader = $docBlockSchemaReader;
         $this->typeHintSchemaReader = $typeHintSchemaReader;
         $this->responseCollector = $responseCollector;
         $this->doctrineHelper = $doctrineHelper;
-        $this->requestModelHelper = $requestModelHelper;
     }
 
     /**
