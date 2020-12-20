@@ -129,10 +129,8 @@ class EndpointFinder
         $result = [];
 
         $reflectionController = RestApiBundle\Services\ReflectionClassStore::get($class);
+        /** @var Route|null $controllerRouteAnnotation */
         $controllerRouteAnnotation = $this->annotationReader->getClassAnnotation($reflectionController, Route::class);
-        if ($controllerRouteAnnotation && !$controllerRouteAnnotation instanceof Route) {
-            throw new \InvalidArgumentException();
-        }
 
         foreach ($reflectionController->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             $actionRouteAnnotation = $this->annotationReader->getMethodAnnotation($reflectionMethod, Route::class);
