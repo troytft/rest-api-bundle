@@ -16,6 +16,16 @@ use function strtolower;
 class SpecificationGenerator
 {
     /**
+     * @var RestApiBundle\Services\OpenApi\RequestModelHelper
+     */
+    private $requestModelHelper;
+
+    public function __construct(RestApiBundle\Services\OpenApi\RequestModelHelper $requestModelHelper)
+    {
+        $this->requestModelHelper = $requestModelHelper;
+    }
+
+    /**
      * @param RestApiBundle\DTO\OpenApi\EndpointData[] $endpoints
      *
      * @return string
@@ -146,26 +156,28 @@ class SpecificationGenerator
         return $root;
     }
 
-    private function convertRequestModelToRequestBody(RestApiBundle\DTO\OpenApi\Schema\ObjectType $objectType): OpenApi\RequestBody
+    private function convertRequestModelToRequestBody(RestApiBundle\DTO\OpenApi\Schema\ClassType $classType): OpenApi\RequestBody
     {
+        $requestModelSchema = $this->requestModelHelper->getSchemaByClass($classType->getClass());
+
         return new OpenApi\RequestBody([
             'description' => 'Request body',
-            'required' => $objectType->getNullable() === false,
+            'required' => !$classType->getNullable(),
             'content' => [
                 'application/json' => [
-                    'schema' => $this->convertSchemaType($objectType),
+                    'schema' => $this->convertSchemaType($requestModelSchema),
                 ]
             ]
         ]);
     }
 
     /**
-     * @param RestApiBundle\DTO\OpenApi\Schema\ObjectType $objectType
-     *
      * @return OpenApi\Parameter[]
      */
-    private function convertRequestModelToParameters(RestApiBundle\DTO\OpenApi\Schema\ObjectType $objectType): array
+    private function convertRequestModelToParameters(RestApiBundle\DTO\OpenApi\Schema\ClassType $classType): array
     {
+        $objectType = $this->requestModelHelper->getSchemaByClass($classType->getClass());
+
         $result = [];
 
         foreach ($objectType->getProperties() as $name => $property) {

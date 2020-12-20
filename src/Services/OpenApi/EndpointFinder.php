@@ -49,11 +49,6 @@ class EndpointFinder
      */
     private $doctrineHelper;
 
-    /**
-     * @var RestApiBundle\Services\OpenApi\RequestModelHelper
-     */
-    private $requestModelHelper;
-
     public function __construct(
         RestApiBundle\Services\OpenApi\Schema\DocBlockReader $docBlockSchemaReader,
         RestApiBundle\Services\OpenApi\Schema\TypeHintReader $typeHintSchemaReader,
@@ -148,13 +143,7 @@ class EndpointFinder
             if (!$endpointAnnotation instanceof RestApiBundle\Annotation\Docs\Endpoint) {
                 continue;
             }
-
-            $requestModelSchema = null;
-            $requestModelClass = $this->getRequestModel($reflectionMethod);
-            if ($requestModelClass) {
-                $requestModelSchema = $this->requestModelHelper->getSchemaByClass($requestModelClass);
-            }
-
+            
             try {
                 if ($controllerRouteAnnotation instanceof Route && $controllerRouteAnnotation->getPath()) {
                     $path = $controllerRouteAnnotation->getPath();
@@ -177,7 +166,7 @@ class EndpointFinder
                     ->setMethods($actionRouteAnnotation->getMethods())
                     ->setResponse($this->responseCollector->getByReflectionMethod($reflectionMethod))
                     ->setPathParameters($this->getPathParameters($path, $reflectionMethod))
-                    ->setRequestModel($requestModelSchema);
+                    ->setRequestModel($this->getRequestModel($reflectionMethod));
 
                 $result[] = $endpointData;
             } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
@@ -251,14 +240,14 @@ class EndpointFinder
         return $parameters;
     }
 
-    private function getRequestModel(\ReflectionMethod $reflectionMethod): ?string
+    private function getRequestModel(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\OpenApi\Schema\ClassType
     {
         $result = null;
 
         foreach ($reflectionMethod->getParameters() as $parameter) {
             $schema = $this->typeHintSchemaReader->getMethodParameterSchema($parameter);
             if ($schema instanceof RestApiBundle\DTO\OpenApi\Schema\ClassType && RestApiBundle\Services\Request\RequestModelHelper::isRequestModel($schema->getClass())) {
-                $result = $schema->getClass();
+                $result = $schema;
 
                 break;
             }
