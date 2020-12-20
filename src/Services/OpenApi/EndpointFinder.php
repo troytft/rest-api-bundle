@@ -132,6 +132,9 @@ class EndpointFinder
 
         $reflectionController = RestApiBundle\Services\ReflectionClassStore::get($class);
         $controllerRouteAnnotation = $this->annotationReader->getClassAnnotation($reflectionController, Route::class);
+        if ($controllerRouteAnnotation && !$controllerRouteAnnotation instanceof Route) {
+            throw new \InvalidArgumentException();
+        }
 
         foreach ($reflectionController->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             $actionRouteAnnotation = $this->annotationReader->getMethodAnnotation($reflectionMethod, Route::class);
@@ -145,34 +148,39 @@ class EndpointFinder
             }
 
             try {
-                if ($controllerRouteAnnotation instanceof Route && $controllerRouteAnnotation->getPath()) {
-                    $path = $controllerRouteAnnotation->getPath();
-
-                    if ($actionRouteAnnotation->getPath()) {
-                        $path .= $actionRouteAnnotation->getPath();
-                    }
-                } elseif ($actionRouteAnnotation->getPath()) {
-                    $path = $actionRouteAnnotation->getPath();
-                } else {
-                    throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyRoutePathException();
-                }
+                $routePath = $this->buildRoutePath($actionRouteAnnotation, $controllerRouteAnnotation);
 
                 $endpointData = new RestApiBundle\DTO\OpenApi\EndpointData();
                 $endpointData
                     ->setTitle($endpointAnnotation->title)
                     ->setDescription($endpointAnnotation->description)
                     ->setTags($endpointAnnotation->tags)
-                    ->setPath($path)
-                    ->setMethods($actionRouteAnnotation->getMethods())
+                    ->setRoutePath($routePath)
+                    ->setRouteMethods($actionRouteAnnotation->getMethods())
                     ->setResponse($this->responseCollector->getByReflectionMethod($reflectionMethod))
-                    ->setPathParameters($this->getPathParameters($path, $reflectionMethod))
-                    ->setRequestModel($this->getRequestModel($reflectionMethod));
+                    ->setPathParameters($this->getPathParameters($routePath, $reflectionMethod))
+                    ->setRequest($this->getRequestModel($reflectionMethod));
 
                 $result[] = $endpointData;
             } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
                 $context = sprintf('%s::%s', $class, $reflectionMethod->getName());
                 throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $context);
             }
+        }
+
+        return $result;
+    }
+
+    private function buildRoutePath(Route $actionAnnotation, ?Route $controllerAnnotation): string
+    {
+        if ($controllerAnnotation && $controllerAnnotation->getPath() && $actionAnnotation->getPath()) {
+            $result = $controllerAnnotation->getPath() . $actionAnnotation->getPath();
+        } elseif ($controllerAnnotation && $controllerAnnotation->getPath() && !$actionAnnotation->getPath()) {
+            $result = $controllerAnnotation->getPath();
+        } elseif ($actionAnnotation->getPath()) {
+            $result = $actionAnnotation->getPath();
+        } else {
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyRoutePathException();
         }
 
         return $result;

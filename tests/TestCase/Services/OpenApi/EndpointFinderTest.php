@@ -4,7 +4,6 @@ namespace Tests\TestCase\Services\OpenApi;
 
 use Tests;
 use RestApiBundle;
-use Symfony;
 
 class EndpointFinderTest extends Tests\TestCase\BaseTestCase
 {
@@ -75,7 +74,7 @@ class EndpointFinderTest extends Tests\TestCase\BaseTestCase
         $this->assertArrayHasKey(0, $result);
 
         /** @var RestApiBundle\DTO\OpenApi\Schema\ClassType $requestModel */
-        $requestModel = $result[0]->getRequestModel();
+        $requestModel = $result[0]->getRequest();
 
         $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\ClassType::class, $requestModel);
         $this->assertSame(Tests\TestApp\TestBundle\RequestModel\RequestModelForGetRequest::class, $requestModel->getClass());

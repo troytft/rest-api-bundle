@@ -24,12 +24,12 @@ class EndpointData
     /**
      * @var string
      */
-    private $path;
+    private $routePath;
 
     /**
      * @var string[]
      */
-    private $methods;
+    private $routeMethods;
 
     /**
      * @var RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
@@ -44,7 +44,7 @@ class EndpointData
     /**
      * @var RestApiBundle\DTO\OpenApi\Schema\ClassType|null
      */
-    private $requestModel;
+    private $request;
 
     public function getTitle(): string
     {
@@ -82,26 +82,26 @@ class EndpointData
         return $this;
     }
 
-    public function getPath(): string
+    public function getRoutePath(): string
     {
-        return $this->path;
+        return $this->routePath;
     }
 
-    public function setPath(string $path)
+    public function setRoutePath(string $routePath)
     {
-        $this->path = $path;
+        $this->routePath = $routePath;
 
         return $this;
     }
 
-    public function getMethods(): array
+    public function getRouteMethods(): array
     {
-        return $this->methods;
+        return $this->routeMethods;
     }
 
-    public function setMethods(array $methods)
+    public function setRouteMethods(array $routeMethods)
     {
-        $this->methods = $methods;
+        $this->routeMethods = $routeMethods;
 
         return $this;
     }
@@ -138,14 +138,14 @@ class EndpointData
         return $this;
     }
 
-    public function getRequestModel(): ?Schema\ClassType
+    public function getRequest(): ?Schema\ClassType
     {
-        return $this->requestModel;
+        return $this->request;
     }
 
-    public function setRequestModel(?Schema\ClassType $requestModel)
+    public function setRequest(?Schema\ClassType $request)
     {
-        $this->requestModel = $requestModel;
+        $this->request = $request;
 
         return $this;
     }

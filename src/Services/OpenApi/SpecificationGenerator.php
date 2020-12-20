@@ -112,12 +112,12 @@ class SpecificationGenerator
                 $pathParameters[] = $this->createParameter('path', $pathParameter->getName(), $pathParameter->getSchema());
             }
 
-            $pathItem = $root->paths->getPath($routeData->getPath());
+            $pathItem = $root->paths->getPath($routeData->getRoutePath());
             if (!$pathItem) {
                 $pathItem = new OpenApi\PathItem([]);
             }
 
-            foreach ($routeData->getMethods() as $method) {
+            foreach ($routeData->getRouteMethods() as $method) {
                 $isHttpGetMethod = $method === 'GET';
                 $method = strtolower($method);
 
@@ -131,10 +131,10 @@ class SpecificationGenerator
                 }
 
                 $queryParameters = [];
-                if ($routeData->getRequestModel() && $isHttpGetMethod) {
-                    $queryParameters = $this->convertRequestModelToParameters($routeData->getRequestModel());
-                } elseif ($routeData->getRequestModel() && !$isHttpGetMethod) {
-                    $operation->requestBody = $this->convertRequestModelToRequestBody($routeData->getRequestModel());
+                if ($routeData->getRequest() && $isHttpGetMethod) {
+                    $queryParameters = $this->convertRequestModelToParameters($routeData->getRequest());
+                } elseif ($routeData->getRequest() && !$isHttpGetMethod) {
+                    $operation->requestBody = $this->convertRequestModelToRequestBody($routeData->getRequest());
                 }
 
                 if ($pathParameters || $queryParameters) {
@@ -148,7 +148,7 @@ class SpecificationGenerator
                 $pathItem->{$method} = $operation;
             }
 
-            $root->paths->addPath($routeData->getPath(), $pathItem);
+            $root->paths->addPath($routeData->getRoutePath(), $pathItem);
         }
 
         $root->tags = array_values($tags);
