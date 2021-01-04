@@ -6,6 +6,7 @@ use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection as PhpDoc;
 use RestApiBundle;
+use function array_unique;
 use function count;
 
 class DocBlockReader extends RestApiBundle\Services\OpenApi\Schema\BaseReader
@@ -68,34 +69,27 @@ class DocBlockReader extends RestApiBundle\Services\OpenApi\Schema\BaseReader
 
     private function convertCompoundTypeToSchema(PhpDoc\Types\Compound $type): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
     {
-        $compoundTypes = (array) $type->getIterator();
+        $compoundTypes = array_unique((array) $type->getIterator());
         if (count($compoundTypes) !== 2) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
-        if ($compoundTypes[0] === $compoundTypes[1]) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
-        }
-
-        if (!$compoundTypes[0] instanceof PhpDoc\Types\Null_ && !$compoundTypes[1] instanceof PhpDoc\Types\Null_) {
-            throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
-        }
-
-        $result = null;
+        $hasNullType = false;
+        $classType = null;
 
         foreach ($compoundTypes as $compoundType) {
             if ($compoundType instanceof PhpDoc\Types\Null_) {
-                continue;
+                $hasNullType = true;
+            } else {
+                $classType = $compoundType;
             }
-
-            $result = $this->convertTypeToSchema($compoundType, true);
         }
 
-        if (!$result instanceof RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface) {
-            throw new \InvalidArgumentException();
+        if (!$hasNullType) {
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
-        return $result;
+        return $this->convertTypeToSchema($classType, true);
     }
 
     private function convertArrayTypeToSchema(PhpDoc\Types\Array_ $type, bool $nullable): RestApiBundle\DTO\OpenApi\Schema\ArrayType
