@@ -8,6 +8,7 @@ use phpDocumentor\Reflection as PhpDoc;
 use RestApiBundle;
 use function array_unique;
 use function count;
+use function var_dump;
 
 class DocBlockReader extends RestApiBundle\Services\OpenApi\Schema\BaseReader
 {
@@ -75,21 +76,21 @@ class DocBlockReader extends RestApiBundle\Services\OpenApi\Schema\BaseReader
         }
 
         $hasNullType = false;
-        $classType = null;
+        $stringType = null;
 
         foreach ($compoundTypes as $compoundType) {
             if ($compoundType instanceof PhpDoc\Types\Null_) {
                 $hasNullType = true;
-            } else {
-                $classType = $compoundType;
+            } elseif ($compoundType instanceof PhpDoc\Types\String_) {
+                $stringType = $compoundType;
             }
         }
 
-        if (!$hasNullType) {
+        if (!$hasNullType || !$stringType) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\UnsupportedReturnTypeException();
         }
 
-        return $this->convertTypeToSchema($classType, true);
+        return $this->convertTypeToSchema($stringType, true);
     }
 
     private function convertArrayTypeToSchema(PhpDoc\Types\Array_ $type, bool $nullable): RestApiBundle\DTO\OpenApi\Schema\ArrayType
