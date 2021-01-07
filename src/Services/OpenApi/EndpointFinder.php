@@ -154,7 +154,7 @@ class EndpointFinder
                     ->setRoutePath($routePath)
                     ->setRouteMethods($actionRouteAnnotation->getMethods())
                     ->setResponse($this->responseCollector->getByReflectionMethod($reflectionMethod))
-                    ->setPathParameters($this->getPathParameters($routePath, $reflectionMethod))
+                    ->setRoutePathParameters($this->getRoutePathParameters($routePath, $reflectionMethod))
                     ->setRequest($this->getRequestModel($reflectionMethod));
 
                 $result[] = $endpointData;
@@ -185,7 +185,7 @@ class EndpointFinder
     /**
      * @return RestApiBundle\DTO\OpenApi\PathParameter[]
      */
-    private function getPathParameters(string $path, \ReflectionMethod $reflectionMethod): array
+    private function getRoutePathParameters(string $path, \ReflectionMethod $reflectionMethod): array
     {
         $result = [];
         $parameterIndex = 0;
@@ -244,7 +244,7 @@ class EndpointFinder
         return $parameters;
     }
 
-    private function getRequestModel(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\OpenApi\Schema\ClassType
+    private function getRequestModel(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\OpenApi\RequestInterface
     {
         $result = null;
 

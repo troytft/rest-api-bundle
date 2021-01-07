@@ -39,10 +39,10 @@ class EndpointData
     /**
      * @var RestApiBundle\DTO\OpenApi\PathParameter[]
      */
-    private $pathParameters = [];
+    private $routePathParameters = [];
 
     /**
-     * @var RestApiBundle\DTO\OpenApi\Schema\ClassType|null
+     * @var RestApiBundle\DTO\OpenApi\RequestInterface|null
      */
     private $request;
 
@@ -121,29 +121,29 @@ class EndpointData
     /**
      * @return RestApiBundle\DTO\OpenApi\PathParameter[]
      */
-    public function getPathParameters(): array
+    public function getRoutePathParameters(): array
     {
-        return $this->pathParameters;
+        return $this->routePathParameters;
     }
 
     /**
-     * @param RestApiBundle\DTO\OpenApi\PathParameter[] $pathParameters
+     * @param RestApiBundle\DTO\OpenApi\PathParameter[] $routePathParameters
      *
      * @return $this
      */
-    public function setPathParameters(array $pathParameters)
+    public function setRoutePathParameters(array $routePathParameters)
     {
-        $this->pathParameters = $pathParameters;
+        $this->routePathParameters = $routePathParameters;
 
         return $this;
     }
 
-    public function getRequest(): ?Schema\ClassType
+    public function getRequest(): ?RestApiBundle\DTO\OpenApi\RequestInterface
     {
         return $this->request;
     }
 
-    public function setRequest(?Schema\ClassType $request)
+    public function setRequest(?RestApiBundle\DTO\OpenApi\RequestInterface $request)
     {
         $this->request = $request;
 

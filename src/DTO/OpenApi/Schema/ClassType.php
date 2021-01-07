@@ -5,7 +5,10 @@ namespace RestApiBundle\DTO\OpenApi\Schema;
 use RestApiBundle;
 use Symfony\Component\Validator\Constraint;
 
-class ClassType implements RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface, RestApiBundle\DTO\OpenApi\Schema\ValidationAwareInterface
+class ClassType implements
+    RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface,
+    RestApiBundle\DTO\OpenApi\Schema\ValidationAwareInterface,
+    RestApiBundle\DTO\OpenApi\RequestInterface
 {
     /**
      * @var string
