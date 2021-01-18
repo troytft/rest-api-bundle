@@ -32,6 +32,11 @@ class EndpointData
     private $routeMethods;
 
     /**
+     * @var RestApiBundle\DTO\OpenApi\RequestInterface|null
+     */
+    private $request;
+    
+    /**
      * @var RestApiBundle\DTO\OpenApi\ResponseInterface
      */
     private $response;
@@ -40,11 +45,6 @@ class EndpointData
      * @var RestApiBundle\DTO\OpenApi\PathParameter[]
      */
     private $routePathParameters = [];
-
-    /**
-     * @var RestApiBundle\DTO\OpenApi\RequestInterface|null
-     */
-    private $request;
 
     public function getTitle(): string
     {

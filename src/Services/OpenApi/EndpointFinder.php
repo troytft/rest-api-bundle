@@ -146,9 +146,9 @@ class EndpointFinder
                     ->setTags($endpointAnnotation->tags)
                     ->setRoutePath($routePath)
                     ->setRouteMethods($actionRouteAnnotation->getMethods())
-                    ->setResponse($this->getResponseByReflectionMethod($reflectionMethod))
+                    ->setResponse($this->getResponse($reflectionMethod))
                     ->setRoutePathParameters($this->getRoutePathParameters($routePath, $reflectionMethod))
-                    ->setRequest($this->getRequestModel($reflectionMethod));
+                    ->setRequest($this->getRequest($reflectionMethod));
 
                 $result[] = $endpointData;
             } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
@@ -237,7 +237,7 @@ class EndpointFinder
         return $parameters;
     }
 
-    private function getRequestModel(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\OpenApi\RequestInterface
+    private function getRequest(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\OpenApi\RequestInterface
     {
         $result = null;
 
@@ -253,7 +253,7 @@ class EndpointFinder
         return $result;
     }
 
-    private function getResponseByReflectionMethod(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\OpenApi\ResponseInterface
+    private function getResponse(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\OpenApi\ResponseInterface
     {
         $schema = $this->docBlockSchemaReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintSchemaReader->getMethodReturnSchema($reflectionMethod);
         if (!$schema) {
