@@ -146,9 +146,9 @@ class EndpointFinder
                     ->setTags($endpointAnnotation->tags)
                     ->setRoutePath($routePath)
                     ->setRouteMethods($actionRouteAnnotation->getMethods())
-                    ->setResponse($this->getResponse($reflectionMethod))
+                    ->setResponse($this->extractResponse($reflectionMethod))
                     ->setRoutePathParameters($this->getRoutePathParameters($routePath, $reflectionMethod))
-                    ->setRequest($this->getRequest($reflectionMethod));
+                    ->setRequest($this->extractRequest($reflectionMethod));
 
                 $result[] = $endpointData;
             } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
@@ -237,7 +237,7 @@ class EndpointFinder
         return $parameters;
     }
 
-    private function getRequest(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\OpenApi\RequestInterface
+    private function extractRequest(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\OpenApi\RequestInterface
     {
         $result = null;
 
@@ -253,18 +253,18 @@ class EndpointFinder
         return $result;
     }
 
-    private function getResponse(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\OpenApi\ResponseInterface
+    private function extractResponse(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\OpenApi\ResponseInterface
     {
-        $schema = $this->docBlockSchemaReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintSchemaReader->getMethodReturnSchema($reflectionMethod);
-        if (!$schema) {
+        $response = $this->docBlockSchemaReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintSchemaReader->getMethodReturnSchema($reflectionMethod);
+        if (!$response) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
         }
 
-        if (!$schema instanceof RestApiBundle\DTO\OpenApi\ResponseInterface) {
+        if (!$response instanceof RestApiBundle\DTO\OpenApi\ResponseInterface) {
             throw new \InvalidArgumentException();
         }
 
-        return $schema;
+        return $response;
     }
 
     private function getClassLoader(): ClassLoader

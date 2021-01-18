@@ -35,7 +35,7 @@ class EndpointData
      * @var RestApiBundle\DTO\OpenApi\RequestInterface|null
      */
     private $request;
-    
+
     /**
      * @var RestApiBundle\DTO\OpenApi\ResponseInterface
      */
@@ -51,6 +51,9 @@ class EndpointData
         return $this->title;
     }
 
+    /**
+     * @return $this
+     */
     public function setTitle(string $title)
     {
         $this->title = $title;
@@ -63,6 +66,9 @@ class EndpointData
         return $this->description;
     }
 
+    /**
+     * @return $this
+     */
     public function setDescription(?string $description)
     {
         $this->description = $description;
@@ -70,11 +76,19 @@ class EndpointData
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getTags(): array
     {
         return $this->tags;
     }
 
+    /**
+     * @param string[] $tags
+     *
+     * @return $this
+     */
     public function setTags(array $tags)
     {
         $this->tags = $tags;
@@ -87,6 +101,9 @@ class EndpointData
         return $this->routePath;
     }
 
+    /**
+     * @return $this
+     */
     public function setRoutePath(string $routePath)
     {
         $this->routePath = $routePath;
@@ -94,11 +111,19 @@ class EndpointData
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getRouteMethods(): array
     {
         return $this->routeMethods;
     }
 
+    /**
+     * @param string[] $routeMethods
+     *
+     * @return $this
+     */
     public function setRouteMethods(array $routeMethods)
     {
         $this->routeMethods = $routeMethods;
@@ -111,6 +136,9 @@ class EndpointData
         return $this->response;
     }
 
+    /**
+     * @return $this
+     */
     public function setResponse(RestApiBundle\DTO\OpenApi\ResponseInterface $response)
     {
         $this->response = $response;
@@ -143,6 +171,9 @@ class EndpointData
         return $this->request;
     }
 
+    /**
+     * @return $this
+     */
     public function setRequest(?RestApiBundle\DTO\OpenApi\RequestInterface $request)
     {
         $this->request = $request;
