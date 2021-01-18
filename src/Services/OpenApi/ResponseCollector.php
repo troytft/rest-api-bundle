@@ -47,6 +47,10 @@ class ResponseCollector
             throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $context);
         }
 
+        if (!$schema instanceof RestApiBundle\DTO\OpenApi\ResponseInterface) {
+            throw new \InvalidArgumentException();
+        }
+
         return $schema;
     }
 

@@ -32,7 +32,7 @@ class EndpointData
     private $routeMethods;
 
     /**
-     * @var RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+     * @var RestApiBundle\DTO\OpenApi\ResponseInterface
      */
     private $response;
 
