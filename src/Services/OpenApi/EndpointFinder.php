@@ -40,11 +40,6 @@ class EndpointFinder
     private $typeHintSchemaReader;
 
     /**
-     * @var RestApiBundle\Services\OpenApi\ResponseCollector
-     */
-    private $responseCollector;
-
-    /**
      * @var RestApiBundle\Services\OpenApi\DoctrineHelper
      */
     private $doctrineHelper;
@@ -52,13 +47,11 @@ class EndpointFinder
     public function __construct(
         RestApiBundle\Services\OpenApi\Schema\DocBlockReader $docBlockSchemaReader,
         RestApiBundle\Services\OpenApi\Schema\TypeHintReader $typeHintSchemaReader,
-        RestApiBundle\Services\OpenApi\ResponseCollector $responseCollector,
         RestApiBundle\Services\OpenApi\DoctrineHelper $doctrineHelper
     ) {
         $this->annotationReader = AnnotationReaderFactory::create(true);
         $this->docBlockSchemaReader = $docBlockSchemaReader;
         $this->typeHintSchemaReader = $typeHintSchemaReader;
-        $this->responseCollector = $responseCollector;
         $this->doctrineHelper = $doctrineHelper;
     }
 
@@ -153,7 +146,7 @@ class EndpointFinder
                     ->setTags($endpointAnnotation->tags)
                     ->setRoutePath($routePath)
                     ->setRouteMethods($actionRouteAnnotation->getMethods())
-                    ->setResponse($this->responseCollector->getResponseByReflectionMethod($reflectionMethod))
+                    ->setResponse($this->getResponseByReflectionMethod($reflectionMethod))
                     ->setRoutePathParameters($this->getRoutePathParameters($routePath, $reflectionMethod))
                     ->setRequest($this->getRequestModel($reflectionMethod));
 
@@ -258,6 +251,20 @@ class EndpointFinder
         }
 
         return $result;
+    }
+
+    private function getResponseByReflectionMethod(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\OpenApi\ResponseInterface
+    {
+        $schema = $this->docBlockSchemaReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintSchemaReader->getMethodReturnSchema($reflectionMethod);
+        if (!$schema) {
+            throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
+        }
+
+        if (!$schema instanceof RestApiBundle\DTO\OpenApi\ResponseInterface) {
+            throw new \InvalidArgumentException();
+        }
+
+        return $schema;
     }
 
     private function getClassLoader(): ClassLoader

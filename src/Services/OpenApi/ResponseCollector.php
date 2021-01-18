@@ -34,26 +34,6 @@ class ResponseCollector
         $this->docBlockReader = $docBlockReader;
     }
 
-    public function getResponseByReflectionMethod(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\OpenApi\ResponseInterface
-    {
-        try {
-            $schema = $this->docBlockReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintReader->getMethodReturnSchema($reflectionMethod);
-
-            if (!$schema) {
-                throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
-            }
-        } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
-            $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
-            throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $context);
-        }
-
-        if (!$schema instanceof RestApiBundle\DTO\OpenApi\ResponseInterface) {
-            throw new \InvalidArgumentException();
-        }
-
-        return $schema;
-    }
-
     public function getByReflectionMethod(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
     {
         try {
