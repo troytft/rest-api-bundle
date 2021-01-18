@@ -34,6 +34,22 @@ class ResponseCollector
         $this->docBlockReader = $docBlockReader;
     }
 
+    public function getResponseByReflectionMethod(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\OpenApi\ResponseInterface
+    {
+        try {
+            $schema = $this->docBlockReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintReader->getMethodReturnSchema($reflectionMethod);
+
+            if (!$schema) {
+                throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
+            }
+        } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
+            $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
+            throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $context);
+        }
+
+        return $schema;
+    }
+
     public function getByReflectionMethod(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
     {
         try {
@@ -53,6 +69,19 @@ class ResponseCollector
         } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
             $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
             throw new RestApiBundle\Exception\Docs\InvalidDefinitionException($exception, $context);
+        }
+
+        return $schema;
+    }
+
+    public function resolveSchemaByResponse(RestApiBundle\DTO\OpenApi\ResponseInterface $schema): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+    {
+        if ($schema instanceof RestApiBundle\DTO\OpenApi\Schema\ClassType) {
+            $schema = $this->resolveClassType($schema);
+        } elseif ($schema instanceof RestApiBundle\DTO\OpenApi\Schema\ArrayType && $schema->getInnerType() instanceof RestApiBundle\DTO\OpenApi\Schema\ClassType) {
+            /** @var RestApiBundle\DTO\OpenApi\Schema\ClassType $innerType */
+            $innerType = $schema->getInnerType();
+            $schema = new RestApiBundle\DTO\OpenApi\Schema\ArrayType($this->resolveClassType($innerType), $schema->getNullable());
         }
 
         return $schema;

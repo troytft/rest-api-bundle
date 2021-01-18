@@ -153,7 +153,7 @@ class EndpointFinder
                     ->setTags($endpointAnnotation->tags)
                     ->setRoutePath($routePath)
                     ->setRouteMethods($actionRouteAnnotation->getMethods())
-                    ->setResponse($this->responseCollector->getByReflectionMethod($reflectionMethod))
+                    ->setResponse($this->responseCollector->getResponseByReflectionMethod($reflectionMethod))
                     ->setRoutePathParameters($this->getRoutePathParameters($routePath, $reflectionMethod))
                     ->setRequest($this->getRequestModel($reflectionMethod));
 

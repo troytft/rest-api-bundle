@@ -106,12 +106,12 @@ class EndpointData
         return $this;
     }
 
-    public function getResponse(): Schema\SchemaTypeInterface
+    public function getResponse(): RestApiBundle\DTO\OpenApi\ResponseInterface
     {
         return $this->response;
     }
 
-    public function setResponse(Schema\SchemaTypeInterface $response)
+    public function setResponse(RestApiBundle\DTO\OpenApi\ResponseInterface $response)
     {
         $this->response = $response;
 

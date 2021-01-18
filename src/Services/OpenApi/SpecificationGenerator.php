@@ -20,9 +20,17 @@ class SpecificationGenerator
      */
     private $requestModelHelper;
 
-    public function __construct(RestApiBundle\Services\OpenApi\RequestModelHelper $requestModelHelper)
-    {
+    /**
+     * @var RestApiBundle\Services\OpenApi\ResponseCollector
+     */
+    private $responseCollector;
+
+    public function __construct(
+        RestApiBundle\Services\OpenApi\RequestModelHelper $requestModelHelper,
+        RestApiBundle\Services\OpenApi\ResponseCollector $responseCollector
+    ) {
         $this->requestModelHelper = $requestModelHelper;
+        $this->responseCollector = $responseCollector;
     }
 
     /**
@@ -87,7 +95,7 @@ class SpecificationGenerator
                 ]);
             }
 
-            $returnType = $routeData->getResponse();
+            $returnType = $this->responseCollector->resolveSchemaByResponse($routeData->getResponse());
 
             $responses = new OpenApi\Responses([]);
 
