@@ -8,8 +8,8 @@ use Symfony\Component\Validator\Constraint;
 class ClassType implements
     RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface,
     RestApiBundle\DTO\OpenApi\Schema\ValidationAwareInterface,
-    RestApiBundle\DTO\OpenApi\RequestInterface,
-    RestApiBundle\DTO\OpenApi\ResponseInterface
+    RestApiBundle\DTO\OpenApi\Request\RequestInterface,
+    RestApiBundle\DTO\OpenApi\Response\ResponseInterface
 {
     /**
      * @var string

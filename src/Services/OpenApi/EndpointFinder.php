@@ -237,7 +237,7 @@ class EndpointFinder
         return $parameters;
     }
 
-    private function extractRequest(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\OpenApi\RequestInterface
+    private function extractRequest(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\OpenApi\Request\RequestInterface
     {
         $result = null;
 
@@ -253,14 +253,14 @@ class EndpointFinder
         return $result;
     }
 
-    private function extractResponse(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\OpenApi\ResponseInterface
+    private function extractResponse(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\OpenApi\Response\ResponseInterface
     {
         $response = $this->docBlockSchemaReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintSchemaReader->getMethodReturnSchema($reflectionMethod);
         if (!$response) {
             throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();
         }
 
-        if (!$response instanceof RestApiBundle\DTO\OpenApi\ResponseInterface) {
+        if (!$response instanceof RestApiBundle\DTO\OpenApi\Response\ResponseInterface) {
             throw new \InvalidArgumentException();
         }
 

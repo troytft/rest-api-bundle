@@ -10,7 +10,7 @@ class ArrayType implements
     RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface,
     RestApiBundle\DTO\OpenApi\Schema\ValidationAwareInterface,
     RestApiBundle\DTO\OpenApi\Schema\DescriptionAwareInterface,
-    RestApiBundle\DTO\OpenApi\ResponseInterface
+    RestApiBundle\DTO\OpenApi\Response\ResponseInterface
 {
     /**
      * @var RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface

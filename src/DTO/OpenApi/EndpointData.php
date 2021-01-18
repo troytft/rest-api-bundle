@@ -32,12 +32,12 @@ class EndpointData
     private $routeMethods;
 
     /**
-     * @var RestApiBundle\DTO\OpenApi\RequestInterface|null
+     * @var RestApiBundle\DTO\OpenApi\Request\RequestInterface|null
      */
     private $request;
 
     /**
-     * @var RestApiBundle\DTO\OpenApi\ResponseInterface
+     * @var RestApiBundle\DTO\OpenApi\Response\ResponseInterface
      */
     private $response;
 
@@ -131,7 +131,7 @@ class EndpointData
         return $this;
     }
 
-    public function getResponse(): RestApiBundle\DTO\OpenApi\ResponseInterface
+    public function getResponse(): RestApiBundle\DTO\OpenApi\Response\ResponseInterface
     {
         return $this->response;
     }
@@ -139,7 +139,7 @@ class EndpointData
     /**
      * @return $this
      */
-    public function setResponse(RestApiBundle\DTO\OpenApi\ResponseInterface $response)
+    public function setResponse(RestApiBundle\DTO\OpenApi\Response\ResponseInterface $response)
     {
         $this->response = $response;
 
@@ -166,7 +166,7 @@ class EndpointData
         return $this;
     }
 
-    public function getRequest(): ?RestApiBundle\DTO\OpenApi\RequestInterface
+    public function getRequest(): ?RestApiBundle\DTO\OpenApi\Request\RequestInterface
     {
         return $this->request;
     }
@@ -174,7 +174,7 @@ class EndpointData
     /**
      * @return $this
      */
-    public function setRequest(?RestApiBundle\DTO\OpenApi\RequestInterface $request)
+    public function setRequest(?RestApiBundle\DTO\OpenApi\Request\RequestInterface $request)
     {
         $this->request = $request;
 

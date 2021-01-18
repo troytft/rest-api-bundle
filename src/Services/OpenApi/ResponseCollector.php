@@ -58,7 +58,7 @@ class ResponseCollector
         return $schema;
     }
 
-    public function resolveSchemaByResponse(RestApiBundle\DTO\OpenApi\ResponseInterface $schema): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+    public function resolveSchemaByResponse(RestApiBundle\DTO\OpenApi\Response\ResponseInterface $schema): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
     {
         if ($schema instanceof RestApiBundle\DTO\OpenApi\Schema\ClassType) {
             $schema = $this->resolveClassType($schema);

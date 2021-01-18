@@ -6,7 +6,7 @@ use RestApiBundle;
 
 class NullType implements
     RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface,
-    RestApiBundle\DTO\OpenApi\ResponseInterface
+    RestApiBundle\DTO\OpenApi\Response\ResponseInterface
 {
     public function getNullable(): bool
     {
