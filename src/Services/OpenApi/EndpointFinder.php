@@ -271,6 +271,10 @@ class EndpointFinder
     {
         $result = null;
         foreach (spl_autoload_functions() as $classWithFunction) {
+            if (!is_array($classWithFunction)) {
+                continue;
+            }
+
             if ($classWithFunction[0] instanceof ClassLoader) {
                 $result = $classWithFunction[0];
 
