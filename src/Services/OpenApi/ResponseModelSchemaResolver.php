@@ -3,14 +3,12 @@
 namespace RestApiBundle\Services\OpenApi;
 
 use RestApiBundle;
-use function get_class;
 use function lcfirst;
 use function ltrim;
 use function sprintf;
 use function strpos;
 use function substr;
 use cebe\openapi\spec as OpenApi;
-use function var_dump;
 
 class ResponseModelSchemaResolver
 {
@@ -37,16 +35,16 @@ class ResponseModelSchemaResolver
         $this->docBlockReader = $docBlockReader;
     }
 
-    public function resolveByClass(string $class): OpenApi\Schema
+    public function resolveByClass(string $class, $isNullable = false): OpenApi\Schema
     {
-        return $this->convertObjectType($this->resolveObjectTypeByClass($class, false));
+        return $this->convertObjectType($this->resolveObjectTypeByClass($class, $isNullable));
     }
 
-    private function resolveObjectTypeByClass(string $class, bool $nullable): RestApiBundle\DTO\OpenApi\Schema\ObjectType
+    private function resolveObjectTypeByClass(string $class, bool $isNullable): RestApiBundle\DTO\OpenApi\Schema\ObjectType
     {
         $class = ltrim($class, '\\');
 
-        $cacheKey = sprintf('%s-%s', $class, $nullable);
+        $cacheKey = sprintf('%s-%s', $class, $isNullable);
         if (isset($this->objectClassCache[$cacheKey])) {
             return $this->objectClassCache[$cacheKey];
         }
@@ -70,7 +68,7 @@ class ResponseModelSchemaResolver
 
         $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\OpenApi\Schema\StringType(false);
 
-        $this->objectClassCache[$cacheKey] = new RestApiBundle\DTO\OpenApi\Schema\ObjectType($properties, $nullable);
+        $this->objectClassCache[$cacheKey] = new RestApiBundle\DTO\OpenApi\Schema\ObjectType($properties, $isNullable);
 
         return $this->objectClassCache[$cacheKey];
     }
@@ -182,7 +180,6 @@ class ResponseModelSchemaResolver
                 break;
 
             case RestApiBundle\Helper\ClassHelper::isDateTime($classType->getClass()):
-
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date-time',
