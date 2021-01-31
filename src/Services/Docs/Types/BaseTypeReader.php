@@ -8,6 +8,8 @@ use function ltrim;
 
 abstract class BaseTypeReader
 {
+    abstract public function getReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Types\TypeInterface;
+
     protected function createScalarTypeFromString(string $type, bool $nullable): ?RestApiBundle\DTO\Docs\Types\ScalarInterface
     {
         switch ($type) {
@@ -51,6 +53,4 @@ abstract class BaseTypeReader
 
         return new RestApiBundle\DTO\Docs\Types\ClassType($class, $nullable);
     }
-
-    public abstract function getReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Types\TypeInterface;
 }

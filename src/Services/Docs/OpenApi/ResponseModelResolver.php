@@ -4,7 +4,6 @@ namespace RestApiBundle\Services\Docs\OpenApi;
 
 use RestApiBundle;
 use function lcfirst;
-use function ltrim;
 use function sprintf;
 use function strpos;
 use function substr;
