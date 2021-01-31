@@ -3,10 +3,7 @@
 namespace Tests\TestCase\Services\OpenApi;
 
 use Tests;
-use RestApiBundle;
-use function array_keys;
 use function json_encode;
-use function var_dump;
 
 class ResponseModelSchemaResolverTest extends Tests\TestCase\BaseTestCase
 {

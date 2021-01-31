@@ -312,6 +312,9 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
 
     private function getSpecificationGenerator(): RestApiBundle\Services\OpenApi\SpecificationGenerator
     {
-        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\SpecificationGenerator::class);
+        /** @var RestApiBundle\Services\OpenApi\SpecificationGenerator $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\SpecificationGenerator::class);
+
+        return $result;
     }
 }
