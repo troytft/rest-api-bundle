@@ -79,7 +79,8 @@ class ResponseModelResolver
     {
         $result = $this->docBlockReader->getReturnType($reflectionMethod) ?: $this->typeHintReader->getReturnType($reflectionMethod);
         if (!$result) {
-            throw new \InvalidArgumentException(sprintf('Type is not defined.'));
+            $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
+            throw new RestApiBundle\Exception\Docs\InvalidDefinitionException(new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException(), $context);
         }
 
         return $result;

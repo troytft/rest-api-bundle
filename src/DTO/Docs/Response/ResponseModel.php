@@ -14,15 +14,21 @@ class ResponseModel implements RestApiBundle\DTO\Docs\Response\ResponseInterface
     /**
      * @var bool
      */
-    private $isNullable;
+    private $nullable;
+
+    public function __construct(string $class, bool $nullable)
+    {
+        $this->class = $class;
+        $this->nullable = $nullable;
+    }
 
     public function getClass(): string
     {
         return $this->class;
     }
 
-    public function getIsNullable(): bool
+    public function getNullable(): bool
     {
-        return $this->isNullable;
+        return $this->nullable;
     }
 }

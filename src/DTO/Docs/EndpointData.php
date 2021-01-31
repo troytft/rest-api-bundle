@@ -32,7 +32,7 @@ class EndpointData
     private $methods;
 
     /**
-     * @var RestApiBundle\DTO\Docs\Types\TypeInterface
+     * @var RestApiBundle\DTO\Docs\Response\ResponseInterface
      */
     private $response;
 
@@ -106,12 +106,12 @@ class EndpointData
         return $this;
     }
 
-    public function getResponse(): Types\TypeInterface
+    public function getResponse(): RestApiBundle\DTO\Docs\Response\ResponseInterface
     {
         return $this->response;
     }
 
-    public function setResponse(Types\TypeInterface $response)
+    public function setResponse(RestApiBundle\DTO\Docs\Response\ResponseInterface $response)
     {
         $this->response = $response;
 

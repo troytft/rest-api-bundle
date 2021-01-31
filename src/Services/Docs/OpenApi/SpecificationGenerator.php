@@ -16,6 +16,16 @@ use function strtolower;
 class SpecificationGenerator
 {
     /**
+     * @var RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver
+     */
+    private $responseModelResolver;
+
+    public function __construct(RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver $responseModelResolver)
+    {
+        $this->responseModelResolver = $responseModelResolver;
+    }
+
+    /**
      * @param RestApiBundle\DTO\Docs\EndpointData[] $endpoints
      *
      * @return string
@@ -77,20 +87,33 @@ class SpecificationGenerator
                 ]);
             }
 
-            $returnType = $routeData->getResponse();
+            $response = $routeData->getResponse();
 
             $responses = new OpenApi\Responses([]);
 
-            if ($returnType->getNullable()) {
+            if ($response->getNullable()) {
                 $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
             }
 
-            if (!$returnType instanceof RestApiBundle\DTO\Docs\Types\NullType) {
+            if ($response instanceof RestApiBundle\DTO\Docs\Response\ResponseModel) {
                 $responses->addResponse('200', new OpenApi\Response([
                     'description' => 'Success response with body',
                     'content' => [
                         'application/json' => [
-                            'schema' => $this->convertSchemaType($returnType)
+                            'schema' => $this->responseModelResolver->resolveByClass($response->getClass(), $response->getNullable())
+                        ]
+                    ]
+                ]));
+            } elseif ($response instanceof RestApiBundle\DTO\Docs\Response\ArrayOfResponseModels) {
+                $responses->addResponse('200', new OpenApi\Response([
+                    'description' => 'Success response with body',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => new OpenApi\Schema([
+                                'type' => OpenApi\Type::ARRAY,
+                                'nullable' => $response->getNullable(),
+                                'items' => $this->responseModelResolver->resolveByClass($response->getClass(), false),
+                            ])
                         ]
                     ]
                 ]));
