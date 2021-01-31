@@ -70,4 +70,14 @@ class RequestModelHelperTest extends Tests\BaseTestCase
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\StringType::class, $innerType);
         $this->assertFalse($innerType->getNullable());
     }
+
+    private function getRequestModelHelper(): RestApiBundle\Services\Docs\OpenApi\RequestModelResolver
+    {
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\OpenApi\RequestModelResolver::class);
+        if (!$result instanceof RestApiBundle\Services\Docs\OpenApi\RequestModelResolver) {
+            throw new \InvalidArgumentException();
+        }
+
+        return $result;
+    }
 }

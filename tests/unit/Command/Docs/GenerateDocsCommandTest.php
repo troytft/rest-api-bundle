@@ -144,6 +144,7 @@ YAML;
     ]
 }
 JSON;
+        var_dump(file_get_contents($fileName));
         $this->assertSame($expected, file_get_contents($fileName));
     }
 

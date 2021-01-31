@@ -96,14 +96,6 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $result;
     }
 
-    protected function getRequestModelHelper(): RestApiBundle\Services\Docs\OpenApi\RequestModelHelper
-    {
-        /** @var RestApiBundle\Services\Docs\OpenApi\RequestModelHelper $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\OpenApi\RequestModelHelper::class);
-
-        return $result;
-    }
-
     protected function getTypeHintSchemaReader(): RestApiBundle\Services\Docs\Types\TypeHintTypeReader
     {
         /** @var RestApiBundle\Services\Docs\Types\TypeHintTypeReader $result */
