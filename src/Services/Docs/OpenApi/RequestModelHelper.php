@@ -45,7 +45,7 @@ class RequestModelHelper
 
     private function applyValidationConstraints(RestApiBundle\DTO\Docs\Types\ObjectType $objectType, string $class): void
     {
-        $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
+        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
         foreach ($objectType->getProperties() as $propertyName => $propertySchema) {
             if (!$propertySchema instanceof RestApiBundle\DTO\Docs\Types\ValidationAwareInterface) {

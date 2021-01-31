@@ -5,9 +5,8 @@ namespace RestApiBundle\Helper;
 use RestApiBundle;
 use function array_key_exists;
 use function class_exists;
-use function sprintf;
 
-class ClassHelper
+class ClassInterfaceChecker
 {
     /**
      * @var array<string, bool>
@@ -21,12 +20,19 @@ class ClassHelper
         \DateTime::class => true,
     ];
 
+    /**
+     * @var array<string, bool>
+     */
+    private static $requestModelCache = [];
+
     public static function isResponseModel(string $class): bool
     {
-        static::assertClassExists($class);
+        if (!class_exists($class)) {
+            return false;
+        }
 
         if (!array_key_exists($class, static::$responseModelCache)) {
-            $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
+            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
             static::$responseModelCache[$class] = $reflectionClass->isInstantiable()
                 && $reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class);
@@ -37,10 +43,12 @@ class ClassHelper
 
     public static function isDateTime(string $class): bool
     {
-        static::assertClassExists($class);
+        if (!class_exists($class)) {
+            return false;
+        }
 
         if (!array_key_exists($class, static::$dateTimeCache)) {
-            $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
+            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
             static::$dateTimeCache[$class] = $reflectionClass->isInstantiable()
                 && $reflectionClass->implementsInterface(\DateTime::class);
@@ -49,10 +57,19 @@ class ClassHelper
         return static::$dateTimeCache[$class];
     }
 
-    private static function assertClassExists(string $class): void
+    public static function isRequestModel(string $class): bool
     {
         if (!class_exists($class)) {
-            throw new \InvalidArgumentException(sprintf('Class %s does not exist.', $class));
+            return false;
         }
+
+        if (!array_key_exists($class, static::$requestModelCache)) {
+            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+
+            static::$requestModelCache[$class] = $reflectionClass->isInstantiable()
+                && $reflectionClass->implementsInterface(RestApiBundle\RequestModelInterface::class);
+        }
+
+        return static::$requestModelCache[$class];
     }
 }

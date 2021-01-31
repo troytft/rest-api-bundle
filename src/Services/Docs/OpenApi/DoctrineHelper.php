@@ -23,14 +23,14 @@ class DoctrineHelper
 
     public function isEntity(string $class): bool
     {
-        $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
+        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
         return (bool) $this->annotationReader->getClassAnnotation($reflectionClass, Doctrine\ORM\Mapping\Entity::class);
     }
 
     public function getEntityFieldSchema(string $class, string $field, bool $nullable): RestApiBundle\DTO\Docs\Types\TypeInterface
     {
-        $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
+        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
         $reflectionProperty = $reflectionClass->getProperty($field);
 
         $columnAnnotation = $this->annotationReader->getPropertyAnnotation($reflectionProperty, Doctrine\ORM\Mapping\Column::class);

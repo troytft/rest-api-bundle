@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services;
+namespace RestApiBundle\Helper;
 
 use function ltrim;
 

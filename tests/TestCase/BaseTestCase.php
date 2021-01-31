@@ -65,7 +65,7 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
 
     protected function invokePrivateMethod($object, string $methodName, array $parameters = [])
     {
-        $reflection = RestApiBundle\Services\ReflectionClassStore::get(get_class($object));
+        $reflection = RestApiBundle\Helper\ReflectionClassStore::get(get_class($object));
         $method = $reflection->getMethod($methodName);
         $method->setAccessible(true);
 

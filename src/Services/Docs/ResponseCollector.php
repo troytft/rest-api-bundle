@@ -80,7 +80,7 @@ class ResponseCollector
             return $this->objectClassCache[$cacheKey];
         }
 
-        $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
+        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
         if (!$reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class)) {
             throw new \InvalidArgumentException();
         }

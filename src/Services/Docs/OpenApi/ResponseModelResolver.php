@@ -49,7 +49,7 @@ class ResponseModelResolver
             return $this->objectClassCache[$cacheKey];
         }
 
-        $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
+        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
         if (!$reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class)) {
             throw new \InvalidArgumentException();
         }
@@ -174,12 +174,12 @@ class ResponseModelResolver
     private function convertClassType(RestApiBundle\DTO\Docs\Types\ClassType $classType): OpenApi\Schema
     {
         switch (true) {
-            case RestApiBundle\Helper\ClassHelper::isResponseModel($classType->getClass()):
+            case RestApiBundle\Helper\ClassInterfaceChecker::isResponseModel($classType->getClass()):
                 $result = $this->resolveByClass($classType->getClass(), $classType->getNullable());
 
                 break;
 
-            case RestApiBundle\Helper\ClassHelper::isDateTime($classType->getClass()):
+            case RestApiBundle\Helper\ClassInterfaceChecker::isDateTime($classType->getClass()):
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date-time',

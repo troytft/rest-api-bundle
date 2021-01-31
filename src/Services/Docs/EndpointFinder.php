@@ -135,7 +135,7 @@ class EndpointFinder
     {
         $result = [];
 
-        $reflectionController = RestApiBundle\Services\ReflectionClassStore::get($class);
+        $reflectionController = RestApiBundle\Helper\ReflectionClassStore::get($class);
         $controllerRouteAnnotation = $this->annotationReader->getClassAnnotation($reflectionController, Route::class);
 
         foreach ($reflectionController->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
@@ -257,7 +257,7 @@ class EndpointFinder
 
         foreach ($reflectionMethod->getParameters() as $parameter) {
             $schema = $this->typeHintSchemaReader->getMethodParameterSchema($parameter);
-            if ($schema instanceof RestApiBundle\DTO\Docs\Types\ClassType && RestApiBundle\Services\Request\RequestModelHelper::isRequestModel($schema->getClass())) {
+            if ($schema instanceof RestApiBundle\DTO\Docs\Types\ClassType && RestApiBundle\Helper\ClassInterfaceChecker::isRequestModel($schema->getClass())) {
                 $result = $schema->getClass();
 
                 break;
