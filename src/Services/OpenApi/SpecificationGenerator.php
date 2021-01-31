@@ -85,7 +85,7 @@ class SpecificationGenerator
                 $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
             }
 
-            if (!$returnType instanceof RestApiBundle\DTO\OpenApi\Schema\NullType) {
+            if (!$returnType instanceof RestApiBundle\DTO\OpenApi\Types\NullType) {
                 $responses->addResponse('200', new OpenApi\Response([
                     'description' => 'Success response with body',
                     'content' => [
@@ -146,7 +146,7 @@ class SpecificationGenerator
         return $root;
     }
 
-    private function convertRequestModelToRequestBody(RestApiBundle\DTO\OpenApi\Schema\ObjectType $objectType): OpenApi\RequestBody
+    private function convertRequestModelToRequestBody(RestApiBundle\DTO\OpenApi\Types\ObjectType $objectType): OpenApi\RequestBody
     {
         return new OpenApi\RequestBody([
             'description' => 'Request body',
@@ -160,11 +160,11 @@ class SpecificationGenerator
     }
 
     /**
-     * @param RestApiBundle\DTO\OpenApi\Schema\ObjectType $objectType
+     * @param RestApiBundle\DTO\OpenApi\Types\ObjectType $objectType
      *
      * @return OpenApi\Parameter[]
      */
-    private function convertRequestModelToParameters(RestApiBundle\DTO\OpenApi\Schema\ObjectType $objectType): array
+    private function convertRequestModelToParameters(RestApiBundle\DTO\OpenApi\Types\ObjectType $objectType): array
     {
         $result = [];
 
@@ -175,7 +175,7 @@ class SpecificationGenerator
         return $result;
     }
 
-    private function createParameter(string $type, string $name, RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface $schema): OpenApi\Parameter
+    private function createParameter(string $type, string $name, RestApiBundle\DTO\OpenApi\Types\TypeInterface $schema): OpenApi\Parameter
     {
         $data = [
             'in' => $type,
@@ -184,7 +184,7 @@ class SpecificationGenerator
         ];
 
         // Swagger UI does not show schema description in parameters
-        if ($schema instanceof RestApiBundle\DTO\OpenApi\Schema\DescriptionAwareInterface && $schema->getDescription()) {
+        if ($schema instanceof RestApiBundle\DTO\OpenApi\Types\DescriptionAwareInterface && $schema->getDescription()) {
             $data['description'] = $schema->getDescription();
             $data['schema'] = $this->convertSchemaType($schema);
         } else {
@@ -194,23 +194,23 @@ class SpecificationGenerator
         return new OpenApi\Parameter($data);
     }
 
-    private function convertSchemaType(RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface $schemaType): OpenApi\Schema
+    private function convertSchemaType(RestApiBundle\DTO\OpenApi\Types\TypeInterface $schemaType): OpenApi\Schema
     {
-        if ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\ObjectType) {
+        if ($schemaType instanceof RestApiBundle\DTO\OpenApi\Types\ObjectType) {
             $result = $this->convertObjectType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\ArrayType) {
+        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Types\ArrayType) {
             $result = $this->convertArrayType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\ScalarInterface) {
+        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Types\ScalarInterface) {
             $result = $this->convertScalarType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\DateTimeType) {
+        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Types\DateTimeType) {
             $result = $this->convertDateTimeType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\DateType) {
+        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Types\DateType) {
             $result = $this->convertDateType($schemaType);
         } else {
             throw new \InvalidArgumentException();
         }
 
-        if ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\ValidationAwareInterface) {
+        if ($schemaType instanceof RestApiBundle\DTO\OpenApi\Types\ValidationAwareInterface) {
             foreach ($schemaType->getConstraints() as $constraint) {
                 if ($constraint instanceof Symfony\Component\Validator\Constraints\Range) {
                     if ($constraint->min !== null) {
@@ -254,15 +254,15 @@ class SpecificationGenerator
         return $result;
     }
 
-    private function convertScalarType(RestApiBundle\DTO\OpenApi\Schema\ScalarInterface $scalarType): OpenApi\Schema
+    private function convertScalarType(RestApiBundle\DTO\OpenApi\Types\ScalarInterface $scalarType): OpenApi\Schema
     {
-        if ($scalarType instanceof RestApiBundle\DTO\OpenApi\Schema\StringType) {
+        if ($scalarType instanceof RestApiBundle\DTO\OpenApi\Types\StringType) {
             $result = $this->convertStringType($scalarType);
-        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Schema\IntegerType) {
+        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Types\IntegerType) {
             $result = $this->convertIntegerType($scalarType);
-        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Schema\FloatType) {
+        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Types\FloatType) {
             $result = $this->convertFloatType($scalarType);
-        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Schema\BooleanType) {
+        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Types\BooleanType) {
             $result = $this->convertBooleanType($scalarType);
         } else {
             throw new \InvalidArgumentException();
@@ -271,7 +271,7 @@ class SpecificationGenerator
         return $result;
     }
 
-    private function convertObjectType(RestApiBundle\DTO\OpenApi\Schema\ObjectType $objectType): OpenApi\Schema
+    private function convertObjectType(RestApiBundle\DTO\OpenApi\Types\ObjectType $objectType): OpenApi\Schema
     {
         $properties = [];
 
@@ -286,7 +286,7 @@ class SpecificationGenerator
         ]);
     }
 
-    private function convertArrayType(RestApiBundle\DTO\OpenApi\Schema\ArrayType $arrayType): OpenApi\Schema
+    private function convertArrayType(RestApiBundle\DTO\OpenApi\Types\ArrayType $arrayType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
@@ -295,7 +295,7 @@ class SpecificationGenerator
         ]);
     }
 
-    private function convertStringType(RestApiBundle\DTO\OpenApi\Schema\StringType $stringType): OpenApi\Schema
+    private function convertStringType(RestApiBundle\DTO\OpenApi\Types\StringType $stringType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
@@ -303,7 +303,7 @@ class SpecificationGenerator
         ]);
     }
 
-    private function convertIntegerType(RestApiBundle\DTO\OpenApi\Schema\IntegerType $integerType): OpenApi\Schema
+    private function convertIntegerType(RestApiBundle\DTO\OpenApi\Types\IntegerType $integerType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::INTEGER,
@@ -311,7 +311,7 @@ class SpecificationGenerator
         ]);
     }
 
-    private function convertFloatType(RestApiBundle\DTO\OpenApi\Schema\FloatType $floatType): OpenApi\Schema
+    private function convertFloatType(RestApiBundle\DTO\OpenApi\Types\FloatType $floatType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::NUMBER,
@@ -320,7 +320,7 @@ class SpecificationGenerator
         ]);
     }
 
-    private function convertBooleanType(RestApiBundle\DTO\OpenApi\Schema\BooleanType $booleanType): OpenApi\Schema
+    private function convertBooleanType(RestApiBundle\DTO\OpenApi\Types\BooleanType $booleanType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::BOOLEAN,
@@ -328,7 +328,7 @@ class SpecificationGenerator
         ]);
     }
 
-    private function convertDateTimeType(RestApiBundle\DTO\OpenApi\Schema\DateTimeType $dateTimeType): OpenApi\Schema
+    private function convertDateTimeType(RestApiBundle\DTO\OpenApi\Types\DateTimeType $dateTimeType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
@@ -337,7 +337,7 @@ class SpecificationGenerator
         ]);
     }
 
-    private function convertDateType(RestApiBundle\DTO\OpenApi\Schema\DateType $dateType): OpenApi\Schema
+    private function convertDateType(RestApiBundle\DTO\OpenApi\Types\DateType $dateType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,

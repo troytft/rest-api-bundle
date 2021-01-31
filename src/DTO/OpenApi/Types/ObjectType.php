@@ -1,13 +1,13 @@
 <?php
 
-namespace RestApiBundle\DTO\OpenApi\Schema;
+namespace RestApiBundle\DTO\OpenApi\Types;
 
 use RestApiBundle;
 
-class ObjectType implements RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+class ObjectType implements RestApiBundle\DTO\OpenApi\Types\TypeInterface
 {
     /**
-     * @var array<string, RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface>
+     * @var array<string, RestApiBundle\DTO\OpenApi\Types\TypeInterface>
      */
     private $properties;
 
@@ -23,7 +23,7 @@ class ObjectType implements RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
     }
 
     /**
-     * @return array<string, RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface>
+     * @return array<string, RestApiBundle\DTO\OpenApi\Types\TypeInterface>
      */
     public function getProperties(): array
     {

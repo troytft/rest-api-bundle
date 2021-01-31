@@ -33,11 +33,11 @@ class EndpointFinderTest extends Tests\TestCase\BaseTestCase
         $this->assertCount(2, $endpointData->getPathParameters());
 
         $this->assertSame('int', $endpointData->getPathParameters()[0]->getName());
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\IntegerType::class, $endpointData->getPathParameters()[0]->getSchema());
+        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Types\IntegerType::class, $endpointData->getPathParameters()[0]->getSchema());
         $this->assertFalse($endpointData->getPathParameters()[0]->getSchema()->getNullable());
 
         $this->assertSame('string', $endpointData->getPathParameters()[1]->getName());
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\StringType::class, $endpointData->getPathParameters()[1]->getSchema());
+        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Types\StringType::class, $endpointData->getPathParameters()[1]->getSchema());
         $this->assertFalse($endpointData->getPathParameters()[1]->getSchema()->getNullable());
     }
 
@@ -54,16 +54,16 @@ class EndpointFinderTest extends Tests\TestCase\BaseTestCase
         $this->assertCount(4, $endpointData->getPathParameters());
 
         $this->assertSame('int', $endpointData->getPathParameters()[0]->getName());
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\IntegerType::class, $endpointData->getPathParameters()[0]->getSchema());
+        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Types\IntegerType::class, $endpointData->getPathParameters()[0]->getSchema());
 
         $this->assertSame('genre', $endpointData->getPathParameters()[1]->getName());
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\IntegerType::class, $endpointData->getPathParameters()[1]->getSchema());
+        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Types\IntegerType::class, $endpointData->getPathParameters()[1]->getSchema());
 
         $this->assertSame('string', $endpointData->getPathParameters()[2]->getName());
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\StringType::class, $endpointData->getPathParameters()[2]->getSchema());
+        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Types\StringType::class, $endpointData->getPathParameters()[2]->getSchema());
 
         $this->assertSame('slug', $endpointData->getPathParameters()[3]->getName());
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\StringType::class, $endpointData->getPathParameters()[3]->getSchema());
+        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Types\StringType::class, $endpointData->getPathParameters()[3]->getSchema());
     }
 
     public function testRequestModelForRequest()
@@ -76,24 +76,24 @@ class EndpointFinderTest extends Tests\TestCase\BaseTestCase
 
         $endpointData = $result[0];
 
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\ObjectType::class, $endpointData->getRequestModel());
+        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Types\ObjectType::class, $endpointData->getRequestModel());
         $this->assertCount(2, $endpointData->getRequestModel()->getProperties());
 
         $this->assertArrayHasKey('offset', $endpointData->getRequestModel()->getProperties());
 
-        /** @var RestApiBundle\DTO\OpenApi\Schema\IntegerType $offset */
+        /** @var RestApiBundle\DTO\OpenApi\Types\IntegerType $offset */
         $offset = $endpointData->getRequestModel()->getProperties()['offset'];
 
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\IntegerType::class, $offset);
+        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Types\IntegerType::class, $offset);
         $this->assertCount(2, $offset->getConstraints());
         $this->assertInstanceOf(Symfony\Component\Validator\Constraints\Range::class, $offset->getConstraints()[0]);
         $this->assertInstanceOf(Symfony\Component\Validator\Constraints\NotNull::class, $offset->getConstraints()[1]);
 
         $this->assertArrayHasKey('limit', $endpointData->getRequestModel()->getProperties());
 
-        /** @var RestApiBundle\DTO\OpenApi\Schema\IntegerType $limit */
+        /** @var RestApiBundle\DTO\OpenApi\Types\IntegerType $limit */
         $limit = $endpointData->getRequestModel()->getProperties()['limit'];
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\IntegerType::class, $limit);
+        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Types\IntegerType::class, $limit);
 
         $this->assertCount(2, $limit->getConstraints());
         $this->assertInstanceOf(Symfony\Component\Validator\Constraints\Range::class, $limit->getConstraints()[0]);

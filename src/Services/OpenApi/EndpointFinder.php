@@ -216,11 +216,11 @@ class EndpointFinder
 
                 $isNameEqualsToPlaceholder = $parameter->getName() === $placeholder;
 
-                if ($isNameEqualsToPlaceholder && $parameterSchema instanceof RestApiBundle\DTO\OpenApi\Schema\ScalarInterface) {
+                if ($isNameEqualsToPlaceholder && $parameterSchema instanceof RestApiBundle\DTO\OpenApi\Types\ScalarInterface) {
                     $pathParameter = new RestApiBundle\DTO\OpenApi\PathParameter($placeholder, $parameterSchema);
 
                     break;
-                } elseif ($parameterSchema instanceof RestApiBundle\DTO\OpenApi\Schema\ClassType && $this->doctrineHelper->isEntity($parameterSchema->getClass())) {
+                } elseif ($parameterSchema instanceof RestApiBundle\DTO\OpenApi\Types\ClassType && $this->doctrineHelper->isEntity($parameterSchema->getClass())) {
                     $fieldName = $isNameEqualsToPlaceholder ? 'id' : $placeholder;
                     $parameterSchema = $this->doctrineHelper->getEntityFieldSchema($parameterSchema->getClass(), $fieldName, false);
                     $pathParameter = new RestApiBundle\DTO\OpenApi\PathParameter($placeholder, $parameterSchema);
@@ -257,7 +257,7 @@ class EndpointFinder
 
         foreach ($reflectionMethod->getParameters() as $parameter) {
             $schema = $this->typeHintSchemaReader->getMethodParameterSchema($parameter);
-            if ($schema instanceof RestApiBundle\DTO\OpenApi\Schema\ClassType && RestApiBundle\Services\Request\RequestModelHelper::isRequestModel($schema->getClass())) {
+            if ($schema instanceof RestApiBundle\DTO\OpenApi\Types\ClassType && RestApiBundle\Services\Request\RequestModelHelper::isRequestModel($schema->getClass())) {
                 $result = $schema->getClass();
 
                 break;

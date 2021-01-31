@@ -1,14 +1,14 @@
 <?php
 
-namespace RestApiBundle\DTO\OpenApi\Schema;
+namespace RestApiBundle\DTO\OpenApi\Types;
 
 use RestApiBundle;
 use Symfony\Component\Validator\Constraint;
 
 class DateType implements
-    RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface,
-    RestApiBundle\DTO\OpenApi\Schema\ValidationAwareInterface,
-    RestApiBundle\DTO\OpenApi\Schema\DescriptionAwareInterface
+    RestApiBundle\DTO\OpenApi\Types\TypeInterface,
+    RestApiBundle\DTO\OpenApi\Types\ValidationAwareInterface,
+    RestApiBundle\DTO\OpenApi\Types\DescriptionAwareInterface
 {
     /**
      * @var bool

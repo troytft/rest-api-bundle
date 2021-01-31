@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\DTO\OpenApi\Schema;
+namespace RestApiBundle\DTO\OpenApi\Types;
 
 interface DescriptionAwareInterface
 {

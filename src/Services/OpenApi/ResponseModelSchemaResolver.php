@@ -13,7 +13,7 @@ use cebe\openapi\spec as OpenApi;
 class ResponseModelSchemaResolver
 {
     /**
-     * @var array<string, RestApiBundle\DTO\OpenApi\Schema\ObjectType>
+     * @var array<string, RestApiBundle\DTO\OpenApi\Types\ObjectType>
      */
     private $objectClassCache = [];
 
@@ -40,7 +40,7 @@ class ResponseModelSchemaResolver
         return $this->convertObjectType($this->resolveObjectTypeByClass($class, $isNullable));
     }
 
-    private function resolveObjectTypeByClass(string $class, bool $isNullable): RestApiBundle\DTO\OpenApi\Schema\ObjectType
+    private function resolveObjectTypeByClass(string $class, bool $isNullable): RestApiBundle\DTO\OpenApi\Types\ObjectType
     {
         $class = ltrim($class, '\\');
 
@@ -66,29 +66,29 @@ class ResponseModelSchemaResolver
             $properties[$propertyName] = $this->getByReflectionMethod($reflectionMethod);
         }
 
-        $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\OpenApi\Schema\StringType(false);
+        $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\OpenApi\Types\StringType(false);
 
-        $this->objectClassCache[$cacheKey] = new RestApiBundle\DTO\OpenApi\Schema\ObjectType($properties, $isNullable);
+        $this->objectClassCache[$cacheKey] = new RestApiBundle\DTO\OpenApi\Types\ObjectType($properties, $isNullable);
 
         return $this->objectClassCache[$cacheKey];
     }
 
-    private function getByReflectionMethod(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+    private function getByReflectionMethod(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\OpenApi\Types\TypeInterface
     {
         $schema = $this->docBlockReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintReader->getMethodReturnSchema($reflectionMethod);
 
         return $schema;
     }
 
-    private function convertSchemaType(RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface $schemaType): OpenApi\Schema
+    private function convertSchemaType(RestApiBundle\DTO\OpenApi\Types\TypeInterface $schemaType): OpenApi\Schema
     {
-        if ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\ObjectType) {
+        if ($schemaType instanceof RestApiBundle\DTO\OpenApi\Types\ObjectType) {
             $result = $this->convertObjectType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\ArrayType) {
+        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Types\ArrayType) {
             $result = $this->convertArrayType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\ScalarInterface) {
+        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Types\ScalarInterface) {
             $result = $this->convertScalarType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Schema\ClassType) {
+        } elseif ($schemaType instanceof RestApiBundle\DTO\OpenApi\Types\ClassType) {
             $result = $this->convertClassType($schemaType);
         } else {
             throw new \InvalidArgumentException();
@@ -97,15 +97,15 @@ class ResponseModelSchemaResolver
         return $result;
     }
 
-    private function convertScalarType(RestApiBundle\DTO\OpenApi\Schema\ScalarInterface $scalarType): OpenApi\Schema
+    private function convertScalarType(RestApiBundle\DTO\OpenApi\Types\ScalarInterface $scalarType): OpenApi\Schema
     {
-        if ($scalarType instanceof RestApiBundle\DTO\OpenApi\Schema\StringType) {
+        if ($scalarType instanceof RestApiBundle\DTO\OpenApi\Types\StringType) {
             $result = $this->convertStringType($scalarType);
-        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Schema\IntegerType) {
+        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Types\IntegerType) {
             $result = $this->convertIntegerType($scalarType);
-        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Schema\FloatType) {
+        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Types\FloatType) {
             $result = $this->convertFloatType($scalarType);
-        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Schema\BooleanType) {
+        } elseif ($scalarType instanceof RestApiBundle\DTO\OpenApi\Types\BooleanType) {
             $result = $this->convertBooleanType($scalarType);
         } else {
             throw new \InvalidArgumentException();
@@ -114,7 +114,7 @@ class ResponseModelSchemaResolver
         return $result;
     }
 
-    private function convertObjectType(RestApiBundle\DTO\OpenApi\Schema\ObjectType $objectType): OpenApi\Schema
+    private function convertObjectType(RestApiBundle\DTO\OpenApi\Types\ObjectType $objectType): OpenApi\Schema
     {
         $properties = [];
 
@@ -129,7 +129,7 @@ class ResponseModelSchemaResolver
         ]);
     }
 
-    private function convertArrayType(RestApiBundle\DTO\OpenApi\Schema\ArrayType $arrayType): OpenApi\Schema
+    private function convertArrayType(RestApiBundle\DTO\OpenApi\Types\ArrayType $arrayType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
@@ -138,7 +138,7 @@ class ResponseModelSchemaResolver
         ]);
     }
 
-    private function convertStringType(RestApiBundle\DTO\OpenApi\Schema\StringType $stringType): OpenApi\Schema
+    private function convertStringType(RestApiBundle\DTO\OpenApi\Types\StringType $stringType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
@@ -146,7 +146,7 @@ class ResponseModelSchemaResolver
         ]);
     }
 
-    private function convertIntegerType(RestApiBundle\DTO\OpenApi\Schema\IntegerType $integerType): OpenApi\Schema
+    private function convertIntegerType(RestApiBundle\DTO\OpenApi\Types\IntegerType $integerType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::INTEGER,
@@ -154,7 +154,7 @@ class ResponseModelSchemaResolver
         ]);
     }
 
-    private function convertFloatType(RestApiBundle\DTO\OpenApi\Schema\FloatType $floatType): OpenApi\Schema
+    private function convertFloatType(RestApiBundle\DTO\OpenApi\Types\FloatType $floatType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::NUMBER,
@@ -163,7 +163,7 @@ class ResponseModelSchemaResolver
         ]);
     }
 
-    private function convertBooleanType(RestApiBundle\DTO\OpenApi\Schema\BooleanType $booleanType): OpenApi\Schema
+    private function convertBooleanType(RestApiBundle\DTO\OpenApi\Types\BooleanType $booleanType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::BOOLEAN,
@@ -171,7 +171,7 @@ class ResponseModelSchemaResolver
         ]);
     }
 
-    private function convertClassType(RestApiBundle\DTO\OpenApi\Schema\ClassType $classType): OpenApi\Schema
+    private function convertClassType(RestApiBundle\DTO\OpenApi\Types\ClassType $classType): OpenApi\Schema
     {
         switch (true) {
             case RestApiBundle\Helper\ClassHelper::isResponseModel($classType->getClass()):

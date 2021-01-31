@@ -32,7 +32,7 @@ class EndpointData
     private $methods;
 
     /**
-     * @var RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface
+     * @var RestApiBundle\DTO\OpenApi\Types\TypeInterface
      */
     private $response;
 
@@ -42,7 +42,7 @@ class EndpointData
     private $pathParameters = [];
 
     /**
-     * @var RestApiBundle\DTO\OpenApi\Schema\ObjectType|null
+     * @var RestApiBundle\DTO\OpenApi\Types\ObjectType|null
      */
     private $requestModel;
 
@@ -106,12 +106,12 @@ class EndpointData
         return $this;
     }
 
-    public function getResponse(): Schema\SchemaTypeInterface
+    public function getResponse(): Types\TypeInterface
     {
         return $this->response;
     }
 
-    public function setResponse(Schema\SchemaTypeInterface $response)
+    public function setResponse(Types\TypeInterface $response)
     {
         $this->response = $response;
 
@@ -138,12 +138,12 @@ class EndpointData
         return $this;
     }
 
-    public function getRequestModel(): ?RestApiBundle\DTO\OpenApi\Schema\ObjectType
+    public function getRequestModel(): ?RestApiBundle\DTO\OpenApi\Types\ObjectType
     {
         return $this->requestModel;
     }
 
-    public function setRequestModel(?RestApiBundle\DTO\OpenApi\Schema\ObjectType $requestModel)
+    public function setRequestModel(?RestApiBundle\DTO\OpenApi\Types\ObjectType $requestModel)
     {
         $this->requestModel = $requestModel;
 
