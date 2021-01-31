@@ -43,6 +43,10 @@
         </properties>
     </rule>
 
+    <rule ref="PSR1.Classes.ClassDeclaration">
+        <exclude-pattern>tests/unit</exclude-pattern>
+    </rule>
+
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/Namespaces/UnusedUsesSniff.php">
         <properties>
             <property name="searchAnnotations" value="true"/>
