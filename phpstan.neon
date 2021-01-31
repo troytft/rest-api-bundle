@@ -2,12 +2,9 @@ parameters:
     level: 5
     paths:
         - src
-#        - tests
+        - tests
     reportUnmatchedIgnoredErrors: false
     ignoreErrors:
         - '/Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\)./'
         - '/Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::addDefaultsIfNotSet\(\)./'
         - '/Parameter \#1 \$defaultContext of class Symfony\\Component\\Serializer\\Normalizer\\DateTimeNormalizer constructor expects array, string given\./'
-
-    autoload_files:
-        - tests/autoload.php
