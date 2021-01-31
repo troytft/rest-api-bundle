@@ -72,10 +72,10 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $method->invokeArgs($object, $parameters);
     }
 
-    protected function getEndpointFinder(): RestApiBundle\Services\OpenApi\EndpointFinder
+    protected function getEndpointFinder(): RestApiBundle\Services\Docs\EndpointFinder
     {
-        /** @var RestApiBundle\Services\OpenApi\EndpointFinder $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\EndpointFinder::class);
+        /** @var RestApiBundle\Services\Docs\EndpointFinder $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\EndpointFinder::class);
 
         return $result;
     }
@@ -88,42 +88,42 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $result;
     }
 
-    protected function getDocBlockSchemaReader(): RestApiBundle\Services\OpenApi\Schema\DocBlockReader
+    protected function getDocBlockSchemaReader(): RestApiBundle\Services\Docs\Types\DocBlockTypeReader
     {
-        /** @var RestApiBundle\Services\OpenApi\Schema\DocBlockReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\Schema\DocBlockReader::class);
+        /** @var RestApiBundle\Services\Docs\Types\DocBlockTypeReader $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Types\DocBlockTypeReader::class);
 
         return $result;
     }
 
-    protected function getRequestModelHelper(): RestApiBundle\Services\OpenApi\RequestModelHelper
+    protected function getRequestModelHelper(): RestApiBundle\Services\Docs\OpenApi\RequestModelHelper
     {
-        /** @var RestApiBundle\Services\OpenApi\RequestModelHelper $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\RequestModelHelper::class);
+        /** @var RestApiBundle\Services\Docs\OpenApi\RequestModelHelper $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\OpenApi\RequestModelHelper::class);
 
         return $result;
     }
 
-    protected function getResponseCollector(): RestApiBundle\Services\OpenApi\ResponseCollector
+    protected function getResponseCollector(): RestApiBundle\Services\Docs\ResponseCollector
     {
-        /** @var RestApiBundle\Services\OpenApi\ResponseCollector $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\ResponseCollector::class);
+        /** @var RestApiBundle\Services\Docs\ResponseCollector $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\ResponseCollector::class);
 
         return $result;
     }
 
-    protected function getTypeHintSchemaReader(): RestApiBundle\Services\OpenApi\Schema\TypeHintReader
+    protected function getTypeHintSchemaReader(): RestApiBundle\Services\Docs\Types\TypeHintTypeReader
     {
-        /** @var RestApiBundle\Services\OpenApi\Schema\TypeHintReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\Schema\TypeHintReader::class);
+        /** @var RestApiBundle\Services\Docs\Types\TypeHintTypeReader $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Types\TypeHintTypeReader::class);
 
         return $result;
     }
 
-    protected function getResponseModelSchemaResolver(): RestApiBundle\Services\OpenApi\ResponseModelSchemaResolver
+    protected function getResponseModelSchemaResolver(): RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver
     {
-        /** @var RestApiBundle\Services\OpenApi\ResponseModelSchemaResolver $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\ResponseModelSchemaResolver::class);
+        /** @var RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver::class);
 
         return $result;
     }

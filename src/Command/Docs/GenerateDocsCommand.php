@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Filesystem\Filesystem;
 use function in_array;
 use function sprintf;
 
@@ -20,15 +21,23 @@ class GenerateDocsCommand extends Command
     protected static $defaultName = 'rest-api:generate-docs';
 
     /**
-     * @var RestApiBundle\Services\OpenApi\DocsGenerator
+     * @var RestApiBundle\Services\Docs\EndpointFinder
      */
-    private $docsGenerator;
+    private $endpointFinder;
 
-    public function __construct(RestApiBundle\Services\OpenApi\DocsGenerator $docsGenerator)
-    {
+    /**
+     * @var RestApiBundle\Services\Docs\OpenApi\SpecificationGenerator
+     */
+    private $specificationGenerator;
+
+    public function __construct(
+        RestApiBundle\Services\Docs\EndpointFinder $endpointFinder,
+        RestApiBundle\Services\Docs\OpenApi\SpecificationGenerator $specificationGenerator
+    ) {
+        $this->endpointFinder = $endpointFinder;
+        $this->specificationGenerator = $specificationGenerator;
+
         parent::__construct();
-
-        $this->docsGenerator = $docsGenerator;
     }
 
     protected function configure()
@@ -45,14 +54,14 @@ class GenerateDocsCommand extends Command
         $outputFile = $input->getArgument(static::ARGUMENT_OUTPUT);
         $format = $input->getOption(static::OPTION_FORMAT) ?? RestApiBundle\Enum\Docs\Format::YAML;
 
-        if (!in_array($format, [RestApiBundle\Enum\Docs\Format::YAML, RestApiBundle\Enum\Docs\Format::JSON], true)) {
-            $output->writeln('Invalid format.');
+        if (!in_array($format, RestApiBundle\Enum\Docs\Format::getValues(), true)) {
+            $output->writeln('Invalid file format.');
 
             return 1;
         }
 
         try {
-            $this->docsGenerator->writeToFile($inputDirectory, $outputFile, $format);
+            $this->writeToFile($inputDirectory, $outputFile, $format);
         } catch (RestApiBundle\Exception\Docs\InvalidDefinitionException $exception) {
             $output->writeln(sprintf(
                 'Definition error in %s with message "%s"',
@@ -64,5 +73,21 @@ class GenerateDocsCommand extends Command
         }
 
         return 0;
+    }
+
+    private function writeToFile(string $inputDirectory, string $outputFile, string $format): void
+    {
+        $endpoints = $this->endpointFinder->findInDirectory($inputDirectory);
+
+        if ($format === RestApiBundle\Enum\Docs\Format::YAML) {
+            $content = $this->specificationGenerator->generateYaml($endpoints);
+        } elseif ($format === RestApiBundle\Enum\Docs\Format::JSON) {
+            $content = $this->specificationGenerator->generateJson($endpoints);
+        } else {
+            throw new \InvalidArgumentException();
+        }
+
+        $filesystem = new Filesystem();
+        $filesystem->dumpFile($outputFile, $content);
     }
 }

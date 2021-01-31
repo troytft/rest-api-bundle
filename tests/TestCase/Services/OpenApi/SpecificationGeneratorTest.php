@@ -14,7 +14,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
 {
     public function testCreateParameter()
     {
-        $schema = new RestApiBundle\DTO\OpenApi\Types\StringType(false);
+        $schema = new RestApiBundle\DTO\Docs\Types\StringType(false);
         $schema
             ->setDescription('Description');
 
@@ -39,7 +39,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
 
     public function testConvertSchemaType()
     {
-        $booleanType = new RestApiBundle\DTO\OpenApi\Types\BooleanType(false);
+        $booleanType = new RestApiBundle\DTO\Docs\Types\BooleanType(false);
         $openApiSchema = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertSchemaType', [$booleanType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
@@ -52,7 +52,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         $this->assertSame($expected, $this->convertOpenApiToArray($openApiSchema));
 
         // nullable
-        $booleanType = new RestApiBundle\DTO\OpenApi\Types\BooleanType(true);
+        $booleanType = new RestApiBundle\DTO\Docs\Types\BooleanType(true);
         $openApiSchema = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertSchemaType', [$booleanType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
@@ -72,7 +72,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'max' => \PHP_INT_MAX,
         ]);
 
-        $integerType = new RestApiBundle\DTO\OpenApi\Types\IntegerType(false);
+        $integerType = new RestApiBundle\DTO\Docs\Types\IntegerType(false);
         $integerType
             ->setConstraints([$constraint]);
 
@@ -96,7 +96,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'choices' => Tests\TestApp\TestBundle\Enum\Status::getValues(),
         ]);
 
-        $stringType = new RestApiBundle\DTO\OpenApi\Types\StringType(false);
+        $stringType = new RestApiBundle\DTO\Docs\Types\StringType(false);
         $stringType
             ->setConstraints([$constraint]);
 
@@ -122,7 +122,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'callback' => 'Tests\TestApp\TestBundle\Enum\Status::getValues',
         ]);
 
-        $stringType = new RestApiBundle\DTO\OpenApi\Types\StringType(false);
+        $stringType = new RestApiBundle\DTO\Docs\Types\StringType(false);
         $stringType
             ->setConstraints([$constraint]);
 
@@ -149,7 +149,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'max' => 12,
         ]);
 
-        $arrayType = new RestApiBundle\DTO\OpenApi\Types\ArrayType(new RestApiBundle\DTO\OpenApi\Types\StringType(false), false);
+        $arrayType = new RestApiBundle\DTO\Docs\Types\ArrayType(new RestApiBundle\DTO\Docs\Types\StringType(false), false);
         $arrayType
             ->setConstraints([$constraint]);
 
@@ -177,7 +177,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
             'max' => 12,
         ]);
 
-        $stringType = new RestApiBundle\DTO\OpenApi\Types\StringType(false);
+        $stringType = new RestApiBundle\DTO\Docs\Types\StringType(false);
         $stringType
             ->setConstraints([$constraint]);
 
@@ -197,10 +197,10 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
     public function testConvertRequestModelToParameters()
     {
         $objectProperties = [
-            'offset' => new RestApiBundle\DTO\OpenApi\Types\IntegerType(false),
-            'limit' => new RestApiBundle\DTO\OpenApi\Types\IntegerType(false),
+            'offset' => new RestApiBundle\DTO\Docs\Types\IntegerType(false),
+            'limit' => new RestApiBundle\DTO\Docs\Types\IntegerType(false),
         ];
-        $objectType = new RestApiBundle\DTO\OpenApi\Types\ObjectType($objectProperties, false);
+        $objectType = new RestApiBundle\DTO\Docs\Types\ObjectType($objectProperties, false);
 
         /** @var OpenApi\Parameter[] $openApiParameters */
         $openApiParameters = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertRequestModelToParameters', [$objectType]);
@@ -234,10 +234,10 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
     public function testConvertRequestModelToRequestBody()
     {
         $objectProperties = [
-            'offset' => new RestApiBundle\DTO\OpenApi\Types\IntegerType(false),
-            'limit' => new RestApiBundle\DTO\OpenApi\Types\IntegerType(false),
+            'offset' => new RestApiBundle\DTO\Docs\Types\IntegerType(false),
+            'limit' => new RestApiBundle\DTO\Docs\Types\IntegerType(false),
         ];
-        $objectType = new RestApiBundle\DTO\OpenApi\Types\ObjectType($objectProperties, false);
+        $objectType = new RestApiBundle\DTO\Docs\Types\ObjectType($objectProperties, false);
 
         /** @var OpenApi\RequestBody $requestBody */
         $requestBody = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertRequestModelToRequestBody', [$objectType]);
@@ -270,7 +270,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
 
     public function testConvertDateTimeType()
     {
-        $dateTimeType = new RestApiBundle\DTO\OpenApi\Types\DateTimeType(false);
+        $dateTimeType = new RestApiBundle\DTO\Docs\Types\DateTimeType(false);
         $openApiSchema = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertSchemaType', [$dateTimeType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
@@ -286,7 +286,7 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
 
     public function testConvertDateType()
     {
-        $dateType = new RestApiBundle\DTO\OpenApi\Types\DateType(false);
+        $dateType = new RestApiBundle\DTO\Docs\Types\DateType(false);
         $openApiSchema = $this->invokePrivateMethod($this->getSpecificationGenerator(), 'convertSchemaType', [$dateType]);
 
         $this->assertInstanceOf(OpenApi\Schema::class, $openApiSchema);
@@ -310,10 +310,10 @@ class SpecificationGeneratorTest extends Tests\TestCase\BaseTestCase
         return $this->convertStdClassToArray($specObject->getSerializableData());
     }
 
-    private function getSpecificationGenerator(): RestApiBundle\Services\OpenApi\SpecificationGenerator
+    private function getSpecificationGenerator(): RestApiBundle\Services\Docs\OpenApi\SpecificationGenerator
     {
-        /** @var RestApiBundle\Services\OpenApi\SpecificationGenerator $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\SpecificationGenerator::class);
+        /** @var RestApiBundle\Services\Docs\OpenApi\SpecificationGenerator $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\OpenApi\SpecificationGenerator::class);
 
         return $result;
     }
