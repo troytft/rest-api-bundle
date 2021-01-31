@@ -51,4 +51,6 @@ abstract class BaseTypeReader
 
         return new RestApiBundle\DTO\Docs\Types\ClassType($class, $nullable);
     }
+
+    public abstract function getReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Types\TypeInterface;
 }

@@ -3,9 +3,10 @@
 namespace Tests\TestCase\Services\OpenApi;
 
 use Tests;
+use RestApiBundle;
 use function json_encode;
 
-class ResponseModelSchemaResolverTest extends Tests\TestCase\BaseTestCase
+class ResponseModelResolverTest extends Tests\TestCase\BaseTestCase
 {
     public function testSchemaFromTypeHints()
     {
@@ -53,7 +54,7 @@ class ResponseModelSchemaResolverTest extends Tests\TestCase\BaseTestCase
 }
 JSON;
 
-        $schema = $this->getResponseModelSchemaResolver()->resolveByClass(Tests\TestApp\TestBundle\ResponseModel\ModelWithTypeHint::class);
+        $schema = $this->getResponseModelResolver()->resolveByClass(Tests\TestApp\TestBundle\ResponseModel\ModelWithTypeHint::class);
         $this->assertJsonStringEqualsJsonString($expected, json_encode($schema->getSerializableData()));
     }
 
@@ -125,7 +126,15 @@ JSON;
 }
 JSON;
 
-        $schema = $this->getResponseModelSchemaResolver()->resolveByClass(Tests\TestApp\TestBundle\ResponseModel\ModelWithDocBlock::class);
+        $schema = $this->getResponseModelResolver()->resolveByClass(Tests\TestApp\TestBundle\ResponseModel\ModelWithDocBlock::class);
         $this->assertJsonStringEqualsJsonString($expected, json_encode($schema->getSerializableData()));
+    }
+
+    protected function getResponseModelResolver(): RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver
+    {
+        /** @var RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver $result */
+        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver::class);
+
+        return $result;
     }
 }

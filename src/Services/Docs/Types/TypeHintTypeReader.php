@@ -6,12 +6,11 @@ use RestApiBundle;
 
 class TypeHintTypeReader extends RestApiBundle\Services\Docs\Types\BaseTypeReader
 {
-    public function getMethodReturnSchema(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Types\TypeInterface
+    public function getReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Types\TypeInterface
     {
         if (!$reflectionMethod->getReturnType()) {
             return null;
         }
-
 
         return $this->createFromString((string) $reflectionMethod->getReturnType(), $reflectionMethod->getReturnType()->allowsNull());
     }

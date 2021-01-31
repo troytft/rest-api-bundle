@@ -119,12 +119,4 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
 
         return $result;
     }
-
-    protected function getResponseModelSchemaResolver(): RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver
-    {
-        /** @var RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver::class);
-
-        return $result;
-    }
 }

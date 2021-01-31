@@ -37,7 +37,7 @@ class ResponseCollector
     public function getByReflectionMethod(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Types\TypeInterface
     {
         try {
-            $schema = $this->docBlockReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintReader->getMethodReturnSchema($reflectionMethod);
+            $schema = $this->docBlockReader->getReturnType($reflectionMethod) ?: $this->typeHintReader->getReturnType($reflectionMethod);
 
             if (!$schema) {
                 throw new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException();

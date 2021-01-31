@@ -13,9 +13,9 @@ use cebe\openapi\spec as OpenApi;
 class ResponseModelResolver
 {
     /**
-     * @var array<string, RestApiBundle\DTO\Docs\Types\ObjectType>
+     * @var array<string, OpenApi\Schema>
      */
-    private $objectClassCache = [];
+    private $classCache = [];
 
     /**
      * @var RestApiBundle\Services\Docs\Types\TypeHintTypeReader
@@ -35,61 +35,65 @@ class ResponseModelResolver
         $this->docBlockReader = $docBlockReader;
     }
 
-    public function resolveByClass(string $class, $isNullable = false): OpenApi\Schema
+    public function resolveByClass(string $class, $nullable = false): OpenApi\Schema
     {
-        return $this->convertObjectType($this->resolveObjectTypeByClass($class, $isNullable));
-    }
-
-    private function resolveObjectTypeByClass(string $class, bool $isNullable): RestApiBundle\DTO\Docs\Types\ObjectType
-    {
-        $class = ltrim($class, '\\');
-
-        $cacheKey = sprintf('%s-%s', $class, $isNullable);
-        if (isset($this->objectClassCache[$cacheKey])) {
-            return $this->objectClassCache[$cacheKey];
+        $cacheKey = sprintf('%s-%s', $class, $nullable);
+        if (isset($this->classCache[$cacheKey])) {
+            return $this->classCache[$cacheKey];
         }
 
-        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
-        if (!$reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class)) {
-            throw new \InvalidArgumentException();
+        if (!RestApiBundle\Helper\ClassInterfaceChecker::isResponseModel($class)) {
+            throw new \InvalidArgumentException(sprintf('Class %s is not a response model.', $class));
         }
 
         $properties = [];
-        $reflectionMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
 
-        foreach ($reflectionMethods as $reflectionMethod) {
+        $reflectedClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+        $reflectedMethods = $reflectedClass->getMethods(\ReflectionMethod::IS_PUBLIC);
+
+        foreach ($reflectedMethods as $reflectionMethod) {
             if (strpos($reflectionMethod->getName(), 'get') !== 0) {
                 continue;
             }
 
             $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
-            $properties[$propertyName] = $this->getByReflectionMethod($reflectionMethod);
+            $propertySchema = $this->convert($this->getReturnType($reflectionMethod));
+
+            $properties[$propertyName] = $propertySchema;
         }
 
-        $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new RestApiBundle\DTO\Docs\Types\StringType(false);
+        $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new OpenApi\Schema([
+            'type' => OpenApi\Type::STRING,
+            'nullable' => false,
+        ]);
 
-        $this->objectClassCache[$cacheKey] = new RestApiBundle\DTO\Docs\Types\ObjectType($properties, $isNullable);
+        $this->classCache[$cacheKey]  = new OpenApi\Schema([
+            'type' => OpenApi\Type::OBJECT,
+            'nullable' => $nullable,
+            'properties' => $properties,
+        ]);
 
-        return $this->objectClassCache[$cacheKey];
+        return $this->classCache[$cacheKey];
     }
 
-    private function getByReflectionMethod(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Types\TypeInterface
+    private function getReturnType(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Types\TypeInterface
     {
-        $schema = $this->docBlockReader->getMethodReturnSchema($reflectionMethod) ?: $this->typeHintReader->getMethodReturnSchema($reflectionMethod);
+        $result = $this->docBlockReader->getReturnType($reflectionMethod) ?: $this->typeHintReader->getReturnType($reflectionMethod);
+        if (!$result) {
+            throw new \InvalidArgumentException(sprintf('Type is not defined.'));
+        }
 
-        return $schema;
+        return $result;
     }
 
-    private function convertSchemaType(RestApiBundle\DTO\Docs\Types\TypeInterface $schemaType): OpenApi\Schema
+    private function convert(RestApiBundle\DTO\Docs\Types\TypeInterface $type): OpenApi\Schema
     {
-        if ($schemaType instanceof RestApiBundle\DTO\Docs\Types\ObjectType) {
-            $result = $this->convertObjectType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Types\ArrayType) {
-            $result = $this->convertArrayType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Types\ScalarInterface) {
-            $result = $this->convertScalarType($schemaType);
-        } elseif ($schemaType instanceof RestApiBundle\DTO\Docs\Types\ClassType) {
-            $result = $this->convertClassType($schemaType);
+        if ($type instanceof RestApiBundle\DTO\Docs\Types\ArrayType) {
+            $result = $this->convertArrayType($type);
+        } elseif ($type instanceof RestApiBundle\DTO\Docs\Types\ScalarInterface) {
+            $result = $this->convertScalarType($type);
+        } elseif ($type instanceof RestApiBundle\DTO\Docs\Types\ClassType) {
+            $result = $this->convertClassType($type);
         } else {
             throw new \InvalidArgumentException();
         }
@@ -99,34 +103,45 @@ class ResponseModelResolver
 
     private function convertScalarType(RestApiBundle\DTO\Docs\Types\ScalarInterface $scalarType): OpenApi\Schema
     {
-        if ($scalarType instanceof RestApiBundle\DTO\Docs\Types\StringType) {
-            $result = $this->convertStringType($scalarType);
-        } elseif ($scalarType instanceof RestApiBundle\DTO\Docs\Types\IntegerType) {
-            $result = $this->convertIntegerType($scalarType);
-        } elseif ($scalarType instanceof RestApiBundle\DTO\Docs\Types\FloatType) {
-            $result = $this->convertFloatType($scalarType);
-        } elseif ($scalarType instanceof RestApiBundle\DTO\Docs\Types\BooleanType) {
-            $result = $this->convertBooleanType($scalarType);
-        } else {
-            throw new \InvalidArgumentException();
+        switch (true) {
+            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\StringType:
+                $result = new OpenApi\Schema([
+                    'type' => OpenApi\Type::STRING,
+                    'nullable' => $scalarType->getNullable(),
+                ]);
+
+                break;
+
+            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\IntegerType:
+                $result = new OpenApi\Schema([
+                    'type' => OpenApi\Type::INTEGER,
+                    'nullable' => $scalarType->getNullable(),
+                ]);
+
+                break;
+
+            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\FloatType:
+                $result = new OpenApi\Schema([
+                    'type' => OpenApi\Type::NUMBER,
+                    'format' => 'double',
+                    'nullable' => $scalarType->getNullable(),
+                ]);
+
+                break;
+
+            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\BooleanType:
+                $result = new OpenApi\Schema([
+                    'type' => OpenApi\Type::BOOLEAN,
+                    'nullable' => $scalarType->getNullable(),
+                ]);
+
+                break;
+
+            default:
+                throw new \InvalidArgumentException();
         }
 
         return $result;
-    }
-
-    private function convertObjectType(RestApiBundle\DTO\Docs\Types\ObjectType $objectType): OpenApi\Schema
-    {
-        $properties = [];
-
-        foreach ($objectType->getProperties() as $key => $propertyType) {
-            $properties[$key] = $this->convertSchemaType($propertyType);
-        }
-
-        return new OpenApi\Schema([
-            'type' => OpenApi\Type::OBJECT,
-            'nullable' => $objectType->getNullable(),
-            'properties' => $properties,
-        ]);
     }
 
     private function convertArrayType(RestApiBundle\DTO\Docs\Types\ArrayType $arrayType): OpenApi\Schema
@@ -134,40 +149,7 @@ class ResponseModelResolver
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
             'nullable' => $arrayType->getNullable(),
-            'items' => $this->convertSchemaType($arrayType->getInnerType()),
-        ]);
-    }
-
-    private function convertStringType(RestApiBundle\DTO\Docs\Types\StringType $stringType): OpenApi\Schema
-    {
-        return new OpenApi\Schema([
-            'type' => OpenApi\Type::STRING,
-            'nullable' => $stringType->getNullable(),
-        ]);
-    }
-
-    private function convertIntegerType(RestApiBundle\DTO\Docs\Types\IntegerType $integerType): OpenApi\Schema
-    {
-        return new OpenApi\Schema([
-            'type' => OpenApi\Type::INTEGER,
-            'nullable' => $integerType->getNullable(),
-        ]);
-    }
-
-    private function convertFloatType(RestApiBundle\DTO\Docs\Types\FloatType $floatType): OpenApi\Schema
-    {
-        return new OpenApi\Schema([
-            'type' => OpenApi\Type::NUMBER,
-            'format' => 'double',
-            'nullable' => $floatType->getNullable(),
-        ]);
-    }
-
-    private function convertBooleanType(RestApiBundle\DTO\Docs\Types\BooleanType $booleanType): OpenApi\Schema
-    {
-        return new OpenApi\Schema([
-            'type' => OpenApi\Type::BOOLEAN,
-            'nullable' => $booleanType->getNullable(),
+            'items' => $this->convert($arrayType->getInnerType()),
         ]);
     }
 
