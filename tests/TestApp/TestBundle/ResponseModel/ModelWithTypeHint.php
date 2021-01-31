@@ -22,10 +22,7 @@ class ModelWithTypeHint implements RestApiBundle\ResponseModelInterface
         return new \DateTime();
     }
 
-    /**
-     * @return Tests\TestApp\TestBundle\ResponseModel\CombinedModel
-     */
-    public function getModelField()
+    public function getModelField(): Tests\TestApp\TestBundle\ResponseModel\CombinedModel
     {
         return new Tests\TestApp\TestBundle\ResponseModel\CombinedModel();
     }

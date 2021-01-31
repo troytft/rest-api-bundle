@@ -15,10 +15,10 @@ class RequestModelHelperTest extends Tests\TestCase\BaseTestCase
             ->setNullable(false)
             ->setTransformerName(Mapper\Transformer\DateTimeTransformer::getName());
 
-        /** @var RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface $docsSchema */
+        /** @var RestApiBundle\DTO\Docs\Types\TypeInterface $docsSchema */
         $docsSchema = $this->invokePrivateMethod($this->getRequestModelHelper(), 'convert', [$mapperSchema]);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\DateTimeType::class, $docsSchema);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\DateTimeType::class, $docsSchema);
         $this->assertFalse($docsSchema->getNullable());
     }
 
@@ -29,10 +29,10 @@ class RequestModelHelperTest extends Tests\TestCase\BaseTestCase
             ->setNullable(false)
             ->setTransformerName(Mapper\Transformer\DateTransformer::getName());
 
-        /** @var RestApiBundle\DTO\OpenApi\Schema\SchemaTypeInterface $docsSchema */
+        /** @var RestApiBundle\DTO\Docs\Types\TypeInterface $docsSchema */
         $docsSchema = $this->invokePrivateMethod($this->getRequestModelHelper(), 'convert', [$mapperSchema]);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\DateType::class, $docsSchema);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\DateType::class, $docsSchema);
         $this->assertFalse($docsSchema->getNullable());
     }
 
@@ -47,10 +47,10 @@ class RequestModelHelperTest extends Tests\TestCase\BaseTestCase
                 RestApiBundle\Services\Request\MapperTransformer\EntityTransformer::FIELD_OPTION => 'slug',
             ]);
 
-        /** @var RestApiBundle\DTO\OpenApi\Schema\StringType $docsSchema */
+        /** @var RestApiBundle\DTO\Docs\Types\StringType $docsSchema */
         $docsSchema = $this->invokePrivateMethod($this->getRequestModelHelper(), 'convert', [$mapperSchema]);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\StringType::class, $docsSchema);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\StringType::class, $docsSchema);
         $this->assertSame('Entity "Genre" by field "slug"', $docsSchema->getDescription());
         $this->assertFalse($docsSchema->getNullable());
     }
@@ -66,14 +66,14 @@ class RequestModelHelperTest extends Tests\TestCase\BaseTestCase
                 RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::FIELD_OPTION => 'slug',
             ]);
 
-        /** @var RestApiBundle\DTO\OpenApi\Schema\ArrayType $docsSchema */
+        /** @var RestApiBundle\DTO\Docs\Types\ArrayType $docsSchema */
         $docsSchema = $this->invokePrivateMethod($this->getRequestModelHelper(), 'convert', [$mapperSchema]);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\ArrayType::class, $docsSchema);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\ArrayType::class, $docsSchema);
         $this->assertFalse($docsSchema->getNullable());
 
         $innerType = $docsSchema->getInnerType();
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\StringType::class, $innerType);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\StringType::class, $innerType);
         $this->assertFalse($innerType->getNullable());
     }
 }

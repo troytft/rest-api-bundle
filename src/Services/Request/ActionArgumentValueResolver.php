@@ -28,25 +28,31 @@ class ActionArgumentValueResolver implements ArgumentValueResolverInterface
 
     public function supports(Request $request, ArgumentMetadata $argument): bool
     {
-        $className = $argument->getType();
-
-        return RestApiBundle\Services\Request\RequestModelHelper::isRequestModel($className);
+        return RestApiBundle\Helper\ClassInterfaceChecker::isRequestModel($argument->getType());
     }
 
     public function resolve(Request $request, ArgumentMetadata $argument): \Generator
     {
-        $className = $argument->getType();
+        $requestModel = $this->instantiate($argument->getType());
+        $request = $this->requestStack->getCurrentRequest();
+        $requestData = $request->getRealMethod() === 'GET' ? $request->query->all() : $request->request->all();
 
-        $requestModel = RestApiBundle\Services\Request\RequestModelHelper::instantiate($className);
-        $this->requestHandler->handle($requestModel, $this->getRequestData());
+        $this->requestHandler->handle($requestModel, $requestData);
 
         yield $requestModel;
     }
 
-    private function getRequestData(): array
+    private function instantiate(string $class): RestApiBundle\RequestModelInterface
     {
-        $request = $this->requestStack->getCurrentRequest();
+        if (!RestApiBundle\Helper\ClassInterfaceChecker::isRequestModel($class)) {
+            throw new \InvalidArgumentException();
+        }
 
-        return $request->getRealMethod() === 'GET' ? $request->query->all() : $request->request->all();
+        $requestModel = RestApiBundle\Helper\ReflectionClassStore::get($class)->newInstance();
+        if (!$requestModel instanceof RestApiBundle\RequestModelInterface) {
+            throw new \InvalidArgumentException();
+        }
+
+        return $requestModel;
     }
 }

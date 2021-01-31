@@ -17,7 +17,7 @@ class GetSetMethodNormalizer extends \Symfony\Component\Serializer\Normalizer\Ge
 
     private function supports($class)
     {
-        $class = RestApiBundle\Services\ReflectionClassStore::get($class);
+        $class = RestApiBundle\Helper\ReflectionClassStore::get($class);
         $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
 
         foreach ($methods as $method) {

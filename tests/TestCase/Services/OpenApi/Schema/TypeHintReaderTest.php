@@ -13,10 +13,10 @@ class TypeHintReaderTest extends Tests\TestCase\BaseTestCase
         $reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('registerAction');
 
-        /** @var RestApiBundle\DTO\OpenApi\Schema\ClassType $returnType */
-        $returnType = $this->getTypeHintSchemaReader()->getMethodReturnSchema($reflectionMethod);
+        /** @var RestApiBundle\DTO\Docs\Types\ClassType $returnType */
+        $returnType = $this->getTypeHintSchemaReader()->getReturnType($reflectionMethod);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\ClassType::class, $returnType);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\ClassType::class, $returnType);
         $this->assertSame(Response::class, $returnType->getClass());
         $this->assertFalse($returnType->getNullable());
     }
@@ -26,7 +26,7 @@ class TypeHintReaderTest extends Tests\TestCase\BaseTestCase
         $reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('methodWithEmptyTypeHintAction');
 
-        $this->assertNull($this->getTypeHintSchemaReader()->getMethodReturnSchema($reflectionMethod));
+        $this->assertNull($this->getTypeHintSchemaReader()->getReturnType($reflectionMethod));
     }
 
     public function testResponseModelReturnType()
@@ -34,10 +34,10 @@ class TypeHintReaderTest extends Tests\TestCase\BaseTestCase
         $reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('notNullableResponseModelTypeHintAction');
 
-        /** @var RestApiBundle\DTO\OpenApi\Schema\ClassType $returnType */
-        $returnType = $this->getTypeHintSchemaReader()->getMethodReturnSchema($reflectionMethod);
+        /** @var RestApiBundle\DTO\Docs\Types\ClassType $returnType */
+        $returnType = $this->getTypeHintSchemaReader()->getReturnType($reflectionMethod);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\ClassType::class, $returnType);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\ClassType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertFalse($returnType->getNullable());
     }
@@ -47,10 +47,10 @@ class TypeHintReaderTest extends Tests\TestCase\BaseTestCase
         $reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('nullableResponseModelTypeHintAction');
 
-        /** @var RestApiBundle\DTO\OpenApi\Schema\ClassType $returnType */
-        $returnType = $this->getTypeHintSchemaReader()->getMethodReturnSchema($reflectionMethod);
+        /** @var RestApiBundle\DTO\Docs\Types\ClassType $returnType */
+        $returnType = $this->getTypeHintSchemaReader()->getReturnType($reflectionMethod);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\ClassType::class, $returnType);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\ClassType::class, $returnType);
         $this->assertSame(Tests\TestApp\TestBundle\ResponseModel\Genre::class, $returnType->getClass());
         $this->assertTrue($returnType->getNullable());
     }
@@ -60,8 +60,8 @@ class TypeHintReaderTest extends Tests\TestCase\BaseTestCase
         $reflectionClass = new \ReflectionClass(Tests\TestApp\TestBundle\Controller\DemoController::class);
         $reflectionMethod = $reflectionClass->getMethod('voidReturnTypeAction');
 
-        $returnType = $this->getTypeHintSchemaReader()->getMethodReturnSchema($reflectionMethod);
+        $returnType = $this->getTypeHintSchemaReader()->getReturnType($reflectionMethod);
 
-        $this->assertInstanceOf(RestApiBundle\DTO\OpenApi\Schema\NullType::class, $returnType);
+        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\NullType::class, $returnType);
     }
 }

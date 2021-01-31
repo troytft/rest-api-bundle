@@ -20,7 +20,7 @@ class ResponseModelHelper
         }
 
         if (!array_key_exists($class, static::$classNameCache)) {
-            $reflectionClass = RestApiBundle\Services\ReflectionClassStore::get($class);
+            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
             static::$classNameCache[$class] = $reflectionClass->isInstantiable()
                 && $reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class);
