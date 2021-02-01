@@ -5,7 +5,7 @@ namespace RestApiBundle\DTO\Docs\Types;
 use RestApiBundle;
 use Symfony\Component\Validator\Constraint;
 
-class ClassType implements RestApiBundle\DTO\Docs\Types\TypeInterface, RestApiBundle\DTO\Docs\Types\ValidationAwareInterface
+class ClassType implements RestApiBundle\DTO\Docs\Types\TypeInterface
 {
     /**
      * @var string

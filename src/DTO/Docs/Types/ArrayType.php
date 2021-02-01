@@ -6,10 +6,7 @@ use RestApiBundle;
 use Symfony\Component\Validator\Constraint;
 use function sprintf;
 
-class ArrayType implements
-    RestApiBundle\DTO\Docs\Types\TypeInterface,
-    RestApiBundle\DTO\Docs\Types\ValidationAwareInterface,
-    RestApiBundle\DTO\Docs\Types\DescriptionAwareInterface
+class ArrayType implements RestApiBundle\DTO\Docs\Types\TypeInterface
 {
     /**
      * @var RestApiBundle\DTO\Docs\Types\TypeInterface

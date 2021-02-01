@@ -5,11 +5,7 @@ namespace RestApiBundle\DTO\Docs\Types;
 use RestApiBundle;
 use Symfony\Component\Validator\Constraint;
 
-class FloatType implements
-    RestApiBundle\DTO\Docs\Types\TypeInterface,
-    RestApiBundle\DTO\Docs\Types\ScalarInterface,
-    RestApiBundle\DTO\Docs\Types\ValidationAwareInterface,
-    RestApiBundle\DTO\Docs\Types\DescriptionAwareInterface
+class FloatType implements RestApiBundle\DTO\Docs\Types\ScalarInterface
 {
     /**
      * @var bool

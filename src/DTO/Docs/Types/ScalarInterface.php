@@ -2,6 +2,8 @@
 
 namespace RestApiBundle\DTO\Docs\Types;
 
-interface ScalarInterface
+use RestApiBundle;
+
+interface ScalarInterface extends RestApiBundle\DTO\Docs\Types\TypeInterface
 {
 }
