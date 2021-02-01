@@ -12,17 +12,12 @@ class DefaultController extends BaseController
     /**
      * @Docs\Endpoint(title="Genre response model details", tags={"demo"})
      *
-     * @Route("/genres/by-slug/{slug}", methods="GET", requirements={"slug": "[\w-]+"})
+     * @Route("/{author}/{slug}/genres", methods="GET", requirements={"slug": "[\w-]+"})
      *
-     * @return TestApp\ResponseModel\Genre
+     * @return TestApp\ResponseModel\Genre[]
      */
-    public function detailsBySlugAction(string $slug)
+    public function byGenreAndAuthorAction(TestApp\Entity\Genre $genre, TestApp\Entity\Author $author)
     {
-        $entity = new TestApp\Entity\Genre();
-        $entity
-            ->setId(1)
-            ->setSlug($slug);
-
-        return new TestApp\ResponseModel\Genre($entity);
+        return [];
     }
 }

@@ -6,7 +6,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     {
         $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
         $this->getRequestModelManager()->handle($model, [
-            'fieldWithCollectionOfEntities' => [1, 2]
+            'genres' => [1, 2]
         ]);
         $this->assertIsArray($model->getGenres());
         $this->assertCount(2, $model->getGenres());
@@ -20,7 +20,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     {
         $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
         $this->getRequestModelManager()->handle($model, [
-            'fieldWithCollectionOfEntities' => [2, 1]
+            'genres' => [2, 1]
         ]);
         $this->assertIsArray($model->getGenres());
         $this->assertCount(2, $model->getGenres());
@@ -35,11 +35,11 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
         try {
             $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
             $this->getRequestModelManager()->handle($model, [
-                'fieldWithCollectionOfEntities' => [1, 2, 3]
+                'genres' => [1, 2, 3]
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['fieldWithCollectionOfEntities' => ['One entity of entities collection not found.']], $exception->getProperties());
+            $this->assertSame(['genres' => ['One entity of entities collection not found.']], $exception->getProperties());
         }
     }
 
@@ -48,11 +48,11 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
         try {
             $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
             $this->getRequestModelManager()->handle($model, [
-                'fieldWithCollectionOfEntities' => null
+                'genres' => null
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['fieldWithCollectionOfEntities' => ['This value should not be null.']], $exception->getProperties());
+            $this->assertSame(['genres' => ['This value should not be null.']], $exception->getProperties());
         }
     }
 
@@ -61,11 +61,11 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
         try {
             $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
             $this->getRequestModelManager()->handle($model, [
-                'fieldWithCollectionOfEntities' => [1, 'string']
+                'genres' => [1, 'string']
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['fieldWithCollectionOfEntities.1' => ['This value should be an integer.']], $exception->getProperties());
+            $this->assertSame(['genres.1' => ['This value should be an integer.']], $exception->getProperties());
         }
     }
 
@@ -74,11 +74,11 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
         try {
             $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
             $this->getRequestModelManager()->handle($model, [
-                'fieldWithCollectionOfEntities' => [1, 1]
+                'genres' => [1, 1]
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['fieldWithCollectionOfEntities' => ['Values ​​should be unique.']], $exception->getProperties());
+            $this->assertSame(['genres' => ['Values ​​should be unique.']], $exception->getProperties());
         }
     }
 }

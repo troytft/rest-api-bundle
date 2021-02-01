@@ -42,7 +42,7 @@ class EndpointData
     private $response;
 
     /**
-     * @var RestApiBundle\DTO\Docs\PathParameter[]
+     * @var RestApiBundle\DTO\Docs\PathParameter\PathParameterInterface[]
      */
     private $pathParameters = [];
 
@@ -138,7 +138,7 @@ class EndpointData
     }
 
     /**
-     * @return RestApiBundle\DTO\Docs\PathParameter[]
+     * @return RestApiBundle\DTO\Docs\PathParameter\PathParameterInterface[]
      */
     public function getPathParameters(): array
     {
@@ -146,7 +146,7 @@ class EndpointData
     }
 
     /**
-     * @param RestApiBundle\DTO\Docs\PathParameter[] $pathParameters
+     * @param RestApiBundle\DTO\Docs\PathParameter\PathParameterInterface[] $pathParameters
      *
      * @return $this
      */

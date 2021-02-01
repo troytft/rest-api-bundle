@@ -25,12 +25,19 @@ class SpecificationGenerator
      */
     private $responseModelResolver;
 
+    /**
+     * @var RestApiBundle\Services\Docs\OpenApi\DoctrineResolver
+     */
+    private $doctrineResolver;
+
     public function __construct(
         RestApiBundle\Services\Docs\OpenApi\RequestModelResolver $requestModelResolver,
-        RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver $responseModelResolver
+        RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver $responseModelResolver,
+        RestApiBundle\Services\Docs\OpenApi\DoctrineResolver $doctrineResolver
     ) {
         $this->requestModelResolver = $requestModelResolver;
         $this->responseModelResolver = $responseModelResolver;
+        $this->doctrineResolver = $doctrineResolver;
     }
 
     /**
@@ -130,11 +137,19 @@ class SpecificationGenerator
             $pathParameters = [];
 
             foreach ($routeData->getPathParameters() as $pathParameter) {
+                if ($pathParameter instanceof RestApiBundle\DTO\Docs\PathParameter\ScalarParameter) {
+                    $schema = $this->convertScalarType($pathParameter->getType());
+                } elseif ($pathParameter instanceof RestApiBundle\DTO\Docs\PathParameter\EntityTypeParameter) {
+                    $schema = $this->doctrineResolver->getEntityFieldSchema($pathParameter->getClass(), $pathParameter->getFieldName(), true);
+                } else {
+                    throw new \InvalidArgumentException();
+                }
+
                 $pathParameters[] = new OpenApi\Parameter([
                     'in' => 'path',
                     'name' => $pathParameter->getName(),
-                    'required' => !$pathParameter->getSchema()->getNullable(),
-                    'schema' => $this->convertScalarType($pathParameter->getSchema()),
+                    'required' => true,
+                    'schema' => $schema,
                 ]);
             }
 

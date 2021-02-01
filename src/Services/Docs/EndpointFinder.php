@@ -17,6 +17,7 @@ use function implode;
 use function is_array;
 use function is_string;
 use function preg_match_all;
+use function reset;
 use function spl_autoload_functions;
 use function sprintf;
 use function substr_count;
@@ -155,9 +156,9 @@ class EndpointFinder
                     ->setTags($endpointAnnotation->tags)
                     ->setPath($path)
                     ->setMethods($actionRouteAnnotation->getMethods())
-                    ->setResponse($this->getResponse($reflectionMethod))
-                    ->setPathParameters($this->getPathParameters($path, $reflectionMethod))
-                    ->setRequest($this->getRequest($reflectionMethod));
+                    ->setResponse($this->extractResponse($reflectionMethod))
+                    ->setPathParameters($this->extractPathParameters($path, $reflectionMethod))
+                    ->setRequest($this->extractRequest($reflectionMethod));
 
                 $result[] = $endpointData;
             } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
@@ -169,7 +170,7 @@ class EndpointFinder
         return $result;
     }
 
-    private function getResponse(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Response\ResponseInterface
+    private function extractResponse(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Response\ResponseInterface
     {
         $returnType = $this->getReturnType($reflectionMethod);
 
@@ -213,50 +214,40 @@ class EndpointFinder
     }
 
     /**
-     * @return RestApiBundle\DTO\Docs\PathParameter[]
+     * @return RestApiBundle\DTO\Docs\PathParameter\PathParameterInterface[]
      */
-    private function getPathParameters(string $path, \ReflectionMethod $reflectionMethod): array
+    private function extractPathParameters(string $path, \ReflectionMethod $reflectionMethod): array
     {
+        $scalarTypes = [];
+        $entityTypes = [];
+
+        foreach ($reflectionMethod->getParameters() as $parameter) {
+            $parameterType = $this->typeHintReader->resolveParameterType($parameter);
+            if ($parameterType instanceof RestApiBundle\DTO\Docs\Types\ScalarInterface) {
+                $scalarTypes[$parameter->getName()] = $parameterType;
+            } elseif ($parameterType instanceof RestApiBundle\DTO\Docs\Types\ClassType && $this->doctrineHelper->isEntity($parameterType->getClass())) {
+                $entityTypes[$parameter->getName()] = $parameterType;
+            }
+        }
+
         $result = [];
-        $parameterIndex = 0;
         $placeholders = $this->getPathPlaceholders($path);
 
         foreach ($placeholders as $placeholder) {
             $pathParameter = null;
 
-            while (true) {
-                if (!isset($reflectionMethod->getParameters()[$parameterIndex])) {
-                    break;
+            if (isset($scalarTypes[$placeholder])) {
+                $result[] = new RestApiBundle\DTO\Docs\PathParameter\ScalarParameter($placeholder, $scalarTypes[$placeholder]);
+            } elseif (isset($entityTypes[$placeholder])) {
+                $result[] = new RestApiBundle\DTO\Docs\PathParameter\EntityTypeParameter($placeholder, $entityTypes[$placeholder]->getClass(), 'id');
+                unset($entityTypes[$placeholder]);
+            } else {
+                $entityType = reset($entityTypes);
+                if (!$entityType instanceof RestApiBundle\DTO\Docs\Types\ClassType) {
+                    throw new RestApiBundle\Exception\Docs\InvalidDefinition\NotMatchedRoutePlaceholderParameterException($placeholder);
                 }
-
-                $parameter = $reflectionMethod->getParameters()[$parameterIndex];
-                $parameterIndex++;
-
-                $parameterSchema = $this->typeHintReader->resolveParameterType($parameter);
-                if (!$parameterSchema) {
-                    continue;
-                }
-
-                $isNameEqualsToPlaceholder = $parameter->getName() === $placeholder;
-
-                if ($isNameEqualsToPlaceholder && $parameterSchema instanceof RestApiBundle\DTO\Docs\Types\ScalarInterface) {
-                    $pathParameter = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $parameterSchema);
-
-                    break;
-                } elseif ($parameterSchema instanceof RestApiBundle\DTO\Docs\Types\ClassType && $this->doctrineHelper->isEntity($parameterSchema->getClass())) {
-                    $fieldName = $isNameEqualsToPlaceholder ? 'id' : $placeholder;
-                    $parameterSchema = $this->doctrineHelper->getEntityFieldSchema($parameterSchema->getClass(), $fieldName, false);
-                    $pathParameter = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $parameterSchema);
-
-                    break;
-                }
+                $result[] = new RestApiBundle\DTO\Docs\PathParameter\EntityTypeParameter($placeholder, $entityType->getClass(), $placeholder);
             }
-
-            if (!$pathParameter) {
-                throw new RestApiBundle\Exception\Docs\InvalidDefinition\NotMatchedRoutePlaceholderParameterException($placeholder);
-            }
-
-            $result[] = $pathParameter;
         }
 
         return $result;
@@ -274,7 +265,7 @@ class EndpointFinder
         return $parameters;
     }
 
-    private function getRequest(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Request\RequestInterface
+    private function extractRequest(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Request\RequestInterface
     {
         $result = null;
 
