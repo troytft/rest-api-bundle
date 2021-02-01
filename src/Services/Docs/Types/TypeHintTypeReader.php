@@ -12,7 +12,7 @@ class TypeHintTypeReader extends RestApiBundle\Services\Docs\Types\BaseTypeReade
             return null;
         }
 
-        return $this->createFromString((string) $reflectionMethod->getReturnType(), $reflectionMethod->getReturnType()->allowsNull());
+        return $this->createFromString((string) $reflectionMethod->getReturnType()->getName(), $reflectionMethod->getReturnType()->allowsNull());
     }
 
     public function resolveParameterType(\ReflectionParameter $reflectionParameter): ?RestApiBundle\DTO\Docs\Types\TypeInterface
