@@ -2,7 +2,9 @@
 
 namespace RestApiBundle\DTO\Docs\Request;
 
-class RequestModel
+use RestApiBundle;
+
+class RequestModel implements RestApiBundle\DTO\Docs\Request\RequestInterface
 {
     /**
      * @var string

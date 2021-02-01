@@ -59,38 +59,4 @@ class EndpointFinderTest extends Tests\BaseTestCase
         $this->assertSame('slug', $endpointData->getPathParameters()[3]->getName());
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\StringType::class, $endpointData->getPathParameters()[3]->getSchema());
     }
-
-    public function testRequestModelForRequest()
-    {
-        $controller = \TestApp\Controller\RequestModel\RequestModelForGetRequestController::class;
-        $result = $this->invokePrivateMethod($this->getEndpointFinder(), 'extractFromController', [$controller]);
-
-        $this->assertIsArray($result);
-        $this->assertArrayHasKey(0, $result);
-
-        $endpointData = $result[0];
-
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\ObjectType::class, $endpointData->getRequestModel());
-        $this->assertCount(2, $endpointData->getRequestModel()->getProperties());
-
-        $this->assertArrayHasKey('offset', $endpointData->getRequestModel()->getProperties());
-
-        /** @var RestApiBundle\DTO\Docs\Types\IntegerType $offset */
-        $offset = $endpointData->getRequestModel()->getProperties()['offset'];
-
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\IntegerType::class, $offset);
-        $this->assertCount(2, $offset->getConstraints());
-        $this->assertInstanceOf(Symfony\Component\Validator\Constraints\Range::class, $offset->getConstraints()[0]);
-        $this->assertInstanceOf(Symfony\Component\Validator\Constraints\NotNull::class, $offset->getConstraints()[1]);
-
-        $this->assertArrayHasKey('limit', $endpointData->getRequestModel()->getProperties());
-
-        /** @var RestApiBundle\DTO\Docs\Types\IntegerType $limit */
-        $limit = $endpointData->getRequestModel()->getProperties()['limit'];
-        $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\IntegerType::class, $limit);
-
-        $this->assertCount(2, $limit->getConstraints());
-        $this->assertInstanceOf(Symfony\Component\Validator\Constraints\Range::class, $limit->getConstraints()[0]);
-        $this->assertInstanceOf(Symfony\Component\Validator\Constraints\NotNull::class, $limit->getConstraints()[1]);
-    }
 }

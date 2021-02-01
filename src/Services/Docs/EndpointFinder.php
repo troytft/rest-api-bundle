@@ -44,22 +44,15 @@ class EndpointFinder
      */
     private $doctrineHelper;
 
-    /**
-     * @var RestApiBundle\Services\Docs\OpenApi\RequestModelResolver
-     */
-    private $requestModelHelper;
-
     public function __construct(
         RestApiBundle\Services\Docs\Types\DocBlockTypeReader $docBlockSchemaReader,
         RestApiBundle\Services\Docs\Types\TypeHintTypeReader $typeHintSchemaReader,
-        RestApiBundle\Services\Docs\OpenApi\DoctrineHelper $doctrineHelper,
-        RestApiBundle\Services\Docs\OpenApi\RequestModelResolver $requestModelHelper
+        RestApiBundle\Services\Docs\OpenApi\DoctrineHelper $doctrineHelper
     ) {
         $this->annotationReader = AnnotationReaderFactory::create(true);
         $this->docBlockReader = $docBlockSchemaReader;
         $this->typeHintReader = $typeHintSchemaReader;
         $this->doctrineHelper = $doctrineHelper;
-        $this->requestModelHelper = $requestModelHelper;
     }
 
     /**
@@ -142,12 +135,6 @@ class EndpointFinder
                 continue;
             }
 
-            $requestModelSchema = null;
-            $requestModelClass = $this->getRequestModel($reflectionMethod);
-            if ($requestModelClass) {
-                $requestModelSchema = $this->requestModelHelper->getSchemaByClass($requestModelClass);
-            }
-
             try {
                 if ($controllerRouteAnnotation instanceof Route && $controllerRouteAnnotation->getPath()) {
                     $path = $controllerRouteAnnotation->getPath();
@@ -170,7 +157,7 @@ class EndpointFinder
                     ->setMethods($actionRouteAnnotation->getMethods())
                     ->setResponse($this->getResponse($reflectionMethod))
                     ->setPathParameters($this->getPathParameters($path, $reflectionMethod))
-                    ->setRequestModel($requestModelSchema);
+                    ->setRequest($this->getRequest($reflectionMethod));
 
                 $result[] = $endpointData;
             } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
@@ -216,7 +203,7 @@ class EndpointFinder
 
     private function getReturnType(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Types\TypeInterface
     {
-        $result = $this->docBlockReader->getReturnType($reflectionMethod) ?: $this->typeHintReader->getReturnType($reflectionMethod);
+        $result = $this->docBlockReader->resolveReturnType($reflectionMethod) ?: $this->typeHintReader->resolveReturnType($reflectionMethod);
         if (!$result) {
             $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
             throw new RestApiBundle\Exception\Docs\InvalidDefinitionException(new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException(), $context);
@@ -245,7 +232,7 @@ class EndpointFinder
                 $parameter = $reflectionMethod->getParameters()[$parameterIndex];
                 $parameterIndex++;
 
-                $parameterSchema = $this->typeHintReader->getMethodParameterSchema($parameter);
+                $parameterSchema = $this->typeHintReader->resolveParameterType($parameter);
                 if (!$parameterSchema) {
                     continue;
                 }
@@ -287,14 +274,14 @@ class EndpointFinder
         return $parameters;
     }
 
-    private function getRequestModel(\ReflectionMethod $reflectionMethod): ?string
+    private function getRequest(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Request\RequestInterface
     {
         $result = null;
 
         foreach ($reflectionMethod->getParameters() as $parameter) {
-            $schema = $this->typeHintReader->getMethodParameterSchema($parameter);
-            if ($schema instanceof RestApiBundle\DTO\Docs\Types\ClassType && RestApiBundle\Helper\ClassInterfaceChecker::isRequestModel($schema->getClass())) {
-                $result = $schema->getClass();
+            $parameterType = $this->typeHintReader->resolveParameterType($parameter);
+            if ($parameterType instanceof RestApiBundle\DTO\Docs\Types\ClassType && RestApiBundle\Helper\ClassInterfaceChecker::isRequestModel($parameterType->getClass())) {
+                $result = new RestApiBundle\DTO\Docs\Request\RequestModel($parameterType->getClass(), $parameterType->getNullable());
 
                 break;
             }

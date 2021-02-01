@@ -2,7 +2,7 @@
 
 class RequestModelResolverTest extends Tests\BaseTestCase
 {
-    public function test()
+    public function testNestedModelWithConstraints()
     {
         $expected = <<<JSON
 {
@@ -54,7 +54,7 @@ class RequestModelResolverTest extends Tests\BaseTestCase
     "nullable": false
 }
 JSON;
-        
+
         $schema = $this->getRequestModelResolver()->resolveByClass(TestApp\RequestModel\ModelWithValidation::class);
         $this->assertJsonStringEqualsJsonString($expected, json_encode($schema->getSerializableData()));
     }

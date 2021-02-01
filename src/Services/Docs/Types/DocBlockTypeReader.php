@@ -20,7 +20,7 @@ class DocBlockTypeReader extends RestApiBundle\Services\Docs\Types\BaseTypeReade
         $this->docBlockFactory = DocBlockFactory::createInstance();
     }
 
-    public function getReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Types\TypeInterface
+    public function resolveReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Types\TypeInterface
     {
         if (!$reflectionMethod->getDocComment()) {
             return null;
