@@ -23,8 +23,8 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
 
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $treeBuilder->root($this->alias)
+        $treeBuilder = new TreeBuilder($this->alias);
+        $treeBuilder
             ->addDefaultsIfNotSet()
             ->children()
                 ->booleanNode(RestApiBundle\Enum\SettingsKey::IS_REQUEST_PROPERTIES_NULLABLE_BY_DEFAULT)
