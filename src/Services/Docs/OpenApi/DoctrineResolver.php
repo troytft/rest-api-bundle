@@ -3,11 +3,9 @@
 namespace RestApiBundle\Services\Docs\OpenApi;
 
 use Mapper\Helper\AnnotationReaderFactory;
-use cebe\openapi\spec as OpenApi;
 use RestApiBundle;
 use Doctrine;
-use function array_key_last;
-use function explode;
+use cebe\openapi\spec as OpenApi;
 use function sprintf;
 
 class DoctrineResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver
@@ -29,7 +27,7 @@ class DoctrineResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractSchem
         return (bool) $this->annotationReader->getClassAnnotation($reflectionClass, Doctrine\ORM\Mapping\Entity::class);
     }
 
-    public function getEntityFieldSchema(string $class, string $field, bool $nullable): OpenApi\Schema
+    public function resolveByColumnType(string $class, string $field): OpenApi\Schema
     {
         $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
         $reflectionProperty = $reflectionClass->getProperty($field);
@@ -39,39 +37,25 @@ class DoctrineResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractSchem
             throw new \InvalidArgumentException();
         }
 
-        $description = $this->resolveDescription($class, $field);
-
         switch ($columnAnnotation->type) {
-            case 'string':
+            case 'integer':
                 $result = new OpenApi\Schema([
-                    'type' => OpenApi\Type::STRING,
-                    'nullable' => $nullable,
-                    'description' => $description,
+                    'type' => OpenApi\Type::INTEGER,
                 ]);
 
                 break;
 
-            case 'integer':
+            case 'string':
                 $result = new OpenApi\Schema([
-                    'type' => OpenApi\Type::INTEGER,
-                    'nullable' => $nullable,
-                    'description' => $description,
+                    'type' => OpenApi\Type::STRING,
                 ]);
 
                 break;
 
             default:
-                throw new \InvalidArgumentException('Not implemented.');
+                throw new \InvalidArgumentException(sprintf('Unknown column type %s', $columnAnnotation->type));
         }
 
         return $result;
-    }
-
-    private function resolveDescription(string $class, string $field): string
-    {
-        $parts = explode('\\', $class);
-        $name = $parts[array_key_last($parts)];
-
-        return sprintf('Entity "%s" by field "%s"', $name, $field);
     }
 }

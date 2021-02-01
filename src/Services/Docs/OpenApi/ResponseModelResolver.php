@@ -68,8 +68,8 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
 
         $this->classCache[$cacheKey]  = new OpenApi\Schema([
             'type' => OpenApi\Type::OBJECT,
-            'nullable' => $nullable,
             'properties' => $properties,
+            'nullable' => $nullable,
         ]);
 
         return $this->classCache[$cacheKey];
@@ -91,7 +91,7 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
         if ($type instanceof RestApiBundle\DTO\Docs\Types\ArrayType) {
             $result = $this->convertArrayType($type);
         } elseif ($type instanceof RestApiBundle\DTO\Docs\Types\ScalarInterface) {
-            $result = $this->convertScalarType($type);
+            $result = $this->resolveScalarType($type);
         } elseif ($type instanceof RestApiBundle\DTO\Docs\Types\ClassType) {
             $result = $this->convertClassType($type);
         } else {
@@ -105,8 +105,8 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
-            'nullable' => $arrayType->getNullable(),
             'items' => $this->convert($arrayType->getInnerType()),
+            'nullable' => $arrayType->getNullable(),
         ]);
     }
 

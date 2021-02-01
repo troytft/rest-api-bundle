@@ -7,7 +7,7 @@ use cebe\openapi\spec as OpenApi;
 
 abstract class AbstractSchemaResolver
 {
-    protected function convertScalarType(RestApiBundle\DTO\Docs\Types\ScalarInterface $scalarType): OpenApi\Schema
+    protected function resolveScalarType(RestApiBundle\DTO\Docs\Types\ScalarInterface $scalarType): OpenApi\Schema
     {
         switch (true) {
             case $scalarType instanceof RestApiBundle\DTO\Docs\Types\StringType:

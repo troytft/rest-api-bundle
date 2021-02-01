@@ -9,7 +9,7 @@ use Mapper;
 use cebe\openapi\spec as OpenApi;
 use function sprintf;
 
-class RequestModelResolver
+class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver
 {
     /**
      * @var Mapper\SchemaGenerator
@@ -86,8 +86,8 @@ class RequestModelResolver
 
         return new OpenApi\Schema([
             'type' => OpenApi\Type::OBJECT,
-            'nullable' => $nullable,
             'properties' => $properties,
+            'nullable' => $nullable,
         ]);
     }
 
@@ -145,26 +145,34 @@ class RequestModelResolver
 
     private function convert(Mapper\DTO\Mapping\TypeInterface $type): OpenApi\Schema
     {
-        if ($type instanceof Mapper\DTO\Mapping\ObjectTypeInterface) {
-            $result = $this->resolveByClass($type->getClassName(), $type->getNullable() === true);
-        } elseif ($type instanceof Mapper\DTO\Mapping\ScalarTypeInterface) {
-            $result = $this->convertScalar($type);
-        } elseif ($type instanceof Mapper\DTO\Mapping\CollectionTypeInterface) {
-            $result = $this->convertCollectionType($type);
-        } else {
-            throw new \InvalidArgumentException();
+        switch (true) {
+            case $type instanceof Mapper\DTO\Mapping\ObjectTypeInterface:
+                $result = $this->resolveByClass($type->getClassName(), $type->getNullable() === true);
+
+                break;
+            case $type->getTransformerName() !== null:
+                $result = $this->convertByTransformer($type);
+
+                break;
+            case $type instanceof Mapper\DTO\Mapping\CollectionTypeInterface:
+                $result = $this->convertCollectionType($type);
+
+                break;
+
+            default:
+                throw new \InvalidArgumentException();
         }
 
         return $result;
     }
 
-    private function convertScalar(Mapper\DTO\Mapping\ScalarTypeInterface $scalarType): OpenApi\Schema
+    private function convertByTransformer(Mapper\DTO\Mapping\TypeInterface $type): OpenApi\Schema
     {
-        switch ($scalarType->getTransformerName()) {
+        switch ($type->getTransformerName()) {
             case Mapper\Transformer\BooleanTransformer::getName():
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::BOOLEAN,
-                    'nullable' => $scalarType->getNullable() === true,
+                    'nullable' => (bool) $type->getNullable(),
                 ]);
 
                 break;
@@ -172,7 +180,7 @@ class RequestModelResolver
             case Mapper\Transformer\IntegerTransformer::getName():
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::INTEGER,
-                    'nullable' => $scalarType->getNullable() === true,
+                    'nullable' => (bool) $type->getNullable(),
                 ]);
 
                 break;
@@ -180,7 +188,7 @@ class RequestModelResolver
             case Mapper\Transformer\StringTransformer::getName():
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
-                    'nullable' => $scalarType->getNullable() === true,
+                    'nullable' => (bool) $type->getNullable(),
                 ]);
 
                 break;
@@ -189,7 +197,7 @@ class RequestModelResolver
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::NUMBER,
                     'format' => 'double',
-                    'nullable' => $scalarType->getNullable() === true,
+                    'nullable' => (bool) $type->getNullable(),
                 ]);
 
                 break;
@@ -198,7 +206,7 @@ class RequestModelResolver
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date-time',
-                    'nullable' => $scalarType->getNullable() === true,
+                    'nullable' => (bool) $type->getNullable(),
                 ]);
 
                 break;
@@ -207,30 +215,39 @@ class RequestModelResolver
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date',
-                    'nullable' => $scalarType->getNullable() === true,
+                    'nullable' => (bool) $type->getNullable(),
                 ]);
 
                 break;
 
             case RestApiBundle\Services\Request\MapperTransformer\EntityTransformer::getName():
-                $className = $scalarType->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntityTransformer::CLASS_OPTION];
-                $fieldName = $scalarType->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntityTransformer::FIELD_OPTION];
+                $class = $type->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntityTransformer::CLASS_OPTION];
+                $fieldName = $type->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntityTransformer::FIELD_OPTION];
 
-                $result = $this->doctrineHelper->getEntityFieldSchema($className, $fieldName, $scalarType->getNullable() === true);
+                $result = $this->doctrineHelper->resolveByColumnType($class, $fieldName);
+                $result->description = sprintf('Element by "%s"', $fieldName);
+                $result->nullable = (bool) $type->getNullable();
 
                 break;
 
             case RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::getName():
-                $className = $scalarType->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::CLASS_OPTION];
-                $fieldName = $scalarType->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::FIELD_OPTION];
+                $class = $type->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::CLASS_OPTION];
+                $fieldName = $type->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::FIELD_OPTION];
+                $columnType = $this->doctrineHelper->resolveByColumnType($class, $fieldName);
+                $columnType
+                    ->nullable = false;
 
-                $innerSchema = $this->doctrineHelper->getEntityFieldSchema($className, $fieldName, false);
-                $result = new RestApiBundle\DTO\Docs\Types\ArrayType($innerSchema, $scalarType->getNullable() === true);
+                $result = new OpenApi\Schema([
+                    'type' => OpenApi\Type::ARRAY,
+                    'items' => $columnType,
+                    'description' => sprintf('Array of elements by "%s"', $fieldName),
+                    'nullable' => (bool) $type->getNullable(),
+                ]);
 
                 break;
 
             default:
-                throw new \InvalidArgumentException(sprintf('Invalid type "%s"', $scalarType->getTransformerName()));
+                throw new \InvalidArgumentException(sprintf('Invalid type "%s"', $type->getTransformerName()));
         }
 
         return $result;
@@ -240,8 +257,8 @@ class RequestModelResolver
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
-            'nullable' => $collectionType->getNullable() === true,
             'items' => $this->convert($collectionType->getType()),
+            'nullable' => (bool) $collectionType->getNullable(),
         ]);
     }
 }

@@ -239,14 +239,14 @@ class EndpointFinder
             if (isset($scalarTypes[$placeholder])) {
                 $result[] = new RestApiBundle\DTO\Docs\PathParameter\ScalarParameter($placeholder, $scalarTypes[$placeholder]);
             } elseif (isset($entityTypes[$placeholder])) {
-                $result[] = new RestApiBundle\DTO\Docs\PathParameter\EntityTypeParameter($placeholder, $entityTypes[$placeholder]->getClass(), 'id');
+                $result[] = new RestApiBundle\DTO\Docs\PathParameter\EntityTypeParameter($placeholder, $entityTypes[$placeholder], 'id');
                 unset($entityTypes[$placeholder]);
             } else {
                 $entityType = reset($entityTypes);
                 if (!$entityType instanceof RestApiBundle\DTO\Docs\Types\ClassType) {
                     throw new RestApiBundle\Exception\Docs\InvalidDefinition\NotMatchedRoutePlaceholderParameterException($placeholder);
                 }
-                $result[] = new RestApiBundle\DTO\Docs\PathParameter\EntityTypeParameter($placeholder, $entityType->getClass(), $placeholder);
+                $result[] = new RestApiBundle\DTO\Docs\PathParameter\EntityTypeParameter($placeholder, $entityType, $placeholder);
             }
         }
 

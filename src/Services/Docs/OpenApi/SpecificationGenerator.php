@@ -3,7 +3,6 @@
 namespace RestApiBundle\Services\Docs\OpenApi;
 
 use RestApiBundle;
-use Symfony;
 use cebe\openapi\spec as OpenApi;
 use Symfony\Component\Yaml\Yaml;
 use function array_merge;
@@ -11,9 +10,10 @@ use function array_values;
 use function json_encode;
 use function json_last_error;
 use function json_last_error_msg;
+use function sprintf;
 use function strtolower;
 
-class SpecificationGenerator
+class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver
 {
     /**
      * @var RestApiBundle\Services\Docs\OpenApi\RequestModelResolver
@@ -126,8 +126,8 @@ class SpecificationGenerator
                         'application/json' => [
                             'schema' => new OpenApi\Schema([
                                 'type' => OpenApi\Type::ARRAY,
+                                'items' => $this->responseModelResolver->resolveByClass($response->getClass()),
                                 'nullable' => $response->getNullable(),
-                                'items' => $this->responseModelResolver->resolveByClass($response->getClass(), false),
                             ])
                         ]
                     ]
@@ -138,9 +138,12 @@ class SpecificationGenerator
 
             foreach ($routeData->getPathParameters() as $pathParameter) {
                 if ($pathParameter instanceof RestApiBundle\DTO\Docs\PathParameter\ScalarParameter) {
-                    $schema = $this->convertScalarType($pathParameter->getType());
+                    $schema = $this->resolveScalarType(($pathParameter->getType()));
                 } elseif ($pathParameter instanceof RestApiBundle\DTO\Docs\PathParameter\EntityTypeParameter) {
-                    $schema = $this->doctrineResolver->getEntityFieldSchema($pathParameter->getClass(), $pathParameter->getFieldName(), true);
+                    $schema = $this->doctrineResolver->resolveByColumnType($pathParameter->getClassType()->getClass(), $pathParameter->getFieldName());
+                    $schema->description = sprintf('Element by "%s"', $pathParameter->getFieldName());
+                    $schema->nullable = $pathParameter->getClassType()->getNullable();
+
                 } else {
                     throw new \InvalidArgumentException();
                 }
@@ -196,49 +199,6 @@ class SpecificationGenerator
         $root->tags = array_values($tags);
 
         return $root;
-    }
-
-    private function convertScalarType(RestApiBundle\DTO\Docs\Types\TypeInterface $scalarType): OpenApi\Schema
-    {
-        switch (true) {
-            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\StringType:
-                $result = new OpenApi\Schema([
-                    'type' => OpenApi\Type::STRING,
-                    'nullable' => $scalarType->getNullable(),
-                ]);
-
-                break;
-
-            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\IntegerType:
-                $result = new OpenApi\Schema([
-                    'type' => OpenApi\Type::INTEGER,
-                    'nullable' => $scalarType->getNullable(),
-                ]);
-
-                break;
-
-            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\FloatType:
-                $result = new OpenApi\Schema([
-                    'type' => OpenApi\Type::NUMBER,
-                    'format' => 'double',
-                    'nullable' => $scalarType->getNullable(),
-                ]);
-
-                break;
-
-            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\BooleanType:
-                $result = new OpenApi\Schema([
-                    'type' => OpenApi\Type::BOOLEAN,
-                    'nullable' => $scalarType->getNullable(),
-                ]);
-
-                break;
-
-            default:
-                throw new \InvalidArgumentException();
-        }
-
-        return $result;
     }
 
     private function convertRequestModelToRequestBody(RestApiBundle\DTO\Docs\Request\RequestModel $requestModel): OpenApi\RequestBody

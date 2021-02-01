@@ -67,7 +67,7 @@ JSON;
     "properties": {
         "genre": {
             "type": "string",
-            "description": "Entity \"Genre\" by field \"slug\"",
+            "description": "Element by \"slug\"",
             "nullable": false
         }
     },
@@ -91,6 +91,7 @@ JSON;
                 "type": "integer",
                 "nullable": false
             },
+            "description": "Array of elements by \"id\"",
             "nullable": false
         }
     },

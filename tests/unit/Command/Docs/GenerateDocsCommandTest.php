@@ -58,16 +58,16 @@ paths:
                     required: true
                     schema:
                         type: integer
-                        description: 'Entity "Author" by field "id"'
-                        nullable: true
+                        description: 'Element by "id"'
+                        nullable: false
                 -
                     name: slug
                     in: path
                     required: true
                     schema:
                         type: string
-                        description: 'Entity "Genre" by field "slug"'
-                        nullable: true
+                        description: 'Element by "slug"'
+                        nullable: false
             tags:
                 - demo
 tags:
@@ -143,8 +143,8 @@ YAML;
                         "required": true,
                         "schema": {
                             "type": "integer",
-                            "description": "Entity \"Author\" by field \"id\"",
-                            "nullable": true
+                            "description": "Element by \"id\"",
+                            "nullable": false
                         }
                     },
                     {
@@ -153,8 +153,8 @@ YAML;
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "description": "Entity \"Genre\" by field \"slug\"",
-                            "nullable": true
+                            "description": "Element by \"slug\"",
+                            "nullable": false
                         }
                     }
                 ],

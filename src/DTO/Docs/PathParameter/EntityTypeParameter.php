@@ -12,19 +12,19 @@ class EntityTypeParameter implements RestApiBundle\DTO\Docs\PathParameter\PathPa
     private $name;
 
     /**
-     * @var string
+     * @var RestApiBundle\DTO\Docs\Types\ClassType
      */
-    private $class;
+    private $classType;
 
     /**
      * @var string
      */
     private $fieldName;
 
-    public function __construct(string $name, string $class, string $fieldName)
+    public function __construct(string $name, RestApiBundle\DTO\Docs\Types\ClassType $class, string $fieldName)
     {
         $this->name = $name;
-        $this->class = $class;
+        $this->classType = $class;
         $this->fieldName = $fieldName;
     }
 
@@ -33,9 +33,9 @@ class EntityTypeParameter implements RestApiBundle\DTO\Docs\PathParameter\PathPa
         return $this->name;
     }
 
-    public function getClass(): string
+    public function getClassType(): RestApiBundle\DTO\Docs\Types\ClassType
     {
-        return $this->class;
+        return $this->classType;
     }
 
     public function getFieldName(): string
