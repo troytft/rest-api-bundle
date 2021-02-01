@@ -27,7 +27,7 @@ info:
     title: 'Open API Specification'
     version: 1.0.0
 paths:
-    '/genres/by-slug/{slug}':
+    '/{author}/{slug}/genres':
         get:
             summary: 'Genre response model details'
             responses:
@@ -36,25 +36,37 @@ paths:
                     content:
                         application/json:
                             schema:
-                                type: object
-                                properties:
-                                    id:
-                                        type: integer
-                                        nullable: false
-                                    slug:
-                                        type: string
-                                        nullable: false
-                                    __typename:
-                                        type: string
-                                        nullable: false
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        id:
+                                            type: integer
+                                            nullable: false
+                                        slug:
+                                            type: string
+                                            nullable: false
+                                        __typename:
+                                            type: string
+                                            nullable: false
+                                    nullable: false
                                 nullable: false
             parameters:
+                -
+                    name: author
+                    in: path
+                    required: true
+                    schema:
+                        type: integer
+                        description: 'Element by "id"'
+                        nullable: false
                 -
                     name: slug
                     in: path
                     required: true
                     schema:
                         type: string
+                        description: 'Element by "slug"'
                         nullable: false
             tags:
                 - demo
@@ -90,7 +102,7 @@ YAML;
         "version": "1.0.0"
     },
     "paths": {
-        "/genres/by-slug/{slug}": {
+        "/{author}/{slug}/genres": {
             "get": {
                 "summary": "Genre response model details",
                 "responses": {
@@ -99,20 +111,24 @@ YAML;
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "nullable": false
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "nullable": false
+                                            },
+                                            "slug": {
+                                                "type": "string",
+                                                "nullable": false
+                                            },
+                                            "__typename": {
+                                                "type": "string",
+                                                "nullable": false
+                                            }
                                         },
-                                        "slug": {
-                                            "type": "string",
-                                            "nullable": false
-                                        },
-                                        "__typename": {
-                                            "type": "string",
-                                            "nullable": false
-                                        }
+                                        "nullable": false
                                     },
                                     "nullable": false
                                 }
@@ -122,11 +138,22 @@ YAML;
                 },
                 "parameters": [
                     {
+                        "name": "author",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "description": "Element by \"id\"",
+                            "nullable": false
+                        }
+                    },
+                    {
                         "name": "slug",
                         "in": "path",
                         "required": true,
                         "schema": {
                             "type": "string",
+                            "description": "Element by \"slug\"",
                             "nullable": false
                         }
                     }

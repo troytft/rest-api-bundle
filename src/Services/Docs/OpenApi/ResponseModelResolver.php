@@ -9,7 +9,7 @@ use function strpos;
 use function substr;
 use cebe\openapi\spec as OpenApi;
 
-class ResponseModelResolver
+class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver
 {
     /**
      * @var array<string, OpenApi\Schema>
@@ -68,8 +68,8 @@ class ResponseModelResolver
 
         $this->classCache[$cacheKey]  = new OpenApi\Schema([
             'type' => OpenApi\Type::OBJECT,
-            'nullable' => $nullable,
             'properties' => $properties,
+            'nullable' => $nullable,
         ]);
 
         return $this->classCache[$cacheKey];
@@ -77,7 +77,7 @@ class ResponseModelResolver
 
     private function getReturnType(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Types\TypeInterface
     {
-        $result = $this->docBlockReader->getReturnType($reflectionMethod) ?: $this->typeHintReader->getReturnType($reflectionMethod);
+        $result = $this->docBlockReader->resolveReturnType($reflectionMethod) ?: $this->typeHintReader->resolveReturnType($reflectionMethod);
         if (!$result) {
             $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
             throw new RestApiBundle\Exception\Docs\InvalidDefinitionException(new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException(), $context);
@@ -91,7 +91,7 @@ class ResponseModelResolver
         if ($type instanceof RestApiBundle\DTO\Docs\Types\ArrayType) {
             $result = $this->convertArrayType($type);
         } elseif ($type instanceof RestApiBundle\DTO\Docs\Types\ScalarInterface) {
-            $result = $this->convertScalarType($type);
+            $result = $this->resolveScalarType($type);
         } elseif ($type instanceof RestApiBundle\DTO\Docs\Types\ClassType) {
             $result = $this->convertClassType($type);
         } else {
@@ -101,55 +101,12 @@ class ResponseModelResolver
         return $result;
     }
 
-    private function convertScalarType(RestApiBundle\DTO\Docs\Types\ScalarInterface $scalarType): OpenApi\Schema
-    {
-        switch (true) {
-            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\StringType:
-                $result = new OpenApi\Schema([
-                    'type' => OpenApi\Type::STRING,
-                    'nullable' => $scalarType->getNullable(),
-                ]);
-
-                break;
-
-            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\IntegerType:
-                $result = new OpenApi\Schema([
-                    'type' => OpenApi\Type::INTEGER,
-                    'nullable' => $scalarType->getNullable(),
-                ]);
-
-                break;
-
-            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\FloatType:
-                $result = new OpenApi\Schema([
-                    'type' => OpenApi\Type::NUMBER,
-                    'format' => 'double',
-                    'nullable' => $scalarType->getNullable(),
-                ]);
-
-                break;
-
-            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\BooleanType:
-                $result = new OpenApi\Schema([
-                    'type' => OpenApi\Type::BOOLEAN,
-                    'nullable' => $scalarType->getNullable(),
-                ]);
-
-                break;
-
-            default:
-                throw new \InvalidArgumentException();
-        }
-
-        return $result;
-    }
-
     private function convertArrayType(RestApiBundle\DTO\Docs\Types\ArrayType $arrayType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
-            'nullable' => $arrayType->getNullable(),
             'items' => $this->convert($arrayType->getInnerType()),
+            'nullable' => $arrayType->getNullable(),
         ]);
     }
 

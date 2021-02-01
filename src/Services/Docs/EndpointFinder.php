@@ -17,6 +17,7 @@ use function implode;
 use function is_array;
 use function is_string;
 use function preg_match_all;
+use function reset;
 use function spl_autoload_functions;
 use function sprintf;
 use function substr_count;
@@ -40,26 +41,19 @@ class EndpointFinder
     private $typeHintReader;
 
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\DoctrineHelper
+     * @var RestApiBundle\Services\Docs\OpenApi\DoctrineResolver
      */
     private $doctrineHelper;
-
-    /**
-     * @var RestApiBundle\Services\Docs\OpenApi\RequestModelHelper
-     */
-    private $requestModelHelper;
 
     public function __construct(
         RestApiBundle\Services\Docs\Types\DocBlockTypeReader $docBlockSchemaReader,
         RestApiBundle\Services\Docs\Types\TypeHintTypeReader $typeHintSchemaReader,
-        RestApiBundle\Services\Docs\OpenApi\DoctrineHelper $doctrineHelper,
-        RestApiBundle\Services\Docs\OpenApi\RequestModelHelper $requestModelHelper
+        RestApiBundle\Services\Docs\OpenApi\DoctrineResolver $doctrineHelper
     ) {
         $this->annotationReader = AnnotationReaderFactory::create(true);
         $this->docBlockReader = $docBlockSchemaReader;
         $this->typeHintReader = $typeHintSchemaReader;
         $this->doctrineHelper = $doctrineHelper;
-        $this->requestModelHelper = $requestModelHelper;
     }
 
     /**
@@ -142,12 +136,6 @@ class EndpointFinder
                 continue;
             }
 
-            $requestModelSchema = null;
-            $requestModelClass = $this->getRequestModel($reflectionMethod);
-            if ($requestModelClass) {
-                $requestModelSchema = $this->requestModelHelper->getSchemaByClass($requestModelClass);
-            }
-
             try {
                 if ($controllerRouteAnnotation instanceof Route && $controllerRouteAnnotation->getPath()) {
                     $path = $controllerRouteAnnotation->getPath();
@@ -168,9 +156,9 @@ class EndpointFinder
                     ->setTags($endpointAnnotation->tags)
                     ->setPath($path)
                     ->setMethods($actionRouteAnnotation->getMethods())
-                    ->setResponse($this->getResponse($reflectionMethod))
-                    ->setPathParameters($this->getPathParameters($path, $reflectionMethod))
-                    ->setRequestModel($requestModelSchema);
+                    ->setResponse($this->extractResponse($reflectionMethod))
+                    ->setPathParameters($this->extractPathParameters($path, $reflectionMethod))
+                    ->setRequest($this->extractRequest($reflectionMethod));
 
                 $result[] = $endpointData;
             } catch (RestApiBundle\Exception\Docs\InvalidDefinition\BaseInvalidDefinitionException $exception) {
@@ -182,7 +170,7 @@ class EndpointFinder
         return $result;
     }
 
-    private function getResponse(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Response\ResponseInterface
+    private function extractResponse(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Response\ResponseInterface
     {
         $returnType = $this->getReturnType($reflectionMethod);
 
@@ -216,7 +204,7 @@ class EndpointFinder
 
     private function getReturnType(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Types\TypeInterface
     {
-        $result = $this->docBlockReader->getReturnType($reflectionMethod) ?: $this->typeHintReader->getReturnType($reflectionMethod);
+        $result = $this->docBlockReader->resolveReturnType($reflectionMethod) ?: $this->typeHintReader->resolveReturnType($reflectionMethod);
         if (!$result) {
             $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
             throw new RestApiBundle\Exception\Docs\InvalidDefinitionException(new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException(), $context);
@@ -226,50 +214,40 @@ class EndpointFinder
     }
 
     /**
-     * @return RestApiBundle\DTO\Docs\PathParameter[]
+     * @return RestApiBundle\DTO\Docs\PathParameter\PathParameterInterface[]
      */
-    private function getPathParameters(string $path, \ReflectionMethod $reflectionMethod): array
+    private function extractPathParameters(string $path, \ReflectionMethod $reflectionMethod): array
     {
+        $scalarTypes = [];
+        $entityTypes = [];
+
+        foreach ($reflectionMethod->getParameters() as $parameter) {
+            $parameterType = $this->typeHintReader->resolveParameterType($parameter);
+            if ($parameterType instanceof RestApiBundle\DTO\Docs\Types\ScalarInterface) {
+                $scalarTypes[$parameter->getName()] = $parameterType;
+            } elseif ($parameterType instanceof RestApiBundle\DTO\Docs\Types\ClassType && $this->doctrineHelper->isEntity($parameterType->getClass())) {
+                $entityTypes[$parameter->getName()] = $parameterType;
+            }
+        }
+
         $result = [];
-        $parameterIndex = 0;
         $placeholders = $this->getPathPlaceholders($path);
 
         foreach ($placeholders as $placeholder) {
             $pathParameter = null;
 
-            while (true) {
-                if (!isset($reflectionMethod->getParameters()[$parameterIndex])) {
-                    break;
+            if (isset($scalarTypes[$placeholder])) {
+                $result[] = new RestApiBundle\DTO\Docs\PathParameter\ScalarParameter($placeholder, $scalarTypes[$placeholder]);
+            } elseif (isset($entityTypes[$placeholder])) {
+                $result[] = new RestApiBundle\DTO\Docs\PathParameter\EntityTypeParameter($placeholder, $entityTypes[$placeholder], 'id');
+                unset($entityTypes[$placeholder]);
+            } else {
+                $entityType = reset($entityTypes);
+                if (!$entityType instanceof RestApiBundle\DTO\Docs\Types\ClassType) {
+                    throw new RestApiBundle\Exception\Docs\InvalidDefinition\NotMatchedRoutePlaceholderParameterException($placeholder);
                 }
-
-                $parameter = $reflectionMethod->getParameters()[$parameterIndex];
-                $parameterIndex++;
-
-                $parameterSchema = $this->typeHintReader->getMethodParameterSchema($parameter);
-                if (!$parameterSchema) {
-                    continue;
-                }
-
-                $isNameEqualsToPlaceholder = $parameter->getName() === $placeholder;
-
-                if ($isNameEqualsToPlaceholder && $parameterSchema instanceof RestApiBundle\DTO\Docs\Types\ScalarInterface) {
-                    $pathParameter = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $parameterSchema);
-
-                    break;
-                } elseif ($parameterSchema instanceof RestApiBundle\DTO\Docs\Types\ClassType && $this->doctrineHelper->isEntity($parameterSchema->getClass())) {
-                    $fieldName = $isNameEqualsToPlaceholder ? 'id' : $placeholder;
-                    $parameterSchema = $this->doctrineHelper->getEntityFieldSchema($parameterSchema->getClass(), $fieldName, false);
-                    $pathParameter = new RestApiBundle\DTO\Docs\PathParameter($placeholder, $parameterSchema);
-
-                    break;
-                }
+                $result[] = new RestApiBundle\DTO\Docs\PathParameter\EntityTypeParameter($placeholder, $entityType, $placeholder);
             }
-
-            if (!$pathParameter) {
-                throw new RestApiBundle\Exception\Docs\InvalidDefinition\NotMatchedRoutePlaceholderParameterException($placeholder);
-            }
-
-            $result[] = $pathParameter;
         }
 
         return $result;
@@ -287,14 +265,14 @@ class EndpointFinder
         return $parameters;
     }
 
-    private function getRequestModel(\ReflectionMethod $reflectionMethod): ?string
+    private function extractRequest(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Request\RequestInterface
     {
         $result = null;
 
         foreach ($reflectionMethod->getParameters() as $parameter) {
-            $schema = $this->typeHintReader->getMethodParameterSchema($parameter);
-            if ($schema instanceof RestApiBundle\DTO\Docs\Types\ClassType && RestApiBundle\Helper\ClassInterfaceChecker::isRequestModel($schema->getClass())) {
-                $result = $schema->getClass();
+            $parameterType = $this->typeHintReader->resolveParameterType($parameter);
+            if ($parameterType instanceof RestApiBundle\DTO\Docs\Types\ClassType && RestApiBundle\Helper\ClassInterfaceChecker::isRequestModel($parameterType->getClass())) {
+                $result = new RestApiBundle\DTO\Docs\Request\RequestModel($parameterType->getClass(), $parameterType->getNullable());
 
                 break;
             }

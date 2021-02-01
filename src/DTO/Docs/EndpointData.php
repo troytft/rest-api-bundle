@@ -32,19 +32,19 @@ class EndpointData
     private $methods;
 
     /**
+     * @var RestApiBundle\DTO\Docs\Request\RequestInterface|null
+     */
+    private $request;
+
+    /**
      * @var RestApiBundle\DTO\Docs\Response\ResponseInterface
      */
     private $response;
 
     /**
-     * @var RestApiBundle\DTO\Docs\PathParameter[]
+     * @var RestApiBundle\DTO\Docs\PathParameter\PathParameterInterface[]
      */
     private $pathParameters = [];
-
-    /**
-     * @var RestApiBundle\DTO\Docs\Types\ObjectType|null
-     */
-    private $requestModel;
 
     public function getTitle(): string
     {
@@ -94,14 +94,33 @@ class EndpointData
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getMethods(): array
     {
         return $this->methods;
     }
 
+    /**
+     * @param string[] $methods
+     * @return $this
+     */
     public function setMethods(array $methods)
     {
         $this->methods = $methods;
+
+        return $this;
+    }
+
+    public function getRequest(): ?RestApiBundle\DTO\Docs\Request\RequestInterface
+    {
+        return $this->request;
+    }
+
+    public function setRequest(?RestApiBundle\DTO\Docs\Request\RequestInterface $request)
+    {
+        $this->request = $request;
 
         return $this;
     }
@@ -119,7 +138,7 @@ class EndpointData
     }
 
     /**
-     * @return RestApiBundle\DTO\Docs\PathParameter[]
+     * @return RestApiBundle\DTO\Docs\PathParameter\PathParameterInterface[]
      */
     public function getPathParameters(): array
     {
@@ -127,25 +146,13 @@ class EndpointData
     }
 
     /**
-     * @param RestApiBundle\DTO\Docs\PathParameter[] $pathParameters
+     * @param RestApiBundle\DTO\Docs\PathParameter\PathParameterInterface[] $pathParameters
      *
      * @return $this
      */
     public function setPathParameters(array $pathParameters)
     {
         $this->pathParameters = $pathParameters;
-
-        return $this;
-    }
-
-    public function getRequestModel(): ?RestApiBundle\DTO\Docs\Types\ObjectType
-    {
-        return $this->requestModel;
-    }
-
-    public function setRequestModel(?RestApiBundle\DTO\Docs\Types\ObjectType $requestModel)
-    {
-        $this->requestModel = $requestModel;
 
         return $this;
     }

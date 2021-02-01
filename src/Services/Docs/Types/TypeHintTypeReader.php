@@ -6,7 +6,7 @@ use RestApiBundle;
 
 class TypeHintTypeReader extends RestApiBundle\Services\Docs\Types\BaseTypeReader
 {
-    public function getReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Types\TypeInterface
+    public function resolveReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Types\TypeInterface
     {
         if (!$reflectionMethod->getReturnType()) {
             return null;
@@ -15,7 +15,7 @@ class TypeHintTypeReader extends RestApiBundle\Services\Docs\Types\BaseTypeReade
         return $this->createFromString((string) $reflectionMethod->getReturnType(), $reflectionMethod->getReturnType()->allowsNull());
     }
 
-    public function getMethodParameterSchema(\ReflectionParameter $reflectionParameter): ?RestApiBundle\DTO\Docs\Types\TypeInterface
+    public function resolveParameterType(\ReflectionParameter $reflectionParameter): ?RestApiBundle\DTO\Docs\Types\TypeInterface
     {
         if (!$reflectionParameter->getType()) {
             return null;
