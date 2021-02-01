@@ -18,7 +18,7 @@
         "sort-packages": true
     },
     "require": {
-        "php": "^7.2",
+        "php": ">=7.2.5",
         "ext-json": "*",
         "cebe/php-openapi": "~1.0",
         "doctrine/annotations": "~1.6",
