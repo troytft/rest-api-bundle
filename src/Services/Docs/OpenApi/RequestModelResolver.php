@@ -17,7 +17,7 @@ class RequestModelResolver
     private $schemaGenerator;
 
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\DoctrineHelper
+     * @var RestApiBundle\Services\Docs\OpenApi\DoctrineResolver
      */
     private $doctrineHelper;
 
@@ -38,7 +38,7 @@ class RequestModelResolver
 
     public function __construct(
         RestApiBundle\Services\Request\MapperInitiator $mapperInitiator,
-        RestApiBundle\Services\Docs\OpenApi\DoctrineHelper $doctrineHelper,
+        RestApiBundle\Services\Docs\OpenApi\DoctrineResolver $doctrineHelper,
         RestApiBundle\Services\Docs\Types\TypeHintTypeReader $typeHintReader,
         RestApiBundle\Services\Docs\Types\DocBlockTypeReader $docBlockReader
     ) {
