@@ -6,6 +6,7 @@ use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection as PhpDoc;
 use RestApiBundle;
+
 use function count;
 
 class DocBlockTypeReader extends RestApiBundle\Services\Docs\Types\BaseTypeReader

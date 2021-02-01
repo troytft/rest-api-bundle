@@ -5,6 +5,7 @@ namespace RestApiBundle\Services\Docs\OpenApi;
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
 use Symfony\Component\Yaml\Yaml;
+
 use function array_merge;
 use function array_values;
 use function json_encode;

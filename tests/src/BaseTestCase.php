@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use RestApiBundle;
 use TestApp;
 use Symfony\Component\HttpKernel\KernelInterface;
+
 use function get_class;
 
 abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase

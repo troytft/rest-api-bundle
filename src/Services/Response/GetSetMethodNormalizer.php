@@ -3,6 +3,7 @@
 namespace RestApiBundle\Services\Response;
 
 use RestApiBundle;
+
 use function get_class;
 use function strpos;
 

@@ -5,6 +5,7 @@ namespace RestApiBundle\DependencyInjection\Configuration;
 use RestApiBundle;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+
 use function constant;
 use function defined;
 use function is_int;

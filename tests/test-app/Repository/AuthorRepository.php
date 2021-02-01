@@ -4,6 +4,7 @@ namespace TestApp\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use TestApp\Entity\Author;
+
 use function in_array;
 
 class AuthorRepository extends EntityRepository
@@ -12,11 +13,6 @@ class AuthorRepository extends EntityRepository
      * @var int[]
      */
     private $existIds = [1, 2,];
-
-    /**
-     * @var string[]
-     */
-    private $existSlugs = ['action',];
 
     public function findOneBy(array $criteria, array $orderBy = null)
     {
