@@ -79,6 +79,26 @@ JSON;
         $this->assertJsonStringEqualsJsonString($expected, json_encode($schema->getSerializableData()));
     }
 
+    public function testModelWithArrayOfEntitiesType()
+    {
+        $expected = <<<JSON
+{
+    "type": "object",
+    "properties": {
+        "fieldWithEntity": {
+            "type": "string",
+            "description": "Entity \"Genre\" by field \"slug\"",
+            "nullable": false
+        }
+    },
+    "nullable": false
+}
+JSON;
+
+        $schema = $this->getRequestModelResolver()->resolveByClass(TestApp\RequestModel\ModelWithEntityBySlug::class);
+        $this->assertJsonStringEqualsJsonString($expected, json_encode($schema->getSerializableData()));
+    }
+
     private function getRequestModelResolver(): RestApiBundle\Services\Docs\OpenApi\RequestModelResolver
     {
         $result = $this->getContainer()->get(RestApiBundle\Services\Docs\OpenApi\RequestModelResolver::class);
