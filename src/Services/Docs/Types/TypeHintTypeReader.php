@@ -3,6 +3,7 @@
 namespace RestApiBundle\Services\Docs\Types;
 
 use RestApiBundle;
+
 use function ltrim;
 
 class TypeHintTypeReader extends RestApiBundle\Services\Docs\Types\BaseTypeReader
