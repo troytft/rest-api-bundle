@@ -18,8 +18,8 @@ class EntityTransformerTest extends Tests\BaseTestCase
         $this->getRequestModelManager()->handle($model, [
             'fieldWithEntity' => 'action'
         ]);
-        $this->assertTrue($model->getFieldWithEntity() instanceof TestApp\Entity\Genre);
-        $this->assertSame('action', $model->getFieldWithEntity()->getSlug());
+        $this->assertTrue($model->getGenre() instanceof TestApp\Entity\Genre);
+        $this->assertSame('action', $model->getGenre()->getSlug());
     }
 
     public function testEntityNotFoundById()

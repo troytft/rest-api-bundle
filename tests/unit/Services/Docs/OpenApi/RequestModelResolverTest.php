@@ -65,7 +65,7 @@ JSON;
 {
     "type": "object",
     "properties": {
-        "fieldWithEntity": {
+        "genre": {
             "type": "string",
             "description": "Entity \"Genre\" by field \"slug\"",
             "nullable": false
@@ -85,9 +85,12 @@ JSON;
 {
     "type": "object",
     "properties": {
-        "fieldWithEntity": {
-            "type": "string",
-            "description": "Entity \"Genre\" by field \"slug\"",
+        "genres": {
+            "type": "array",
+            "items": {
+                "type": "integer",
+                "nullable": false
+            },
             "nullable": false
         }
     },
@@ -95,7 +98,7 @@ JSON;
 }
 JSON;
 
-        $schema = $this->getRequestModelResolver()->resolveByClass(TestApp\RequestModel\ModelWithEntityBySlug::class);
+        $schema = $this->getRequestModelResolver()->resolveByClass(TestApp\RequestModel\ModelWithArrayOfEntities::class);
         $this->assertJsonStringEqualsJsonString($expected, json_encode($schema->getSerializableData()));
     }
 
