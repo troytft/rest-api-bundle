@@ -5,6 +5,7 @@ namespace RestApiBundle\Services\Request;
 use Mapper;
 use RestApiBundle;
 use Symfony\Component\Translation\TranslatorInterface;
+
 use function get_class;
 use function sprintf;
 

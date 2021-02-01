@@ -4,7 +4,6 @@ namespace TestApp\RequestModel;
 
 use RestApiBundle\Annotation\Request as Mapper;
 use RestApiBundle\RequestModelInterface;
-
 use Symfony\Component\Validator\Constraints as Assert;
 
 class InnerModelWithValidation implements RequestModelInterface

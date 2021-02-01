@@ -9,6 +9,7 @@ use RestApiBundle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Routing\Annotation\Route;
+
 use function array_merge;
 use function array_slice;
 use function count;

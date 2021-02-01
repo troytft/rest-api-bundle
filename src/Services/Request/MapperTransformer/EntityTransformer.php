@@ -6,6 +6,7 @@ use Mapper;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use RestApiBundle\Exception\RequestModel\EntityNotFoundException;
+
 use function sprintf;
 
 class EntityTransformer implements Mapper\Transformer\TransformerInterface

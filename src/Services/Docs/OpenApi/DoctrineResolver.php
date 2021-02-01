@@ -6,6 +6,7 @@ use Mapper\Helper\AnnotationReaderFactory;
 use RestApiBundle;
 use Doctrine;
 use cebe\openapi\spec as OpenApi;
+
 use function sprintf;
 
 class DoctrineResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver

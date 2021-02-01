@@ -3,6 +3,7 @@
 namespace RestApiBundle\Services\Response;
 
 use RestApiBundle;
+
 use function array_key_exists;
 use function class_exists;
 

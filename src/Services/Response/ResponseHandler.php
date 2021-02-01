@@ -5,6 +5,7 @@ namespace RestApiBundle\Services\Response;
 use RestApiBundle;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+
 use function array_keys;
 use function array_merge;
 use function is_array;

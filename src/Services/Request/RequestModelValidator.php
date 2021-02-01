@@ -7,6 +7,7 @@ use Mapper\DTO\Schema\ObjectType;
 use RestApiBundle;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+
 use function array_merge_recursive;
 use function explode;
 use function implode;

@@ -3,6 +3,7 @@
 namespace RestApiBundle\Services\Docs\Types;
 
 use RestApiBundle;
+
 use function in_array;
 use function ltrim;
 

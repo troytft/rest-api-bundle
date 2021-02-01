@@ -3,11 +3,12 @@
 namespace RestApiBundle\Services\Docs\OpenApi;
 
 use RestApiBundle;
+use cebe\openapi\spec as OpenApi;
+
 use function lcfirst;
 use function sprintf;
 use function strpos;
 use function substr;
-use cebe\openapi\spec as OpenApi;
 
 class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver
 {

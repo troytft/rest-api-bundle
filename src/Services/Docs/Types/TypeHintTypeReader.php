@@ -4,6 +4,8 @@ namespace RestApiBundle\Services\Docs\Types;
 
 use RestApiBundle;
 
+use function ltrim;
+
 class TypeHintTypeReader extends RestApiBundle\Services\Docs\Types\BaseTypeReader
 {
     public function resolveReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Types\TypeInterface
@@ -12,7 +14,9 @@ class TypeHintTypeReader extends RestApiBundle\Services\Docs\Types\BaseTypeReade
             return null;
         }
 
-        return $this->createFromString((string) $reflectionMethod->getReturnType(), $reflectionMethod->getReturnType()->allowsNull());
+        $type = ltrim((string) $reflectionMethod->getReturnType(), '?');
+
+        return $this->createFromString($type, $reflectionMethod->getReturnType()->allowsNull());
     }
 
     public function resolveParameterType(\ReflectionParameter $reflectionParameter): ?RestApiBundle\DTO\Docs\Types\TypeInterface

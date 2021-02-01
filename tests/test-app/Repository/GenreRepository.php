@@ -4,6 +4,7 @@ namespace TestApp\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use TestApp\Entity\Genre;
+
 use function in_array;
 
 class GenreRepository extends EntityRepository

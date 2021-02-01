@@ -7,6 +7,7 @@ use Symfony\Component\Validator as Validator;
 use RestApiBundle;
 use Mapper;
 use cebe\openapi\spec as OpenApi;
+
 use function sprintf;
 
 class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver

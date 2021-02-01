@@ -3,6 +3,7 @@
 namespace RestApiBundle\Exception\Docs;
 
 use RestApiBundle;
+
 use function sprintf;
 
 class InvalidDefinitionException extends \Exception

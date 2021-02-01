@@ -5,6 +5,7 @@ namespace RestApiBundle\DependencyInjection\Configuration;
 use RestApiBundle;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+
 use function constant;
 use function defined;
 use function is_int;
@@ -23,8 +24,9 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
 
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $treeBuilder->root($this->alias)
+        $treeBuilder = new TreeBuilder($this->alias);
+        $treeBuilder
+            ->getRootNode()
             ->addDefaultsIfNotSet()
             ->children()
                 ->booleanNode(RestApiBundle\Enum\SettingsKey::IS_REQUEST_PROPERTIES_NULLABLE_BY_DEFAULT)

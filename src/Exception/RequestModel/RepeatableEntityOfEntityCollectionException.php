@@ -1,6 +1,5 @@
 <?php
 
-
 namespace RestApiBundle\Exception\RequestModel;
 
 use Mapper\Exception\Transformer\TransformerExceptionInterface;
