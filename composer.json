@@ -22,7 +22,7 @@
         "ext-json": "*",
         "cebe/php-openapi": "~1.0",
         "doctrine/annotations": "~1.6",
-        "doctrine/doctrine-bundle": "^1.0",
+        "doctrine/doctrine-bundle": "^2.2",
         "doctrine/orm": "~2.5",
         "phpdocumentor/reflection-docblock": "^5.2",
         "phpunit/phpunit": "^8.5",
