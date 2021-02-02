@@ -4,12 +4,9 @@ namespace RestApiBundle\Services\Docs\OpenApi;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
-use cebe\openapi\SpecBaseObject;
 
-use function array_map;
 use function ksort;
 use function lcfirst;
-use function sort;
 use function sprintf;
 use function strpos;
 use function substr;

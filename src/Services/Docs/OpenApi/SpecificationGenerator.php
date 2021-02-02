@@ -12,7 +12,6 @@ use function json_encode;
 use function json_last_error;
 use function json_last_error_msg;
 use function ksort;
-use function sort;
 use function sprintf;
 use function strtolower;
 
@@ -212,10 +211,8 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
         ksort($paths);
         $root->paths = new OpenApi\Paths($paths);
 
-        $tags = array_values($tags);
-        sort($tags);
-
-        $root->tags = $tags;
+        ksort($tags);
+        $root->tags = array_values($tags);
         $root->components->schemas = $this->responseModelResolver->dumpSchemas();
 
         return $root;
