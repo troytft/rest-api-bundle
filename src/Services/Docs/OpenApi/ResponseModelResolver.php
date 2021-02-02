@@ -18,6 +18,11 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
     private $classCache = [];
 
     /**
+     * @var array<string, string>
+     */
+    private $typenameCache = [];
+
+    /**
      * @var RestApiBundle\Services\Docs\Types\TypeHintTypeReader
      */
     private $typeHintReader;
@@ -27,24 +32,37 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
      */
     private $docBlockReader;
 
+    /**
+     * @var RestApiBundle\Services\Response\ResponseModelTypenameResolver
+     */
+    private $typenameResolver;
+
     public function __construct(
         RestApiBundle\Services\Docs\Types\TypeHintTypeReader $typeHintReader,
-        RestApiBundle\Services\Docs\Types\DocBlockTypeReader $docBlockReader
+        RestApiBundle\Services\Docs\Types\DocBlockTypeReader $docBlockReader,
+        RestApiBundle\Services\Response\ResponseModelTypenameResolver $typenameResolver
     ) {
         $this->typeHintReader = $typeHintReader;
         $this->docBlockReader = $docBlockReader;
+        $this->typenameResolver = $typenameResolver;
     }
 
-    public function resolveByClass(string $class, $nullable = false): OpenApi\Schema
+    public function resolveByClass(string $class): OpenApi\Schema
     {
-        $cacheKey = sprintf('%s-%s', $class, $nullable);
-        if (isset($this->classCache[$cacheKey])) {
-            return $this->classCache[$cacheKey];
+        if (isset($this->classCache[$class])) {
+            return $this->classCache[$class];
         }
 
         if (!RestApiBundle\Helper\ClassInterfaceChecker::isResponseModel($class)) {
             throw new \InvalidArgumentException(sprintf('Class %s is not a response model.', $class));
         }
+
+        $typename = $this->typenameResolver->resolve($class);
+        if (isset($this->typenameCache[$typename])) {
+            throw new \InvalidArgumentException(sprintf('Typename %s already used by class %s', $typename, $this->typenameCache[$typename]));
+        }
+
+        $this->typenameCache[$typename] = $class;
 
         $properties = [];
 
@@ -67,13 +85,12 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
             'nullable' => false,
         ]);
 
-        $this->classCache[$cacheKey]  = new OpenApi\Schema([
+        $this->classCache[$class]  = new OpenApi\Schema([
             'type' => OpenApi\Type::OBJECT,
             'properties' => $properties,
-            'nullable' => $nullable,
         ]);
 
-        return $this->classCache[$cacheKey];
+        return $this->classCache[$class];
     }
 
     private function getReturnType(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Types\TypeInterface
@@ -115,7 +132,9 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
     {
         switch (true) {
             case RestApiBundle\Helper\ClassInterfaceChecker::isResponseModel($classType->getClass()):
-                $result = $this->resolveByClass($classType->getClass(), $classType->getNullable());
+                $result = $this->resolveByClass($classType->getClass());
+                $result
+                    ->nullable = $classType->getNullable();
 
                 break;
 

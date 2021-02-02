@@ -43,8 +43,7 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
             "type": "string",
             "nullable": false
         }
-    },
-    "nullable": false
+    }
 }
 JSON;
 
@@ -89,7 +88,7 @@ JSON;
             },
             "nullable": false
         },
-                "arrayOfModelsField": {
+        "arrayOfModelsField": {
             "type": "array",
             "items": {
                 "type": "object",
@@ -115,8 +114,7 @@ JSON;
             "type": "string",
             "nullable": false
         }
-    },
-    "nullable": false
+    }
 }
 JSON;
 

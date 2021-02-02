@@ -112,22 +112,30 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
             }
 
             if ($response instanceof RestApiBundle\DTO\Docs\Response\ResponseModel) {
+                $responseModelSchema = $this->responseModelResolver->resolveByClass($response->getClass());
+                $responseModelSchema
+                    ->nullable = $response->getNullable();
+
                 $responses->addResponse('200', new OpenApi\Response([
                     'description' => 'Success response with body',
                     'content' => [
                         'application/json' => [
-                            'schema' => $this->responseModelResolver->resolveByClass($response->getClass(), $response->getNullable())
+                            'schema' => $responseModelSchema
                         ]
                     ]
                 ]));
             } elseif ($response instanceof RestApiBundle\DTO\Docs\Response\ArrayOfResponseModels) {
+                $responseModelSchema = $this->responseModelResolver->resolveByClass($response->getClass());
+                $responseModelSchema
+                    ->nullable = $response->getNullable();
+
                 $responses->addResponse('200', new OpenApi\Response([
                     'description' => 'Success response with body',
                     'content' => [
                         'application/json' => [
                             'schema' => new OpenApi\Schema([
                                 'type' => OpenApi\Type::ARRAY,
-                                'items' => $this->responseModelResolver->resolveByClass($response->getClass()),
+                                'items' => $responseModelSchema,
                                 'nullable' => $response->getNullable(),
                             ])
                         ]
@@ -204,12 +212,16 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
 
     private function convertRequestModelToRequestBody(RestApiBundle\DTO\Docs\Request\RequestModel $requestModel): OpenApi\RequestBody
     {
+        $schema = $this->requestModelResolver->resolveByClass($requestModel->getClass());
+        $schema
+            ->nullable = $requestModel->getNullable();
+
         return new OpenApi\RequestBody([
             'description' => 'Request body',
             'required' => !$requestModel->getNullable(),
             'content' => [
                 'application/json' => [
-                    'schema' => $this->requestModelResolver->resolveByClass($requestModel->getClass()),
+                    'schema' => $schema,
                 ]
             ]
         ]);
