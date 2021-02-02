@@ -11,6 +11,7 @@ use function array_values;
 use function json_encode;
 use function json_last_error;
 use function json_last_error_msg;
+use function sort;
 use function sprintf;
 use function strtolower;
 
@@ -205,9 +206,12 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
 
             $root->paths->addPath($routeData->getPath(), $pathItem);
         }
+        
+        $tags = array_values($tags);
+        sort($tags);
 
+        $root->tags = $tags;
         $root->components->schemas = $this->responseModelResolver->dumpSchemas();
-        $root->tags = array_values($tags);
 
         return $root;
     }
