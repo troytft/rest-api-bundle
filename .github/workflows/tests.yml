@@ -34,7 +34,7 @@ jobs:
 
       - name: Update dependencies with ${{ matrix.prefered-versions }}
         if: steps.composer-cache.outputs.cache-hit != 'true'
-        run: composer update ${{ matrix.prefered-versions }}' --no-suggest --no-interaction --no-progress
+        run: composer update ${{ matrix.prefered-versions }} --no-suggest --no-interaction --no-progress
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit
