@@ -63,7 +63,13 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
         }
 
         $this->typenameCache[$typename] = $class;
+        $this->classCache[$class] = $this->resolveSchema($class);
+        
+        return $this->classCache[$class];
+    }
 
+    private function resolveSchema(string $class): OpenApi\Schema
+    {
         $properties = [];
 
         $reflectedClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
@@ -85,12 +91,10 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
             'nullable' => false,
         ]);
 
-        $this->classCache[$class]  = new OpenApi\Schema([
+        return new OpenApi\Schema([
             'type' => OpenApi\Type::OBJECT,
             'properties' => $properties,
         ]);
-
-        return $this->classCache[$class];
     }
 
     private function getReturnType(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Types\TypeInterface
