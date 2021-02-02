@@ -7,7 +7,9 @@ use cebe\openapi\spec as OpenApi;
 use cebe\openapi\SpecBaseObject;
 
 use function array_map;
+use function ksort;
 use function lcfirst;
+use function sort;
 use function sprintf;
 use function strpos;
 use function substr;
@@ -85,6 +87,8 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
         foreach ($this->typenameCache as $class => $typename) {
             $result[$typename] = $this->schemaCache[$class];
         }
+
+        ksort($result);
 
         return $result;
     }
