@@ -38,9 +38,9 @@ jobs:
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit
-#
-#      - name: Run PHP Code Sniffer
-#        run: vendor/bin/phpcs
-#
-#      - name: Run PHPStan
-#        run: vendor/bin/phpstan analyse --no-progress
+
+      - name: Run PHP Code Sniffer
+        run: vendor/bin/phpcs
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --no-progress
