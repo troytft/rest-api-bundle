@@ -11,6 +11,7 @@ use function array_values;
 use function json_encode;
 use function json_last_error;
 use function json_last_error_msg;
+use function ksort;
 use function sprintf;
 use function strtolower;
 
@@ -88,8 +89,11 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
                 'version' => '1.0.0',
             ],
             'paths' => [],
+            'tags' => [],
+            'components' => [],
         ]);
 
+        $paths = [];
         $tags = [];
 
         foreach ($endpointDataItems as $routeData) {
@@ -112,22 +116,30 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
             }
 
             if ($response instanceof RestApiBundle\DTO\Docs\Response\ResponseModel) {
+                $responseModelSchema = $this->responseModelResolver->resolveReferenceByClass($response->getClass());
+                $responseModelSchema
+                    ->nullable = $response->getNullable();
+
                 $responses->addResponse('200', new OpenApi\Response([
                     'description' => 'Success response with body',
                     'content' => [
                         'application/json' => [
-                            'schema' => $this->responseModelResolver->resolveByClass($response->getClass(), $response->getNullable())
+                            'schema' => $responseModelSchema
                         ]
                     ]
                 ]));
             } elseif ($response instanceof RestApiBundle\DTO\Docs\Response\ArrayOfResponseModels) {
+                $responseModelSchema = $this->responseModelResolver->resolveReferenceByClass($response->getClass());
+                $responseModelSchema
+                    ->nullable = $response->getNullable();
+
                 $responses->addResponse('200', new OpenApi\Response([
                     'description' => 'Success response with body',
                     'content' => [
                         'application/json' => [
                             'schema' => new OpenApi\Schema([
                                 'type' => OpenApi\Type::ARRAY,
-                                'items' => $this->responseModelResolver->resolveByClass($response->getClass()),
+                                'items' => $responseModelSchema,
                                 'nullable' => $response->getNullable(),
                             ])
                         ]
@@ -157,9 +169,10 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
                 ]);
             }
 
-            $pathItem = $root->paths->getPath($routeData->getPath());
+            $pathItem = $paths[$routeData->getPath()] ?? null;
             if (!$pathItem) {
                 $pathItem = new OpenApi\PathItem([]);
+                $paths[$routeData->getPath()] = $pathItem;
             }
 
             foreach ($routeData->getMethods() as $method) {
@@ -193,23 +206,30 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
 
                 $pathItem->{$method} = $operation;
             }
-
-            $root->paths->addPath($routeData->getPath(), $pathItem);
         }
 
+        ksort($paths);
+        $root->paths = new OpenApi\Paths($paths);
+
+        ksort($tags);
         $root->tags = array_values($tags);
+        $root->components->schemas = $this->responseModelResolver->dumpSchemas();
 
         return $root;
     }
 
     private function convertRequestModelToRequestBody(RestApiBundle\DTO\Docs\Request\RequestModel $requestModel): OpenApi\RequestBody
     {
+        $schema = $this->requestModelResolver->resolveByClass($requestModel->getClass());
+        $schema
+            ->nullable = $requestModel->getNullable();
+
         return new OpenApi\RequestBody([
             'description' => 'Request body',
             'required' => !$requestModel->getNullable(),
             'content' => [
                 'application/json' => [
-                    'schema' => $this->requestModelResolver->resolveByClass($requestModel->getClass()),
+                    'schema' => $schema,
                 ]
             ]
         ]);

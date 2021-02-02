@@ -27,6 +27,21 @@ info:
     title: 'Open API Specification'
     version: 1.0.0
 paths:
+    /books:
+        get:
+            summary: 'Books list'
+            responses:
+                '200':
+                    description: 'Success response with body'
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    \$ref: '#/components/schemas/Book'
+                                nullable: false
+            tags:
+                - books
     /writers:
         post:
             summary: 'Create writer'
@@ -36,41 +51,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                type: object
-                                properties:
-                                    id:
-                                        type: integer
-                                        nullable: false
-                                    name:
-                                        type: string
-                                        nullable: false
-                                    surname:
-                                        type: string
-                                        nullable: false
-                                    birthday:
-                                        type: string
-                                        format: date-time
-                                        nullable: true
-                                    genres:
-                                        type: array
-                                        items:
-                                            type: object
-                                            properties:
-                                                id:
-                                                    type: integer
-                                                    nullable: false
-                                                slug:
-                                                    type: string
-                                                    nullable: false
-                                                __typename:
-                                                    type: string
-                                                    nullable: false
-                                            nullable: false
-                                        nullable: false
-                                    __typename:
-                                        type: string
-                                        nullable: false
-                                nullable: false
+                                \$ref: '#/components/schemas/Author'
             requestBody:
                 description: 'Request body'
                 content:
@@ -113,41 +94,7 @@ paths:
                             schema:
                                 type: array
                                 items:
-                                    type: object
-                                    properties:
-                                        id:
-                                            type: integer
-                                            nullable: false
-                                        name:
-                                            type: string
-                                            nullable: false
-                                        surname:
-                                            type: string
-                                            nullable: false
-                                        birthday:
-                                            type: string
-                                            format: date-time
-                                            nullable: true
-                                        genres:
-                                            type: array
-                                            items:
-                                                type: object
-                                                properties:
-                                                    id:
-                                                        type: integer
-                                                        nullable: false
-                                                    slug:
-                                                        type: string
-                                                        nullable: false
-                                                    __typename:
-                                                        type: string
-                                                        nullable: false
-                                                nullable: false
-                                            nullable: false
-                                        __typename:
-                                            type: string
-                                            nullable: false
-                                    nullable: false
+                                    \$ref: '#/components/schemas/Author'
                                 nullable: false
             parameters:
                 -
@@ -201,6 +148,14 @@ paths:
                             nullable: false
                         nullable: true
                     description: 'Array of elements by "id"'
+                -
+                    name: writer
+                    in: query
+                    required: false
+                    schema:
+                        type: integer
+                        nullable: true
+                    description: 'Element by "id"'
             tags:
                 - writers
     '/writers/{id}':
@@ -220,7 +175,63 @@ paths:
                         nullable: false
             tags:
                 - writers
+components:
+    schemas:
+        Author:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    nullable: false
+                name:
+                    type: string
+                    nullable: false
+                surname:
+                    type: string
+                    nullable: false
+                birthday:
+                    type: string
+                    format: date-time
+                    nullable: true
+                genres:
+                    type: array
+                    items:
+                        \$ref: '#/components/schemas/Genre'
+                    nullable: false
+                __typename:
+                    type: string
+                    nullable: false
+        Book:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    nullable: false
+                author:
+                    \$ref: '#/components/schemas/Author'
+                genre:
+                    anyOf:
+                        -
+                            \$ref: '#/components/schemas/Genre'
+                    nullable: true
+                __typename:
+                    type: string
+                    nullable: false
+        Genre:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    nullable: false
+                slug:
+                    type: string
+                    nullable: false
+                __typename:
+                    type: string
+                    nullable: false
 tags:
+    -
+        name: books
     -
         name: writers
 
@@ -252,6 +263,30 @@ YAML;
         "version": "1.0.0"
     },
     "paths": {
+        "/books": {
+            "get": {
+                "summary": "Books list",
+                "responses": {
+                    "200": {
+                        "description": "Success response with body",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "\$ref": "#/components/schemas/Book"
+                                    },
+                                    "nullable": false
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "books"
+                ]
+            }
+        },
         "/writers": {
             "post": {
                 "summary": "Create writer",
@@ -261,53 +296,7 @@ YAML;
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "nullable": false
-                                        },
-                                        "name": {
-                                            "type": "string",
-                                            "nullable": false
-                                        },
-                                        "surname": {
-                                            "type": "string",
-                                            "nullable": false
-                                        },
-                                        "birthday": {
-                                            "type": "string",
-                                            "format": "date-time",
-                                            "nullable": true
-                                        },
-                                        "genres": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "nullable": false
-                                                    },
-                                                    "slug": {
-                                                        "type": "string",
-                                                        "nullable": false
-                                                    },
-                                                    "__typename": {
-                                                        "type": "string",
-                                                        "nullable": false
-                                                    }
-                                                },
-                                                "nullable": false
-                                            },
-                                            "nullable": false
-                                        },
-                                        "__typename": {
-                                            "type": "string",
-                                            "nullable": false
-                                        }
-                                    },
-                                    "nullable": false
+                                    "\$ref": "#/components/schemas/Author"
                                 }
                             }
                         }
@@ -367,53 +356,7 @@ YAML;
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer",
-                                                "nullable": false
-                                            },
-                                            "name": {
-                                                "type": "string",
-                                                "nullable": false
-                                            },
-                                            "surname": {
-                                                "type": "string",
-                                                "nullable": false
-                                            },
-                                            "birthday": {
-                                                "type": "string",
-                                                "format": "date-time",
-                                                "nullable": true
-                                            },
-                                            "genres": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer",
-                                                            "nullable": false
-                                                        },
-                                                        "slug": {
-                                                            "type": "string",
-                                                            "nullable": false
-                                                        },
-                                                        "__typename": {
-                                                            "type": "string",
-                                                            "nullable": false
-                                                        }
-                                                    },
-                                                    "nullable": false
-                                                },
-                                                "nullable": false
-                                            },
-                                            "__typename": {
-                                                "type": "string",
-                                                "nullable": false
-                                            }
-                                        },
-                                        "nullable": false
+                                        "\$ref": "#/components/schemas/Author"
                                     },
                                     "nullable": false
                                 }
@@ -485,6 +428,16 @@ YAML;
                             "nullable": true
                         },
                         "description": "Array of elements by \"id\""
+                    },
+                    {
+                        "name": "writer",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "nullable": true
+                        },
+                        "description": "Element by \"id\""
                     }
                 ],
                 "tags": [
@@ -518,7 +471,88 @@ YAML;
             }
         }
     },
+    "components": {
+        "schemas": {
+            "Author": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "nullable": false
+                    },
+                    "name": {
+                        "type": "string",
+                        "nullable": false
+                    },
+                    "surname": {
+                        "type": "string",
+                        "nullable": false
+                    },
+                    "birthday": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "genres": {
+                        "type": "array",
+                        "items": {
+                            "\$ref": "#/components/schemas/Genre"
+                        },
+                        "nullable": false
+                    },
+                    "__typename": {
+                        "type": "string",
+                        "nullable": false
+                    }
+                }
+            },
+            "Book": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "nullable": false
+                    },
+                    "author": {
+                        "\$ref": "#/components/schemas/Author"
+                    },
+                    "genre": {
+                        "anyOf": [
+                            {
+                                "\$ref": "#/components/schemas/Genre"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "__typename": {
+                        "type": "string",
+                        "nullable": false
+                    }
+                }
+            },
+            "Genre": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "nullable": false
+                    },
+                    "slug": {
+                        "type": "string",
+                        "nullable": false
+                    },
+                    "__typename": {
+                        "type": "string",
+                        "nullable": false
+                    }
+                }
+            }
+        }
+    },
     "tags": [
+        {
+            "name": "books"
+        },
         {
             "name": "writers"
         }

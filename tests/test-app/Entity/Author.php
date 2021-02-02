@@ -7,9 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="TestApp\Repository\WriterRepository")
+ * @ORM\Entity(repositoryClass="TestApp\Repository\AuthorRepository")
  */
-class Writer
+class Author
 {
     /**
      * @var int
