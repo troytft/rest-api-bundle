@@ -6,8 +6,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        prefered-versions: ['--prefer-dist', '--prefer-lowest']
-        php-versions: ['7.2', '8.0']
+        prefered-versions: [#'--prefer-dist',
+            '--prefer-lowest']
+        php-versions: [#'7.2',
+            '8.0']
 
     steps:
       - name: Checkout repository
@@ -38,9 +40,9 @@ jobs:
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit
-
-      - name: Run PHP Code Sniffer
-        run: vendor/bin/phpcs
-
-      - name: Run PHPStan
-        run: vendor/bin/phpstan analyse --no-progress
+#
+#      - name: Run PHP Code Sniffer
+#        run: vendor/bin/phpcs
+#
+#      - name: Run PHPStan
+#        run: vendor/bin/phpstan analyse --no-progress
