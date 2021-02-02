@@ -15,7 +15,6 @@ use function ksort;
 use function sort;
 use function sprintf;
 use function strtolower;
-use function var_dump;
 
 class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver
 {
