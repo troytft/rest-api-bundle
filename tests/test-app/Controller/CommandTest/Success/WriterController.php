@@ -16,9 +16,9 @@ class WriterController
      *
      * @Route(methods="POST")
      */
-    public function createAction(TestApp\RequestModel\WriterData $requestModel): TestApp\ResponseModel\Writer
+    public function createAction(TestApp\RequestModel\WriterData $requestModel): TestApp\ResponseModel\Author
     {
-        return new TestApp\ResponseModel\Writer(new TestApp\Entity\Writer());
+        return new TestApp\ResponseModel\Author(new TestApp\Entity\Author());
     }
 
     /**
@@ -26,7 +26,7 @@ class WriterController
      *
      * @Route(methods="GET")
      *
-     * @return TestApp\ResponseModel\Writer[]
+     * @return TestApp\ResponseModel\Author[]
      */
     public function listAction(TestApp\RequestModel\WriterList $requestModel)
     {
@@ -38,7 +38,7 @@ class WriterController
      *
      * @Route("/{id}", methods="DELETE", requirements={"id": "\d"})
      */
-    public function removeAction(TestApp\Entity\Writer $writer): void
+    public function removeAction(TestApp\Entity\Author $writer): void
     {
     }
 }

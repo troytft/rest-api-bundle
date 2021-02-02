@@ -3,11 +3,11 @@
 namespace TestApp\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use TestApp\Entity\Writer;
+use TestApp\Entity\Author;
 
 use function in_array;
 
-class WriterRepository extends EntityRepository
+class AuthorRepository extends EntityRepository
 {
     /**
      * @var int[]
@@ -40,9 +40,9 @@ class WriterRepository extends EntityRepository
         return $result;
     }
 
-    private function createEntityWithId(int $id): Writer
+    private function createEntityWithId(int $id): Author
     {
-        $genre = new Writer();
+        $genre = new Author();
         $genre
             ->setId($id);
 

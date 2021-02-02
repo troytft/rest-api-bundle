@@ -88,6 +88,7 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
                 'version' => '1.0.0',
             ],
             'paths' => [],
+            'components' => [],
         ]);
 
         $tags = [];
@@ -112,7 +113,7 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
             }
 
             if ($response instanceof RestApiBundle\DTO\Docs\Response\ResponseModel) {
-                $responseModelSchema = $this->responseModelResolver->resolveByClass($response->getClass());
+                $responseModelSchema = $this->responseModelResolver->resolveReferenceByClass($response->getClass());
                 $responseModelSchema
                     ->nullable = $response->getNullable();
 
@@ -125,7 +126,7 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
                     ]
                 ]));
             } elseif ($response instanceof RestApiBundle\DTO\Docs\Response\ArrayOfResponseModels) {
-                $responseModelSchema = $this->responseModelResolver->resolveByClass($response->getClass());
+                $responseModelSchema = $this->responseModelResolver->resolveReferenceByClass($response->getClass());
                 $responseModelSchema
                     ->nullable = $response->getNullable();
 
@@ -205,6 +206,7 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
             $root->paths->addPath($routeData->getPath(), $pathItem);
         }
 
+        $root->components->schemas = $this->responseModelResolver->dumpSchemas();
         $root->tags = array_values($tags);
 
         return $root;

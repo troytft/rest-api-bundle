@@ -4,7 +4,9 @@ namespace RestApiBundle\Services\Docs\OpenApi;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
+use cebe\openapi\SpecBaseObject;
 
+use function array_map;
 use function lcfirst;
 use function sprintf;
 use function strpos;
@@ -15,7 +17,7 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
     /**
      * @var array<string, OpenApi\Schema>
      */
-    private $classCache = [];
+    private $schemaCache = [];
 
     /**
      * @var array<string, string>
@@ -47,25 +49,44 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
         $this->typenameResolver = $typenameResolver;
     }
 
-    public function resolveByClass(string $class): OpenApi\Schema
+    /**
+     * @return OpenApi\Schema|OpenApi\Reference
+     */
+    public function resolveReferenceByClass(string $class)
     {
-        if (isset($this->classCache[$class])) {
-            return $this->classCache[$class];
+        if (isset($this->typenameCache[$class])) {
+            $typename = $this->typenameCache[$class];
+        } else {
+            if (!RestApiBundle\Helper\ClassInterfaceChecker::isResponseModel($class)) {
+                throw new \InvalidArgumentException(sprintf('Class %s is not a response model.', $class));
+            }
+
+            $typename = $this->typenameResolver->resolve($class);
+            if (isset($this->typenameCache[$typename])) {
+                throw new \InvalidArgumentException(sprintf('Typename %s for class %s already used by another class %s', $typename, $class, $this->typenameCache[$typename]));
+            }
+
+            $this->typenameCache[$class] = $typename;
+            $this->schemaCache[$class] = $this->resolveSchema($class);
         }
 
-        if (!RestApiBundle\Helper\ClassInterfaceChecker::isResponseModel($class)) {
-            throw new \InvalidArgumentException(sprintf('Class %s is not a response model.', $class));
+        return new OpenApi\Reference([
+            '$ref' => sprintf('#/components/schemas/%s', $typename),
+        ]);
+    }
+
+    /**
+     * @return array<string, OpenApi\Schema>
+     */
+    public function dumpSchemas(): array
+    {
+        $result = [];
+
+        foreach ($this->typenameCache as $class => $typename) {
+            $result[$typename] = $this->schemaCache[$class];
         }
 
-        $typename = $this->typenameResolver->resolve($class);
-        if (isset($this->typenameCache[$typename])) {
-            throw new \InvalidArgumentException(sprintf('Typename %s already used by class %s', $typename, $this->typenameCache[$typename]));
-        }
-
-        $this->typenameCache[$typename] = $class;
-        $this->classCache[$class] = $this->resolveSchema($class);
-        
-        return $this->classCache[$class];
+        return $result;
     }
 
     private function resolveSchema(string $class): OpenApi\Schema
@@ -108,7 +129,10 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
         return $result;
     }
 
-    private function convert(RestApiBundle\DTO\Docs\Types\TypeInterface $type): OpenApi\Schema
+    /**
+     * @return OpenApi\Schema|OpenApi\Reference
+     */
+    private function convert(RestApiBundle\DTO\Docs\Types\TypeInterface $type)
     {
         if ($type instanceof RestApiBundle\DTO\Docs\Types\ArrayType) {
             $result = $this->convertArrayType($type);
@@ -132,13 +156,20 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
         ]);
     }
 
-    private function convertClassType(RestApiBundle\DTO\Docs\Types\ClassType $classType): OpenApi\Schema
+    /**
+     * @return OpenApi\Schema|OpenApi\Reference
+     */
+    private function convertClassType(RestApiBundle\DTO\Docs\Types\ClassType $classType)
     {
         switch (true) {
             case RestApiBundle\Helper\ClassInterfaceChecker::isResponseModel($classType->getClass()):
-                $result = $this->resolveByClass($classType->getClass());
-                $result
-                    ->nullable = $classType->getNullable();
+                $result = $this->resolveReferenceByClass($classType->getClass());
+                if ($classType->getNullable()) {
+                    $result = new OpenApi\Schema([
+                        'anyOf' => [$result,],
+                        'nullable' => true,
+                    ]);
+                }
 
                 break;
 

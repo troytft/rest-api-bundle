@@ -53,6 +53,13 @@ class WriterList implements RequestModelInterface
      */
     private $genres;
 
+    /**
+     * @var TestApp\Entity\Genre|null
+     *
+     * @Mapper\EntityType(class="TestApp\Entity\Genre", nullable=true)
+     */
+    private $writer;
+
     public function getOffset(): int
     {
         return $this->offset;
