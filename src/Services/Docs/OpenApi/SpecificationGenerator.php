@@ -11,9 +11,11 @@ use function array_values;
 use function json_encode;
 use function json_last_error;
 use function json_last_error_msg;
+use function ksort;
 use function sort;
 use function sprintf;
 use function strtolower;
+use function var_dump;
 
 class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver
 {
@@ -89,9 +91,11 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
                 'version' => '1.0.0',
             ],
             'paths' => [],
+            'tags' => [],
             'components' => [],
         ]);
 
+        $paths = [];
         $tags = [];
 
         foreach ($endpointDataItems as $routeData) {
@@ -167,9 +171,10 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
                 ]);
             }
 
-            $pathItem = $root->paths->getPath($routeData->getPath());
+            $pathItem = $paths[$routeData->getPath()] ?? null;
             if (!$pathItem) {
                 $pathItem = new OpenApi\PathItem([]);
+                $paths[$routeData->getPath()] = $pathItem;
             }
 
             foreach ($routeData->getMethods() as $method) {
@@ -203,10 +208,11 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
 
                 $pathItem->{$method} = $operation;
             }
-
-            $root->paths->addPath($routeData->getPath(), $pathItem);
         }
-        
+
+        ksort($paths);
+        $root->paths = new OpenApi\Paths($paths);
+
         $tags = array_values($tags);
         sort($tags);
 
