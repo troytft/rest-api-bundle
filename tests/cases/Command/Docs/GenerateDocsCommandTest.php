@@ -27,9 +27,84 @@ info:
     title: 'Open API Specification'
     version: 1.0.0
 paths:
-    '/{author}/{slug}/genres':
+    /writers:
+        post:
+            summary: 'Create writer'
+            responses:
+                '200':
+                    description: 'Success response with body'
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                        nullable: false
+                                    name:
+                                        type: string
+                                        nullable: false
+                                    surname:
+                                        type: string
+                                        nullable: false
+                                    birthday:
+                                        type: string
+                                        format: date-time
+                                        nullable: true
+                                    genres:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                    nullable: false
+                                                slug:
+                                                    type: string
+                                                    nullable: false
+                                                __typename:
+                                                    type: string
+                                                    nullable: false
+                                            nullable: false
+                                        nullable: false
+                                    __typename:
+                                        type: string
+                                        nullable: false
+                                nullable: false
+            requestBody:
+                description: 'Request body'
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                                    nullable: false
+                                    minLength: 1
+                                    maxLength: 255
+                                surname:
+                                    type: string
+                                    nullable: false
+                                    minLength: 1
+                                    maxLength: 255
+                                birthday:
+                                    type: string
+                                    format: date
+                                    nullable: true
+                                genres:
+                                    type: array
+                                    items:
+                                        type: integer
+                                        nullable: false
+                                    description: 'Array of elements by "id"'
+                                    nullable: false
+                            nullable: false
+                required: false
+            tags:
+                - writers
         get:
-            summary: 'Genre response model details'
+            summary: 'Writers list with filters'
             responses:
                 '200':
                     description: 'Success response with body'
@@ -43,8 +118,31 @@ paths:
                                         id:
                                             type: integer
                                             nullable: false
-                                        slug:
+                                        name:
                                             type: string
+                                            nullable: false
+                                        surname:
+                                            type: string
+                                            nullable: false
+                                        birthday:
+                                            type: string
+                                            format: date-time
+                                            nullable: true
+                                        genres:
+                                            type: array
+                                            items:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        nullable: false
+                                                    slug:
+                                                        type: string
+                                                        nullable: false
+                                                    __typename:
+                                                        type: string
+                                                        nullable: false
+                                                nullable: false
                                             nullable: false
                                         __typename:
                                             type: string
@@ -53,26 +151,78 @@ paths:
                                 nullable: false
             parameters:
                 -
-                    name: author
+                    name: offset
+                    in: query
+                    required: true
+                    schema:
+                        type: integer
+                        nullable: false
+                -
+                    name: limit
+                    in: query
+                    required: true
+                    schema:
+                        type: integer
+                        nullable: false
+                -
+                    name: name
+                    in: query
+                    required: false
+                    schema:
+                        type: string
+                        nullable: true
+                        minLength: 1
+                        maxLength: 255
+                -
+                    name: surname
+                    in: query
+                    required: false
+                    schema:
+                        type: string
+                        nullable: true
+                        minLength: 1
+                        maxLength: 255
+                -
+                    name: birthday
+                    in: query
+                    required: false
+                    schema:
+                        type: string
+                        format: date
+                        nullable: true
+                -
+                    name: genres
+                    in: query
+                    required: false
+                    schema:
+                        type: array
+                        items:
+                            type: integer
+                            nullable: false
+                        nullable: true
+                    description: 'Array of elements by "id"'
+            tags:
+                - writers
+    '/writers/{id}':
+        delete:
+            summary: 'Remove writer'
+            responses:
+                '204':
+                    description: 'Success response with empty body'
+            parameters:
+                -
+                    name: id
                     in: path
                     required: true
                     schema:
                         type: integer
                         description: 'Element by "id"'
                         nullable: false
-                -
-                    name: slug
-                    in: path
-                    required: true
-                    schema:
-                        type: string
-                        description: 'Element by "slug"'
-                        nullable: false
             tags:
-                - demo
+                - writers
 tags:
     -
-        name: demo
+        name: writers
 
 YAML;
         $this->assertSame($expected, file_get_contents($fileName));
@@ -102,9 +252,113 @@ YAML;
         "version": "1.0.0"
     },
     "paths": {
-        "/{author}/{slug}/genres": {
+        "/writers": {
+            "post": {
+                "summary": "Create writer",
+                "responses": {
+                    "200": {
+                        "description": "Success response with body",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "nullable": false
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "nullable": false
+                                        },
+                                        "surname": {
+                                            "type": "string",
+                                            "nullable": false
+                                        },
+                                        "birthday": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "nullable": true
+                                        },
+                                        "genres": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "nullable": false
+                                                    },
+                                                    "slug": {
+                                                        "type": "string",
+                                                        "nullable": false
+                                                    },
+                                                    "__typename": {
+                                                        "type": "string",
+                                                        "nullable": false
+                                                    }
+                                                },
+                                                "nullable": false
+                                            },
+                                            "nullable": false
+                                        },
+                                        "__typename": {
+                                            "type": "string",
+                                            "nullable": false
+                                        }
+                                    },
+                                    "nullable": false
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "description": "Request body",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "nullable": false,
+                                        "minLength": 1,
+                                        "maxLength": 255
+                                    },
+                                    "surname": {
+                                        "type": "string",
+                                        "nullable": false,
+                                        "minLength": 1,
+                                        "maxLength": 255
+                                    },
+                                    "birthday": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "nullable": true
+                                    },
+                                    "genres": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "nullable": false
+                                        },
+                                        "description": "Array of elements by \"id\"",
+                                        "nullable": false
+                                    }
+                                },
+                                "nullable": false
+                            }
+                        }
+                    },
+                    "required": false
+                },
+                "tags": [
+                    "writers"
+                ]
+            },
             "get": {
-                "summary": "Genre response model details",
+                "summary": "Writers list with filters",
                 "responses": {
                     "200": {
                         "description": "Success response with body",
@@ -119,8 +373,39 @@ YAML;
                                                 "type": "integer",
                                                 "nullable": false
                                             },
-                                            "slug": {
+                                            "name": {
                                                 "type": "string",
+                                                "nullable": false
+                                            },
+                                            "surname": {
+                                                "type": "string",
+                                                "nullable": false
+                                            },
+                                            "birthday": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "nullable": true
+                                            },
+                                            "genres": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "nullable": false
+                                                        },
+                                                        "slug": {
+                                                            "type": "string",
+                                                            "nullable": false
+                                                        },
+                                                        "__typename": {
+                                                            "type": "string",
+                                                            "nullable": false
+                                                        }
+                                                    },
+                                                    "nullable": false
+                                                },
                                                 "nullable": false
                                             },
                                             "__typename": {
@@ -138,7 +423,86 @@ YAML;
                 },
                 "parameters": [
                     {
-                        "name": "author",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "nullable": false
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "nullable": false
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "nullable": true,
+                            "minLength": 1,
+                            "maxLength": 255
+                        }
+                    },
+                    {
+                        "name": "surname",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "nullable": true,
+                            "minLength": 1,
+                            "maxLength": 255
+                        }
+                    },
+                    {
+                        "name": "birthday",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "nullable": true
+                        }
+                    },
+                    {
+                        "name": "genres",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer",
+                                "nullable": false
+                            },
+                            "nullable": true
+                        },
+                        "description": "Array of elements by \"id\""
+                    }
+                ],
+                "tags": [
+                    "writers"
+                ]
+            }
+        },
+        "/writers/{id}": {
+            "delete": {
+                "summary": "Remove writer",
+                "responses": {
+                    "204": {
+                        "description": "Success response with empty body"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -146,27 +510,17 @@ YAML;
                             "description": "Element by \"id\"",
                             "nullable": false
                         }
-                    },
-                    {
-                        "name": "slug",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "Element by \"slug\"",
-                            "nullable": false
-                        }
                     }
                 ],
                 "tags": [
-                    "demo"
+                    "writers"
                 ]
             }
         }
     },
     "tags": [
         {
-            "name": "demo"
+            "name": "writers"
         }
     ]
 }
