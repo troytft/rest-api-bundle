@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-versions: ['7.2', '8.0']
+        prefered-versions: ['--prefer-dist', '--prefer-lowest']
         symfony-versions: ['4.4', '5.2']
 
     steps:
@@ -32,9 +32,9 @@ jobs:
           path: vendor
           key: composer-vendor-cache-${{ matrix.php-versions }}-${{ hashFiles('**/composer.json') }}
 
-      - name: Install Symfony ${{ matrix.symfony-versions }}
+      - name: Update dependencies with ${{ matrix.prefered-versions }}
         if: steps.composer-cache.outputs.cache-hit != 'true'
-        run: composer require 'symfony/framework-bundle:^${{ matrix.symfony-versions }}' --no-suggest --no-interaction --no-progress
+        run: composer update ${{ matrix.prefered-versions }}' --no-suggest --no-interaction --no-progress
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit

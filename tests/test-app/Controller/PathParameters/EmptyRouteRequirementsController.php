@@ -2,11 +2,11 @@
 
 namespace TestApp\Controller\PathParameters;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Annotation\Docs;
 
-class EmptyRouteRequirementsController extends BaseController
+class EmptyRouteRequirementsController extends AbstractController
 {
     /**
      * @Docs\Endpoint(title="Title", tags={"tag"})

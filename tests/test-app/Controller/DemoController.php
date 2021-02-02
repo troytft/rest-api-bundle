@@ -4,11 +4,11 @@ namespace TestApp\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use TestApp;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Annotation\Docs;
 
-class DemoController extends BaseController
+class DemoController extends AbstractController
 {
     /**
      * @Route("/register", methods="POST")

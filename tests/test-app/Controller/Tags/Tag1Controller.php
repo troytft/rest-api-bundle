@@ -3,14 +3,14 @@
 namespace TestApp\Controller\Tags;
 
 use TestApp;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Annotation\Docs;
 
 /**
  * @Route("/tag1")
  */
-class Tag1Controller extends BaseController
+class Tag1Controller extends AbstractController
 {
     /**
      * @Docs\Endpoint(title="Genre response model details", tags={"tag1"})
