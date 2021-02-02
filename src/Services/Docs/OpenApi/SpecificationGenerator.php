@@ -225,7 +225,7 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
 
         foreach ($schema->properties as $propertyName => $propertySchema) {
             $parameter = new OpenApi\Parameter([
-                'type' => 'query',
+                'in' => 'query',
                 'name' => $propertyName,
                 'required' => !$propertySchema->nullable,
                 'schema' => $propertySchema,
