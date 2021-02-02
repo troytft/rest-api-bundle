@@ -23,6 +23,7 @@ use function spl_autoload_functions;
 use function sprintf;
 use function substr_count;
 use function token_get_all;
+use function var_dump;
 
 class EndpointFinder
 {
@@ -78,6 +79,7 @@ class EndpointFinder
             if (!$autoloadFixed) {
                 $filePathParts = explode('/', $fileInfo->getPathname());
                 $namespaceDirectory = implode('/', array_slice($filePathParts, 0, count($filePathParts) - substr_count($class, '\\') - 1));
+                var_dump($namespaceDirectory);
                 $this->getClassLoader()->add("", $namespaceDirectory);
 
                 $autoloadFixed = true;
