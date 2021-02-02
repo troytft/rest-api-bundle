@@ -99,7 +99,7 @@ JSON;
 }
 JSON;
 
-        $schema = $this->getRequestModelResolver()->resolveByClass(TestApp\RequestModel\ModelWithArrayOfEntities::class);
+        $schema = $this->getRequestModelResolver()->resolveByClass(TestApp\RequestModel\UpdateGenres::class);
         $this->assertJsonStringEqualsJsonString($expected, json_encode($schema->getSerializableData()));
     }
 

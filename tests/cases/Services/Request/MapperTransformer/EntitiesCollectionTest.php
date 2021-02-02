@@ -4,7 +4,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
 {
     public function testSuccess()
     {
-        $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
+        $model = new TestApp\RequestModel\UpdateGenres();
         $this->getRequestModelManager()->handle($model, [
             'genres' => [1, 2]
         ]);
@@ -18,7 +18,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
 
     public function testOrder()
     {
-        $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
+        $model = new TestApp\RequestModel\UpdateGenres();
         $this->getRequestModelManager()->handle($model, [
             'genres' => [2, 1]
         ]);
@@ -33,7 +33,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     public function testEntityNotFound()
     {
         try {
-            $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
+            $model = new TestApp\RequestModel\UpdateGenres();
             $this->getRequestModelManager()->handle($model, [
                 'genres' => [1, 2, 3]
             ]);
@@ -46,7 +46,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     public function testNull()
     {
         try {
-            $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
+            $model = new TestApp\RequestModel\UpdateGenres();
             $this->getRequestModelManager()->handle($model, [
                 'genres' => null
             ]);
@@ -59,7 +59,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     public function testInvalidItemType()
     {
         try {
-            $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
+            $model = new TestApp\RequestModel\UpdateGenres();
             $this->getRequestModelManager()->handle($model, [
                 'genres' => [1, 'string']
             ]);
@@ -72,7 +72,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     public function testRepeatableEntity()
     {
         try {
-            $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
+            $model = new TestApp\RequestModel\UpdateGenres();
             $this->getRequestModelManager()->handle($model, [
                 'genres' => [1, 1]
             ]);
