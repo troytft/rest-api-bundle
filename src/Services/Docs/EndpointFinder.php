@@ -23,7 +23,6 @@ use function spl_autoload_functions;
 use function sprintf;
 use function substr_count;
 use function token_get_all;
-use function var_dump;
 
 class EndpointFinder
 {
@@ -75,9 +74,8 @@ class EndpointFinder
 
         foreach ($finder as $fileInfo) {
             $class = $this->getClassByFileInfo($fileInfo);
-var_dump($class);
+
             if (!$autoloadFixed) {
-                var_dump($fileInfo->getPathname());
                 $filePathParts = explode('/', $fileInfo->getPathname());
                 $namespaceDirectory = implode('/', array_slice($filePathParts, 0, count($filePathParts) - substr_count($class, '\\') - 1));
                 $this->getClassLoader()->add("", $namespaceDirectory);
