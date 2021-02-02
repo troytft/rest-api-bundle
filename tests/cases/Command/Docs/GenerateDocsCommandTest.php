@@ -100,7 +100,7 @@ paths:
                                     description: 'Array of elements by "id"'
                                     nullable: false
                             nullable: false
-                required: false
+                required: true
             tags:
                 - writers
         get:
@@ -351,7 +351,7 @@ YAML;
                             }
                         }
                     },
-                    "required": false
+                    "required": true
                 },
                 "tags": [
                     "writers"

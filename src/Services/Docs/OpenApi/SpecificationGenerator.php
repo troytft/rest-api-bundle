@@ -206,7 +206,7 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
     {
         return new OpenApi\RequestBody([
             'description' => 'Request body',
-            'required' => $requestModel->getNullable(),
+            'required' => !$requestModel->getNullable(),
             'content' => [
                 'application/json' => [
                     'schema' => $this->requestModelResolver->resolveByClass($requestModel->getClass()),
