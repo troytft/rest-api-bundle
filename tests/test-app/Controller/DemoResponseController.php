@@ -2,7 +2,6 @@
 
 namespace TestApp\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use TestApp;
@@ -13,7 +12,7 @@ use function sprintf;
 /**
  * @Route("/demo-responses")
  */
-class DemoResponseController extends BaseController
+class DemoResponseController
 {
     /**
      * @Route("/null", methods="GET")

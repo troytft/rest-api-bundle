@@ -2,12 +2,11 @@
 
 namespace TestApp\Controller\PathParameters;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Annotation\Docs;
 use TestApp\Entity\Genre;
 
-class EntityPathParametersController extends BaseController
+class EntityPathParametersController
 {
     /**
      * @Docs\Endpoint(title="Title", tags={"tag"})

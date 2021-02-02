@@ -6,7 +6,7 @@ use RestApiBundle;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
@@ -27,14 +27,13 @@ class ExceptionSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onEvent(GetResponseForExceptionEvent $event)
+    public function onEvent(ExceptionEvent $event)
     {
         if (!$this->settingsProvider->isRequestValidationExceptionHandlerEnabled()) {
             return;
         }
 
-        $exception = $event->getException();
-
+        $exception = $event->getThrowable();
         if ($exception instanceof RestApiBundle\Exception\RequestModelMappingException) {
             $event
                 ->setResponse(new JsonResponse(['properties' => $exception->getProperties()], 400));

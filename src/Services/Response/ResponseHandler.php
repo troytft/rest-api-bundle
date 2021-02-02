@@ -4,7 +4,7 @@ namespace RestApiBundle\Services\Response;
 
 use RestApiBundle;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 
 use function array_keys;
 use function array_merge;
@@ -32,7 +32,7 @@ class ResponseHandler
         $this->serializer = $serializer;
     }
 
-    public function handleControllerResultEvent(GetResponseForControllerResultEvent $event)
+    public function handleControllerResultEvent(ViewEvent $event)
     {
         if (!$this->settingsProvider->isResponseHandlerEnabled()) {
             return;

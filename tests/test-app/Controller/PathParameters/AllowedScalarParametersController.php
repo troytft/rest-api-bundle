@@ -2,11 +2,10 @@
 
 namespace TestApp\Controller\PathParameters;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Annotation\Docs;
 
-class AllowedScalarParametersController extends BaseController
+class AllowedScalarParametersController
 {
     /**
      * @Docs\Endpoint(title="Title", tags={"tag"})

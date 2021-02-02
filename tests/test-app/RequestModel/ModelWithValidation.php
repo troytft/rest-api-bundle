@@ -13,7 +13,7 @@ class ModelWithValidation implements RequestModelInterface
      *
      * @Mapper\StringType()
      *
-     * @Assert\Length(min=6, max=255)
+     * @Assert\Length(min=6, max=255, allowEmptyString=false)
      * @Assert\Email()
      */
     private $stringField;
