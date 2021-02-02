@@ -18,7 +18,7 @@ class WriterController
      */
     public function createAction(TestApp\RequestModel\WriterData $requestModel): TestApp\ResponseModel\Author
     {
-        return new TestApp\ResponseModel\Author(new TestApp\Entity\Author());
+        return new TestApp\ResponseModel\Author();
     }
 
     /**
