@@ -75,7 +75,7 @@ class EndpointFinder
 
         foreach ($finder as $fileInfo) {
             $class = $this->getClassByFileInfo($fileInfo);
-
+var_dump($class);
             if (!$autoloadFixed) {
                 var_dump($fileInfo->getPathname());
                 $filePathParts = explode('/', $fileInfo->getPathname());
