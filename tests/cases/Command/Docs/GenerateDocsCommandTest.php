@@ -177,22 +177,6 @@ paths:
                 - writers
 components:
     schemas:
-        Book:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    nullable: false
-                author:
-                    \$ref: '#/components/schemas/Author'
-                genre:
-                    anyOf:
-                        -
-                            \$ref: '#/components/schemas/Genre'
-                    nullable: true
-                __typename:
-                    type: string
-                    nullable: false
         Author:
             type: object
             properties:
@@ -214,6 +198,22 @@ components:
                     items:
                         \$ref: '#/components/schemas/Genre'
                     nullable: false
+                __typename:
+                    type: string
+                    nullable: false
+        Book:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    nullable: false
+                author:
+                    \$ref: '#/components/schemas/Author'
+                genre:
+                    anyOf:
+                        -
+                            \$ref: '#/components/schemas/Genre'
+                    nullable: true
                 __typename:
                     type: string
                     nullable: false
@@ -473,30 +473,6 @@ YAML;
     },
     "components": {
         "schemas": {
-            "Book": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "nullable": false
-                    },
-                    "author": {
-                        "\$ref": "#/components/schemas/Author"
-                    },
-                    "genre": {
-                        "anyOf": [
-                            {
-                                "\$ref": "#/components/schemas/Genre"
-                            }
-                        ],
-                        "nullable": true
-                    },
-                    "__typename": {
-                        "type": "string",
-                        "nullable": false
-                    }
-                }
-            },
             "Author": {
                 "type": "object",
                 "properties": {
@@ -523,6 +499,30 @@ YAML;
                             "\$ref": "#/components/schemas/Genre"
                         },
                         "nullable": false
+                    },
+                    "__typename": {
+                        "type": "string",
+                        "nullable": false
+                    }
+                }
+            },
+            "Book": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "nullable": false
+                    },
+                    "author": {
+                        "\$ref": "#/components/schemas/Author"
+                    },
+                    "genre": {
+                        "anyOf": [
+                            {
+                                "\$ref": "#/components/schemas/Genre"
+                            }
+                        ],
+                        "nullable": true
                     },
                     "__typename": {
                         "type": "string",
