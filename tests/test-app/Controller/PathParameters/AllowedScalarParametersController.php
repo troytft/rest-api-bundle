@@ -2,7 +2,6 @@
 
 namespace TestApp\Controller\PathParameters;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Annotation\Docs;
 
