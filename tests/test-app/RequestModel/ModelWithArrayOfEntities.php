@@ -6,7 +6,7 @@ use TestApp;
 use RestApiBundle\Annotation\Request as Mapper;
 use RestApiBundle\RequestModelInterface;
 
-class UpdateGenres implements RequestModelInterface
+class ModelWithArrayOfEntities implements RequestModelInterface
 {
     /**
      * @var \TestApp\Entity\Genre[]

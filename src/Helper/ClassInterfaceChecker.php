@@ -52,7 +52,7 @@ class ClassInterfaceChecker
             $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
             static::$dateTimeCache[$class] = $reflectionClass->isInstantiable()
-                && $reflectionClass->implementsInterface(\DateTime::class);
+                && $reflectionClass->implementsInterface(\DateTimeInterface::class);
         }
 
         return static::$dateTimeCache[$class];

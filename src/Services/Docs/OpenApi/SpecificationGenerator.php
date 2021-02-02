@@ -234,7 +234,7 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
             // Swagger UI does not show schema description in parameters
             if ($propertySchema->description) {
                 $parameter->description = $propertySchema->description;
-                $propertySchema->description = null;
+                unset($propertySchema->description);
             }
 
             $result[] = $parameter;
