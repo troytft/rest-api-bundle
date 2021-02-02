@@ -5,7 +5,7 @@ namespace RestApiBundle\EventSubscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 use function function_exists;
@@ -21,7 +21,7 @@ class BodySubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onEvent(GetResponseEvent $event): void
+    public function onEvent(RequestEvent $event): void
     {
         $request = $event->getRequest();
         if (!$this->isSupportedRequest($request)) {

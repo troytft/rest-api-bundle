@@ -22,7 +22,7 @@ class Serializer
 
         $normalizers = [
             new RestApiBundle\Services\Response\GetSetMethodNormalizer(),
-            new \Symfony\Component\Serializer\Normalizer\DateTimeNormalizer(\DATE_ATOM, new \DateTimeZone('UTC')),
+            new \Symfony\Component\Serializer\Normalizer\DateTimeNormalizer(),
         ];
         $encoders = [
             new \Symfony\Component\Serializer\Encoder\JsonEncoder(),
@@ -35,6 +35,8 @@ class Serializer
     {
         return $this->serializer->serialize($responseModel, 'json', [
             'json_encode_options' => $this->settingsProvider->getResponseJsonEncodeOptions(),
+            'datetime_format' => \DATE_ATOM,
+            'datetime_timezone' => new \DateTimeZone('UTC'),
         ]);
     }
 }

@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Annotation\Docs;
 
-class AllowedScalarParametersController extends AbstractController
+class AllowedScalarParametersController
 {
     /**
      * @Docs\Endpoint(title="Title", tags={"tag"})

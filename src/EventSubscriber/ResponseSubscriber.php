@@ -5,7 +5,7 @@ namespace RestApiBundle\EventSubscriber;
 use RestApiBundle;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 
 class ResponseSubscriber implements EventSubscriberInterface
 {
@@ -26,7 +26,7 @@ class ResponseSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function handle(GetResponseForControllerResultEvent $event)
+    public function handle(ViewEvent $event)
     {
         $this->responseHandler->handleControllerResultEvent($event);
     }

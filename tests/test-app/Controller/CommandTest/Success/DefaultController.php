@@ -3,11 +3,10 @@
 namespace TestApp\Controller\CommandTest\Success;
 
 use TestApp;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Annotation\Docs;
 
-class DefaultController extends AbstractController
+class DefaultController
 {
     /**
      * @Docs\Endpoint(title="Genre response model details", tags={"demo"})

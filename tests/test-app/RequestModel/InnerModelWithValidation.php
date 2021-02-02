@@ -13,7 +13,7 @@ class InnerModelWithValidation implements RequestModelInterface
      *
      * @Mapper\StringType()
      *
-     * @Assert\Length(min=3, max=255)
+     * @Assert\Length(min=3, max=255, allowEmptyString=false)
      */
     private $stringField;
 

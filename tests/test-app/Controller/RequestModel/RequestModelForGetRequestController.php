@@ -3,11 +3,10 @@
 namespace TestApp\Controller\RequestModel;
 
 use TestApp;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Annotation\Docs;
 
-class RequestModelForGetRequestController extends AbstractController
+class RequestModelForGetRequestController
 {
     /**
      * @Docs\Endpoint(title="Title", tags={"tag"})

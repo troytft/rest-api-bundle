@@ -2,11 +2,10 @@
 
 namespace TestApp\Controller\CommandTest\InvalidDefinition;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Annotation\Docs;
 
-class DefaultController extends AbstractController
+class DefaultController
 {
     /**
      * @Docs\Endpoint(title="Title", tags={"tag"})
