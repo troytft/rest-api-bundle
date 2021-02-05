@@ -7,8 +7,6 @@ use cebe\openapi\spec as OpenApi;
 use Symfony\Component\Yaml\Yaml;
 
 use function array_merge;
-use function array_merge_recursive;
-use function array_push;
 use function array_values;
 use function file_exists;
 use function file_get_contents;
@@ -21,7 +19,6 @@ use function ksort;
 use function pathinfo;
 use function sprintf;
 use function strtolower;
-use function var_dump;
 
 class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver
 {
