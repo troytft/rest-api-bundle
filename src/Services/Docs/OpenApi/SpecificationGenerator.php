@@ -8,10 +8,15 @@ use Symfony\Component\Yaml\Yaml;
 
 use function array_merge;
 use function array_values;
+use function file_exists;
+use function file_get_contents;
+use function in_array;
+use function json_decode;
 use function json_encode;
 use function json_last_error;
 use function json_last_error_msg;
 use function ksort;
+use function pathinfo;
 use function sprintf;
 use function strtolower;
 
@@ -47,10 +52,10 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
      *
      * @return string
      */
-    public function generateYaml(array $endpoints): string
+    public function generateYaml(array $endpoints, ?string $template = null): string
     {
         $data = $this
-            ->generateSpecification($endpoints)
+            ->generateSpecification($endpoints, $template)
             ->getSerializableData();
 
         return Yaml::dump($data, 256, 4, Yaml::DUMP_OBJECT_AS_MAP);
@@ -58,13 +63,11 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
 
     /**
      * @param RestApiBundle\DTO\Docs\EndpointData[] $endpoints
-     *
-     * @return string
      */
-    public function generateJson(array $endpoints): string
+    public function generateJson(array $endpoints, ?string $template = null): string
     {
         $data = $this
-            ->generateSpecification($endpoints)
+            ->generateSpecification($endpoints, $template)
             ->getSerializableData();
 
         $result = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
@@ -75,14 +78,9 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
         return $result;
     }
 
-    /**
-     * @param RestApiBundle\DTO\Docs\EndpointData[] $endpointDataItems
-     *
-     * @return OpenApi\OpenApi
-     */
-    private function generateSpecification(array $endpointDataItems): OpenApi\OpenApi
+    private function createRootElement(?string $template = null): OpenApi\OpenApi
     {
-        $root = new OpenApi\OpenApi([
+        $defaultData = [
             'openapi' => '3.0.0',
             'info' => [
                 'title' => 'Open API Specification',
@@ -91,10 +89,63 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
             'paths' => [],
             'tags' => [],
             'components' => [],
-        ]);
+        ];
+
+        if ($template) {
+            if (!file_exists($template)) {
+                throw new \InvalidArgumentException(sprintf('File %s does not exist', $template));
+            }
+
+            $extension = pathinfo($template, \PATHINFO_EXTENSION) ?? null;
+            if (in_array($extension, ['yaml', 'yml'], true)) {
+                $defaultData = array_merge($defaultData, Yaml::parseFile($template));
+            } elseif ($extension === 'json') {
+                $defaultData = array_merge($defaultData, json_decode(file_get_contents($template), true));
+            } else {
+                throw new \InvalidArgumentException(sprintf('Invalid template file extension'));
+            }
+        }
+
+        return new OpenApi\OpenApi($defaultData);
+    }
+
+    /**
+     * @param RestApiBundle\DTO\Docs\EndpointData[] $endpointDataItems
+     *
+     * @return OpenApi\OpenApi
+     */
+    private function generateSpecification(array $endpointDataItems, ?string $template = null): OpenApi\OpenApi
+    {
+        $root = $this->createRootElement($template);
 
         $paths = [];
+        foreach ($root->paths as $path => $pathItem) {
+            if ($root->paths->hasPath($path)) {
+                throw new \InvalidArgumentException($path);
+            }
+
+            $paths[$path] = $pathItem;
+        }
+
         $tags = [];
+        foreach ($root->tags as $tag) {
+            if (!$tag instanceof OpenApi\Tag) {
+                throw new \InvalidArgumentException();
+            }
+
+            if (!isset($tags[$tag->name])) {
+                $tags[$tag->name] = $tag;
+            }
+        }
+
+        $schemas = [];
+        foreach ($root->components->schemas as $typename => $schema) {
+            if (!$schema instanceof OpenApi\Schema) {
+                throw new \InvalidArgumentException();
+            }
+
+            $schemas[$typename] = $schema;
+        }
 
         foreach ($endpointDataItems as $routeData) {
             foreach ($routeData->getTags() as $tagName) {
@@ -175,9 +226,13 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
                 $paths[$routeData->getPath()] = $pathItem;
             }
 
-            foreach ($routeData->getMethods() as $method) {
-                $isHttpGetMethod = $method === 'GET';
-                $method = strtolower($method);
+            foreach ($routeData->getMethods() as $httpMethod) {
+                $httpMethod = strtolower($httpMethod);
+                $isHttpGetMethod = $httpMethod === 'get';
+
+                if (isset($pathItem->getOperations()[$httpMethod])) {
+                    throw new \InvalidArgumentException(sprintf('Route already defined %s %s', $httpMethod, $routeData->getPath()));
+                }
 
                 $operation = new OpenApi\Operation([
                     'summary' => $routeData->getTitle(),
@@ -204,7 +259,7 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
                     $operation->tags = $routeData->getTags();
                 }
 
-                $pathItem->{$method} = $operation;
+                $pathItem->{$httpMethod} = $operation;
             }
         }
 
@@ -213,7 +268,17 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
 
         ksort($tags);
         $root->tags = array_values($tags);
-        $root->components->schemas = $this->responseModelResolver->dumpSchemas();
+
+        foreach ($this->responseModelResolver->dumpSchemas() as $typename => $schema) {
+            if (isset($schemas[$typename])) {
+                throw new \InvalidArgumentException(sprintf('Schema with typename %s already defined', $typename));
+            }
+
+            $schemas[$typename] = $schema;
+        }
+
+        ksort($schemas);
+        $root->components->schemas = $schemas;
 
         return $root;
     }

@@ -17,6 +17,7 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
             'input' => 'tests/test-app/Controller/CommandTest/Success',
             'output' => $fileName,
             '--format' => RestApiBundle\Enum\Docs\Format::YAML,
+            '--template' => 'tests/test-app/Resources/docs/swagger.yaml'
         ]);
 
         $this->assertSame(0, $commandTester->getStatusCode());
@@ -24,7 +25,7 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
         $expected = <<<YAML
 openapi: 3.0.0
 info:
-    title: 'Open API Specification'
+    title: 'Yaml Template'
     version: 1.0.0
 paths:
     /books:
@@ -232,8 +233,10 @@ components:
 tags:
     -
         name: books
+        description: Books
     -
         name: writers
+        description: Writers
 
 YAML;
         $this->assertSame($expected, file_get_contents($fileName));
@@ -251,6 +254,7 @@ YAML;
             'input' => 'tests/test-app/Controller/CommandTest/Success',
             'output' => $fileName,
             '--format' => RestApiBundle\Enum\Docs\Format::JSON,
+            '--template' => 'tests/test-app/Resources/docs/swagger.json'
         ]);
 
         $this->assertSame(0, $commandTester->getStatusCode());
@@ -259,7 +263,7 @@ YAML;
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Open API Specification",
+        "title": "Json Template",
         "version": "1.0.0"
     },
     "paths": {
@@ -551,10 +555,12 @@ YAML;
     },
     "tags": [
         {
-            "name": "books"
+            "name": "books",
+            "description": "Books"
         },
         {
-            "name": "writers"
+            "name": "writers",
+            "description": "Writers"
         }
     ]
 }
