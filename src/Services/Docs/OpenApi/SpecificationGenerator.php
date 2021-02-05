@@ -120,10 +120,6 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
 
         $paths = [];
         foreach ($root->paths as $path => $pathItem) {
-            if ($root->paths->hasPath($path)) {
-                throw new \InvalidArgumentException($path);
-            }
-
             $paths[$path] = $pathItem;
         }
 
