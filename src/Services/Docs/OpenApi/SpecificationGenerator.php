@@ -119,7 +119,7 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
         $root = $this->createRootElement($template);
 
         $paths = [];
-        foreach ($paths as $path => $pathItem) {
+        foreach ($root->paths as $path => $pathItem) {
             if ($root->paths->hasPath($path)) {
                 throw new \InvalidArgumentException($path);
             }
@@ -231,7 +231,7 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
                 $isHttpGetMethod = $httpMethod === 'get';
 
                 if (isset($pathItem->getOperations()[$httpMethod])) {
-                    throw new \InvalidArgumentException(sprintf('Route already defined %s %s', $httpMethod, $path));
+                    throw new \InvalidArgumentException(sprintf('Route already defined %s %s', $httpMethod, $routeData->getPath()));
                 }
 
                 $operation = new OpenApi\Operation([
