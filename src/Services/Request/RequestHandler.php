@@ -63,15 +63,21 @@ class RequestHandler
     {
         try {
             $this->mapperInitiator->getMapper()->map($requestModel, $data);
-        } catch (Mapper\Exception\ExceptionInterface $exception) {
+        } catch (Mapper\Exception\StackedMappingException $exception) {
+            throw $this->convertStackedMappingException($exception);
+        }
+    }
+
+    private function convertStackedMappingException(Mapper\Exception\StackedMappingException $exception): RestApiBundle\Exception\RequestModelMappingException
+    {
+        $result = [];
+
+        foreach ($exception->getExceptions() as $stackableException) {
             $translationParameters = [];
 
-            if ($exception instanceof Mapper\Exception\MappingValidation\MappingValidationExceptionInterface) {
-                $path = $exception->getPathAsString();
-                $translationId = get_class($exception);
-            } elseif ($exception instanceof Mapper\Exception\Transformer\WrappedTransformerException) {
-                $path = $exception->getPathAsString();
-                $previousException = $exception->getPrevious();
+            if ($stackableException instanceof Mapper\Exception\Transformer\WrappedTransformerException) {
+                $path = $stackableException->getPathAsString();
+                $previousException = $stackableException->getPrevious();
                 $translationId = get_class($previousException);
 
                 if ($previousException instanceof Mapper\Exception\Transformer\InvalidDateFormatException) {
@@ -86,16 +92,18 @@ class RequestHandler
                     ];
                 }
             } else {
-                throw $exception;
+                $path = $stackableException->getPathAsString();
+                $translationId = get_class($stackableException);
             }
 
             $message = $this->translator->trans($translationId, $translationParameters, 'exceptions');
-
             if ($message === $translationId) {
                 throw new \InvalidArgumentException(sprintf('Can\'t find translation with key "%s"', $translationId));
             }
 
-            throw new RestApiBundle\Exception\RequestModelMappingException([$path => [$message]]);
+            $result[$path] = [$message];
         }
+
+        return new RestApiBundle\Exception\RequestModelMappingException($result);
     }
 }
