@@ -29,7 +29,8 @@ class MapperInitiator
             $settings
                 ->setIsPropertiesNullableByDefault($this->settingsProvider->isRequestPropertiesNullableByDefault())
                 ->setIsAllowedUndefinedKeysInData($this->settingsProvider->isRequestUndefinedKeysAllowed())
-                ->setIsClearMissing($this->settingsProvider->isRequestClearMissingEnabled());
+                ->setIsClearMissing($this->settingsProvider->isRequestClearMissingEnabled())
+                ->setStackMappingExceptions(true);
 
             $this->cachedInstance = new Mapper\Mapper($settings);
         }
