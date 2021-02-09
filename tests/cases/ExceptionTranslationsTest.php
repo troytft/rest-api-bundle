@@ -33,4 +33,22 @@ class ExceptionTranslationsTest extends Tests\BaseTestCase
             $this->assertSame($expected, $exception->getProperties());
         }
     }
+
+    public function testInvalidDates()
+    {
+        try {
+            $model = new TestApp\RequestModel\ModelWithAllTypes();
+            $this->getRequestModelManager()->handle($model, [
+                'date' => '2010-03-45',
+                'dateTime' => '2010-03-45T10:00:00+00:00',
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $expected = [
+                'date' => ['This value is not a valid date.'],
+                'dateTime' => ['This value is not a valid datetime.'],
+            ];
+            $this->assertSame($expected, $exception->getProperties());
+        }
+    }
 }

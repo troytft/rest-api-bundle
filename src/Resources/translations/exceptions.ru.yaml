@@ -6,8 +6,10 @@ Mapper\Exception\Transformer\BooleanRequiredException: Это значение �
 Mapper\Exception\Transformer\FloatRequiredException: Это значение должно быть числом с плавающей запятой.
 Mapper\Exception\Transformer\StringRequiredException: Это значение должно быть строкой.
 Mapper\Exception\Transformer\IntegerRequiredException: Это значение должно быть целым числом.
-Mapper\Exception\Transformer\InvalidDateFormatException: Это значение должно быть датой в формате"{format}".
+Mapper\Exception\Transformer\InvalidDateFormatException: Это значение должно быть датой в формате "{format}".
+Mapper\Exception\Transformer\InvalidDateException: Значение не является правильной датой.
 Mapper\Exception\Transformer\InvalidDateTimeFormatException: Это значение должно быть датой и временем в формате "{format}".
+Mapper\Exception\Transformer\InvalidDateTimeException: Значение даты и времени недопустимо.
 RestApiBundle\Exception\RequestModel\EntityNotFoundException: Сущность не найдена.
 RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException: Одна из сущностей коллекции не найдена.
 RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException: Значения должны быть уникальными.

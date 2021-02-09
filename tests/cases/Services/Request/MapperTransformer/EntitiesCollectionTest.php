@@ -78,7 +78,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['genres' => ['Values ​​should be unique.']], $exception->getProperties());
+            $this->assertSame(['genres' => ['Values should be unique.']], $exception->getProperties());
         }
     }
 }

@@ -21,7 +21,6 @@ class RequestModelValidationTest extends Tests\BaseTestCase
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
             $value = $exception->getProperties();
-
             $this->assertCount(6, $value);
 
             $this->assertArrayHasKey('stringField', $value);
