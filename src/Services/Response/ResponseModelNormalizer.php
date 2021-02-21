@@ -22,10 +22,6 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
 
     public function extractAttributes($object, $format = null, array $context = [])
     {
-        if (!$object instanceof RestApiBundle\ResponseModelInterface) {
-            throw new \InvalidArgumentException();
-        }
-
         $key = get_class($object);
         if (!isset($this->attributesCache[$key])) {
             $this->attributesCache[$key] = parent::extractAttributes($object, $format, $context);
@@ -37,10 +33,6 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
 
     protected function getAttributeValue($object, $attribute, $format = null, array $context = [])
     {
-        if (!$object instanceof RestApiBundle\ResponseModelInterface) {
-            throw new \InvalidArgumentException();
-        }
-
         if ($attribute === static::ATTRIBUTE_TYPENAME) {
             $typenameResolver = new ResponseModelTypenameResolver();
             $result = $typenameResolver->resolve(get_class($object));
