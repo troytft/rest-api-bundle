@@ -1,8 +1,6 @@
 <?php
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Stopwatch\Stopwatch;
-
 
 class ResponseModelTest extends Tests\BaseTestCase
 {
