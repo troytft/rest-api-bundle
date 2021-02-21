@@ -21,6 +21,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
+          ini-values: pcov.directory=src
           coverage: pcov
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
