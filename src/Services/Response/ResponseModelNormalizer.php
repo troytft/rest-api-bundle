@@ -8,12 +8,12 @@ use function get_class;
 
 class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer
 {
+    public const ATTRIBUTE_TYPENAME = '__typename';
+
     /**
      * @var array<string, string[]>
      */
     private $attributesCache = [];
-
-    public const ATTRIBUTE_TYPENAME = '__typename';
 
     public function supportsNormalization($data, $format = null)
     {
@@ -43,11 +43,11 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
 
         if ($attribute === static::ATTRIBUTE_TYPENAME) {
             $typenameResolver = new ResponseModelTypenameResolver();
-            $typename = $typenameResolver->resolve(get_class($object));
-
-            return $typename;
+            $result = $typenameResolver->resolve(get_class($object));
+        } else {
+            $result = parent::getAttributeValue($object, $attribute, $format, $context);
         }
 
-        return parent::getAttributeValue($object, $attribute, $format, $context);
+        return $result;
     }
 }
