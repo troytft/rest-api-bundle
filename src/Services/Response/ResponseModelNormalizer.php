@@ -5,29 +5,19 @@ namespace RestApiBundle\Services\Response;
 use RestApiBundle;
 
 use function get_class;
-use function strpos;
 
-class GetSetMethodNormalizer extends \Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer
+class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer
 {
+    /**
+     * @var array<string, string[]>
+     */
+    private $attributesCache = [];
+
     public const ATTRIBUTE_TYPENAME = '__typename';
 
     public function supportsNormalization($data, $format = null)
     {
-        return parent::supportsNormalization($data, $format) && $data instanceof RestApiBundle\ResponseModelInterface && $this->supports(get_class($data));
-    }
-
-    private function supports($class)
-    {
-        $class = RestApiBundle\Helper\ReflectionClassStore::get($class);
-        $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
-
-        foreach ($methods as $method) {
-            if (strpos($method->getName(), 'get') === 0) {
-                return true;
-            }
-        }
-
-        return false;
+        return $data instanceof RestApiBundle\ResponseModelInterface;
     }
 
     public function extractAttributes($object, $format = null, array $context = [])
@@ -36,10 +26,13 @@ class GetSetMethodNormalizer extends \Symfony\Component\Serializer\Normalizer\Ge
             throw new \InvalidArgumentException();
         }
 
-        $attributes = parent::extractAttributes($object, $format, $context);
-        $attributes[] = static::ATTRIBUTE_TYPENAME;
+        $key = get_class($object);
+        if (!isset($this->attributesCache[$key])) {
+            $this->attributesCache[$key] = parent::extractAttributes($object, $format, $context);
+            $this->attributesCache[$key][] = static::ATTRIBUTE_TYPENAME;
+        }
 
-        return $attributes;
+        return $this->attributesCache[$key];
     }
 
     protected function getAttributeValue($object, $attribute, $format = null, array $context = [])

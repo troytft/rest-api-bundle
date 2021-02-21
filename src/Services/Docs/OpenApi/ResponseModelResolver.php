@@ -108,7 +108,7 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
             $properties[$propertyName] = $propertySchema;
         }
 
-        $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new OpenApi\Schema([
+        $properties[RestApiBundle\Services\Response\ResponseModelNormalizer::ATTRIBUTE_TYPENAME] = new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
             'nullable' => false,
         ]);
