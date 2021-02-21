@@ -21,7 +21,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          ini-values: pcov.directory=src
           coverage: pcov
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -41,7 +40,7 @@ jobs:
         run: composer require 'symfony/framework-bundle:^${{ matrix.symfony-versions }}' --no-suggest --no-interaction --no-progress
 
       - name: Run PHPUnit
-        run: vendor/bin/phpunit --verbose --coverage-text
+        run: vendor/bin/phpunit --verbose --coverage-text --whitelist src
 
       - name: Run PHP Code Sniffer
         run: vendor/bin/phpcs
