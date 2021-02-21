@@ -21,7 +21,7 @@ class Serializer
         $this->settingsProvider = $settingsProvider;
 
         $normalizers = [
-            new RestApiBundle\Services\Response\GetSetMethodNormalizer(),
+            new RestApiBundle\Services\Response\ResponseModelNormalizer(),
             new \Symfony\Component\Serializer\Normalizer\DateTimeNormalizer(),
         ];
         $encoders = [
