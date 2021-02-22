@@ -16,12 +16,14 @@ class Serializer
      */
     private $serializer;
 
-    public function __construct(RestApiBundle\Services\SettingsProvider $settingsProvider)
-    {
+    public function __construct(
+        RestApiBundle\Services\SettingsProvider $settingsProvider,
+        RestApiBundle\Services\Response\ResponseModelNormalizer $responseModelNormalizer
+    ) {
         $this->settingsProvider = $settingsProvider;
 
         $normalizers = [
-            new RestApiBundle\Services\Response\ResponseModelNormalizer(),
+            $responseModelNormalizer,
             new \Symfony\Component\Serializer\Normalizer\DateTimeNormalizer(),
         ];
         $encoders = [
