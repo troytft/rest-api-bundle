@@ -6,10 +6,10 @@ use function explode;
 use function join;
 use function sprintf;
 
-class ResponseModelTypenameResolver
+class TypenameResolver
 {
     /**
-     * @var array
+     * @var array<string, string>
      */
     private $typenameCache = [];
 

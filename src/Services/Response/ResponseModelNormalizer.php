@@ -11,9 +11,16 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
     public const ATTRIBUTE_TYPENAME = '__typename';
 
     /**
-     * @var array<string, string[]>
+     * @var RestApiBundle\Services\Response\TypenameResolver
      */
-    private $attributesCache = [];
+    private $typenameResolver;
+
+    public function __construct(TypenameResolver $typenameResolver)
+    {
+        parent::__construct();
+
+        $this->typenameResolver = $typenameResolver;
+    }
 
     public function supportsNormalization($data, $format = null)
     {
@@ -22,20 +29,16 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
 
     public function extractAttributes($object, $format = null, array $context = [])
     {
-        $key = get_class($object);
-        if (!isset($this->attributesCache[$key])) {
-            $this->attributesCache[$key] = parent::extractAttributes($object, $format, $context);
-            $this->attributesCache[$key][] = static::ATTRIBUTE_TYPENAME;
-        }
+        $result = parent::extractAttributes($object, $format, $context);
+        $result[] = static::ATTRIBUTE_TYPENAME;
 
-        return $this->attributesCache[$key];
+        return $result;
     }
 
     protected function getAttributeValue($object, $attribute, $format = null, array $context = [])
     {
         if ($attribute === static::ATTRIBUTE_TYPENAME) {
-            $typenameResolver = new ResponseModelTypenameResolver();
-            $result = $typenameResolver->resolve(get_class($object));
+            $result = $this->typenameResolver->resolve(get_class($object));
         } else {
             $result = parent::getAttributeValue($object, $attribute, $format, $context);
         }
