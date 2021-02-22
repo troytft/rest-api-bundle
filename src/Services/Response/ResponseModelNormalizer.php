@@ -15,7 +15,7 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
      */
     private $typenameResolver;
 
-    public function __construct(TypenameResolver $typenameResolver)
+    public function __construct(RestApiBundle\Services\Response\TypenameResolver $typenameResolver)
     {
         parent::__construct();
 
