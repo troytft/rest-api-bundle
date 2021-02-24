@@ -32,6 +32,9 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
         return $data instanceof RestApiBundle\ResponseModelInterface;
     }
 
+    /**
+     * @param RestApiBundle\ResponseModelInterface $object
+     */
     public function extractAttributes($object, $format = null, array $context = [])
     {
         $result = parent::extractAttributes($object, $format, $context);
@@ -40,18 +43,27 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
         return $result;
     }
 
+    /**
+     * @param RestApiBundle\ResponseModelInterface $object
+     */
     protected function getAttributeValue($object, $attribute, $format = null, array $context = [])
     {
         if ($attribute === static::ATTRIBUTE_TYPENAME) {
-            $key = get_class($object);
-            if (!isset($this->typenameCache[$key])) {
-                $this->typenameCache[$key] = $this->typenameResolver->resolve($key);
-            }
-            $result = $this->typenameCache[$key];
+            $result = $this->resolveTypename($object);
         } else {
             $result = parent::getAttributeValue($object, $attribute, $format, $context);
         }
 
         return $result;
+    }
+
+    private function resolveTypename(RestApiBundle\ResponseModelInterface $responseModel): string
+    {
+        $key = get_class($responseModel);
+        if (!isset($this->typenameCache[$key])) {
+            $this->typenameCache[$key] = $this->typenameResolver->resolve($key);
+        }
+
+        return $this->typenameCache[$key];
     }
 }
