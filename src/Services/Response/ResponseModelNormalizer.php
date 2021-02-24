@@ -15,6 +15,11 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
      */
     private $typenameResolver;
 
+    /**
+     * @var array<string, string>
+     */
+    private $typenameCache = [];
+
     public function __construct(RestApiBundle\Services\Response\TypenameResolver $typenameResolver)
     {
         parent::__construct();
@@ -38,7 +43,11 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
     protected function getAttributeValue($object, $attribute, $format = null, array $context = [])
     {
         if ($attribute === static::ATTRIBUTE_TYPENAME) {
-            $result = $this->typenameResolver->resolve(get_class($object));
+            $key = get_class($object);
+            if (!isset($this->typenameCache[$key])) {
+                $this->typenameCache[$key] = $this->typenameResolver->resolve($key);
+            }
+            $result = $this->typenameCache[$key];
         } else {
             $result = parent::getAttributeValue($object, $attribute, $format, $context);
         }
