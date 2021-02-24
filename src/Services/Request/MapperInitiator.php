@@ -8,7 +8,7 @@ use RestApiBundle;
 class MapperInitiator
 {
     /**
-     * @var RestApiBundle\Services\SettingsProvider
+     * @var RestApiBundle\SettingsProvider\BundleSettingsProvider
      */
     private $settingsProvider;
 
@@ -17,7 +17,7 @@ class MapperInitiator
      */
     private $cachedInstance;
 
-    public function __construct(RestApiBundle\Services\SettingsProvider $settingsProvider)
+    public function __construct(RestApiBundle\SettingsProvider\BundleSettingsProvider $settingsProvider)
     {
         $this->settingsProvider = $settingsProvider;
     }

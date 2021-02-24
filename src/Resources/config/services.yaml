@@ -15,4 +15,4 @@ services:
             tags: [!php/const RestApiBundle\DependencyInjection\CompilerPass\RequestModelTransformerCompilerPass::TAG]
 
     RestApiBundle\:
-        resource: '../../../src/{EventSubscriber,Services,Command}/*'
+        resource: '../../../src/{EventSubscriber,Services,Command,CacheWarmer,SettingsProvider}/*'

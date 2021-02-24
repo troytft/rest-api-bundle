@@ -7,7 +7,7 @@ use RestApiBundle;
 class Serializer
 {
     /**
-     * @var RestApiBundle\Services\SettingsProvider
+     * @var RestApiBundle\SettingsProvider\BundleSettingsProvider
      */
     private $settingsProvider;
 
@@ -17,7 +17,7 @@ class Serializer
     private $serializer;
 
     public function __construct(
-        RestApiBundle\Services\SettingsProvider $settingsProvider,
+        RestApiBundle\SettingsProvider\BundleSettingsProvider $settingsProvider,
         RestApiBundle\Services\Response\ResponseModelNormalizer $responseModelNormalizer
     ) {
         $this->settingsProvider = $settingsProvider;

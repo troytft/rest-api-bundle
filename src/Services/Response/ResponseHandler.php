@@ -15,7 +15,7 @@ use function range;
 class ResponseHandler
 {
     /**
-     * @var RestApiBundle\Services\SettingsProvider
+     * @var RestApiBundle\SettingsProvider\BundleSettingsProvider
      */
     private $settingsProvider;
 
@@ -25,7 +25,7 @@ class ResponseHandler
     private $serializer;
 
     public function __construct(
-        RestApiBundle\Services\SettingsProvider $settingsProvider,
+        RestApiBundle\SettingsProvider\BundleSettingsProvider $settingsProvider,
         RestApiBundle\Services\Response\Serializer $serializer
     ) {
         $this->settingsProvider = $settingsProvider;

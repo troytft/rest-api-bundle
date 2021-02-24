@@ -22,7 +22,7 @@ class RequestHandler
     private $mapperInitiator;
 
     /**
-     * @var RestApiBundle\Services\SettingsProvider
+     * @var RestApiBundle\SettingsProvider\BundleSettingsProvider
      */
     private $settingsProvider;
 
@@ -34,7 +34,7 @@ class RequestHandler
     public function __construct(
         TranslatorInterface $translator,
         RestApiBundle\Services\Request\MapperInitiator $mapperInitiator,
-        RestApiBundle\Services\SettingsProvider $settingsProvider,
+        RestApiBundle\SettingsProvider\BundleSettingsProvider $settingsProvider,
         RestApiBundle\Services\Request\RequestModelValidator $requestModelValidator
     ) {
         $this->translator = $translator;

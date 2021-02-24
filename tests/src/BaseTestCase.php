@@ -31,7 +31,7 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     protected function createKernel()
     {
         $this->kernel = parent::createKernel();
-        $this->kernel->setRootDir(__DIR__ . '/../test-app');
+        $this->kernel->setProjectDir(__DIR__ . '/../test-app');
         $this->kernel->addBundle(TestApp\TestAppBundle::class);
         $this->kernel->addBundle(DoctrineBundle::class);
         $this->kernel->addConfigFile(__DIR__ . '/../test-app/Resources/config/config.yaml');

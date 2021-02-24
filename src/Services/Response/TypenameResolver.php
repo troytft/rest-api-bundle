@@ -8,6 +8,8 @@ use function sprintf;
 
 class TypenameResolver
 {
+    public const NAMESPACE_NAME = 'ResponseModel';
+
     public function resolve(string $class): string
     {
         $parts = [];
@@ -16,7 +18,7 @@ class TypenameResolver
         foreach (explode('\\', $class) as $part) {
             if ($isResponseModel) {
                 $parts[] = $part;
-            } elseif ($part === 'ResponseModel') {
+            } elseif ($part === static::NAMESPACE_NAME) {
                 $isResponseModel = true;
             }
         }
