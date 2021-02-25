@@ -3,16 +3,9 @@
 namespace RestApiBundle\CacheWarmer\ResponseModel;
 
 use RestApiBundle;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
-use function class_implements;
-use function get_declared_classes;
-use function is_dir;
-use function is_writable;
-use function mkdir;
-use function scandir;
-use function sprintf;
-use function str_contains;
 use function var_dump;
 
 
@@ -30,17 +23,39 @@ class NormalizerCacheWarmer implements CacheWarmerInterface
 
     public function warmUp(string $cacheDir)
     {
-        var_dump($this->kernelSettingsProvider->getProjectDir());die();
-        $namespacePart = sprintf('\%s\\', RestApiBundle\Services\Response\TypenameResolver::NAMESPACE_NAME);
-        foreach (get_declared_classes() as $class) {
-//            if (!str_contains($class, $namespacePart) || !RestApiBundle\Helper\ClassInterfaceChecker::isResponseModel($class)) {
-//                continue;
-//            }
+        $finder = new Finder();
+        $finder
+            ->files()
+            ->in($this->findResponseModelDirectories())
+            ->name('*.php');
+
+        foreach ($finder as $fileInfo) {
+            $class = RestApiBundle\Helper\ClassHelper::extractClassByFileInfo($fileInfo);
+            if (!RestApiBundle\Helper\ClassInterfaceChecker::isResponseModel($class)) {
+                continue;
+            }
 
             var_dump($class);
         }
 
+
         var_dump($cacheDir);die();
+    }
+
+    private function findResponseModelDirectories(): array
+    {
+        $finder = new Finder();
+        $finder
+            ->directories()
+            ->in($this->kernelSettingsProvider->getProjectDir())
+            ->name(RestApiBundle\Services\Response\TypenameResolver::NAMESPACE_NAME);
+
+        $result = [];
+        foreach ($finder as $fileInfo) {
+            $result[] = $fileInfo->getPathname();
+        }
+
+        return $result;
     }
 
     public function isOptional()
