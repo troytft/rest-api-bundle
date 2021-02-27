@@ -25,6 +25,7 @@
         "doctrine/doctrine-bundle": "^1.12 || ^2.2",
         "doctrine/orm": "^2.5",
         "phpdocumentor/reflection-docblock": "^5.2",
+        "symfony/cache": "^4.4 || ^5.2",
         "symfony/expression-language": "^4.4 || ^5.2",
         "symfony/filesystem": "^4.4 || ^5.2",
         "symfony/finder": "^4.4 || ^5.2",

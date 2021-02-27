@@ -3,6 +3,8 @@
 namespace RestApiBundle\CacheWarmer\ResponseModel;
 
 use RestApiBundle;
+use Symfony\Component\Cache\Adapter\NullAdapter;
+use Symfony\Component\Cache\Adapter\PhpArrayAdapter;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
@@ -11,14 +13,24 @@ use function var_dump;
 
 class NormalizerCacheWarmer implements CacheWarmerInterface
 {
+    private const CACHE_FILENAME = 'rest-api-bundle/normalizer-cache.php';
+
     /**
      * @var RestApiBundle\SettingsProvider\KernelSettingsProvider
      */
     private $kernelSettingsProvider;
 
-    public function __construct(RestApiBundle\SettingsProvider\KernelSettingsProvider $kernelSettingsProvider)
-    {
+    /**
+     * @var RestApiBundle\Services\Response\ResponseModelNormalizer
+     */
+    private $responseModelNormalizer;
+
+    public function __construct(
+        RestApiBundle\SettingsProvider\KernelSettingsProvider $kernelSettingsProvider,
+        RestApiBundle\Services\Response\ResponseModelNormalizer $responseModelNormalizer
+    ) {
         $this->kernelSettingsProvider = $kernelSettingsProvider;
+        $this->responseModelNormalizer = $responseModelNormalizer;
     }
 
     public function warmUp(string $cacheDir)
@@ -35,9 +47,14 @@ class NormalizerCacheWarmer implements CacheWarmerInterface
                 continue;
             }
 
-            var_dump($class);
+            $reflectionClass = new \ReflectionClass($class);
+            $instance = $reflectionClass->newInstance();
+            $result = $this->responseModelNormalizer->extractAttributes($instance);
+            var_dump($result);
         }
 
+        $cacheAdapter = new PhpArrayAdapter(static::CACHE_FILENAME, new NullAdapter());
+//        $cacheAdapter->w
 
         var_dump($cacheDir);die();
     }
