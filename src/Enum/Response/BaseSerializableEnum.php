@@ -19,7 +19,7 @@ abstract class BaseSerializableEnum implements RestApiBundle\Enum\Response\Seria
      */
     private function __construct($value)
     {
-        if (!is_int($value) || !is_string($value)) {
+        if (!is_int($value) && !is_string($value)) {
             throw new \InvalidArgumentException();
         }
     }
