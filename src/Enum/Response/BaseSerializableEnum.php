@@ -17,7 +17,7 @@ abstract class BaseSerializableEnum implements RestApiBundle\Enum\Response\Seria
     /**
      * @param int|string $value
      */
-    public function __construct($value)
+    private function __construct($value)
     {
         if (!is_int($value) || !is_string($value)) {
             throw new \InvalidArgumentException();
@@ -27,7 +27,7 @@ abstract class BaseSerializableEnum implements RestApiBundle\Enum\Response\Seria
     /**
      * @param int|string $value
      */
-    public function fromValue($value)
+    public static function from($value)
     {
         return new static($value);
     }
