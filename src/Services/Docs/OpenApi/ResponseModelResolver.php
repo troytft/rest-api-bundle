@@ -183,6 +183,15 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
 
                 break;
 
+            case RestApiBundle\Helper\ClassInterfaceChecker::isDateTime($classType->getClass()):
+                $result = new OpenApi\Schema([
+                    'type' => OpenApi\Type::STRING,
+                    'format' => 'date-time',
+                    'nullable' => $classType->getNullable(),
+                ]);
+
+                break;
+
             default:
                 throw new \InvalidArgumentException(sprintf('Unsupported class type %s', $classType->getClass()));
         }

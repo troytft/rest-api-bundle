@@ -14,9 +14,19 @@ abstract class BaseSerializableEnum implements RestApiBundle\Enum\Response\Seria
     /**
      * @param int|string $value
      */
-    private function __construct($value)
+    final private function __construct($value)
     {
         $this->value = $value;
+    }
+
+    /**
+     * @param int|string $value
+     *
+     * @return static
+     */
+    public static function from($value)
+    {
+        return new static($value);
     }
 
     /**
