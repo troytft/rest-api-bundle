@@ -8,23 +8,24 @@ use function get_class;
 
 class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer
 {
-    public const ATTRIBUTE_TYPENAME = '__typename';
-
     /**
      * @var RestApiBundle\Services\Response\TypenameResolver
      */
     private $typenameResolver;
 
     /**
-     * @var array<string, string>
+     * @var RestApiBundle\Services\Response\AttributesExtractorInterface
      */
-    private $typenameCache = [];
+    private $attributesExtractor;
 
-    public function __construct(RestApiBundle\Services\Response\TypenameResolver $typenameResolver)
-    {
+    public function __construct(
+        RestApiBundle\Services\Response\TypenameResolver $typenameResolver,
+        RestApiBundle\Services\Response\AttributesExtractorInterface $attributesExtractor
+    ) {
         parent::__construct();
 
         $this->typenameResolver = $typenameResolver;
+        $this->attributesExtractor = $attributesExtractor;
     }
 
     public function supportsNormalization($data, $format = null)
@@ -37,10 +38,7 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
      */
     public function extractAttributes($object, $format = null, array $context = [])
     {
-        $result = parent::extractAttributes($object, $format, $context);
-        $result[] = static::ATTRIBUTE_TYPENAME;
-
-        return $result;
+        return $this->attributesExtractor->extractByInstance($object);
     }
 
     /**
@@ -48,22 +46,12 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
      */
     protected function getAttributeValue($object, $attribute, $format = null, array $context = [])
     {
-        if ($attribute === static::ATTRIBUTE_TYPENAME) {
-            $result = $this->resolveTypename($object);
+        if ($attribute === RestApiBundle\Services\Response\TypenameResolver::ATTRIBUTE_NAME) {
+            $result = $this->typenameResolver->resolve(get_class($object));
         } else {
             $result = parent::getAttributeValue($object, $attribute, $format, $context);
         }
 
         return $result;
-    }
-
-    private function resolveTypename(RestApiBundle\ResponseModelInterface $responseModel): string
-    {
-        $key = get_class($responseModel);
-        if (!isset($this->typenameCache[$key])) {
-            $this->typenameCache[$key] = $this->typenameResolver->resolve($key);
-        }
-
-        return $this->typenameCache[$key];
     }
 }

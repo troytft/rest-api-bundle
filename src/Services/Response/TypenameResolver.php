@@ -8,6 +8,7 @@ use function sprintf;
 
 class TypenameResolver
 {
+    public const ATTRIBUTE_NAME = '__typename';
     public const NAMESPACE_NAME = 'ResponseModel';
 
     public function resolve(string $class): string
