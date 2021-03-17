@@ -35,6 +35,7 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
         },
         "__typename": {
             "type": "string",
+            "default": "ModelWithTypeHint",
             "nullable": false
         }
     }
@@ -56,6 +57,7 @@ JSON;
         },
         "__typename": {
             "type": "string",
+            "default": "CombinedModel",
             "nullable": false
         }
     }
@@ -104,6 +106,7 @@ JSON;
         },
         "__typename": {
             "type": "string",
+            "default": "ModelWithDocBlock",
             "nullable": false
         }
     }
@@ -125,6 +128,7 @@ JSON;
         },
         "__typename": {
             "type": "string",
+            "default": "CombinedModel",
             "nullable": false
         }
     }
