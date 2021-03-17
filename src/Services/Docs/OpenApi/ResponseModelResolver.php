@@ -66,7 +66,7 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
             }
 
             $this->typenameCache[$class] = $typename;
-            $this->schemaCache[$class] = $this->resolveSchema($class);
+            $this->schemaCache[$class] = $this->resolveSchema($class, $typename);
         }
 
         return new OpenApi\Reference([
@@ -90,7 +90,7 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
         return $result;
     }
 
-    private function resolveSchema(string $class): OpenApi\Schema
+    private function resolveSchema(string $class, string $typename): OpenApi\Schema
     {
         $properties = [];
 
@@ -111,6 +111,7 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
         $properties[RestApiBundle\Services\Response\ResponseModelNormalizer::ATTRIBUTE_TYPENAME] = new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
             'nullable' => false,
+            'default' => $typename,
         ]);
 
         return new OpenApi\Schema([

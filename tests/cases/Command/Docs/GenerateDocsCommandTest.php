@@ -201,6 +201,7 @@ components:
                     nullable: false
                 __typename:
                     type: string
+                    default: Author
                     nullable: false
         Book:
             type: object
@@ -217,6 +218,7 @@ components:
                     nullable: true
                 __typename:
                     type: string
+                    default: Book
                     nullable: false
         Genre:
             type: object
@@ -229,6 +231,7 @@ components:
                     nullable: false
                 __typename:
                     type: string
+                    default: Genre
                     nullable: false
 tags:
     -
@@ -506,6 +509,7 @@ YAML;
                     },
                     "__typename": {
                         "type": "string",
+                        "default": "Author",
                         "nullable": false
                     }
                 }
@@ -530,6 +534,7 @@ YAML;
                     },
                     "__typename": {
                         "type": "string",
+                        "default": "Book",
                         "nullable": false
                     }
                 }
@@ -547,6 +552,7 @@ YAML;
                     },
                     "__typename": {
                         "type": "string",
+                        "default": "Genre",
                         "nullable": false
                     }
                 }
