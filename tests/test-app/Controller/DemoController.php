@@ -25,14 +25,14 @@ class DemoController
     {
     }
 
-    public function notNullableResponseModelTypeHintAction(): TestApp\ResponseModel\Genre
+    public function notNullableResponseModelTypeHintAction(): TestApp\ResponseModel\Book
     {
-        return $this->getGenreResponseModel(1, 'test-genre');
+        return $this->getBookResponseModel(1, 'test-genre');
     }
 
-    public function nullableResponseModelTypeHintAction(): ?TestApp\ResponseModel\Genre
+    public function nullableResponseModelTypeHintAction(): ?TestApp\ResponseModel\Book
     {
-        return $this->getGenreResponseModel(1, 'test-genre');
+        return $this->getBookResponseModel(1, 'test-genre');
     }
 
     public function voidReturnTypeAction(): void
@@ -55,50 +55,50 @@ class DemoController
     }
 
     /**
-     * @return TestApp\ResponseModel\Genre
+     * @return TestApp\ResponseModel\Book
      */
     public function methodWithSingleResponseModelReturnTag()
     {
-        return $this->getGenreResponseModel(1, 'test-genre');
+        return $this->getBookResponseModel(1, 'test-slug');
     }
 
     /**
-     * @return TestApp\ResponseModel\Genre|null
+     * @return TestApp\ResponseModel\Book|null
      */
     public function methodWithNullableSingleResponseModelReturnTag()
     {
-        return $this->getGenreResponseModel(1, 'test-genre');
+        return $this->getBookResponseModel(1, 'test-slug');
     }
 
     /**
-     * @return TestApp\ResponseModel\Genre[]
+     * @return TestApp\ResponseModel\Book[]
      */
     public function methodWithArrayOfResponseModelsReturnTag()
     {
-        return [$this->getGenreResponseModel(1, 'test-genre')];
+        return [$this->getBookResponseModel(1, 'test-slug')];
     }
 
     /**
-     * @return TestApp\ResponseModel\Genre[]|null
+     * @return TestApp\ResponseModel\Book[]|null
      */
     public function methodWithNullableArrayOfResponseModelsReturnTag()
     {
-        return [$this->getGenreResponseModel(1, 'test-genre')];
+        return [$this->getBookResponseModel(1, 'test-slug')];
     }
 
     /**
-     * @Docs\Endpoint(title="Genre response model details", tags={"demo"})
+     * @Docs\Endpoint(title="Get book by slug", tags={"demo"})
      *
-     * @Route("/genres/by-slug/{slug}", methods="GET", requirements={"slug": "[\w-]+"})
+     * @Route("/books/by-slug/{slug}", methods="GET", requirements={"slug": "[\w-]+"})
      *
      * @return TestApp\ResponseModel\Genre
      */
     public function detailsBySlugAction(string $slug)
     {
-        return $this->getGenreResponseModel(1, $slug);
+        return $this->getBookResponseModel(1, $slug);
     }
 
-    private function getGenreResponseModel(int $id, string $slug): TestApp\ResponseModel\Genre
+    private function getBookResponseModel(int $id, string $slug): TestApp\ResponseModel\Book
     {
         $entity = new TestApp\Entity\Genre();
         $entity

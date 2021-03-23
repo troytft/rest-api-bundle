@@ -5,11 +5,18 @@ namespace RestApiBundle\Services\Docs\OpenApi;
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
 
+use function gettype;
+use function is_float;
+use function is_int;
+use function is_integer;
+use function is_scalar;
+use function is_string;
 use function ksort;
 use function lcfirst;
 use function sprintf;
 use function strpos;
 use function substr;
+use function var_dump;
 
 class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver
 {
@@ -183,17 +190,56 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
 
                 break;
 
-            case RestApiBundle\Helper\ClassInterfaceChecker::isDateTime($classType->getClass()):
-                $result = new OpenApi\Schema([
-                    'type' => OpenApi\Type::STRING,
-                    'format' => 'date-time',
-                    'nullable' => $classType->getNullable(),
-                ]);
+            case RestApiBundle\Helper\ClassInterfaceChecker::isSerializableEnum($classType->getClass()):
+                $result = $this->convertEnum($classType);
 
                 break;
 
             default:
                 throw new \InvalidArgumentException(sprintf('Unsupported class type %s', $classType->getClass()));
+        }
+
+        return $result;
+    }
+
+    private function convertEnum(RestApiBundle\DTO\Docs\Types\ClassType $classType): OpenApi\Schema
+    {
+        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($classType->getClass());
+
+        $values = [];
+        foreach ($reflectionClass->getReflectionConstants() as $constant) {
+            if (!$constant->isPublic() || !is_scalar($constant->getValue())) {
+                continue;
+            }
+
+            $values[] = $constant->getValue();
+        }
+
+        if (!$values) {
+            throw new \LogicException('Empty enum');
+        }
+
+        if (is_float($values[0])) {
+            $result = new OpenApi\Schema([
+                'type' => OpenApi\Type::NUMBER,
+                'format' => 'double',
+                'nullable' => $classType->getNullable(),
+                'enum' => $values,
+            ]);
+        } elseif (is_int($values[0])) {
+            $result = new OpenApi\Schema([
+                'type' => OpenApi\Type::INTEGER,
+                'nullable' => $classType->getNullable(),
+                'enum' => $values,
+            ]);
+        } elseif (is_string($values[0])) {
+            $result = new OpenApi\Schema([
+                'type' => OpenApi\Type::STRING,
+                'nullable' => $classType->getNullable(),
+                'enum' => $values,
+            ]);
+        } else {
+            throw new \LogicException();
         }
 
         return $result;

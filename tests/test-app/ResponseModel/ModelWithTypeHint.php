@@ -27,7 +27,7 @@ class ModelWithTypeHint implements RestApiBundle\ResponseModelInterface
         return new TestApp\ResponseModel\CombinedModel();
     }
 
-    public function getDateType(): TestApp\Enum\StringEnum
+    public function getEnumType(): TestApp\Enum\StringEnum
     {
         return TestApp\Enum\StringEnum::from('first');
     }

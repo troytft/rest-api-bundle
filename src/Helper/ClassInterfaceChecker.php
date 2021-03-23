@@ -72,8 +72,7 @@ class ClassInterfaceChecker
         if (!array_key_exists($class, static::$serializableEnumCache)) {
             $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
-            static::$serializableEnumCache[$class] = $reflectionClass->isInstantiable()
-                && $reflectionClass->implementsInterface(RestApiBundle\Enum\Response\SerializableEnumInterface::class);
+            static::$serializableEnumCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Enum\Response\SerializableEnumInterface::class);
         }
 
         return static::$serializableEnumCache[$class];

@@ -3,6 +3,7 @@
 namespace TestApp\ResponseModel;
 
 use RestApiBundle;
+use TestApp;
 
 class Genre implements RestApiBundle\ResponseModelInterface
 {

@@ -50,7 +50,7 @@ class ModelWithDocBlock implements RestApiBundle\ResponseModelInterface
     /**
      * @return TestApp\Enum\StringEnum
      */
-    public function getDateType()
+    public function getEnumType()
     {
         return TestApp\Enum\StringEnum::from('first');
     }

@@ -22,6 +22,7 @@ class Serializer
 
         $normalizers = [
             new RestApiBundle\Services\Response\GetSetMethodNormalizer(),
+            new RestApiBundle\Services\Response\EnumNormalizer(),
             new \Symfony\Component\Serializer\Normalizer\DateTimeNormalizer(),
         ];
         $encoders = [

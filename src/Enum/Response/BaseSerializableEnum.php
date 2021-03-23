@@ -36,9 +36,4 @@ abstract class BaseSerializableEnum implements RestApiBundle\Enum\Response\Seria
     {
         return $this->value;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    abstract public function getValues(): array;
 }

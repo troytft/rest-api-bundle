@@ -21,4 +21,9 @@ class Book implements RestApiBundle\ResponseModelInterface
     {
         return null;
     }
+
+    public function getStatus(): TestApp\Enum\Status
+    {
+        return TestApp\Enum\StringEnum::from('published');
+    }
 }

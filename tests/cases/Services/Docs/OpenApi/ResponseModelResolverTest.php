@@ -33,6 +33,15 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
         "modelField": {
             "\$ref": "#/components/schemas/CombinedModel"
         },
+        "enumType": {
+            "enum": [
+                "first",
+                "second",
+                "third"
+            ],
+            "nullable": false,
+            "type": "string"
+        },
         "__typename": {
             "type": "string",
             "nullable": false
@@ -101,6 +110,15 @@ JSON;
                 "\$ref": "#/components/schemas/CombinedModel"
             },
             "nullable": false
+        },
+        "enumType": {
+            "enum": [
+                "first",
+                "second",
+                "third"
+            ],
+            "nullable": false,
+            "type": "string"
         },
         "__typename": {
             "type": "string",
