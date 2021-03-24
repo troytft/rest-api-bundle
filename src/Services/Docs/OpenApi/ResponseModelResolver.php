@@ -5,10 +5,8 @@ namespace RestApiBundle\Services\Docs\OpenApi;
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
 
-use function gettype;
 use function is_float;
 use function is_int;
-use function is_integer;
 use function is_scalar;
 use function is_string;
 use function ksort;
@@ -16,7 +14,6 @@ use function lcfirst;
 use function sprintf;
 use function strpos;
 use function substr;
-use function var_dump;
 
 class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver
 {
