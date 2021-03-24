@@ -12,22 +12,24 @@ use RestApiBundle\Annotation\Docs;
 class Tag2Controller
 {
     /**
+     * @var TestApp\Repository\BookRepository
+     */
+    private $bookRepository;
+
+    public function __construct(TestApp\Repository\BookRepository $bookRepository)
+    {
+        $this->bookRepository = $bookRepository;
+    }
+
+    /**
      * @Docs\Endpoint(title="Book response model details", tags={"tag2"})
      *
      * @Route(methods="GET")
      */
-    public function getGenreAction(): TestApp\ResponseModel\Genre
+    public function getGenreAction(): TestApp\ResponseModel\Book
     {
-        return $this->getGenreResponseModel(1, 'test-genre');
-    }
+        $book = $this->bookRepository->find(1);
 
-    private function getGenreResponseModel(int $id, string $slug): TestApp\ResponseModel\Genre
-    {
-        $entity = new TestApp\Entity\Book();
-        $entity
-            ->setId($id)
-            ->setSlug($slug);
-
-        return new TestApp\ResponseModel\Genre($entity);
+        return new TestApp\ResponseModel\Book($book);
     }
 }
