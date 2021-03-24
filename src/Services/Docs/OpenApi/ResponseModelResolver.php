@@ -41,14 +41,14 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
     private $docBlockReader;
 
     /**
-     * @var RestApiBundle\Services\Response\ResponseModelTypenameResolver
+     * @var RestApiBundle\Services\Response\TypenameResolver
      */
     private $typenameResolver;
 
     public function __construct(
         RestApiBundle\Services\Docs\Types\TypeHintTypeReader $typeHintReader,
         RestApiBundle\Services\Docs\Types\DocBlockTypeReader $docBlockReader,
-        RestApiBundle\Services\Response\ResponseModelTypenameResolver $typenameResolver
+        RestApiBundle\Services\Response\TypenameResolver $typenameResolver
     ) {
         $this->typeHintReader = $typeHintReader;
         $this->docBlockReader = $docBlockReader;
@@ -73,7 +73,7 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
             }
 
             $this->typenameCache[$class] = $typename;
-            $this->schemaCache[$class] = $this->resolveSchema($class);
+            $this->schemaCache[$class] = $this->resolveSchema($class, $typename);
         }
 
         return new OpenApi\Reference([
@@ -97,7 +97,7 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
         return $result;
     }
 
-    private function resolveSchema(string $class): OpenApi\Schema
+    private function resolveSchema(string $class, string $typename): OpenApi\Schema
     {
         $properties = [];
 
@@ -115,9 +115,10 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
             $properties[$propertyName] = $propertySchema;
         }
 
-        $properties[RestApiBundle\Services\Response\GetSetMethodNormalizer::ATTRIBUTE_TYPENAME] = new OpenApi\Schema([
+        $properties[RestApiBundle\Services\Response\ResponseModelNormalizer::ATTRIBUTE_TYPENAME] = new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
             'nullable' => false,
+            'default' => $typename,
         ]);
 
         return new OpenApi\Schema([
