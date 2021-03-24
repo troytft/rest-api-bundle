@@ -4,18 +4,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ResponseModelTest extends Tests\BaseTestCase
 {
-    public function testSerializer()
-    {
-        $entity = new TestApp\Entity\Book();
-        $entity
-            ->setId(13)
-            ->setSlug('genre-slug');
-
-        $json = $this->getResponseSerializer()->toJson(new TestApp\ResponseModel\Genre($entity));
-
-        $this->assertSame('{"id":13,"slug":"genre-slug","__typename":"Book"}', $json);
-    }
-
     public function testResponseWithNull()
     {
         $request = Request::create('http://localhost/demo-responses/null', 'GET');
@@ -31,7 +19,7 @@ class ResponseModelTest extends Tests\BaseTestCase
         $response = $this->getKernel()->handle($request);
 
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('{"id":1,"slug":"demo-slug","__typename":"Book"}', $response->getContent());
+        $this->assertSame('{"id":1,"title":"Keto Cookbook For Beginners: 1000 Recipes For Quick & Easy Low-Carb Homemade Cooking","author":{"id":0,"name":"","surname":"","birthday":null,"genres":[],"__typename":"Author"},"genre":null,"status":"published","__typename":"Book"}', $response->getContent());
     }
 
     public function testResponseWithCollectionOfResponseModels()
@@ -40,7 +28,7 @@ class ResponseModelTest extends Tests\BaseTestCase
         $response = $this->getKernel()->handle($request);
 
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('[{"id":1,"slug":"1-demo-slug","__typename":"Book"},{"id":2,"slug":"2-demo-slug","__typename":"Book"},{"id":3,"slug":"3-demo-slug","__typename":"Book"}]', $response->getContent());
+        $this->assertSame('[{"id":1,"title":"Keto Cookbook For Beginners: 1000 Recipes For Quick & Easy Low-Carb Homemade Cooking","author":{"id":0,"name":"","surname":"","birthday":null,"genres":[],"__typename":"Author"},"genre":null,"status":"published","__typename":"Book"},{"id":2,"title":"Home Stories: Design Ideas for Making a House a Home","author":{"id":0,"name":"","surname":"","birthday":null,"genres":[],"__typename":"Author"},"genre":null,"status":"published","__typename":"Book"}]', $response->getContent());
     }
 
     public function testResponseWithResponseClass()

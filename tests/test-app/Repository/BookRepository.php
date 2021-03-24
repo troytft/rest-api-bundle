@@ -3,20 +3,46 @@
 namespace TestApp\Repository;
 
 use TestApp;
-use Doctrine\ORM\EntityRepository;
 
 use function array_unique;
+use function array_values;
+use function in_array;
 
-class BookRepository extends EntityRepository
+class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
 {
+    public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
+    {
+        parent::__construct($registry, TestApp\Entity\Book::class);
+    }
+
+    public function find($id, $lockMode = null, $lockVersion = null)
+    {
+        return $this->findOneBy(['id' => $id]);
+    }
+
     public function findOneBy(array $criteria, array $orderBy = null): ?TestApp\Entity\Book
     {
-        $result = $this->findBy($criteria, $orderBy);
-        if (!$result) {
-            return null;
+        $result = null;
+
+        $criteriaId = $criteria['id'] ?? null;
+        if ($criteriaId) {
+            foreach ($this->findAll() as $book) {
+                if ($book->getId() === $criteriaId) {
+                    $result = $book;
+                }
+            }
         }
 
-        return $result[0];
+        $criteriaSlug = $criteria['slug'] ?? null;
+        if ($criteriaSlug) {
+            foreach ($this->findAll() as $book) {
+                if ($book->getSlug() === $criteriaSlug) {
+                    $result = $book;
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -29,22 +55,23 @@ class BookRepository extends EntityRepository
         $criteriaId = $criteria['id'] ?? null;
         if ($criteriaId) {
             foreach ($this->findAll() as $book) {
-                if ($book->getId() === $criteriaId) {
-                    $result[] = $book;
+                if (in_array($book->getId(), $criteriaId, true)) {
+                    $result[$book->getId()] = $book;
                 }
             }
         }
 
         $criteriaSlug = $criteria['slug'] ?? null;
-        if ($criteriaId) {
+        if ($criteriaSlug) {
             foreach ($this->findAll() as $book) {
-                if ($book->getSlug() === $criteriaSlug) {
-                    $result[] = $book;
+                if (in_array($book->getSlug(), $criteriaSlug, true)) {
+                    $result[$book->getId()] = $book;
                 }
             }
         }
 
-        return array_unique($result);
+
+        return array_values($result);
     }
 
     /**

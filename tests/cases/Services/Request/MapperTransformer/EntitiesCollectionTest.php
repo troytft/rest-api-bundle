@@ -6,28 +6,33 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     {
         $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
         $this->getRequestModelManager()->handle($model, [
-            'genres' => [1, 2]
+            'books' => [1, 2]
         ]);
-        $this->assertIsArray($model->getGenres());
-        $this->assertCount(2, $model->getGenres());
-        $this->assertTrue($model->getGenres()[0] instanceof TestApp\Entity\Book);
-        $this->assertSame($model->getGenres()[0]->getId(), 1);
-        $this->assertTrue($model->getGenres()[1] instanceof TestApp\Entity\Book);
-        $this->assertSame($model->getGenres()[1]->getId(), 2);
+        $this->assertIsArray($model->getBooks());
+        $this->assertCount(2, $model->getBooks());
+        $this->assertTrue($model->getBooks()[0] instanceof TestApp\Entity\Book);
+        $this->assertSame($model->getBooks()[0]->getId(), 1);
+        $this->assertTrue($model->getBooks()[1] instanceof TestApp\Entity\Book);
+        $this->assertSame($model->getBooks()[1]->getId(), 2);
     }
 
     public function testOrder()
     {
         $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
-        $this->getRequestModelManager()->handle($model, [
-            'genres' => [2, 1]
-        ]);
-        $this->assertIsArray($model->getGenres());
-        $this->assertCount(2, $model->getGenres());
-        $this->assertTrue($model->getGenres()[0] instanceof TestApp\Entity\Book);
-        $this->assertSame($model->getGenres()[0]->getId(), 2);
-        $this->assertTrue($model->getGenres()[1] instanceof TestApp\Entity\Book);
-        $this->assertSame($model->getGenres()[1]->getId(), 1);
+        try {
+            $this->getRequestModelManager()->handle($model, [
+                'books' => [2, 1]
+            ]);
+        } catch (\Exception $exception) {
+            var_dump($exception->getMessage());
+        }
+
+        $this->assertIsArray($model->getBooks());
+        $this->assertCount(2, $model->getBooks());
+        $this->assertTrue($model->getBooks()[0] instanceof TestApp\Entity\Book);
+        $this->assertSame($model->getBooks()[0]->getId(), 2);
+        $this->assertTrue($model->getBooks()[1] instanceof TestApp\Entity\Book);
+        $this->assertSame($model->getBooks()[1]->getId(), 1);
     }
 
     public function testEntityNotFound()
@@ -35,11 +40,11 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
         try {
             $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
             $this->getRequestModelManager()->handle($model, [
-                'genres' => [1, 2, 3]
+                'books' => [1, 2, 3]
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['genres' => ['One entity of entities collection not found.']], $exception->getProperties());
+            $this->assertSame(['books' => ['One entity of entities collection not found.']], $exception->getProperties());
         }
     }
 
@@ -48,11 +53,11 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
         try {
             $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
             $this->getRequestModelManager()->handle($model, [
-                'genres' => null
+                'books' => null
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['genres' => ['This value should not be null.']], $exception->getProperties());
+            $this->assertSame(['books' => ['This value should not be null.']], $exception->getProperties());
         }
     }
 
@@ -61,11 +66,11 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
         try {
             $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
             $this->getRequestModelManager()->handle($model, [
-                'genres' => [1, 'string']
+                'books' => [1, 'string']
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['genres.1' => ['This value should be an integer.']], $exception->getProperties());
+            $this->assertSame(['books.1' => ['This value should be an integer.']], $exception->getProperties());
         }
     }
 
@@ -74,11 +79,11 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
         try {
             $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
             $this->getRequestModelManager()->handle($model, [
-                'genres' => [1, 1]
+                'books' => [1, 1]
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['genres' => ['Values should be unique.']], $exception->getProperties());
+            $this->assertSame(['books' => ['Values should be unique.']], $exception->getProperties());
         }
     }
 }

@@ -12,16 +12,16 @@ class ModelWithEntityBySlug implements RequestModelInterface
      *
      * @Mapper\EntityType(class="\TestApp\Entity\Book", field="slug")
      */
-    private $genre;
+    private $book;
 
-    public function getGenre(): \TestApp\Entity\Book
+    public function getBook(): \TestApp\Entity\Book
     {
-        return $this->genre;
+        return $this->book;
     }
 
-    public function setGenre(\TestApp\Entity\Book $genre)
+    public function setBook(\TestApp\Entity\Book $book)
     {
-        $this->genre = $genre;
+        $this->book = $book;
 
         return $this;
     }

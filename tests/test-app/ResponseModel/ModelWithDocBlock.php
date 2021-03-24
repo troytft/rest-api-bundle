@@ -46,12 +46,4 @@ class ModelWithDocBlock implements RestApiBundle\ResponseModelInterface
     {
         return [];
     }
-
-    /**
-     * @return TestApp\Enum\StringEnum
-     */
-    public function getEnumType()
-    {
-        return TestApp\Enum\StringEnum::from('first');
-    }
 }

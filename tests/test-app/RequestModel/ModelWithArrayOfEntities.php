@@ -13,19 +13,19 @@ class ModelWithArrayOfEntities implements RequestModelInterface
      *
      * @Mapper\ArrayOfEntitiesType(class="TestApp\Entity\Book")
      */
-    private $genres;
+    private $books;
 
     /**
      * @return TestApp\Entity\Book[]
      */
-    public function getGenres(): array
+    public function getBooks(): array
     {
-        return $this->genres;
+        return $this->books;
     }
 
-    public function setGenres(array $genres)
+    public function setBooks(array $books)
     {
-        $this->genres = $genres;
+        $this->books = $books;
 
         return $this;
     }

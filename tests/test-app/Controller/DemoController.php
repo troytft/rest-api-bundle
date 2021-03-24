@@ -2,13 +2,25 @@
 
 namespace TestApp\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
 use TestApp;
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Annotation\Docs;
+use Symfony\Component\HttpFoundation\Response;
+
+use function array_map;
 
 class DemoController
 {
+    /**
+     * @var TestApp\Repository\BookRepository
+     */
+    private $bookRepository;
+
+    public function __construct(TestApp\Repository\BookRepository $bookRepository)
+    {
+        $this->bookRepository = $bookRepository;
+    }
+
     /**
      * @Route("/register", methods="POST")
      */
@@ -27,12 +39,14 @@ class DemoController
 
     public function notNullableResponseModelTypeHintAction(): TestApp\ResponseModel\Book
     {
-        return $this->getBookResponseModel(1, 'test-genre');
+        $book = $this->bookRepository->find(1);
+
+        return new TestApp\ResponseModel\Book($book);
     }
 
     public function nullableResponseModelTypeHintAction(): ?TestApp\ResponseModel\Book
     {
-        return $this->getBookResponseModel(1, 'test-genre');
+        return null;
     }
 
     public function voidReturnTypeAction(): void
@@ -59,7 +73,9 @@ class DemoController
      */
     public function methodWithSingleResponseModelReturnTag()
     {
-        return $this->getBookResponseModel(1, 'test-slug');
+        $book = $this->bookRepository->find(1);
+
+        return new TestApp\ResponseModel\Book($book);
     }
 
     /**
@@ -67,7 +83,7 @@ class DemoController
      */
     public function methodWithNullableSingleResponseModelReturnTag()
     {
-        return $this->getBookResponseModel(1, 'test-slug');
+        return null;
     }
 
     /**
@@ -75,7 +91,11 @@ class DemoController
      */
     public function methodWithArrayOfResponseModelsReturnTag()
     {
-        return [$this->getBookResponseModel(1, 'test-slug')];
+        $items = $this->bookRepository->findAll();
+
+        return array_map(function ($item) {
+            return new TestApp\ResponseModel\Book($item);
+        }, $items);
     }
 
     /**
@@ -83,7 +103,11 @@ class DemoController
      */
     public function methodWithNullableArrayOfResponseModelsReturnTag()
     {
-        return [$this->getBookResponseModel(1, 'test-slug')];
+        $items = $this->bookRepository->findAll();
+
+        return array_map(function ($item) {
+            return new TestApp\ResponseModel\Book($item);
+        }, $items);
     }
 
     /**
@@ -91,20 +115,12 @@ class DemoController
      *
      * @Route("/books/by-slug/{slug}", methods="GET", requirements={"slug": "[\w-]+"})
      *
-     * @return TestApp\ResponseModel\Genre
+     * @return TestApp\ResponseModel\Book
      */
     public function detailsBySlugAction(string $slug)
     {
-        return $this->getBookResponseModel(1, $slug);
-    }
+        $book = $this->bookRepository->findOneBy(['slug' => $slug]);
 
-    private function getBookResponseModel(int $id, string $slug): TestApp\ResponseModel\Book
-    {
-        $entity = new TestApp\Entity\Book();
-        $entity
-            ->setId($id)
-            ->setSlug($slug);
-
-        return new TestApp\ResponseModel\Genre($entity);
+        return new TestApp\ResponseModel\Book($book);
     }
 }

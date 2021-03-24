@@ -2,18 +2,27 @@
 
 namespace TestApp\Controller;
 
+use TestApp;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use TestApp;
 
-use function range;
-use function sprintf;
+use function array_map;
 
 /**
  * @Route("/demo-responses")
  */
 class DemoResponseController
 {
+    /**
+     * @var TestApp\Repository\BookRepository
+     */
+    private $bookRepository;
+
+    public function __construct(TestApp\Repository\BookRepository $bookRepository)
+    {
+        $this->bookRepository = $bookRepository;
+    }
+
     /**
      * @Route("/null", methods="GET")
      */
@@ -25,33 +34,25 @@ class DemoResponseController
     /**
      * @Route("/single-response-model", methods="GET")
      */
-    public function singeResponseModelAction()
+    public function singeResponseModelAction(): TestApp\ResponseModel\Book
     {
-        $entity = new TestApp\Entity\Book();
-        $entity
-            ->setId(1)
-            ->setSlug('demo-slug');
+        $book = $this->bookRepository->find(1);
 
-        return new TestApp\ResponseModel\Genre($entity);
+        return new TestApp\ResponseModel\Book($book);
     }
 
     /**
      * @Route("/collection-of-response-models", methods="GET")
+     *
+     * @return TestApp\ResponseModel\Book[]
      */
     public function collectionOfResponseModelsAction()
     {
-        $result = [];
+        $items = $this->bookRepository->findAll();
 
-        foreach (range(1, 3) as $id) {
-            $entity = new TestApp\Entity\Book();
-            $entity
-                ->setId($id)
-                ->setSlug(sprintf('%d-demo-slug', $id));
-
-            $result[] = new TestApp\ResponseModel\Genre($entity);
-        }
-
-        return $result;
+        return array_map(function ($item) {
+            return new TestApp\ResponseModel\Book($item);
+        }, $items);
     }
 
     /**

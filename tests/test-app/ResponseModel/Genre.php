@@ -21,9 +21,4 @@ class Genre implements RestApiBundle\ResponseModelInterface
     {
         return $this->genre->getId();
     }
-
-    public function getSlug(): string
-    {
-        return $this->genre->getSlug();
-    }
 }

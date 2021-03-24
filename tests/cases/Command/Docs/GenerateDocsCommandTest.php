@@ -197,7 +197,7 @@ components:
                 genres:
                     type: array
                     items:
-                        \$ref: '#/components/schemas/Book'
+                        \$ref: '#/components/schemas/Genre'
                     nullable: false
                 __typename:
                     type: string
@@ -207,25 +207,32 @@ components:
             properties:
                 id:
                     type: integer
+                    nullable: false
+                title:
+                    type: string
                     nullable: false
                 author:
                     \$ref: '#/components/schemas/Author'
                 genre:
                     anyOf:
                         -
-                            \$ref: '#/components/schemas/Book'
+                            \$ref: '#/components/schemas/Genre'
                     nullable: true
+                status:
+                    enum:
+                        - created
+                        - published
+                        - archived
+                    type: string
+                    nullable: false
                 __typename:
                     type: string
                     nullable: false
-        Book:
+        Genre:
             type: object
             properties:
                 id:
                     type: integer
-                    nullable: false
-                slug:
-                    type: string
                     nullable: false
                 __typename:
                     type: string
@@ -500,7 +507,7 @@ YAML;
                     "genres": {
                         "type": "array",
                         "items": {
-                            "\$ref": "#/components/schemas/Book"
+                            "\$ref": "#/components/schemas/Genre"
                         },
                         "nullable": false
                     },
@@ -517,16 +524,29 @@ YAML;
                         "type": "integer",
                         "nullable": false
                     },
+                    "title": {
+                        "type": "string",
+                        "nullable": false
+                    },
                     "author": {
                         "\$ref": "#/components/schemas/Author"
                     },
                     "genre": {
                         "anyOf": [
                             {
-                                "\$ref": "#/components/schemas/Book"
+                                "\$ref": "#/components/schemas/Genre"
                             }
                         ],
                         "nullable": true
+                    },
+                    "status": {
+                        "enum": [
+                            "created",
+                            "published",
+                            "archived"
+                        ],
+                        "type": "string",
+                        "nullable": false
                     },
                     "__typename": {
                         "type": "string",
@@ -534,15 +554,11 @@ YAML;
                     }
                 }
             },
-            "Book": {
+            "Genre": {
                 "type": "object",
                 "properties": {
                     "id": {
                         "type": "integer",
-                        "nullable": false
-                    },
-                    "slug": {
-                        "type": "string",
                         "nullable": false
                     },
                     "__typename": {
