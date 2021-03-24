@@ -60,13 +60,13 @@ class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractS
         $reflectedClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
         foreach ($reflectedClass->getProperties() as $property) {
-            $propertySchema = null;
+            $mappingAnnotation = null;
             $propertyConstraints = [];
 
             $annotations = $this->annotationReader->getPropertyAnnotations($property);
             foreach ($annotations as $annotation) {
                 if ($annotation instanceof Mapper\DTO\Mapping\TypeInterface) {
-                    $propertySchema = $this->convert($annotation);
+                    $mappingAnnotation = $annotation;
                 }
 
                 if ($annotation instanceof Validator\Constraint) {
@@ -74,15 +74,11 @@ class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractS
                 }
             }
 
-            if (!$propertySchema) {
+            if (!$mappingAnnotation) {
                 continue;
             }
 
-            foreach ($propertyConstraints as $constraint) {
-                $this->applyConstraint($propertySchema, $constraint);
-            }
-
-            $properties[$property->getName()] = $propertySchema;
+            $properties[$property->getName()] = $this->convert($mappingAnnotation, $propertyConstraints);
         }
 
         return new OpenApi\Schema([
@@ -90,6 +86,13 @@ class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractS
             'properties' => $properties,
             'nullable' => $nullable,
         ]);
+    }
+
+    private function applyConstraints(OpenApi\Schema $schema, array $constraints): void
+    {
+        foreach ($constraints as $constraint) {
+            $this->applyConstraint($schema, $constraint);
+        }
     }
 
     private function applyConstraint(OpenApi\Schema $schema, Validator\Constraint $constraint): void
@@ -144,7 +147,11 @@ class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractS
         }
     }
 
-    private function convert(Mapper\DTO\Mapping\TypeInterface $type): OpenApi\Schema
+    /**
+     * @param Mapper\DTO\Mapping\TypeInterface $type
+     * @param Validator\Constraint[] $validationConstraints
+     */
+    private function convert(Mapper\DTO\Mapping\TypeInterface $type, array $validationConstraints): OpenApi\Schema
     {
         switch (true) {
             case $type instanceof Mapper\DTO\Mapping\ObjectTypeInterface:
@@ -152,11 +159,11 @@ class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractS
 
                 break;
             case $type->getTransformerName() !== null:
-                $result = $this->convertByTransformer($type);
+                $result = $this->convertByTransformer($type, $validationConstraints);
 
                 break;
             case $type instanceof Mapper\DTO\Mapping\CollectionTypeInterface:
-                $result = $this->convertCollectionType($type);
+                $result = $this->convertCollectionType($type, $validationConstraints);
 
                 break;
 
@@ -167,7 +174,11 @@ class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractS
         return $result;
     }
 
-    private function convertByTransformer(Mapper\DTO\Mapping\TypeInterface $type): OpenApi\Schema
+    /**
+     * @param Mapper\DTO\Mapping\TypeInterface $type
+     * @param Validator\Constraint[] $validationConstraints
+     */
+    private function convertByTransformer(Mapper\DTO\Mapping\TypeInterface $type, array $validationConstraints): OpenApi\Schema
     {
         switch ($type->getTransformerName()) {
             case Mapper\Transformer\BooleanTransformer::getName():
@@ -175,6 +186,7 @@ class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractS
                     'type' => OpenApi\Type::BOOLEAN,
                     'nullable' => (bool) $type->getNullable(),
                 ]);
+                $this->applyConstraints($result, $validationConstraints);
 
                 break;
 
@@ -183,6 +195,7 @@ class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractS
                     'type' => OpenApi\Type::INTEGER,
                     'nullable' => (bool) $type->getNullable(),
                 ]);
+                $this->applyConstraints($result, $validationConstraints);
 
                 break;
 
@@ -191,6 +204,7 @@ class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractS
                     'type' => OpenApi\Type::STRING,
                     'nullable' => (bool) $type->getNullable(),
                 ]);
+                $this->applyConstraints($result, $validationConstraints);
 
                 break;
 
@@ -200,6 +214,7 @@ class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractS
                     'format' => 'double',
                     'nullable' => (bool) $type->getNullable(),
                 ]);
+                $this->applyConstraints($result, $validationConstraints);
 
                 break;
 
@@ -209,6 +224,7 @@ class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractS
                     'format' => 'date-time',
                     'nullable' => (bool) $type->getNullable(),
                 ]);
+                $this->applyConstraints($result, $validationConstraints);
 
                 break;
 
@@ -254,11 +270,15 @@ class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractS
         return $result;
     }
 
-    private function convertCollectionType(Mapper\DTO\Mapping\CollectionTypeInterface $collectionType): OpenApi\Schema
+    /**
+     * @param Mapper\DTO\Mapping\CollectionTypeInterface $collectionType
+     * @param Validator\Constraint[] $validationConstraints
+     */
+    private function convertCollectionType(Mapper\DTO\Mapping\CollectionTypeInterface $collectionType, array $validationConstraints): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
-            'items' => $this->convert($collectionType->getType()),
+            'items' => $this->convert($collectionType->getType(), $validationConstraints),
             'nullable' => (bool) $collectionType->getNullable(),
         ]);
     }

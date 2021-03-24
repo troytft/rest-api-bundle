@@ -24,6 +24,44 @@
                         }
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "nullable": true
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "nullable": true
+                        }
+                    },
+                    {
+                        "name": "statuses",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "nullable": false,
+                                "enum": [
+                                    "created",
+                                    "published",
+                                    "archived"
+                                ]
+                            },
+                            "nullable": true
+                        }
+                    }
+                ],
                 "tags": [
                     "books"
                 ]

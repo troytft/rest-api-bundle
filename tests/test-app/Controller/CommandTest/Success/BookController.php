@@ -18,7 +18,7 @@ class BookController
      *
      * @return TestApp\ResponseModel\Book[]
      */
-    public function listAction()
+    public function listAction(TestApp\RequestModel\BookList $requestModel)
     {
         return [];
     }
