@@ -209,6 +209,9 @@ components:
                 id:
                     type: integer
                     nullable: false
+                title:
+                    type: string
+                    nullable: false
                 author:
                     \$ref: '#/components/schemas/Author'
                 genre:
@@ -216,6 +219,13 @@ components:
                         -
                             \$ref: '#/components/schemas/Genre'
                     nullable: true
+                status:
+                    enum:
+                        - created
+                        - published
+                        - archived
+                    type: string
+                    nullable: false
                 __typename:
                     type: string
                     default: Book
@@ -225,9 +235,6 @@ components:
             properties:
                 id:
                     type: integer
-                    nullable: false
-                slug:
-                    type: string
                     nullable: false
                 __typename:
                     type: string
@@ -521,6 +528,10 @@ YAML;
                         "type": "integer",
                         "nullable": false
                     },
+                    "title": {
+                        "type": "string",
+                        "nullable": false
+                    },
                     "author": {
                         "\$ref": "#/components/schemas/Author"
                     },
@@ -531,6 +542,15 @@ YAML;
                             }
                         ],
                         "nullable": true
+                    },
+                    "status": {
+                        "enum": [
+                            "created",
+                            "published",
+                            "archived"
+                        ],
+                        "type": "string",
+                        "nullable": false
                     },
                     "__typename": {
                         "type": "string",
@@ -544,10 +564,6 @@ YAML;
                 "properties": {
                     "id": {
                         "type": "integer",
-                        "nullable": false
-                    },
-                    "slug": {
-                        "type": "string",
                         "nullable": false
                     },
                     "__typename": {

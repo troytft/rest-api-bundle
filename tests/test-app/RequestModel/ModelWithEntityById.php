@@ -8,20 +8,20 @@ use RestApiBundle\RequestModelInterface;
 class ModelWithEntityById implements RequestModelInterface
 {
     /**
-     * @var \TestApp\Entity\Genre
+     * @var \TestApp\Entity\Book
      *
-     * @Mapper\EntityType(class="\TestApp\Entity\Genre")
+     * @Mapper\EntityType(class="\TestApp\Entity\Book")
      */
-    private $genre;
+    private $book;
 
-    public function getGenre(): \TestApp\Entity\Genre
+    public function getBook(): \TestApp\Entity\Book
     {
-        return $this->genre;
+        return $this->book;
     }
 
-    public function setGenre(\TestApp\Entity\Genre $genre)
+    public function setBook(\TestApp\Entity\Book $book)
     {
-        $this->genre = $genre;
+        $this->book = $book;
 
         return $this;
     }

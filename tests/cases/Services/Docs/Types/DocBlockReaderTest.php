@@ -37,7 +37,7 @@ class DocBlockReaderTest extends Tests\BaseTestCase
         $returnType = $this->getDocBlockSchemaReader()->resolveReturnType($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\ClassType::class, $returnType);
-        $this->assertSame(TestApp\ResponseModel\Genre::class, $returnType->getClass());
+        $this->assertSame(TestApp\ResponseModel\Book::class, $returnType->getClass());
         $this->assertFalse($returnType->getNullable());
     }
 
@@ -49,7 +49,7 @@ class DocBlockReaderTest extends Tests\BaseTestCase
         $returnType = $this->getDocBlockSchemaReader()->resolveReturnType($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\ClassType::class, $returnType);
-        $this->assertSame(TestApp\ResponseModel\Genre::class, $returnType->getClass());
+        $this->assertSame(TestApp\ResponseModel\Book::class, $returnType->getClass());
         $this->assertTrue($returnType->getNullable());
     }
 
@@ -65,7 +65,7 @@ class DocBlockReaderTest extends Tests\BaseTestCase
         /** @var RestApiBundle\DTO\Docs\Types\ClassType $innerType */
         $innerType = $returnType->getInnerType();
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\ClassType::class, $innerType);
-        $this->assertSame(TestApp\ResponseModel\Genre::class, $innerType->getClass());
+        $this->assertSame(TestApp\ResponseModel\Book::class, $innerType->getClass());
         $this->assertFalse($innerType->getNullable());
     }
 
@@ -81,7 +81,7 @@ class DocBlockReaderTest extends Tests\BaseTestCase
         /** @var RestApiBundle\DTO\Docs\Types\ClassType $innerType */
         $innerType = $returnType->getInnerType();
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\ClassType::class, $innerType);
-        $this->assertSame(TestApp\ResponseModel\Genre::class, $innerType->getClass());
+        $this->assertSame(TestApp\ResponseModel\Book::class, $innerType->getClass());
         $this->assertFalse($innerType->getNullable());
     }
 }

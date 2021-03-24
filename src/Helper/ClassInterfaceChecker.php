@@ -24,6 +24,11 @@ class ClassInterfaceChecker
     /**
      * @var array<string, bool>
      */
+    private static $serializableEnumCache = [];
+
+    /**
+     * @var array<string, bool>
+     */
     private static $requestModelCache = [];
 
     public static function isResponseModel(string $class): bool
@@ -56,6 +61,21 @@ class ClassInterfaceChecker
         }
 
         return static::$dateTimeCache[$class];
+    }
+
+    public static function isSerializableEnum(string $class): bool
+    {
+        if (!class_exists($class)) {
+            return false;
+        }
+
+        if (!array_key_exists($class, static::$serializableEnumCache)) {
+            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+
+            static::$serializableEnumCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Enum\Response\SerializableEnumInterface::class);
+        }
+
+        return static::$serializableEnumCache[$class];
     }
 
     public static function isRequestModel(string $class): bool

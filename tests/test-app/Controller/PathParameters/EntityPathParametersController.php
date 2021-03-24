@@ -4,7 +4,7 @@ namespace TestApp\Controller\PathParameters;
 
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Annotation\Docs;
-use TestApp\Entity\Genre;
+use TestApp\Entity\Book;
 
 class EntityPathParametersController
 {
@@ -15,7 +15,7 @@ class EntityPathParametersController
      *
      * @return null
      */
-    public function testAction(int $int, Genre $genre, string $string, Genre $genre2)
+    public function testAction(int $int, Book $genre, string $string, Book $genre2)
     {
         return null;
     }

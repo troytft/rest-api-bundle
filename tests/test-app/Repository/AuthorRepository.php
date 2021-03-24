@@ -2,17 +2,21 @@
 
 namespace TestApp\Repository;
 
-use Doctrine\ORM\EntityRepository;
-use TestApp\Entity\Author;
+use TestApp;
 
 use function in_array;
 
-class AuthorRepository extends EntityRepository
+class AuthorRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
 {
     /**
      * @var int[]
      */
     private $existIds = [1, 2,];
+
+    public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
+    {
+        parent::__construct($registry, TestApp\Entity\Author::class);
+    }
 
     public function findOneBy(array $criteria, array $orderBy = null)
     {
@@ -40,9 +44,9 @@ class AuthorRepository extends EntityRepository
         return $result;
     }
 
-    private function createEntityWithId(int $id): Author
+    private function createEntityWithId(int $id): TestApp\Entity\Author
     {
-        $genre = new Author();
+        $genre = new TestApp\Entity\Author();
         $genre
             ->setId($id);
 

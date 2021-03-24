@@ -16,3 +16,12 @@ doctrine:
                 auto_mapping: true
 
 rest_api: ~
+
+services:
+    _defaults:
+        public: true
+        autowire: true
+        autoconfigure: true
+
+    TestApp\:
+        resource: '../../{Controller,Repository}/*'

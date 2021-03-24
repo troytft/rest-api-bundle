@@ -33,9 +33,9 @@ class WriterData implements RequestModelInterface
     private $birthday;
 
     /**
-     * @var TestApp\Entity\Genre[]
+     * @var TestApp\Entity\Book[]
      *
-     * @Mapper\ArrayOfEntitiesType(class="TestApp\Entity\Genre")
+     * @Mapper\ArrayOfEntitiesType(class="TestApp\Entity\Book")
      */
     private $genres;
 

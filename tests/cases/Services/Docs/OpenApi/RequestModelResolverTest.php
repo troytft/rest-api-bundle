@@ -65,7 +65,7 @@ JSON;
 {
     "type": "object",
     "properties": {
-        "genre": {
+        "book": {
             "type": "string",
             "description": "Element by \"slug\"",
             "nullable": false
@@ -85,7 +85,7 @@ JSON;
 {
     "type": "object",
     "properties": {
-        "genres": {
+        "books": {
             "type": "array",
             "items": {
                 "type": "integer",

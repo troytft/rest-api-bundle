@@ -6,20 +6,20 @@ class EntityTransformerTest extends Tests\BaseTestCase
     {
         $model = new TestApp\RequestModel\ModelWithEntityById();
         $this->getRequestModelManager()->handle($model, [
-            'genre' => 1
+            'book' => 1
         ]);
-        $this->assertTrue($model->getGenre() instanceof TestApp\Entity\Genre);
-        $this->assertSame(1, $model->getGenre()->getId());
+        $this->assertTrue($model->getBook() instanceof TestApp\Entity\Book);
+        $this->assertSame(1, $model->getBook()->getId());
     }
 
     public function testSuccessBySlug()
     {
         $model = new TestApp\RequestModel\ModelWithEntityBySlug();
         $this->getRequestModelManager()->handle($model, [
-            'genre' => 'action'
+            'book' => 'keto-cookbook-beginners-low-carb-homemade'
         ]);
-        $this->assertTrue($model->getGenre() instanceof TestApp\Entity\Genre);
-        $this->assertSame('action', $model->getGenre()->getSlug());
+        $this->assertTrue($model->getBook() instanceof TestApp\Entity\Book);
+        $this->assertSame(1, $model->getBook()->getId());
     }
 
     public function testEntityNotFoundById()
@@ -27,11 +27,11 @@ class EntityTransformerTest extends Tests\BaseTestCase
         try {
             $model = new TestApp\RequestModel\ModelWithEntityById();
             $this->getRequestModelManager()->handle($model, [
-                'genre' => 3
+                'book' => 3
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['genre' => ['An entity with specified value not found.']], $exception->getProperties());
+            $this->assertSame(['book' => ['An entity with specified value not found.']], $exception->getProperties());
         }
     }
 
@@ -40,11 +40,11 @@ class EntityTransformerTest extends Tests\BaseTestCase
         try {
             $model = new TestApp\RequestModel\ModelWithEntityBySlug();
             $this->getRequestModelManager()->handle($model, [
-                'genre' => 'wrong_slug'
+                'book' => 'wrong_slug'
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['genre' => ['An entity with specified value not found.']], $exception->getProperties());
+            $this->assertSame(['book' => ['An entity with specified value not found.']], $exception->getProperties());
         }
     }
 
@@ -53,11 +53,11 @@ class EntityTransformerTest extends Tests\BaseTestCase
         try {
             $model = new TestApp\RequestModel\ModelWithEntityById();
             $this->getRequestModelManager()->handle($model, [
-                'genre' => null
+                'book' => null
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['genre' => ['This value should not be null.']], $exception->getProperties());
+            $this->assertSame(['book' => ['This value should not be null.']], $exception->getProperties());
         }
     }
 
@@ -66,11 +66,11 @@ class EntityTransformerTest extends Tests\BaseTestCase
         try {
             $model = new TestApp\RequestModel\ModelWithEntityById();
             $this->getRequestModelManager()->handle($model, [
-                'genre' => 'string'
+                'book' => 'string'
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['genre' => ['This value should be an integer.']], $exception->getProperties());
+            $this->assertSame(['book' => ['This value should be an integer.']], $exception->getProperties());
         }
     }
 
@@ -79,11 +79,11 @@ class EntityTransformerTest extends Tests\BaseTestCase
         try {
             $model = new TestApp\RequestModel\ModelWithEntityBySlug();
             $this->getRequestModelManager()->handle($model, [
-                'genre' => 10
+                'book' => 10
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['genre' => ['This value should be a string.']], $exception->getProperties());
+            $this->assertSame(['book' => ['This value should be a string.']], $exception->getProperties());
         }
     }
 }

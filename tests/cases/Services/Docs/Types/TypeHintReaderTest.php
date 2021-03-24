@@ -34,7 +34,7 @@ class TypeHintReaderTest extends Tests\BaseTestCase
         $returnType = $this->getTypeHintSchemaReader()->resolveReturnType($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\ClassType::class, $returnType);
-        $this->assertSame(TestApp\ResponseModel\Genre::class, $returnType->getClass());
+        $this->assertSame(TestApp\ResponseModel\Book::class, $returnType->getClass());
         $this->assertFalse($returnType->getNullable());
     }
 
@@ -47,7 +47,7 @@ class TypeHintReaderTest extends Tests\BaseTestCase
         $returnType = $this->getTypeHintSchemaReader()->resolveReturnType($reflectionMethod);
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\ClassType::class, $returnType);
-        $this->assertSame(TestApp\ResponseModel\Genre::class, $returnType->getClass());
+        $this->assertSame(TestApp\ResponseModel\Book::class, $returnType->getClass());
         $this->assertTrue($returnType->getNullable());
     }
 
