@@ -13,57 +13,8 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
         $this->assertArrayHasKey('ModelWithTypeHint', $schemas);
         $this->assertArrayHasKey('CombinedModel', $schemas);
 
-        $expected = <<<JSON
-{
-    "type": "object",
-    "properties": {
-        "stringField": {
-            "type": "string",
-            "nullable": false
-        },
-        "nullableStringField": {
-            "type": "string",
-            "nullable": true
-        },
-        "dateTimeField": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": false
-        },
-        "modelField": {
-            "\$ref": "#/components/schemas/CombinedModel"
-        },
-        "__typename": {
-            "type": "string",
-            "default": "ModelWithTypeHint",
-            "nullable": false
-        }
-    }
-}
-JSON;
-        $this->assertJsonStringEqualsJsonString($expected, json_encode($schemas['ModelWithTypeHint']->getSerializableData()));
-
-        $expected = <<<JSON
-{
-    "type": "object",
-    "properties": {
-        "stringFieldWithTypeHint": {
-            "type": "string",
-            "nullable": false
-        },
-        "stringFieldWithDocBlock": {
-            "type": "string",
-            "nullable": false
-        },
-        "__typename": {
-            "type": "string",
-            "default": "CombinedModel",
-            "nullable": false
-        }
-    }
-}
-JSON;
-        $this->assertJsonStringEqualsJsonString($expected, json_encode($schemas['CombinedModel']->getSerializableData()));
+        $this->assertMatchesJsonSnapshot(json_encode($schemas['ModelWithTypeHint']->getSerializableData()));
+        $this->assertMatchesJsonSnapshot(json_encode($schemas['CombinedModel']->getSerializableData()));
     }
 
     public function testSchemaFromDocBlocks()
@@ -77,64 +28,8 @@ JSON;
         $this->assertArrayHasKey('ModelWithDocBlock', $schemas);
         $this->assertArrayHasKey('CombinedModel', $schemas);
 
-        $expected = <<<JSON
-{
-    "type": "object",
-    "properties": {
-        "stringField": {
-            "type": "string",
-            "nullable": false
-        },
-        "nullableStringField": {
-            "type": "string",
-            "nullable": true
-        },
-        "dateTimeField": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": false
-        },
-        "modelField": {
-            "\$ref": "#/components/schemas/CombinedModel"
-        },
-        "arrayOfModelsField": {
-            "type": "array",
-            "items": {
-                "\$ref": "#/components/schemas/CombinedModel"
-            },
-            "nullable": false
-        },
-        "__typename": {
-            "type": "string",
-            "default": "ModelWithDocBlock",
-            "nullable": false
-        }
-    }
-}
-JSON;
-        $this->assertJsonStringEqualsJsonString($expected, json_encode($schemas['ModelWithDocBlock']->getSerializableData()));
-
-        $expected = <<<JSON
-{
-    "type": "object",
-    "properties": {
-        "stringFieldWithTypeHint": {
-            "type": "string",
-            "nullable": false
-        },
-        "stringFieldWithDocBlock": {
-            "type": "string",
-            "nullable": false
-        },
-        "__typename": {
-            "type": "string",
-            "default": "CombinedModel",
-            "nullable": false
-        }
-    }
-}
-JSON;
-        $this->assertJsonStringEqualsJsonString($expected, json_encode($schemas['CombinedModel']->getSerializableData()));
+        $this->assertMatchesJsonSnapshot(json_encode($schemas['ModelWithDocBlock']->getSerializableData()));
+        $this->assertMatchesJsonSnapshot(json_encode($schemas['CombinedModel']->getSerializableData()));
     }
 
     protected function getResponseModelResolver(): RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver

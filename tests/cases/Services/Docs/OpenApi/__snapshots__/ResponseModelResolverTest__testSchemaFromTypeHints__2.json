@@ -1,0 +1,18 @@
+{
+    "type": "object",
+    "properties": {
+        "stringFieldWithTypeHint": {
+            "type": "string",
+            "nullable": false
+        },
+        "stringFieldWithDocBlock": {
+            "type": "string",
+            "nullable": false
+        },
+        "__typename": {
+            "type": "string",
+            "default": "CombinedModel",
+            "nullable": false
+        }
+    }
+}

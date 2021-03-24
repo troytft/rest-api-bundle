@@ -19,7 +19,7 @@ class ResponseModelTest extends Tests\BaseTestCase
         $response = $this->getKernel()->handle($request);
 
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('{"id":1,"title":"Keto Cookbook For Beginners: 1000 Recipes For Quick & Easy Low-Carb Homemade Cooking","author":{"id":0,"name":"","surname":"","birthday":null,"genres":[],"__typename":"Author"},"genre":null,"status":"published","__typename":"Book"}', $response->getContent());
+        $this->assertMatchesJsonSnapshot($response->getContent());
     }
 
     public function testResponseWithCollectionOfResponseModels()
@@ -27,43 +27,8 @@ class ResponseModelTest extends Tests\BaseTestCase
         $request = Request::create('http://localhost/demo-responses/collection-of-response-models', 'GET');
         $response = $this->getKernel()->handle($request);
 
-        $json = <<<JSON
-[
-    {
-        "id": 1,
-        "title": "Keto Cookbook For Beginners: 1000 Recipes For Quick & Easy Low-Carb Homemade Cooking",
-        "author": {
-            "id": 0,
-            "name": "",
-            "surname": "",
-            "birthday": null,
-            "genres": [],
-            "__typename": "Author"
-        },
-        "genre": null,
-        "status": "published",
-        "__typename": "Book"
-    },
-    {
-        "id": 2,
-        "title": "Home Stories: Design Ideas for Making a House a Home",
-        "author": {
-            "id": 0,
-            "name": "",
-            "surname": "",
-            "birthday": null,
-            "genres": [],
-            "__typename": "Author"
-        },
-        "genre": null,
-        "status": "published",
-        "__typename": "Book"
-    }
-]
-JSON;
-
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame(json_encode(json_decode($json)), $response->getContent());
+        $this->assertMatchesJsonSnapshot($response->getContent());
     }
 
     public function testResponseWithResponseClass()
@@ -72,6 +37,6 @@ JSON;
         $response = $this->getKernel()->handle($request);
 
         $this->assertSame(201, $response->getStatusCode());
-        $this->assertSame('{"id": 7}', $response->getContent());
+        $this->assertMatchesJsonSnapshot($response->getContent());
     }
 }

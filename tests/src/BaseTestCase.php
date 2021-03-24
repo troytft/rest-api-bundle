@@ -4,6 +4,7 @@ namespace Tests;
 
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use RestApiBundle;
+use Spatie\Snapshots\MatchesSnapshots;
 use TestApp;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -11,6 +12,8 @@ use function get_class;
 
 abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
 {
+    use MatchesSnapshots;
+
     /**
      * @var KernelInterface
      */

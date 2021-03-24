@@ -1,0 +1,15 @@
+{
+    "id": 1,
+    "title": "Keto Cookbook For Beginners: 1000 Recipes For Quick & Easy Low-Carb Homemade Cooking",
+    "author": {
+        "id": 0,
+        "name": "",
+        "surname": "",
+        "birthday": null,
+        "genres": [],
+        "__typename": "Author"
+    },
+    "genre": null,
+    "status": "published",
+    "__typename": "Book"
+}
