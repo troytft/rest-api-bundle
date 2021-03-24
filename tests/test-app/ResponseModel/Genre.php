@@ -8,11 +8,11 @@ use TestApp;
 class Genre implements RestApiBundle\ResponseModelInterface
 {
     /**
-     * @var \TestApp\Entity\Genre
+     * @var \TestApp\Entity\Book
      */
     private $genre;
 
-    public function __construct(\TestApp\Entity\Genre $genre)
+    public function __construct(\TestApp\Entity\Book $genre)
     {
         $this->genre = $genre;
     }

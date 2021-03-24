@@ -2,7 +2,9 @@
 
 namespace TestApp\Enum;
 
-class Status
+use RestApiBundle\Enum\Response\BaseSerializableEnum;
+
+class BookStatus extends BaseSerializableEnum
 {
     public const CREATED = 'created';
     public const PUBLISHED = 'published';

@@ -8,7 +8,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
         $this->getRequestModelManager()->handle($model, [
             'genre' => 1
         ]);
-        $this->assertTrue($model->getGenre() instanceof TestApp\Entity\Genre);
+        $this->assertTrue($model->getGenre() instanceof TestApp\Entity\Book);
         $this->assertSame(1, $model->getGenre()->getId());
     }
 
@@ -18,7 +18,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
         $this->getRequestModelManager()->handle($model, [
             'genre' => 'action'
         ]);
-        $this->assertTrue($model->getGenre() instanceof TestApp\Entity\Genre);
+        $this->assertTrue($model->getGenre() instanceof TestApp\Entity\Book);
         $this->assertSame('action', $model->getGenre()->getSlug());
     }
 

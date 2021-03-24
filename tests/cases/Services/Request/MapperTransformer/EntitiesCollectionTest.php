@@ -10,9 +10,9 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
         ]);
         $this->assertIsArray($model->getGenres());
         $this->assertCount(2, $model->getGenres());
-        $this->assertTrue($model->getGenres()[0] instanceof TestApp\Entity\Genre);
+        $this->assertTrue($model->getGenres()[0] instanceof TestApp\Entity\Book);
         $this->assertSame($model->getGenres()[0]->getId(), 1);
-        $this->assertTrue($model->getGenres()[1] instanceof TestApp\Entity\Genre);
+        $this->assertTrue($model->getGenres()[1] instanceof TestApp\Entity\Book);
         $this->assertSame($model->getGenres()[1]->getId(), 2);
     }
 
@@ -24,9 +24,9 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
         ]);
         $this->assertIsArray($model->getGenres());
         $this->assertCount(2, $model->getGenres());
-        $this->assertTrue($model->getGenres()[0] instanceof TestApp\Entity\Genre);
+        $this->assertTrue($model->getGenres()[0] instanceof TestApp\Entity\Book);
         $this->assertSame($model->getGenres()[0]->getId(), 2);
-        $this->assertTrue($model->getGenres()[1] instanceof TestApp\Entity\Genre);
+        $this->assertTrue($model->getGenres()[1] instanceof TestApp\Entity\Book);
         $this->assertSame($model->getGenres()[1]->getId(), 1);
     }
 

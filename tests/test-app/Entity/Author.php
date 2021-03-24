@@ -48,7 +48,7 @@ class Author
     }
 
     /**
-     * @return TestApp\Entity\Genre[]
+     * @return TestApp\Entity\Book[]
      */
     public function getGenres(): array
     {

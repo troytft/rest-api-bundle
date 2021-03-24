@@ -100,7 +100,7 @@ class DemoController
 
     private function getBookResponseModel(int $id, string $slug): TestApp\ResponseModel\Book
     {
-        $entity = new TestApp\Entity\Genre();
+        $entity = new TestApp\Entity\Book();
         $entity
             ->setId($id)
             ->setSlug($slug);

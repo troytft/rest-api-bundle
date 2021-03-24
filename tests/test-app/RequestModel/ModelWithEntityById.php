@@ -8,18 +8,18 @@ use RestApiBundle\RequestModelInterface;
 class ModelWithEntityById implements RequestModelInterface
 {
     /**
-     * @var \TestApp\Entity\Genre
+     * @var \TestApp\Entity\Book
      *
-     * @Mapper\EntityType(class="\TestApp\Entity\Genre")
+     * @Mapper\EntityType(class="\TestApp\Entity\Book")
      */
     private $genre;
 
-    public function getGenre(): \TestApp\Entity\Genre
+    public function getGenre(): \TestApp\Entity\Book
     {
         return $this->genre;
     }
 
-    public function setGenre(\TestApp\Entity\Genre $genre)
+    public function setGenre(\TestApp\Entity\Book $genre)
     {
         $this->genre = $genre;
 

@@ -47,16 +47,16 @@ class WriterList implements RequestModelInterface
     private $birthday;
 
     /**
-     * @var TestApp\Entity\Genre[]|null
+     * @var TestApp\Entity\Book[]|null
      *
-     * @Mapper\ArrayOfEntitiesType(class="TestApp\Entity\Genre", nullable=true)
+     * @Mapper\ArrayOfEntitiesType(class="TestApp\Entity\Book", nullable=true)
      */
     private $genres;
 
     /**
-     * @var TestApp\Entity\Genre|null
+     * @var TestApp\Entity\Book|null
      *
-     * @Mapper\EntityType(class="TestApp\Entity\Genre", nullable=true)
+     * @Mapper\EntityType(class="TestApp\Entity\Book", nullable=true)
      */
     private $writer;
 

@@ -9,14 +9,14 @@ use RestApiBundle\RequestModelInterface;
 class ModelWithArrayOfEntities implements RequestModelInterface
 {
     /**
-     * @var \TestApp\Entity\Genre[]
+     * @var \TestApp\Entity\Book[]
      *
-     * @Mapper\ArrayOfEntitiesType(class="TestApp\Entity\Genre")
+     * @Mapper\ArrayOfEntitiesType(class="TestApp\Entity\Book")
      */
     private $genres;
 
     /**
-     * @return TestApp\Entity\Genre[]
+     * @return TestApp\Entity\Book[]
      */
     public function getGenres(): array
     {

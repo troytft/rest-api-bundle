@@ -12,7 +12,7 @@ use RestApiBundle\Annotation\Docs;
 class Tag1Controller
 {
     /**
-     * @Docs\Endpoint(title="Genre response model details", tags={"tag1"})
+     * @Docs\Endpoint(title="Book response model details", tags={"tag1"})
      *
      * @Route(methods="GET")
      */
@@ -23,7 +23,7 @@ class Tag1Controller
 
     private function getGenreResponseModel(int $id, string $slug): TestApp\ResponseModel\Genre
     {
-        $entity = new TestApp\Entity\Genre();
+        $entity = new TestApp\Entity\Book();
         $entity
             ->setId($id)
             ->setSlug($slug);

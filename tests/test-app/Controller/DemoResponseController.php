@@ -27,7 +27,7 @@ class DemoResponseController
      */
     public function singeResponseModelAction()
     {
-        $entity = new TestApp\Entity\Genre();
+        $entity = new TestApp\Entity\Book();
         $entity
             ->setId(1)
             ->setSlug('demo-slug');
@@ -43,7 +43,7 @@ class DemoResponseController
         $result = [];
 
         foreach (range(1, 3) as $id) {
-            $entity = new TestApp\Entity\Genre();
+            $entity = new TestApp\Entity\Book();
             $entity
                 ->setId($id)
                 ->setSlug(sprintf('%d-demo-slug', $id));

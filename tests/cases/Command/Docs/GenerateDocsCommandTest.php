@@ -197,7 +197,7 @@ components:
                 genres:
                     type: array
                     items:
-                        \$ref: '#/components/schemas/Genre'
+                        \$ref: '#/components/schemas/Book'
                     nullable: false
                 __typename:
                     type: string
@@ -213,12 +213,12 @@ components:
                 genre:
                     anyOf:
                         -
-                            \$ref: '#/components/schemas/Genre'
+                            \$ref: '#/components/schemas/Book'
                     nullable: true
                 __typename:
                     type: string
                     nullable: false
-        Genre:
+        Book:
             type: object
             properties:
                 id:
@@ -500,7 +500,7 @@ YAML;
                     "genres": {
                         "type": "array",
                         "items": {
-                            "\$ref": "#/components/schemas/Genre"
+                            "\$ref": "#/components/schemas/Book"
                         },
                         "nullable": false
                     },
@@ -523,7 +523,7 @@ YAML;
                     "genre": {
                         "anyOf": [
                             {
-                                "\$ref": "#/components/schemas/Genre"
+                                "\$ref": "#/components/schemas/Book"
                             }
                         ],
                         "nullable": true
@@ -534,7 +534,7 @@ YAML;
                     }
                 }
             },
-            "Genre": {
+            "Book": {
                 "type": "object",
                 "properties": {
                     "id": {
