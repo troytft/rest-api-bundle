@@ -37,7 +37,7 @@ jobs:
 
       - name: Install Symfony ${{ matrix.symfony-versions }}
         if: steps.composer-cache.outputs.cache-hit != 'true'
-        run: composer require 'symfony/framework-bundle:^${{ matrix.symfony-versions }}' --no-suggest --no-interaction --no-progress
+        run: composer require 'symfony/framework-bundle:^${{ matrix.symfony-versions }}' --no-suggest --no-interaction --no-progress --ignore-platform-reqs
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit
