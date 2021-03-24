@@ -122,18 +122,7 @@ class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractS
                 $schema->enum = $choices;
 
                 break;
-
-            case $constraint instanceof Validator\Constraints\Count:
-                if ($constraint->min !== null) {
-                    $schema->minItems = $constraint->min;
-                }
-
-                if ($constraint->max !== null) {
-                    $schema->maxItems = $constraint->max;
-                }
-
-                break;
-
+                
             case $constraint instanceof Validator\Constraints\Length:
                 if ($constraint->min !== null) {
                     $schema->minLength = $constraint->min;
