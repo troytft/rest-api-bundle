@@ -1,0 +1,26 @@
+{
+    "type": "object",
+    "properties": {
+        "stringField": {
+            "type": "string",
+            "nullable": false
+        },
+        "nullableStringField": {
+            "type": "string",
+            "nullable": true
+        },
+        "dateTimeField": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": false
+        },
+        "modelField": {
+            "$ref": "#\/components\/schemas\/CombinedModel"
+        },
+        "__typename": {
+            "type": "string",
+            "default": "ModelWithTypeHint",
+            "nullable": false
+        }
+    }
+}

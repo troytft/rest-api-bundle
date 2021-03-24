@@ -1,0 +1,48 @@
+{
+    "type": "object",
+    "properties": {
+        "stringField": {
+            "type": "string",
+            "nullable": false,
+            "minLength": 6,
+            "maxLength": 255
+        },
+        "modelField": {
+            "type": "object",
+            "properties": {
+                "stringField": {
+                    "type": "string",
+                    "nullable": false,
+                    "minLength": 3,
+                    "maxLength": 255
+                }
+            },
+            "nullable": false
+        },
+        "collectionField": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "stringField": {
+                        "type": "string",
+                        "nullable": false,
+                        "minLength": 3,
+                        "maxLength": 255
+                    }
+                },
+                "nullable": false
+            },
+            "nullable": false
+        },
+        "collectionOfIntegers": {
+            "type": "array",
+            "items": {
+                "type": "integer",
+                "nullable": false
+            },
+            "nullable": false
+        }
+    },
+    "nullable": false
+}
