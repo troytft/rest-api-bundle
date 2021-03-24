@@ -4,7 +4,6 @@ namespace TestApp\Repository;
 
 use TestApp;
 
-use function array_unique;
 use function array_values;
 use function in_array;
 

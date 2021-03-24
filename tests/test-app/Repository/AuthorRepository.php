@@ -2,7 +2,6 @@
 
 namespace TestApp\Repository;
 
-use Knp\DoctrineBehaviors\Contract\Provider\LocaleProviderInterface;
 use TestApp;
 
 use function in_array;

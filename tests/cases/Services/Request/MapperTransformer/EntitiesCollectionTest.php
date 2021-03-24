@@ -19,13 +19,9 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     public function testOrder()
     {
         $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
-        try {
-            $this->getRequestModelManager()->handle($model, [
-                'books' => [2, 1]
-            ]);
-        } catch (\Exception $exception) {
-            var_dump($exception->getMessage());
-        }
+        $this->getRequestModelManager()->handle($model, [
+            'books' => [2, 1]
+        ]);
 
         $this->assertIsArray($model->getBooks());
         $this->assertCount(2, $model->getBooks());

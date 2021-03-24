@@ -15,14 +15,9 @@ class EntityTransformerTest extends Tests\BaseTestCase
     public function testSuccessBySlug()
     {
         $model = new TestApp\RequestModel\ModelWithEntityBySlug();
-        try {
-            $this->getRequestModelManager()->handle($model, [
-                'book' => 'keto-cookbook-beginners-low-carb-homemade'
-            ]);
-        } catch (\Exception$exception) {
-            var_dump($exception->getMessage());
-        }
-
+        $this->getRequestModelManager()->handle($model, [
+            'book' => 'keto-cookbook-beginners-low-carb-homemade'
+        ]);
         $this->assertTrue($model->getBook() instanceof TestApp\Entity\Book);
         $this->assertSame(1, $model->getBook()->getId());
     }
