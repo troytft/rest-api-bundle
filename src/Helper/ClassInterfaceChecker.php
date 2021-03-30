@@ -29,6 +29,11 @@ class ClassInterfaceChecker
     /**
      * @var array<string, bool>
      */
+    private static $serializableDateCache = [];
+
+    /**
+     * @var array<string, bool>
+     */
     private static $requestModelCache = [];
 
     public static function isResponseModel(string $class): bool
@@ -41,7 +46,7 @@ class ClassInterfaceChecker
             $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
             static::$responseModelCache[$class] = $reflectionClass->isInstantiable()
-                && $reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class);
+                && $reflectionClass->implementsInterface(RestApiBundle\Mapping\ResponseModel\ResponseModelInterface::class);
         }
 
         return static::$responseModelCache[$class];
@@ -72,10 +77,25 @@ class ClassInterfaceChecker
         if (!array_key_exists($class, static::$serializableEnumCache)) {
             $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
-            static::$serializableEnumCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Enum\Response\SerializableEnumInterface::class);
+            static::$serializableEnumCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Mapping\ResponseModel\SerializableEnumInterface::class);
         }
 
         return static::$serializableEnumCache[$class];
+    }
+
+    public static function isSerializableDate(string $class): bool
+    {
+        if (!class_exists($class)) {
+            return false;
+        }
+
+        if (!array_key_exists($class, static::$serializableDateCache)) {
+            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+
+            static::$serializableDateCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Mapping\ResponseModel\SerializableDateInterface::class);
+        }
+
+        return static::$serializableDateCache[$class];
     }
 
     public static function isRequestModel(string $class): bool
@@ -88,7 +108,7 @@ class ClassInterfaceChecker
             $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
             static::$requestModelCache[$class] = $reflectionClass->isInstantiable()
-                && $reflectionClass->implementsInterface(RestApiBundle\RequestModelInterface::class);
+                && $reflectionClass->implementsInterface(RestApiBundle\Mapping\RequestModel\RequestModelInterface::class);
         }
 
         return static::$requestModelCache[$class];

@@ -230,6 +230,10 @@ components:
                         - archived
                     type: string
                     nullable: false
+                releaseDate:
+                    type: string
+                    format: date
+                    nullable: false
                 __typename:
                     type: string
                     default: Book

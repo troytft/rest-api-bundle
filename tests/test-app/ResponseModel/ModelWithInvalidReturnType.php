@@ -4,7 +4,7 @@ namespace TestApp\ResponseModel;
 
 use RestApiBundle;
 
-class ModelWithInvalidReturnType implements RestApiBundle\ResponseModelInterface
+class ModelWithInvalidReturnType implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {
     /**
      * @return string|string

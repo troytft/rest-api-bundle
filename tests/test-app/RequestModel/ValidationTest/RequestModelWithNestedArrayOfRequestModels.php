@@ -3,7 +3,7 @@
 namespace TestApp\RequestModel\ValidationTest;
 
 use TestApp;
-use RestApiBundle\RequestModelInterface;
+use RestApiBundle\Mapping\RequestModel\RequestModelInterface;
 use RestApiBundle\Annotation\Request as Mapper;
 
 class RequestModelWithNestedArrayOfRequestModels implements RequestModelInterface

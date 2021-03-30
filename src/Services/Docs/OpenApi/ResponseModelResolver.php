@@ -189,7 +189,12 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
                 break;
 
             case RestApiBundle\Helper\ClassInterfaceChecker::isSerializableEnum($classType->getClass()):
-                $result = $this->convertEnum($classType);
+                $result = $this->convertSerializableEnum($classType);
+
+                break;
+
+            case RestApiBundle\Helper\ClassInterfaceChecker::isSerializableDate($classType->getClass()):
+                $result = $this->convertSerializableDate($classType);
 
                 break;
 
@@ -200,7 +205,7 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
         return $result;
     }
 
-    private function convertEnum(RestApiBundle\DTO\Docs\Types\ClassType $classType): OpenApi\Schema
+    private function convertSerializableEnum(RestApiBundle\DTO\Docs\Types\ClassType $classType): OpenApi\Schema
     {
         $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($classType->getClass());
 
@@ -241,5 +246,14 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
         }
 
         return $result;
+    }
+
+    private function convertSerializableDate(RestApiBundle\DTO\Docs\Types\ClassType $classType): OpenApi\Schema
+    {
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::STRING,
+            'format' => 'date',
+            'nullable' => $classType->getNullable(),
+        ]);
     }
 }

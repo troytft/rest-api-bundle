@@ -46,7 +46,7 @@ class RequestHandler
     /**
      * @throws RestApiBundle\Exception\RequestModelMappingException
      */
-    public function handle(RestApiBundle\RequestModelInterface $requestModel, array $data): void
+    public function handle(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel, array $data): void
     {
         $this->map($requestModel, $data);
 
@@ -59,7 +59,7 @@ class RequestHandler
     /**
      * @throws RestApiBundle\Exception\RequestModelMappingException
      */
-    private function map(RestApiBundle\RequestModelInterface $requestModel, array $data): void
+    private function map(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel, array $data): void
     {
         try {
             $this->mapperInitiator->getMapper()->map($requestModel, $data);

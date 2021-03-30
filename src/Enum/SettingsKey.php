@@ -11,6 +11,7 @@ class SettingsKey
     public const IS_FORCE_REQUEST_DATETIME_TO_LOCAL_TIMEZONE = 'is_force_request_datetime_to_local_timezone';
     public const DEFAULT_REQUEST_DATETIME_FORMAT = 'default_request_datetime_format';
     public const DEFAULT_REQUEST_DATE_FORMAT = 'default_request_date_format';
+    public const RESPONSE_MODEL_DATE_FORMAT = 'response_model_date_format';
     public const IS_RESPONSE_HANDLER_ENABLED = 'is_response_handler_enabled';
     public const RESPONSE_JSON_ENCODE_OPTIONS = 'response_json_encode_options';
 }

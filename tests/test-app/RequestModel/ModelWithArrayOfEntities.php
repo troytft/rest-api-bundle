@@ -4,7 +4,7 @@ namespace TestApp\RequestModel;
 
 use TestApp;
 use RestApiBundle\Annotation\Request as Mapper;
-use RestApiBundle\RequestModelInterface;
+use RestApiBundle\Mapping\RequestModel\RequestModelInterface;
 
 class ModelWithArrayOfEntities implements RequestModelInterface
 {

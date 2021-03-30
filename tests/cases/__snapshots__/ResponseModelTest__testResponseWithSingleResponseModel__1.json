@@ -11,5 +11,6 @@
     },
     "genre": null,
     "status": "published",
+    "releaseDate": "2012-03-17",
     "__typename": "Book"
 }

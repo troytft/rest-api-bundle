@@ -6,7 +6,7 @@ use RestApiBundle;
 use RestApiBundle\Annotation\Request as Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class RequestModelForGetRequest implements RestApiBundle\RequestModelInterface
+class RequestModelForGetRequest implements RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     /**
      * @var int

@@ -5,7 +5,7 @@ namespace TestApp\ResponseModel;
 use TestApp;
 use RestApiBundle;
 
-class ModelWithDocBlock implements RestApiBundle\ResponseModelInterface
+class ModelWithDocBlock implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {
     /**
      * @return string

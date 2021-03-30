@@ -61,4 +61,9 @@ class SettingsProvider
     {
         return $this->settings[RestApiBundle\Enum\SettingsKey::RESPONSE_JSON_ENCODE_OPTIONS];
     }
+
+    public function getResponseModelDateFormat(): string
+    {
+        return $this->settings[RestApiBundle\Enum\SettingsKey::RESPONSE_MODEL_DATE_FORMAT];
+    }
 }

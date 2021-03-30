@@ -38,7 +38,7 @@ Accepts data and map to request model, specified by option `class`.
 
 ##### Options:
  * **nullable** – is null allowed
- * **class** – require class name implementing `RestApiBundle\RequestModelInterface`
+ * **class** – require class name implementing `RestApiBundle\Mapping\RequestModel\RequestModelInterface`
 
 ### RestApiBundle\Annotation\RequestModel\DateType
 Accepts string with format, and converts to \DateTime

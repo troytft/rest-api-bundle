@@ -5,15 +5,15 @@ namespace RestApiBundle\Services\Response;
 use RestApiBundle;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 
-class EnumNormalizer implements ContextAwareNormalizerInterface
+class SerializableEnumNormalizer implements ContextAwareNormalizerInterface
 {
     public function supportsNormalization($data, $format = null, array $context = [])
     {
-        return $data instanceof RestApiBundle\Enum\Response\SerializableEnumInterface;
+        return $data instanceof RestApiBundle\Mapping\ResponseModel\SerializableEnumInterface;
     }
 
     /**
-     * @param RestApiBundle\Enum\Response\SerializableEnumInterface $object
+     * @param RestApiBundle\Mapping\ResponseModel\SerializableEnumInterface $object
      */
     public function normalize($object, $format = null, array $context = [])
     {

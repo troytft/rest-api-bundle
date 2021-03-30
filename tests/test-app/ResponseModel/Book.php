@@ -5,7 +5,7 @@ namespace TestApp\ResponseModel;
 use TestApp;
 use RestApiBundle;
 
-class Book implements RestApiBundle\ResponseModelInterface
+class Book implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {
     /**
      * @var TestApp\Entity\Book
@@ -40,5 +40,10 @@ class Book implements RestApiBundle\ResponseModelInterface
     public function getStatus(): TestApp\Enum\BookStatus
     {
         return TestApp\Enum\BookStatus::from($this->book->getStatus());
+    }
+
+    public function getReleaseDate(): RestApiBundle\Mapping\ResponseModel\SerializableDate
+    {
+        return RestApiBundle\Mapping\ResponseModel\SerializableDate::from(new \DateTime('2012-03-17'));
     }
 }

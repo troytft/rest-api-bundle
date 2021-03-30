@@ -24,7 +24,7 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
 
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof RestApiBundle\ResponseModelInterface;
+        return $data instanceof RestApiBundle\Mapping\ResponseModel\ResponseModelInterface;
     }
 
     public function extractAttributes($object, $format = null, array $context = [])
