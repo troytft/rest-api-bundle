@@ -1,10 +1,10 @@
 <?php
 
-namespace RestApiBundle\Enum\Response;
+namespace RestApiBundle\Mapping\ResponseModel;
 
 use RestApiBundle;
 
-abstract class BaseSerializableEnum implements RestApiBundle\Enum\Response\SerializableEnumInterface
+abstract class BaseSerializableEnum implements RestApiBundle\Mapping\ResponseModel\SerializableEnumInterface
 {
     /**
      * @var int|string

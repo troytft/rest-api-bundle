@@ -4,7 +4,7 @@ namespace TestApp\ResponseModel;
 
 use RestApiBundle;
 
-class CombinedModel implements RestApiBundle\ResponseModelInterface
+class CombinedModel implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {
     public function getStringFieldWithTypeHint(): string
     {

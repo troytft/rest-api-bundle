@@ -40,7 +40,7 @@ class RequestModelValidator
     /**
      * @return array<string, string[]>
      */
-    public function validate(RestApiBundle\RequestModelInterface $requestModel): array
+    public function validate(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel): array
     {
         return array_merge_recursive($this->getFirstLevelErrors($requestModel), $this->getNestedErrors($requestModel));
     }
@@ -48,7 +48,7 @@ class RequestModelValidator
     /**
      * @return array<string, string[]>
      */
-    private function getFirstLevelErrors(RestApiBundle\RequestModelInterface $requestModel): array
+    private function getFirstLevelErrors(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel): array
     {
         $errors = [];
         $violations = $this->validator->validate($requestModel);
@@ -68,7 +68,7 @@ class RequestModelValidator
     /**
      * @return array<string, string[]>
      */
-    private function getNestedErrors(RestApiBundle\RequestModelInterface $requestModel): array
+    private function getNestedErrors(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel): array
     {
         $result = [];
 
@@ -114,12 +114,12 @@ class RequestModelValidator
     }
 
     /**
-     * @param RestApiBundle\RequestModelInterface $instance
+     * @param RestApiBundle\Mapping\RequestModel\RequestModelInterface $instance
      * @param string $propertyName
      *
-     * @return RestApiBundle\RequestModelInterface|RestApiBundle\RequestModelInterface[]:null
+     * @return RestApiBundle\Mapping\RequestModel\RequestModelInterface|RestApiBundle\Mapping\RequestModel\RequestModelInterface[]:null
      */
-    private function getPropertyValueFromInstance(RestApiBundle\RequestModelInterface $instance, string $propertyName)
+    private function getPropertyValueFromInstance(RestApiBundle\Mapping\RequestModel\RequestModelInterface $instance, string $propertyName)
     {
         $getterName = 'get' . ucfirst($propertyName);
 

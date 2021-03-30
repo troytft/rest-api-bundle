@@ -4,7 +4,7 @@ namespace TestApp\ResponseModel;
 
 use RestApiBundle;
 
-class Genre implements RestApiBundle\ResponseModelInterface
+class Genre implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {
     /**
      * @var \TestApp\Entity\Book

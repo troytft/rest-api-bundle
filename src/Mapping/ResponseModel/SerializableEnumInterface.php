@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Enum\Response;
+namespace RestApiBundle\Mapping\ResponseModel;
 
 interface SerializableEnumInterface
 {

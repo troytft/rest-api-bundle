@@ -6,7 +6,7 @@ use RestApiBundle;
 use RestApiBundle\Annotation\Request as Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class BookList implements RestApiBundle\RequestModelInterface
+class BookList implements RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     /**
      * @var int|null

@@ -54,7 +54,7 @@ class ResponseHandler
     {
         if ($value === null) {
             $result = null;
-        } elseif ($value instanceof RestApiBundle\ResponseModelInterface) {
+        } elseif ($value instanceof RestApiBundle\Mapping\ResponseModel\ResponseModelInterface) {
             $result = $this->serializer->toJson($value);
         } elseif (is_array($value)) {
             if (!$this->isPlainArray($value)) {
@@ -64,7 +64,7 @@ class ResponseHandler
             $chunks = [];
 
             foreach ($value as $item) {
-                if (!$item instanceof RestApiBundle\ResponseModelInterface) {
+                if (!$item instanceof RestApiBundle\Mapping\ResponseModel\ResponseModelInterface) {
                     throw new \InvalidArgumentException('The collection should consist of response models.');
                 }
 

@@ -5,7 +5,7 @@ namespace TestApp\ResponseModel;
 use TestApp;
 use RestApiBundle;
 
-class Author implements RestApiBundle\ResponseModelInterface
+class Author implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {
     public function getId(): int
     {

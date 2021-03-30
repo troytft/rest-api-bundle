@@ -42,14 +42,14 @@ class ActionArgumentValueResolver implements ArgumentValueResolverInterface
         yield $requestModel;
     }
 
-    private function instantiate(string $class): RestApiBundle\RequestModelInterface
+    private function instantiate(string $class): RestApiBundle\Mapping\RequestModel\RequestModelInterface
     {
         if (!RestApiBundle\Helper\ClassInterfaceChecker::isRequestModel($class)) {
             throw new \InvalidArgumentException();
         }
 
         $requestModel = RestApiBundle\Helper\ReflectionClassStore::get($class)->newInstance();
-        if (!$requestModel instanceof RestApiBundle\RequestModelInterface) {
+        if (!$requestModel instanceof RestApiBundle\Mapping\RequestModel\RequestModelInterface) {
             throw new \InvalidArgumentException();
         }
 

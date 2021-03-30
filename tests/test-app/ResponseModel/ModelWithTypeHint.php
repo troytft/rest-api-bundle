@@ -5,7 +5,7 @@ namespace TestApp\ResponseModel;
 use TestApp;
 use RestApiBundle;
 
-class ModelWithTypeHint implements RestApiBundle\ResponseModelInterface
+class ModelWithTypeHint implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {
     public function getStringField(): string
     {

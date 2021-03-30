@@ -3,7 +3,7 @@
 namespace TestApp\RequestModel;
 
 use RestApiBundle\Annotation\Request as Mapper;
-use RestApiBundle\RequestModelInterface;
+use RestApiBundle\Mapping\RequestModel\RequestModelInterface;
 
 class ModelWithAllTypes implements RequestModelInterface
 {

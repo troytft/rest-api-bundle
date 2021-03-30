@@ -24,7 +24,7 @@ class ResponseModelHelper
             $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
             static::$classNameCache[$class] = $reflectionClass->isInstantiable()
-                && $reflectionClass->implementsInterface(RestApiBundle\ResponseModelInterface::class);
+                && $reflectionClass->implementsInterface(RestApiBundle\Mapping\ResponseModel\ResponseModelInterface::class);
         }
 
         return static::$classNameCache[$class];
