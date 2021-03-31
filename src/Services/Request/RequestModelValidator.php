@@ -76,7 +76,7 @@ class RequestModelValidator
             ->mapperInitiator
             ->getMapper()
             ->getSchemaGenerator()
-            ->generate($requestModel);
+            ->getSchemaByClassInstance($requestModel);
 
         foreach ($schema->getProperties() as $propertyName => $propertyType) {
             if ($propertyType instanceof ObjectType) {
