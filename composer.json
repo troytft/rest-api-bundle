@@ -38,9 +38,6 @@
         "symfony/yaml": "^4.4 || ^5.2",
         "troytft/mapper": "^1.8"
     },
-    "suggest": {
-        "ext-zlib": "For support gzip requests"
-    },
     "bin": ["bin/generate-docs"],
     "require-dev": {
         "nyholm/symfony-bundle-test": "^1.7",
