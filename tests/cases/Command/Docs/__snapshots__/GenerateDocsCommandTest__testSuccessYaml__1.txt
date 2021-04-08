@@ -78,6 +78,7 @@ paths:
                                     type: string
                                     format: date
                                     nullable: true
+                                    example: '2021-04-08'
                                 genres:
                                     type: array
                                     items:
@@ -142,6 +143,7 @@ paths:
                         type: string
                         format: date
                         nullable: true
+                        example: '2021-04-08'
                 -
                     name: genres
                     in: query
@@ -198,6 +200,7 @@ components:
                     type: string
                     format: date-time
                     nullable: true
+                    example: '2021-04-08T14:44:26+02:00'
                 genres:
                     type: array
                     items:
@@ -234,6 +237,7 @@ components:
                     type: string
                     format: date
                     nullable: false
+                    example: '2021-04-08'
                 __typename:
                     type: string
                     default: Book

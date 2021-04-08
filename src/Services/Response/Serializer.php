@@ -42,7 +42,7 @@ class Serializer
         return $this->serializer->serialize($responseModel, 'json', [
             RestApiBundle\Services\Response\SerializableDateNormalizer::FORMAT_KEY => $this->settingsProvider->getResponseModelDateFormat(),
             JsonEncode::OPTIONS => $this->settingsProvider->getResponseJsonEncodeOptions(),
-            DateTimeNormalizer::FORMAT_KEY => \DATE_ATOM,
+            DateTimeNormalizer::FORMAT_KEY => $this->settingsProvider->getResponseModelDateTimeFormat(),
             DateTimeNormalizer::TIMEZONE_KEY => new \DateTimeZone('UTC'),
         ]);
     }
