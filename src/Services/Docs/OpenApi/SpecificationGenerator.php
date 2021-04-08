@@ -243,7 +243,9 @@ class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\Abstrac
                 $request = $routeData->getRequest();
                 if ($request instanceof RestApiBundle\DTO\Docs\Request\RequestModel && $isHttpGetMethod) {
                     $queryParameters = $this->convertRequestModelToParameters($request);
-                } elseif ($request instanceof RestApiBundle\DTO\Docs\Request\RequestModel && !$isHttpGetMethod) {
+                }
+
+                if ($request instanceof RestApiBundle\DTO\Docs\Request\RequestModel && !$isHttpGetMethod) {
                     $operation->requestBody = $this->convertRequestModelToRequestBody($request);
                 }
 
