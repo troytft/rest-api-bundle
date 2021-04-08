@@ -8,7 +8,8 @@ class ExampleResolver
     {
         $result = new \DateTime();
         $result
-            ->setTimestamp(1617885866);
+            ->setTimestamp(1617885866)
+            ->setTimezone(new \DateTimeZone('Europe/Prague'));
 
         return $result;
     }

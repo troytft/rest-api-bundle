@@ -200,7 +200,7 @@ components:
                     type: string
                     format: date-time
                     nullable: true
-                    example: '2021-04-08T12:44:26+00:00'
+                    example: '2021-04-08T14:44:26+02:00'
                 genres:
                     type: array
                     items:
