@@ -5,7 +5,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     public function testSuccess()
     {
         $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
-        $this->getRequestModelManager()->handle($model, [
+        $this->getRequestHandler()->handle($model, [
             'books' => [1, 2]
         ]);
         $this->assertIsArray($model->getBooks());
@@ -19,7 +19,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     public function testOrder()
     {
         $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
-        $this->getRequestModelManager()->handle($model, [
+        $this->getRequestHandler()->handle($model, [
             'books' => [2, 1]
         ]);
 
@@ -35,7 +35,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     {
         try {
             $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
-            $this->getRequestModelManager()->handle($model, [
+            $this->getRequestHandler()->handle($model, [
                 'books' => [1, 2, 3]
             ]);
             $this->fail();
@@ -48,7 +48,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     {
         try {
             $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
-            $this->getRequestModelManager()->handle($model, [
+            $this->getRequestHandler()->handle($model, [
                 'books' => null
             ]);
             $this->fail();
@@ -61,7 +61,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     {
         try {
             $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
-            $this->getRequestModelManager()->handle($model, [
+            $this->getRequestHandler()->handle($model, [
                 'books' => [1, 'string']
             ]);
             $this->fail();
@@ -74,12 +74,17 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     {
         try {
             $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
-            $this->getRequestModelManager()->handle($model, [
+            $this->getRequestHandler()->handle($model, [
                 'books' => [1, 1]
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
             $this->assertSame(['books' => ['Values should be unique.']], $exception->getProperties());
         }
+    }
+
+    private function getRequestHandler(): RestApiBundle\Services\Request\RequestHandler
+    {
+        return $this->getContainer()->get(RestApiBundle\Services\Request\RequestHandler::class);
     }
 }

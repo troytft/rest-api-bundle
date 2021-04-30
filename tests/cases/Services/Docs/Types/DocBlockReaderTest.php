@@ -84,4 +84,9 @@ class DocBlockReaderTest extends Tests\BaseTestCase
         $this->assertSame(TestApp\ResponseModel\Book::class, $innerType->getClass());
         $this->assertFalse($innerType->getNullable());
     }
+
+    private function getDocBlockSchemaReader(): RestApiBundle\Services\Docs\Types\DocBlockTypeReader
+    {
+        return $this->getContainer()->get(RestApiBundle\Services\Docs\Types\DocBlockTypeReader::class);
+    }
 }
