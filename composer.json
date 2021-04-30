@@ -18,7 +18,7 @@
         "sort-packages": true
     },
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=7.4",
         "ext-json": "*",
         "cebe/php-openapi": "^1.5",
         "doctrine/annotations": "^1.11",
@@ -30,7 +30,6 @@
         "symfony/finder": "^4.4 || ^5.2",
         "symfony/framework-bundle": "^4.4 || ^5.2",
         "symfony/http-kernel": "^4.4 || ^5.2",
-        "symfony/polyfill-php73": "^1.12",
         "symfony/routing": "^4.4 || ^5.2",
         "symfony/serializer": "^4.4 || ^5.2",
         "symfony/translation": "^4.4 || ^5.2",
@@ -42,7 +41,7 @@
     "require-dev": {
         "nyholm/symfony-bundle-test": "^1.7",
         "phpstan/phpstan": "^0.12",
-        "phpunit/phpunit": "^8.5",
+        "phpunit/phpunit": "^9.5",
         "slevomat/coding-standard": "^6.4",
         "squizlabs/php_codesniffer": "^3.5",
         "spatie/phpunit-snapshot-assertions":"^4.2"

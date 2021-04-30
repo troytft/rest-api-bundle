@@ -15,7 +15,7 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     /**
      * @var KernelInterface
      */
-    protected $kernel;
+    private $kernel;
 
     public function __construct()
     {
