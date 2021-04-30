@@ -60,4 +60,9 @@ class TypeHintReaderTest extends Tests\BaseTestCase
 
         $this->assertInstanceOf(RestApiBundle\DTO\Docs\Types\NullType::class, $returnType);
     }
+
+    private function getTypeHintSchemaReader(): RestApiBundle\Services\Docs\Types\TypeHintTypeReader
+    {
+        return $this->getContainer()->get(RestApiBundle\Services\Docs\Types\TypeHintTypeReader::class);
+    }
 }

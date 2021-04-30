@@ -6,7 +6,7 @@ class ExceptionTranslationsTest extends Tests\BaseTestCase
     {
         try {
             $model = new TestApp\RequestModel\ModelWithAllTypes();
-            $this->getRequestModelManager()->handle($model, [
+            $this->getRequestHandler()->handle($model, [
                 'booleanType' => 'string',
                 'stringType' => false,
                 'integerType' => false,
@@ -38,7 +38,7 @@ class ExceptionTranslationsTest extends Tests\BaseTestCase
     {
         try {
             $model = new TestApp\RequestModel\ModelWithAllTypes();
-            $this->getRequestModelManager()->handle($model, [
+            $this->getRequestHandler()->handle($model, [
                 'date' => '2010-03-45',
                 'dateTime' => '2010-03-45T10:00:00+00:00',
             ]);
@@ -50,5 +50,10 @@ class ExceptionTranslationsTest extends Tests\BaseTestCase
             ];
             $this->assertSame($expected, $exception->getProperties());
         }
+    }
+
+    private function getRequestHandler(): RestApiBundle\Services\Request\RequestHandler
+    {
+        return $this->getContainer()->get(RestApiBundle\Services\Request\RequestHandler::class);
     }
 }

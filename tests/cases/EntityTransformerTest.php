@@ -5,7 +5,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
     public function testSuccessById()
     {
         $model = new TestApp\RequestModel\ModelWithEntityById();
-        $this->getRequestModelManager()->handle($model, [
+        $this->getRequestHandler()->handle($model, [
             'book' => 1
         ]);
         $this->assertTrue($model->getBook() instanceof TestApp\Entity\Book);
@@ -15,7 +15,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
     public function testSuccessBySlug()
     {
         $model = new TestApp\RequestModel\ModelWithEntityBySlug();
-        $this->getRequestModelManager()->handle($model, [
+        $this->getRequestHandler()->handle($model, [
             'book' => 'keto-cookbook-beginners-low-carb-homemade'
         ]);
         $this->assertTrue($model->getBook() instanceof TestApp\Entity\Book);
@@ -26,7 +26,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
     {
         try {
             $model = new TestApp\RequestModel\ModelWithEntityById();
-            $this->getRequestModelManager()->handle($model, [
+            $this->getRequestHandler()->handle($model, [
                 'book' => 3
             ]);
             $this->fail();
@@ -39,7 +39,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
     {
         try {
             $model = new TestApp\RequestModel\ModelWithEntityBySlug();
-            $this->getRequestModelManager()->handle($model, [
+            $this->getRequestHandler()->handle($model, [
                 'book' => 'wrong_slug'
             ]);
             $this->fail();
@@ -52,7 +52,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
     {
         try {
             $model = new TestApp\RequestModel\ModelWithEntityById();
-            $this->getRequestModelManager()->handle($model, [
+            $this->getRequestHandler()->handle($model, [
                 'book' => null
             ]);
             $this->fail();
@@ -65,7 +65,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
     {
         try {
             $model = new TestApp\RequestModel\ModelWithEntityById();
-            $this->getRequestModelManager()->handle($model, [
+            $this->getRequestHandler()->handle($model, [
                 'book' => 'string'
             ]);
             $this->fail();
@@ -78,12 +78,17 @@ class EntityTransformerTest extends Tests\BaseTestCase
     {
         try {
             $model = new TestApp\RequestModel\ModelWithEntityBySlug();
-            $this->getRequestModelManager()->handle($model, [
+            $this->getRequestHandler()->handle($model, [
                 'book' => 10
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
             $this->assertSame(['book' => ['This value should be a string.']], $exception->getProperties());
         }
+    }
+
+    private function getRequestHandler(): RestApiBundle\Services\Request\RequestHandler
+    {
+        return $this->getContainer()->get(RestApiBundle\Services\Request\RequestHandler::class);
     }
 }

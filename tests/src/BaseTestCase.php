@@ -8,8 +8,6 @@ use Spatie\Snapshots\MatchesSnapshots;
 use TestApp;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-use function get_class;
-
 abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
 {
     use MatchesSnapshots;
@@ -17,7 +15,7 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     /**
      * @var KernelInterface
      */
-    protected $kernel;
+    private $kernel;
 
     public function __construct()
     {
@@ -45,66 +43,5 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     public function getKernel(): KernelInterface
     {
         return $this->kernel;
-    }
-
-    protected function getResponseSerializer(): RestApiBundle\Services\Response\Serializer
-    {
-        $result = $this->getContainer()->get(RestApiBundle\Services\Response\Serializer::class);
-        if (!$result instanceof RestApiBundle\Services\Response\Serializer) {
-            throw new \InvalidArgumentException();
-        }
-
-        return $result;
-    }
-
-    protected function getRequestModelManager(): RestApiBundle\Services\Request\RequestHandler
-    {
-        $result = $this->getContainer()->get(RestApiBundle\Services\Request\RequestHandler::class);
-        if (!$result instanceof RestApiBundle\Services\Request\RequestHandler) {
-            throw new \InvalidArgumentException();
-        }
-
-        return $result;
-    }
-
-    protected function invokePrivateMethod($object, string $methodName, array $parameters = [])
-    {
-        $reflection = RestApiBundle\Helper\ReflectionClassStore::get(get_class($object));
-        $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
-
-        return $method->invokeArgs($object, $parameters);
-    }
-
-    protected function getEndpointFinder(): RestApiBundle\Services\Docs\EndpointFinder
-    {
-        /** @var RestApiBundle\Services\Docs\EndpointFinder $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\EndpointFinder::class);
-
-        return $result;
-    }
-
-    protected function getRequestModelValidator(): RestApiBundle\Services\Request\RequestModelValidator
-    {
-        /** @var RestApiBundle\Services\Request\RequestModelValidator $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Request\RequestModelValidator::class);
-
-        return $result;
-    }
-
-    protected function getDocBlockSchemaReader(): RestApiBundle\Services\Docs\Types\DocBlockTypeReader
-    {
-        /** @var RestApiBundle\Services\Docs\Types\DocBlockTypeReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Types\DocBlockTypeReader::class);
-
-        return $result;
-    }
-
-    protected function getTypeHintSchemaReader(): RestApiBundle\Services\Docs\Types\TypeHintTypeReader
-    {
-        /** @var RestApiBundle\Services\Docs\Types\TypeHintTypeReader $result */
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\Types\TypeHintTypeReader::class);
-
-        return $result;
     }
 }

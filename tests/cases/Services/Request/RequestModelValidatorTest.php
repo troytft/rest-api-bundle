@@ -31,4 +31,9 @@ class RequestModelValidatorTest extends Tests\BaseTestCase
         $this->assertSame(['Invalid value.'], $value['nestedRequestModels.0.field']);
         $this->assertSame(['Invalid value.'], $value['nestedRequestModels.1.field']);
     }
+
+    private function getRequestModelValidator(): RestApiBundle\Services\Request\RequestModelValidator
+    {
+        return $this->getContainer()->get(RestApiBundle\Services\Request\RequestModelValidator::class);
+    }
 }

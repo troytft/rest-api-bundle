@@ -6,7 +6,7 @@ class RequestModelValidationTest extends Tests\BaseTestCase
     {
         try {
             $model = new TestApp\RequestModel\ModelWithValidation();
-            $this->getRequestModelManager()->handle($model, [
+            $this->getRequestHandler()->handle($model, [
                 'stringField' => 's',
                 'modelField' => [
                     'stringField' => 's',
@@ -54,5 +54,10 @@ class RequestModelValidationTest extends Tests\BaseTestCase
                 'Example message without property',
             ], $value['*']);
         }
+    }
+
+    private function getRequestHandler(): RestApiBundle\Services\Request\RequestHandler
+    {
+        return $this->getContainer()->get(RestApiBundle\Services\Request\RequestHandler::class);
     }
 }
