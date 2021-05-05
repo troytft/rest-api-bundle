@@ -9,18 +9,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 class BookList implements RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     /**
-     * @var int|null
-     *
      * @Mapper\IntegerType(nullable=true)
      */
-    private $offset;
+    public ?int $offset;
 
     /**
-     * @var int|null
-     *
      * @Mapper\IntegerType(nullable=true)
      */
-    private $limit;
+    public ?int $limit;
 
     /**
      * @var string[]|null
@@ -29,30 +25,6 @@ class BookList implements RestApiBundle\Mapping\RequestModel\RequestModelInterfa
      * @Assert\Choice(callback="TestApp\Enum\BookStatus::getValues", multiple=true)
      */
     private $statuses;
-
-    public function getOffset(): ?int
-    {
-        return $this->offset;
-    }
-
-    public function setOffset(?int $offset)
-    {
-        $this->offset = $offset;
-
-        return $this;
-    }
-
-    public function getLimit(): ?int
-    {
-        return $this->limit;
-    }
-
-    public function setLimit(?int $limit)
-    {
-        $this->limit = $limit;
-
-        return $this;
-    }
 
     /**
      * @return string[]|null
