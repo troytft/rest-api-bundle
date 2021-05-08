@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\ResponseModel;
+namespace RestApiBundle\Helper\ResponseModel;
 
 use function explode;
 use function join;
@@ -11,11 +11,11 @@ class TypenameResolver
     /**
      * @var array<string, string>
      */
-    private $typenameCache = [];
+    private static array $typenameCache = [];
 
-    public function resolve(string $class): string
+    public static function resolve(string $class): string
     {
-        if (!isset($this->typenameCache[$class])) {
+        if (!isset(static::$typenameCache[$class])) {
             $parts = [];
             $isResponseModel = false;
 
@@ -40,9 +40,9 @@ class TypenameResolver
                 );
             }
 
-            $this->typenameCache[$class] = $typename;
+            static::$typenameCache[$class] = $typename;
         }
 
-        return $this->typenameCache[$class];
+        return static::$typenameCache[$class];
     }
 }

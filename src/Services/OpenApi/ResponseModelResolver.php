@@ -29,18 +29,15 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
 
     private RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader $typeHintReader;
     private RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader $docBlockReader;
-    private RestApiBundle\Services\ResponseModel\TypenameResolver $typenameResolver;
     private RestApiBundle\Services\SettingsProvider $settingsProvider;
 
     public function __construct(
         RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader $typeHintReader,
         RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader $docBlockReader,
-        RestApiBundle\Services\ResponseModel\TypenameResolver $typenameResolver,
         RestApiBundle\Services\SettingsProvider $settingsProvider
     ) {
         $this->typeHintReader = $typeHintReader;
         $this->docBlockReader = $docBlockReader;
-        $this->typenameResolver = $typenameResolver;
         $this->settingsProvider = $settingsProvider;
     }
 
@@ -56,7 +53,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
                 throw new \InvalidArgumentException(sprintf('Class %s is not a response model.', $class));
             }
 
-            $typename = $this->typenameResolver->resolve($class);
+            $typename = RestApiBundle\Helper\ResponseModel\TypenameResolver::resolve($class);
             if (isset($this->typenameCache[$typename])) {
                 throw new \InvalidArgumentException(sprintf('Typename %s for class %s already used by another class %s', $typename, $class, $this->typenameCache[$typename]));
             }
