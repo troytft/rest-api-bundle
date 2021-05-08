@@ -3,15 +3,14 @@
 namespace TestApp\RequestModel;
 
 use TestApp;
-use RestApiBundle\Annotation\Request as Mapper;
-use RestApiBundle\Mapping\RequestModel\RequestModelInterface;
+use RestApiBundle\Mapping\RequestModel;
 
-class ModelWithArrayOfEntities implements RequestModelInterface
+class ModelWithArrayOfEntities implements RequestModel\RequestModelInterface
 {
     /**
      * @var \TestApp\Entity\Book[]
      *
-     * @Mapper\ArrayOfEntitiesType(class="TestApp\Entity\Book")
+     * @RequestModel\ArrayOfEntitiesType(class="TestApp\Entity\Book")
      */
     private $books;
 

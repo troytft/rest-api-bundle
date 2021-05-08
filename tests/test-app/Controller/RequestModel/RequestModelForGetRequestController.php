@@ -4,12 +4,12 @@ namespace TestApp\Controller\RequestModel;
 
 use TestApp;
 use Symfony\Component\Routing\Annotation\Route;
-use RestApiBundle\Annotation\Docs;
+use RestApiBundle\Mapping\OpenApi;
 
 class RequestModelForGetRequestController
 {
     /**
-     * @Docs\Endpoint(title="Title", tags={"tag"})
+     * @OpenApi\Endpoint(title="Title", tags={"tag"})
      *
      * @Route("/test", methods="GET")
      *

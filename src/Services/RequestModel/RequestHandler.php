@@ -22,11 +22,6 @@ class RequestHandler
     private $mapperInitiator;
 
     /**
-     * @var RestApiBundle\Services\SettingsProvider
-     */
-    private $settingsProvider;
-
-    /**
      * @var RestApiBundle\Services\RequestModel\RequestModelValidator
      */
     private $requestModelValidator;
@@ -34,12 +29,10 @@ class RequestHandler
     public function __construct(
         TranslatorInterface $translator,
         RestApiBundle\Services\RequestModel\MapperInitiator $mapperInitiator,
-        RestApiBundle\Services\SettingsProvider $settingsProvider,
         RestApiBundle\Services\RequestModel\RequestModelValidator $requestModelValidator
     ) {
         $this->translator = $translator;
         $this->mapperInitiator = $mapperInitiator;
-        $this->settingsProvider = $settingsProvider;
         $this->requestModelValidator = $requestModelValidator;
     }
 

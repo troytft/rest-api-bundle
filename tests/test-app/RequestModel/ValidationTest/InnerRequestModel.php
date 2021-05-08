@@ -2,16 +2,15 @@
 
 namespace TestApp\RequestModel\ValidationTest;
 
-use RestApiBundle\Mapping\RequestModel\RequestModelInterface;
-use RestApiBundle\Annotation\Request as Mapper;
+use RestApiBundle\Mapping\RequestModel;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class InnerRequestModel implements RequestModelInterface
+class InnerRequestModel implements RequestModel\RequestModelInterface
 {
     /**
      * @var string|null
      *
-     * @Mapper\StringType(nullable=true)
+     * @RequestModel\StringType(nullable=true)
      *
      * @Assert\Expression(expression="false", message="Invalid value.")
      */

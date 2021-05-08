@@ -5,6 +5,6 @@
 Features:
 * Abstraction level for requests: describe jsonBody/queryString by php class, properties are configured by annotations 
 * Abstraction level for responses: describe response object by php class, properties are configured by public getters
-* Auto-generated documentation: generate OpenAPI specification without additional code, just add @Docs\Endpoint() annotation
+* Auto-generated documentation: generate OpenAPI specification without additional code, just add @OpenApi\Endpoint() annotation
 
 Work in progress.

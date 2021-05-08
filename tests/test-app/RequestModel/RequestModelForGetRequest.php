@@ -3,7 +3,7 @@
 namespace TestApp\RequestModel;
 
 use RestApiBundle;
-use RestApiBundle\Annotation\Request as Mapper;
+use RestApiBundle\Mapping\RequestModel;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class RequestModelForGetRequest implements RestApiBundle\Mapping\RequestModel\RequestModelInterface
@@ -11,7 +11,7 @@ class RequestModelForGetRequest implements RestApiBundle\Mapping\RequestModel\Re
     /**
      * @var int
      *
-     * @Mapper\IntegerType()
+     * @RequestModel\IntegerType()
      *
      * @Assert\Range(min=0, max=PHP_INT_MAX)
      * @Assert\NotNull()
@@ -21,7 +21,7 @@ class RequestModelForGetRequest implements RestApiBundle\Mapping\RequestModel\Re
     /**
      * @var int
      *
-     * @Mapper\IntegerType()
+     * @RequestModel\IntegerType()
      *
      * @Assert\Range(min=0, max=20)
      * @Assert\NotNull()

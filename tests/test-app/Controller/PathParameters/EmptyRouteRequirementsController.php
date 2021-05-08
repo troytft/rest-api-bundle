@@ -3,12 +3,12 @@
 namespace TestApp\Controller\PathParameters;
 
 use Symfony\Component\Routing\Annotation\Route;
-use RestApiBundle\Annotation\Docs;
+use RestApiBundle\Mapping\OpenApi;
 
 class EmptyRouteRequirementsController
 {
     /**
-     * @Docs\Endpoint(title="Title", tags={"tag"})
+     * @OpenApi\Endpoint(title="Title", tags={"tag"})
      *
      * @Route("/{unknown_parameter}", methods="GET")
      *

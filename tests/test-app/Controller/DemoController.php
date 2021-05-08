@@ -4,7 +4,7 @@ namespace TestApp\Controller;
 
 use TestApp;
 use Symfony\Component\Routing\Annotation\Route;
-use RestApiBundle\Annotation\Docs;
+use RestApiBundle\Mapping\OpenApi;
 use Symfony\Component\HttpFoundation\Response;
 
 use function array_map;
@@ -111,7 +111,7 @@ class DemoController
     }
 
     /**
-     * @Docs\Endpoint(title="Get book by slug", tags={"demo"})
+     * @OpenApi\Endpoint(title="Get book by slug", tags={"demo"})
      *
      * @Route("/books/by-slug/{slug}", methods="GET", requirements={"slug": "[\w-]+"})
      *

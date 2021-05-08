@@ -30,7 +30,7 @@ final class AppKernel extends Kernel
         $kernel = new static('cli', false);
 
         $application = new Application($kernel);
-        $application->setDefaultCommand(RestApiBundle\Command\Docs\GenerateDocsCommand::getDefaultName(), true);
+        $application->setDefaultCommand(RestApiBundle\Command\OpenApi\GenerateDocsCommand::getDefaultName(), true);
 
         return $application;
     }

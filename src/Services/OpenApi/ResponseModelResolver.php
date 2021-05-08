@@ -138,12 +138,12 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         ]);
     }
 
-    private function getReturnType(\ReflectionMethod $reflectionMethod): RestApiBundle\DTO\Docs\Types\TypeInterface
+    private function getReturnType(\ReflectionMethod $reflectionMethod): RestApiBundle\Model\OpenApi\Types\TypeInterface
     {
         $result = $this->docBlockReader->resolveReturnType($reflectionMethod) ?: $this->typeHintReader->resolveReturnType($reflectionMethod);
         if (!$result) {
             $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
-            throw new RestApiBundle\Exception\Docs\InvalidDefinitionException(new RestApiBundle\Exception\Docs\InvalidDefinition\EmptyReturnTypeException(), $context);
+            throw new RestApiBundle\Exception\OpenApi\InvalidDefinitionException(new RestApiBundle\Exception\OpenApi\InvalidDefinition\EmptyReturnTypeException(), $context);
         }
 
         return $result;
@@ -152,13 +152,13 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
     /**
      * @return OpenApi\Schema|OpenApi\Reference
      */
-    private function convert(RestApiBundle\DTO\Docs\Types\TypeInterface $type)
+    private function convert(RestApiBundle\Model\OpenApi\Types\TypeInterface $type)
     {
-        if ($type instanceof RestApiBundle\DTO\Docs\Types\ArrayType) {
+        if ($type instanceof RestApiBundle\Model\OpenApi\Types\ArrayType) {
             $result = $this->convertArrayType($type);
-        } elseif ($type instanceof RestApiBundle\DTO\Docs\Types\ScalarInterface) {
+        } elseif ($type instanceof RestApiBundle\Model\OpenApi\Types\ScalarInterface) {
             $result = $this->resolveScalarType($type);
-        } elseif ($type instanceof RestApiBundle\DTO\Docs\Types\ClassType) {
+        } elseif ($type instanceof RestApiBundle\Model\OpenApi\Types\ClassType) {
             $result = $this->convertClassType($type);
         } else {
             throw new \InvalidArgumentException();
@@ -167,7 +167,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         return $result;
     }
 
-    private function convertArrayType(RestApiBundle\DTO\Docs\Types\ArrayType $arrayType): OpenApi\Schema
+    private function convertArrayType(RestApiBundle\Model\OpenApi\Types\ArrayType $arrayType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
@@ -179,7 +179,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
     /**
      * @return OpenApi\Schema|OpenApi\Reference
      */
-    private function convertClassType(RestApiBundle\DTO\Docs\Types\ClassType $classType)
+    private function convertClassType(RestApiBundle\Model\OpenApi\Types\ClassType $classType)
     {
         switch (true) {
             case RestApiBundle\Helper\ClassInterfaceChecker::isResponseModel($classType->getClass()):
@@ -220,7 +220,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         return $result;
     }
 
-    private function convertSerializableEnum(RestApiBundle\DTO\Docs\Types\ClassType $classType): OpenApi\Schema
+    private function convertSerializableEnum(RestApiBundle\Model\OpenApi\Types\ClassType $classType): OpenApi\Schema
     {
         $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($classType->getClass());
 
@@ -263,7 +263,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         return $result;
     }
 
-    private function convertSerializableDate(RestApiBundle\DTO\Docs\Types\ClassType $classType): OpenApi\Schema
+    private function convertSerializableDate(RestApiBundle\Model\OpenApi\Types\ClassType $classType): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,

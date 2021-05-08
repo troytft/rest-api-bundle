@@ -3,13 +3,13 @@
 namespace TestApp\Controller\PathParameters;
 
 use Symfony\Component\Routing\Annotation\Route;
-use RestApiBundle\Annotation\Docs;
+use RestApiBundle\Mapping\OpenApi;
 use TestApp\Entity\Book;
 
 class EntityPathParametersController
 {
     /**
-     * @Docs\Endpoint(title="Title", tags={"tag"})
+     * @OpenApi\Endpoint(title="Title", tags={"tag"})
      *
      * @Route("/{int}/{genre}/{string}/{slug}", methods="GET")
      *

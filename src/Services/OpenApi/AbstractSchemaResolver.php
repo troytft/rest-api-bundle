@@ -7,10 +7,10 @@ use cebe\openapi\spec as OpenApi;
 
 abstract class AbstractSchemaResolver
 {
-    protected function resolveScalarType(RestApiBundle\DTO\Docs\Types\ScalarInterface $scalarType): OpenApi\Schema
+    protected function resolveScalarType(RestApiBundle\Model\OpenApi\Types\ScalarInterface $scalarType): OpenApi\Schema
     {
         switch (true) {
-            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\StringType:
+            case $scalarType instanceof RestApiBundle\Model\OpenApi\Types\StringType:
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'nullable' => $scalarType->getNullable(),
@@ -18,7 +18,7 @@ abstract class AbstractSchemaResolver
 
                 break;
 
-            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\IntegerType:
+            case $scalarType instanceof RestApiBundle\Model\OpenApi\Types\IntegerType:
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::INTEGER,
                     'nullable' => $scalarType->getNullable(),
@@ -26,7 +26,7 @@ abstract class AbstractSchemaResolver
 
                 break;
 
-            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\FloatType:
+            case $scalarType instanceof RestApiBundle\Model\OpenApi\Types\FloatType:
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::NUMBER,
                     'format' => 'double',
@@ -35,7 +35,7 @@ abstract class AbstractSchemaResolver
 
                 break;
 
-            case $scalarType instanceof RestApiBundle\DTO\Docs\Types\BooleanType:
+            case $scalarType instanceof RestApiBundle\Model\OpenApi\Types\BooleanType:
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::BOOLEAN,
                     'nullable' => $scalarType->getNullable(),

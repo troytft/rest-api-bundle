@@ -48,7 +48,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     }
 
     /**
-     * @param RestApiBundle\DTO\Docs\EndpointData[] $endpoints
+     * @param RestApiBundle\Model\OpenApi\EndpointData[] $endpoints
      *
      * @return string
      */
@@ -62,7 +62,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     }
 
     /**
-     * @param RestApiBundle\DTO\Docs\EndpointData[] $endpoints
+     * @param RestApiBundle\Model\OpenApi\EndpointData[] $endpoints
      */
     public function generateJson(array $endpoints, ?string $template = null): string
     {
@@ -110,7 +110,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     }
 
     /**
-     * @param RestApiBundle\DTO\Docs\EndpointData[] $endpointDataItems
+     * @param RestApiBundle\Model\OpenApi\EndpointData[] $endpointDataItems
      *
      * @return OpenApi\OpenApi
      */
@@ -162,7 +162,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
             }
 
-            if ($response instanceof RestApiBundle\DTO\Docs\Response\ResponseModel) {
+            if ($response instanceof RestApiBundle\Model\OpenApi\Response\ResponseModel) {
                 $responseModelSchema = $this->responseModelResolver->resolveReferenceByClass($response->getClass());
                 $responseModelSchema
                     ->nullable = $response->getNullable();
@@ -175,7 +175,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                         ]
                     ]
                 ]));
-            } elseif ($response instanceof RestApiBundle\DTO\Docs\Response\ArrayOfResponseModels) {
+            } elseif ($response instanceof RestApiBundle\Model\OpenApi\Response\ArrayOfResponseModels) {
                 $responseModelSchema = $this->responseModelResolver->resolveReferenceByClass($response->getClass());
                 $responseModelSchema
                     ->nullable = $response->getNullable();
@@ -197,9 +197,9 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             $pathParameters = [];
 
             foreach ($routeData->getPathParameters() as $pathParameter) {
-                if ($pathParameter instanceof RestApiBundle\DTO\Docs\PathParameter\ScalarParameter) {
+                if ($pathParameter instanceof RestApiBundle\Model\OpenApi\PathParameter\ScalarParameter) {
                     $schema = $this->resolveScalarType(($pathParameter->getType()));
-                } elseif ($pathParameter instanceof RestApiBundle\DTO\Docs\PathParameter\EntityTypeParameter) {
+                } elseif ($pathParameter instanceof RestApiBundle\Model\OpenApi\PathParameter\EntityTypeParameter) {
                     $schema = $this->doctrineResolver->resolveByColumnType($pathParameter->getClassType()->getClass(), $pathParameter->getFieldName());
                     $schema->description = sprintf('Element by "%s"', $pathParameter->getFieldName());
                     $schema->nullable = $pathParameter->getClassType()->getNullable();
@@ -241,11 +241,11 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
                 $queryParameters = [];
                 $request = $routeData->getRequest();
-                if ($request instanceof RestApiBundle\DTO\Docs\Request\RequestModel && $isHttpGetMethod) {
+                if ($request instanceof RestApiBundle\Model\OpenApi\Request\RequestModel && $isHttpGetMethod) {
                     $queryParameters = $this->convertRequestModelToParameters($request);
                 }
 
-                if ($request instanceof RestApiBundle\DTO\Docs\Request\RequestModel && !$isHttpGetMethod) {
+                if ($request instanceof RestApiBundle\Model\OpenApi\Request\RequestModel && !$isHttpGetMethod) {
                     $operation->requestBody = $this->convertRequestModelToRequestBody($request);
                 }
 
@@ -281,7 +281,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         return $root;
     }
 
-    private function convertRequestModelToRequestBody(RestApiBundle\DTO\Docs\Request\RequestModel $requestModel): OpenApi\RequestBody
+    private function convertRequestModelToRequestBody(RestApiBundle\Model\OpenApi\Request\RequestModel $requestModel): OpenApi\RequestBody
     {
         $schema = $this->requestModelResolver->resolveByClass($requestModel->getClass());
         $schema
@@ -301,7 +301,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     /**
      * @return OpenApi\Parameter[]
      */
-    private function convertRequestModelToParameters(RestApiBundle\DTO\Docs\Request\RequestModel $requestModel): array
+    private function convertRequestModelToParameters(RestApiBundle\Model\OpenApi\Request\RequestModel $requestModel): array
     {
         $result = [];
         $schema = $this->requestModelResolver->resolveByClass($requestModel->getClass());

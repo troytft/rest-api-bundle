@@ -4,7 +4,7 @@ namespace TestApp\Controller\Tags;
 
 use TestApp;
 use Symfony\Component\Routing\Annotation\Route;
-use RestApiBundle\Annotation\Docs;
+use RestApiBundle\Mapping\OpenApi;
 
 /**
  * @Route("/tag1")
@@ -22,7 +22,7 @@ class Tag1Controller
     }
 
     /**
-     * @Docs\Endpoint(title="Book response model details", tags={"tag1"})
+     * @OpenApi\Endpoint(title="Book response model details", tags={"tag1"})
      *
      * @Route(methods="GET")
      */

@@ -8,7 +8,7 @@ use function ltrim;
 
 class TypeHintTypeReader extends RestApiBundle\Services\OpenApi\Types\BaseTypeReader
 {
-    public function resolveReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Types\TypeInterface
+    public function resolveReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\Model\OpenApi\Types\TypeInterface
     {
         if (!$reflectionMethod->getReturnType()) {
             return null;
@@ -19,7 +19,7 @@ class TypeHintTypeReader extends RestApiBundle\Services\OpenApi\Types\BaseTypeRe
         return $this->createFromString($type, $reflectionMethod->getReturnType()->allowsNull());
     }
 
-    public function resolveParameterType(\ReflectionParameter $reflectionParameter): ?RestApiBundle\DTO\Docs\Types\TypeInterface
+    public function resolveParameterType(\ReflectionParameter $reflectionParameter): ?RestApiBundle\Model\OpenApi\Types\TypeInterface
     {
         if (!$reflectionParameter->getType()) {
             return null;
@@ -28,12 +28,12 @@ class TypeHintTypeReader extends RestApiBundle\Services\OpenApi\Types\BaseTypeRe
         return $this->createFromString($reflectionParameter->getType(), $reflectionParameter->allowsNull());
     }
 
-    private function createFromString(string $type, bool $nullable): ?RestApiBundle\DTO\Docs\Types\TypeInterface
+    private function createFromString(string $type, bool $nullable): ?RestApiBundle\Model\OpenApi\Types\TypeInterface
     {
         if ($type === 'array') {
             $result = null;
         } elseif ($type === 'void') {
-            $result = new RestApiBundle\DTO\Docs\Types\NullType();
+            $result = new RestApiBundle\Model\OpenApi\Types\NullType();
         } elseif ($this->isScalarType($type)) {
             $result = $this->createScalarTypeFromString($type, $nullable);
         } else {
