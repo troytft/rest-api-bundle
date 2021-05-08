@@ -3,15 +3,15 @@
 namespace TestApp\RequestModel;
 
 use TestApp;
-use RestApiBundle\Mapping\RequestModel;
+use RestApiBundle\Mapping\RequestModel as Mapping;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class WriterData implements RequestModel\RequestModelInterface
+class WriterData implements Mapping\RequestModelInterface
 {
     /**
      * @var string
      *
-     * @RequestModel\StringType()
+     * @Mapping\StringType()
      * @Assert\Length(min=1, max=255, allowEmptyString=false)
      */
     private $name;
@@ -19,7 +19,7 @@ class WriterData implements RequestModel\RequestModelInterface
     /**
      * @var string
      *
-     * @RequestModel\StringType()
+     * @Mapping\StringType()
      * @Assert\Length(min=1, max=255, allowEmptyString=false)
      */
     private $surname;
@@ -27,14 +27,14 @@ class WriterData implements RequestModel\RequestModelInterface
     /**
      * @var \DateTime|null
      *
-     * @RequestModel\DateType(nullable=true)
+     * @Mapping\DateType(nullable=true)
      */
     private $birthday;
 
     /**
      * @var TestApp\Entity\Book[]
      *
-     * @RequestModel\ArrayOfEntitiesType(class="TestApp\Entity\Book")
+     * @Mapping\ArrayOfEntitiesType(class="TestApp\Entity\Book")
      */
     private $genres;
 

@@ -4,7 +4,7 @@ namespace TestApp\Controller\CommandTest\Success;
 
 use TestApp;
 use Symfony\Component\Routing\Annotation\Route;
-use RestApiBundle\Mapping\OpenApi;
+use RestApiBundle\Mapping\OpenApi as Docs;
 
 /**
  * @Route("/writers")
@@ -12,7 +12,7 @@ use RestApiBundle\Mapping\OpenApi;
 class WriterController
 {
     /**
-     * @OpenApi\Endpoint(title="Create writer", tags={"writers"})
+     * @Docs\Endpoint(title="Create writer", tags={"writers"})
      *
      * @Route(methods="POST")
      */
@@ -22,7 +22,7 @@ class WriterController
     }
 
     /**
-     * @OpenApi\Endpoint(title="Writers list with filters", tags={"writers"})
+     * @Docs\Endpoint(title="Writers list with filters", tags={"writers"})
      *
      * @Route(methods="GET")
      *
@@ -34,7 +34,7 @@ class WriterController
     }
 
     /**
-     * @OpenApi\Endpoint(title="Remove writer", tags={"writers"})
+     * @Docs\Endpoint(title="Remove writer", tags={"writers"})
      *
      * @Route("/{id}", methods="DELETE", requirements={"id": "\d"})
      */

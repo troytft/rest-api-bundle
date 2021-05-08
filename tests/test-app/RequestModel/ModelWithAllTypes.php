@@ -2,63 +2,63 @@
 
 namespace TestApp\RequestModel;
 
-use RestApiBundle\Mapping\RequestModel;
+use RestApiBundle\Mapping\RequestModel as Mapping;
 
-class ModelWithAllTypes implements RequestModel\RequestModelInterface
+class ModelWithAllTypes implements Mapping\RequestModelInterface
 {
     /**
      * @var bool|null
      *
-     * @RequestModel\BooleanType(nullable=true)
+     * @Mapping\BooleanType(nullable=true)
      */
     private $booleanType;
 
     /**
      * @var float|null
      *
-     * @RequestModel\FloatType(nullable=true)
+     * @Mapping\FloatType(nullable=true)
      */
     private $floatType;
 
     /**
      * @var int|null
      *
-     * @RequestModel\IntegerType(nullable=true)
+     * @Mapping\IntegerType(nullable=true)
      */
     private $integerType;
 
     /**
      * @var string|null
      *
-     * @RequestModel\StringType(nullable=true)
+     * @Mapping\StringType(nullable=true)
      */
     private $stringType;
 
     /**
      * @var InnerModel|null
      *
-     * @RequestModel\RequestModelType(class="TestApp\RequestModel\InnerModel", nullable=true)
+     * @Mapping\RequestModelType(class="TestApp\RequestModel\InnerModel", nullable=true)
      */
     private $model;
 
     /**
      * @var array|null
      *
-     * @RequestModel\ArrayType(type=@RequestModel\IntegerType(), nullable=true)
+     * @Mapping\ArrayType(type=@Mapping\IntegerType(), nullable=true)
      */
     private $collection;
 
     /**
      * @var \DateTime|null
      *
-     * @RequestModel\DateType(nullable=true)
+     * @Mapping\DateType(nullable=true)
      */
     private $date;
 
     /**
      * @var \DateTime|null
      *
-     * @RequestModel\DateTimeType(nullable=true)
+     * @Mapping\DateTimeType(nullable=true)
      */
     private $dateTime;
 

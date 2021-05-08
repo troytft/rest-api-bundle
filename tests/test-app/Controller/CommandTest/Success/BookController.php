@@ -4,7 +4,7 @@ namespace TestApp\Controller\CommandTest\Success;
 
 use TestApp;
 use Symfony\Component\Routing\Annotation\Route;
-use RestApiBundle\Mapping\OpenApi;
+use RestApiBundle\Mapping\OpenApi as Docs;
 
 /**
  * @Route("/books")
@@ -12,7 +12,7 @@ use RestApiBundle\Mapping\OpenApi;
 class BookController
 {
     /**
-     * @OpenApi\Endpoint(title="Books list", tags={"books"})
+     * @Docs\Endpoint(title="Books list", tags={"books"})
      *
      * @Route(methods="GET")
      *

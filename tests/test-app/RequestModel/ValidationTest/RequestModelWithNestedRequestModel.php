@@ -3,14 +3,14 @@
 namespace TestApp\RequestModel\ValidationTest;
 
 use TestApp;
-use RestApiBundle\Mapping\RequestModel;
+use RestApiBundle\Mapping\RequestModel as Mapping;
 
-class RequestModelWithNestedRequestModel implements RequestModel\RequestModelInterface
+class RequestModelWithNestedRequestModel implements Mapping\RequestModelInterface
 {
     /**
      * @var TestApp\RequestModel\ValidationTest\InnerRequestModel
      *
-     * @RequestModel\RequestModelType(class="TestApp\RequestModel\ValidationTest\InnerRequestModel")
+     * @Mapping\RequestModelType(class="TestApp\RequestModel\ValidationTest\InnerRequestModel")
      */
     private $nestedRequestModel;
 
