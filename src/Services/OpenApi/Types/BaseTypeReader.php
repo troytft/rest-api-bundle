@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Types;
+namespace RestApiBundle\Services\OpenApi\Types;
 
 use RestApiBundle;
 

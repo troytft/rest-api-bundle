@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\OpenApi;
+namespace RestApiBundle\Services\OpenApi;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Validator as Validator;
@@ -10,27 +10,12 @@ use cebe\openapi\spec as OpenApi;
 
 use function sprintf;
 
-class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver
+class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
     /**
-     * @var Mapper\SchemaGenerator
-     */
-    private $schemaGenerator;
-
-    /**
-     * @var RestApiBundle\Services\Docs\OpenApi\DoctrineResolver
+     * @var RestApiBundle\Services\OpenApi\DoctrineResolver
      */
     private $doctrineHelper;
-
-    /**
-     * @var RestApiBundle\Services\Docs\Types\TypeHintTypeReader
-     */
-    private $typeHintReader;
-
-    /**
-     * @var RestApiBundle\Services\Docs\Types\DocBlockTypeReader
-     */
-    private $docBlockReader;
 
     /**
      * @var AnnotationReader
@@ -43,22 +28,16 @@ class RequestModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractS
     private $settingsProvider;
 
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\ExampleResolver
+     * @var RestApiBundle\Services\OpenApi\ExampleResolver
      */
     private $exampleResolver;
 
     public function __construct(
-        RestApiBundle\Services\Request\MapperInitiator $mapperInitiator,
-        RestApiBundle\Services\Docs\OpenApi\DoctrineResolver $doctrineHelper,
-        RestApiBundle\Services\Docs\Types\TypeHintTypeReader $typeHintReader,
-        RestApiBundle\Services\Docs\Types\DocBlockTypeReader $docBlockReader,
+        RestApiBundle\Services\OpenApi\DoctrineResolver $doctrineHelper,
         RestApiBundle\Services\SettingsProvider $settingsProvider,
-        RestApiBundle\Services\Docs\OpenApi\ExampleResolver $exampleResolver
+        RestApiBundle\Services\OpenApi\ExampleResolver $exampleResolver
     ) {
-        $this->schemaGenerator = $mapperInitiator->getMapper()->getSchemaGenerator();
         $this->doctrineHelper = $doctrineHelper;
-        $this->typeHintReader = $typeHintReader;
-        $this->docBlockReader = $docBlockReader;
         $this->annotationReader = Mapper\Helper\AnnotationReaderFactory::create(true);
         $this->settingsProvider = $settingsProvider;
         $this->exampleResolver = $exampleResolver;

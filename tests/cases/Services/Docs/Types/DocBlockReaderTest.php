@@ -85,8 +85,8 @@ class DocBlockReaderTest extends Tests\BaseTestCase
         $this->assertFalse($innerType->getNullable());
     }
 
-    private function getDocBlockSchemaReader(): RestApiBundle\Services\Docs\Types\DocBlockTypeReader
+    private function getDocBlockSchemaReader(): RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader
     {
-        return $this->getContainer()->get(RestApiBundle\Services\Docs\Types\DocBlockTypeReader::class);
+        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader::class);
     }
 }

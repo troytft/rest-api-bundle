@@ -23,18 +23,18 @@ class GenerateDocsCommand extends Command
     protected static $defaultName = 'rest-api:generate-docs';
 
     /**
-     * @var RestApiBundle\Services\Docs\EndpointFinder
+     * @var RestApiBundle\Services\OpenApi\EndpointFinder
      */
     private $endpointFinder;
 
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\SpecificationGenerator
+     * @var RestApiBundle\Services\OpenApi\SpecificationGenerator
      */
     private $specificationGenerator;
 
     public function __construct(
-        RestApiBundle\Services\Docs\EndpointFinder $endpointFinder,
-        RestApiBundle\Services\Docs\OpenApi\SpecificationGenerator $specificationGenerator
+        RestApiBundle\Services\OpenApi\EndpointFinder $endpointFinder,
+        RestApiBundle\Services\OpenApi\SpecificationGenerator $specificationGenerator
     ) {
         $this->endpointFinder = $endpointFinder;
         $this->specificationGenerator = $specificationGenerator;

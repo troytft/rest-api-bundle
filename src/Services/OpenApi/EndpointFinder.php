@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs;
+namespace RestApiBundle\Services\OpenApi;
 
 use Composer\Autoload\ClassLoader;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -32,24 +32,24 @@ class EndpointFinder
     private $annotationReader;
 
     /**
-     * @var RestApiBundle\Services\Docs\Types\DocBlockTypeReader
+     * @var RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader
      */
     private $docBlockReader;
 
     /**
-     * @var RestApiBundle\Services\Docs\Types\TypeHintTypeReader
+     * @var RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader
      */
     private $typeHintReader;
 
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\DoctrineResolver
+     * @var RestApiBundle\Services\OpenApi\DoctrineResolver
      */
     private $doctrineHelper;
 
     public function __construct(
-        RestApiBundle\Services\Docs\Types\DocBlockTypeReader $docBlockSchemaReader,
-        RestApiBundle\Services\Docs\Types\TypeHintTypeReader $typeHintSchemaReader,
-        RestApiBundle\Services\Docs\OpenApi\DoctrineResolver $doctrineHelper
+        RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader $docBlockSchemaReader,
+        RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader $typeHintSchemaReader,
+        RestApiBundle\Services\OpenApi\DoctrineResolver $doctrineHelper
     ) {
         $this->annotationReader = AnnotationReaderFactory::create(true);
         $this->docBlockReader = $docBlockSchemaReader;

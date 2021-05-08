@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\OpenApi;
+namespace RestApiBundle\Services\OpenApi;
 
 use Mapper\Helper\AnnotationReaderFactory;
 use RestApiBundle;
@@ -9,7 +9,7 @@ use cebe\openapi\spec as OpenApi;
 
 use function sprintf;
 
-class DoctrineResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver
+class DoctrineResolver extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
     /**
      * @var Doctrine\Common\Annotations\AnnotationReader

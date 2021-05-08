@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\OpenApi;
+namespace RestApiBundle\Services\OpenApi;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
@@ -20,27 +20,27 @@ use function pathinfo;
 use function sprintf;
 use function strtolower;
 
-class SpecificationGenerator extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver
+class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\RequestModelResolver
+     * @var RestApiBundle\Services\OpenApi\RequestModelResolver
      */
     private $requestModelResolver;
 
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver
+     * @var RestApiBundle\Services\OpenApi\ResponseModelResolver
      */
     private $responseModelResolver;
 
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\DoctrineResolver
+     * @var RestApiBundle\Services\OpenApi\DoctrineResolver
      */
     private $doctrineResolver;
 
     public function __construct(
-        RestApiBundle\Services\Docs\OpenApi\RequestModelResolver $requestModelResolver,
-        RestApiBundle\Services\Docs\OpenApi\ResponseModelResolver $responseModelResolver,
-        RestApiBundle\Services\Docs\OpenApi\DoctrineResolver $doctrineResolver
+        RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver,
+        RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver,
+        RestApiBundle\Services\OpenApi\DoctrineResolver $doctrineResolver
     ) {
         $this->requestModelResolver = $requestModelResolver;
         $this->responseModelResolver = $responseModelResolver;

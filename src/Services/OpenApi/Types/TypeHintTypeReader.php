@@ -1,12 +1,12 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Types;
+namespace RestApiBundle\Services\OpenApi\Types;
 
 use RestApiBundle;
 
 use function ltrim;
 
-class TypeHintTypeReader extends RestApiBundle\Services\Docs\Types\BaseTypeReader
+class TypeHintTypeReader extends RestApiBundle\Services\OpenApi\Types\BaseTypeReader
 {
     public function resolveReturnType(\ReflectionMethod $reflectionMethod): ?RestApiBundle\DTO\Docs\Types\TypeInterface
     {

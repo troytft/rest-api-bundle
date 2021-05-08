@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\Types;
+namespace RestApiBundle\Services\OpenApi\Types;
 
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
@@ -9,7 +9,7 @@ use RestApiBundle;
 
 use function count;
 
-class DocBlockTypeReader extends RestApiBundle\Services\Docs\Types\BaseTypeReader
+class DocBlockTypeReader extends RestApiBundle\Services\OpenApi\Types\BaseTypeReader
 {
     /**
      * @var DocBlockFactory

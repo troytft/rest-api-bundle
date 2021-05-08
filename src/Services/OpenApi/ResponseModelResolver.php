@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Docs\OpenApi;
+namespace RestApiBundle\Services\OpenApi;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
@@ -15,7 +15,7 @@ use function sprintf;
 use function strpos;
 use function substr;
 
-class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\AbstractSchemaResolver
+class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
     /**
      * @var array<string, OpenApi\Schema>
@@ -28,12 +28,12 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
     private $typenameCache = [];
 
     /**
-     * @var RestApiBundle\Services\Docs\Types\TypeHintTypeReader
+     * @var RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader
      */
     private $typeHintReader;
 
     /**
-     * @var RestApiBundle\Services\Docs\Types\DocBlockTypeReader
+     * @var RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader
      */
     private $docBlockReader;
 
@@ -48,16 +48,16 @@ class ResponseModelResolver extends RestApiBundle\Services\Docs\OpenApi\Abstract
     private $settingsProvider;
 
     /**
-     * @var RestApiBundle\Services\Docs\OpenApi\ExampleResolver
+     * @var RestApiBundle\Services\OpenApi\ExampleResolver
      */
     private $exampleResolver;
 
     public function __construct(
-        RestApiBundle\Services\Docs\Types\TypeHintTypeReader $typeHintReader,
-        RestApiBundle\Services\Docs\Types\DocBlockTypeReader $docBlockReader,
+        RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader $typeHintReader,
+        RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader $docBlockReader,
         RestApiBundle\Services\Response\TypenameResolver $typenameResolver,
         RestApiBundle\Services\SettingsProvider $settingsProvider,
-        RestApiBundle\Services\Docs\OpenApi\ExampleResolver $exampleResolver
+        RestApiBundle\Services\OpenApi\ExampleResolver $exampleResolver
     ) {
         $this->typeHintReader = $typeHintReader;
         $this->docBlockReader = $docBlockReader;

@@ -20,10 +20,10 @@ class RequestModelResolverTest extends Tests\BaseTestCase
         $this->assertMatchesJsonSnapshot(json_encode($schema->getSerializableData()));
     }
 
-    private function getRequestModelResolver(): RestApiBundle\Services\Docs\OpenApi\RequestModelResolver
+    private function getRequestModelResolver(): RestApiBundle\Services\OpenApi\RequestModelResolver
     {
-        $result = $this->getContainer()->get(RestApiBundle\Services\Docs\OpenApi\RequestModelResolver::class);
-        if (!$result instanceof RestApiBundle\Services\Docs\OpenApi\RequestModelResolver) {
+        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\RequestModelResolver::class);
+        if (!$result instanceof RestApiBundle\Services\OpenApi\RequestModelResolver) {
             throw new \InvalidArgumentException();
         }
 
