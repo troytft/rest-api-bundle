@@ -1,10 +1,10 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi;
+namespace RestApiBundle\Helper\OpenApi;
 
-class ExampleResolver
+class ExampleHelper
 {
-    public function getDateTime(): \DateTime
+    public static function getExampleDate(): \DateTime
     {
         $result = new \DateTime();
         $result

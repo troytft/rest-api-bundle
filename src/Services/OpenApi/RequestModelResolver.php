@@ -12,35 +12,17 @@ use function sprintf;
 
 class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
-    /**
-     * @var RestApiBundle\Services\OpenApi\DoctrineResolver
-     */
-    private $doctrineHelper;
-
-    /**
-     * @var AnnotationReader
-     */
-    private $annotationReader;
-
-    /**
-     * @var RestApiBundle\Services\SettingsProvider
-     */
-    private $settingsProvider;
-
-    /**
-     * @var RestApiBundle\Services\OpenApi\ExampleResolver
-     */
-    private $exampleResolver;
+    private RestApiBundle\Services\OpenApi\DoctrineResolver $doctrineHelper;
+    private AnnotationReader $annotationReader;
+    private RestApiBundle\Services\SettingsProvider $settingsProvider;
 
     public function __construct(
         RestApiBundle\Services\OpenApi\DoctrineResolver $doctrineHelper,
-        RestApiBundle\Services\SettingsProvider $settingsProvider,
-        RestApiBundle\Services\OpenApi\ExampleResolver $exampleResolver
+        RestApiBundle\Services\SettingsProvider $settingsProvider
     ) {
         $this->doctrineHelper = $doctrineHelper;
         $this->annotationReader = Mapper\Helper\AnnotationReaderFactory::create(true);
         $this->settingsProvider = $settingsProvider;
-        $this->exampleResolver = $exampleResolver;
     }
 
     public function resolveByClass(string $class, bool $nullable = false): OpenApi\Schema
@@ -208,7 +190,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date-time',
-                    'example' => $this->exampleResolver->getDateTime()->format($type->format ?: $this->settingsProvider->getDefaultRequestDatetimeFormat()),
+                    'example' => RestApiBundle\Helper\OpenApi\ExampleHelper::getExampleDate()->format($type->format ?: $this->settingsProvider->getDefaultRequestDatetimeFormat()),
                     'nullable' => (bool) $type->getNullable(),
                 ]);
                 $this->applyConstraints($result, $validationConstraints);
@@ -223,7 +205,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date',
-                    'example' => $this->exampleResolver->getDateTime()->format($type->format ?: $this->settingsProvider->getDefaultRequestDateFormat()),
+                    'example' => RestApiBundle\Helper\OpenApi\ExampleHelper::getExampleDate()->format($type->format ?: $this->settingsProvider->getDefaultRequestDateFormat()),
                     'nullable' => (bool) $type->getNullable(),
                 ]);
 

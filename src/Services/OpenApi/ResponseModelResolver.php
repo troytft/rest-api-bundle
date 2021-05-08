@@ -20,50 +20,28 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
     /**
      * @var array<string, OpenApi\Schema>
      */
-    private $schemaCache = [];
+    private array $schemaCache = [];
 
     /**
      * @var array<string, string>
      */
-    private $typenameCache = [];
+    private array $typenameCache = [];
 
-    /**
-     * @var RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader
-     */
-    private $typeHintReader;
-
-    /**
-     * @var RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader
-     */
-    private $docBlockReader;
-
-    /**
-     * @var RestApiBundle\Services\ResponseModel\TypenameResolver
-     */
-    private $typenameResolver;
-
-    /**
-     * @var RestApiBundle\Services\SettingsProvider
-     */
-    private $settingsProvider;
-
-    /**
-     * @var RestApiBundle\Services\OpenApi\ExampleResolver
-     */
-    private $exampleResolver;
+    private RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader $typeHintReader;
+    private RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader $docBlockReader;
+    private RestApiBundle\Services\ResponseModel\TypenameResolver $typenameResolver;
+    private RestApiBundle\Services\SettingsProvider $settingsProvider;
 
     public function __construct(
         RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader $typeHintReader,
         RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader $docBlockReader,
         RestApiBundle\Services\ResponseModel\TypenameResolver $typenameResolver,
-        RestApiBundle\Services\SettingsProvider $settingsProvider,
-        RestApiBundle\Services\OpenApi\ExampleResolver $exampleResolver
+        RestApiBundle\Services\SettingsProvider $settingsProvider
     ) {
         $this->typeHintReader = $typeHintReader;
         $this->docBlockReader = $docBlockReader;
         $this->typenameResolver = $typenameResolver;
         $this->settingsProvider = $settingsProvider;
-        $this->exampleResolver = $exampleResolver;
     }
 
     /**
@@ -197,7 +175,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date-time',
-                    'example' => $this->exampleResolver->getDateTime()->format($this->settingsProvider->getResponseModelDateTimeFormat()),
+                    'example' => RestApiBundle\Helper\OpenApi\ExampleHelper::getExampleDate()->format($this->settingsProvider->getResponseModelDateTimeFormat()),
                     'nullable' => $classType->getNullable(),
                 ]);
 
@@ -268,7 +246,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         return new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
             'format' => 'date',
-            'example' => $this->exampleResolver->getDateTime()->format($this->settingsProvider->getResponseModelDateFormat()),
+            'example' => RestApiBundle\Helper\OpenApi\ExampleHelper::getExampleDate()->format($this->settingsProvider->getResponseModelDateFormat()),
             'nullable' => $classType->getNullable(),
         ]);
     }
