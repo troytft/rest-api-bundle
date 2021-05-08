@@ -15,10 +15,7 @@ class EntitiesCollectionTransformer implements Mapper\Transformer\TransformerInt
     public const CLASS_OPTION = 'class';
     public const FIELD_OPTION = 'field';
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {

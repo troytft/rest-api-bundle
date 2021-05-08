@@ -6,10 +6,7 @@ use RestApiBundle;
 
 class DateTransformer extends \Mapper\Transformer\DateTransformer
 {
-    /**
-     * @var RestApiBundle\Services\SettingsProvider
-     */
-    private $settingsProvider;
+    private RestApiBundle\Services\SettingsProvider $settingsProvider;
 
     public function __construct(RestApiBundle\Services\SettingsProvider $settingsProvider)
     {

@@ -11,10 +11,7 @@ use function sprintf;
 
 class DoctrineResolver extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
-    /**
-     * @var Doctrine\Common\Annotations\AnnotationReader
-     */
-    private $annotationReader;
+    private Doctrine\Common\Annotations\AnnotationReader $annotationReader;
 
     public function __construct()
     {

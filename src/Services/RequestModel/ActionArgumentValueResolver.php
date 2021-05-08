@@ -10,15 +10,8 @@ use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 
 class ActionArgumentValueResolver implements ArgumentValueResolverInterface
 {
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var RestApiBundle\Services\RequestModel\RequestHandler
-     */
-    private $requestHandler;
+    private RequestStack $requestStack;
+    private RestApiBundle\Services\RequestModel\RequestHandler $requestHandler;
 
     public function __construct(RequestStack $requestStack, RestApiBundle\Services\RequestModel\RequestHandler $requestHandler)
     {

@@ -11,20 +11,9 @@ use function sprintf;
 
 class RequestHandler
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var RestApiBundle\Services\RequestModel\MapperInitiator
-     */
-    private $mapperInitiator;
-
-    /**
-     * @var RestApiBundle\Services\RequestModel\RequestModelValidator
-     */
-    private $requestModelValidator;
+    private TranslatorInterface $translator;
+    private RestApiBundle\Services\RequestModel\MapperInitiator $mapperInitiator;
+    private RestApiBundle\Services\RequestModel\RequestModelValidator $requestModelValidator;
 
     public function __construct(
         TranslatorInterface $translator,

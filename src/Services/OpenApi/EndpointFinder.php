@@ -26,25 +26,10 @@ use function token_get_all;
 
 class EndpointFinder
 {
-    /**
-     * @var AnnotationReader
-     */
-    private $annotationReader;
-
-    /**
-     * @var RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader
-     */
-    private $docBlockReader;
-
-    /**
-     * @var RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader
-     */
-    private $typeHintReader;
-
-    /**
-     * @var RestApiBundle\Services\OpenApi\DoctrineResolver
-     */
-    private $doctrineHelper;
+    private AnnotationReader $annotationReader;
+    private RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader $docBlockReader;
+    private RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader $typeHintReader;
+    private RestApiBundle\Services\OpenApi\DoctrineResolver $doctrineHelper;
 
     public function __construct(
         RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader $docBlockSchemaReader,

@@ -19,15 +19,8 @@ use function ucfirst;
 
 class RequestModelValidator
 {
-    /**
-     * @var RestApiBundle\Services\RequestModel\MapperInitiator
-     */
-    private $mapperInitiator;
-
-    /**
-     * @var ValidatorInterface
-     */
-    private $validator;
+    private RestApiBundle\Services\RequestModel\MapperInitiator $mapperInitiator;
+    private ValidatorInterface $validator;
 
     public function __construct(
         RestApiBundle\Services\RequestModel\MapperInitiator $mapperInitiator,
