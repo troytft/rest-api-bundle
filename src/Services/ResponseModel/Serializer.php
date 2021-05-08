@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Response;
+namespace RestApiBundle\Services\ResponseModel;
 
 use RestApiBundle;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
@@ -20,14 +20,14 @@ class Serializer
 
     public function __construct(
         RestApiBundle\Services\SettingsProvider $settingsProvider,
-        RestApiBundle\Services\Response\ResponseModelNormalizer $responseModelNormalizer
+        RestApiBundle\Services\ResponseModel\ResponseModelNormalizer $responseModelNormalizer
     ) {
         $this->settingsProvider = $settingsProvider;
 
         $normalizers = [
             $responseModelNormalizer,
-            new RestApiBundle\Services\Response\SerializableDateNormalizer(),
-            new RestApiBundle\Services\Response\SerializableEnumNormalizer(),
+            new RestApiBundle\Services\ResponseModel\SerializableDateNormalizer(),
+            new RestApiBundle\Services\ResponseModel\SerializableEnumNormalizer(),
             new DateTimeNormalizer(),
         ];
         $encoders = [
@@ -40,7 +40,7 @@ class Serializer
     public function toJson(RestApiBundle\Mapping\ResponseModel\ResponseModelInterface $responseModel): string
     {
         return $this->serializer->serialize($responseModel, 'json', [
-            RestApiBundle\Services\Response\SerializableDateNormalizer::FORMAT_KEY => $this->settingsProvider->getResponseModelDateFormat(),
+            RestApiBundle\Services\ResponseModel\SerializableDateNormalizer::FORMAT_KEY => $this->settingsProvider->getResponseModelDateFormat(),
             JsonEncode::OPTIONS => $this->settingsProvider->getResponseJsonEncodeOptions(),
             DateTimeNormalizer::FORMAT_KEY => $this->settingsProvider->getResponseModelDateTimeFormat(),
             DateTimeNormalizer::TIMEZONE_KEY => new \DateTimeZone('UTC'),

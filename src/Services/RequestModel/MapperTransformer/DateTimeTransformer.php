@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Request\MapperTransformer;
+namespace RestApiBundle\Services\RequestModel\MapperTransformer;
 
 use RestApiBundle;
 

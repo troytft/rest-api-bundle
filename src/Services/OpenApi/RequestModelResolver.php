@@ -229,9 +229,9 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
 
                 break;
 
-            case RestApiBundle\Services\Request\MapperTransformer\EntityTransformer::getName():
-                $class = $type->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntityTransformer::CLASS_OPTION];
-                $fieldName = $type->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntityTransformer::FIELD_OPTION];
+            case RestApiBundle\Services\RequestModel\MapperTransformer\EntityTransformer::getName():
+                $class = $type->getTransformerOptions()[RestApiBundle\Services\RequestModel\MapperTransformer\EntityTransformer::CLASS_OPTION];
+                $fieldName = $type->getTransformerOptions()[RestApiBundle\Services\RequestModel\MapperTransformer\EntityTransformer::FIELD_OPTION];
 
                 $result = $this->doctrineHelper->resolveByColumnType($class, $fieldName);
                 $result->description = sprintf('Element by "%s"', $fieldName);
@@ -239,9 +239,9 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
 
                 break;
 
-            case RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::getName():
-                $class = $type->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::CLASS_OPTION];
-                $fieldName = $type->getTransformerOptions()[RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::FIELD_OPTION];
+            case RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::getName():
+                $class = $type->getTransformerOptions()[RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::CLASS_OPTION];
+                $fieldName = $type->getTransformerOptions()[RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::FIELD_OPTION];
                 $columnType = $this->doctrineHelper->resolveByColumnType($class, $fieldName);
                 $columnType
                     ->nullable = false;

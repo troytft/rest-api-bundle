@@ -29,14 +29,14 @@ class ArrayOfEntitiesType extends RestApiBundle\Annotation\Request\ArrayType
 
     public function getTransformerName(): ?string
     {
-        return RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::getName();
+        return RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::getName();
     }
 
     public function getTransformerOptions(): array
     {
         return [
-            RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::CLASS_OPTION => $this->class,
-            RestApiBundle\Services\Request\MapperTransformer\EntitiesCollectionTransformer::FIELD_OPTION => $this->field,
+            RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::CLASS_OPTION => $this->class,
+            RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::FIELD_OPTION => $this->field,
         ];
     }
 }

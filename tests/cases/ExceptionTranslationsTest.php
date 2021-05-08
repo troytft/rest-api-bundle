@@ -52,8 +52,8 @@ class ExceptionTranslationsTest extends Tests\BaseTestCase
         }
     }
 
-    private function getRequestHandler(): RestApiBundle\Services\Request\RequestHandler
+    private function getRequestHandler(): RestApiBundle\Services\RequestModel\RequestHandler
     {
-        return $this->getContainer()->get(RestApiBundle\Services\Request\RequestHandler::class);
+        return $this->getContainer()->get(RestApiBundle\Services\RequestModel\RequestHandler::class);
     }
 }

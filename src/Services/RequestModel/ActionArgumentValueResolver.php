@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Request;
+namespace RestApiBundle\Services\RequestModel;
 
 use RestApiBundle;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,11 +16,11 @@ class ActionArgumentValueResolver implements ArgumentValueResolverInterface
     private $requestStack;
 
     /**
-     * @var RestApiBundle\Services\Request\RequestHandler
+     * @var RestApiBundle\Services\RequestModel\RequestHandler
      */
     private $requestHandler;
 
-    public function __construct(RequestStack $requestStack, RestApiBundle\Services\Request\RequestHandler $requestHandler)
+    public function __construct(RequestStack $requestStack, RestApiBundle\Services\RequestModel\RequestHandler $requestHandler)
     {
         $this->requestStack = $requestStack;
         $this->requestHandler = $requestHandler;

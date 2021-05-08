@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Request;
+namespace RestApiBundle\Services\RequestModel;
 
 use Mapper\DTO\Schema\CollectionType;
 use Mapper\DTO\Schema\ObjectType;
@@ -20,7 +20,7 @@ use function ucfirst;
 class RequestModelValidator
 {
     /**
-     * @var RestApiBundle\Services\Request\MapperInitiator
+     * @var RestApiBundle\Services\RequestModel\MapperInitiator
      */
     private $mapperInitiator;
 
@@ -30,7 +30,7 @@ class RequestModelValidator
     private $validator;
 
     public function __construct(
-        RestApiBundle\Services\Request\MapperInitiator $mapperInitiator,
+        RestApiBundle\Services\RequestModel\MapperInitiator $mapperInitiator,
         ValidatorInterface $validator
     ) {
         $this->mapperInitiator = $mapperInitiator;

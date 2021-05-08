@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Response;
+namespace RestApiBundle\Services\ResponseModel;
 
 use RestApiBundle;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +26,7 @@ class ResponseHandler
 
     public function __construct(
         RestApiBundle\Services\SettingsProvider $settingsProvider,
-        RestApiBundle\Services\Response\Serializer $serializer
+        RestApiBundle\Services\ResponseModel\Serializer $serializer
     ) {
         $this->settingsProvider = $settingsProvider;
         $this->serializer = $serializer;

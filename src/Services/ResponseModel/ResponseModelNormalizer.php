@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Response;
+namespace RestApiBundle\Services\ResponseModel;
 
 use RestApiBundle;
 
@@ -11,11 +11,11 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
     public const ATTRIBUTE_TYPENAME = '__typename';
 
     /**
-     * @var RestApiBundle\Services\Response\TypenameResolver
+     * @var RestApiBundle\Services\ResponseModel\TypenameResolver
      */
     private $typenameResolver;
 
-    public function __construct(RestApiBundle\Services\Response\TypenameResolver $typenameResolver)
+    public function __construct(RestApiBundle\Services\ResponseModel\TypenameResolver $typenameResolver)
     {
         parent::__construct();
 

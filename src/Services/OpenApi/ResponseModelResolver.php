@@ -38,7 +38,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
     private $docBlockReader;
 
     /**
-     * @var RestApiBundle\Services\Response\TypenameResolver
+     * @var RestApiBundle\Services\ResponseModel\TypenameResolver
      */
     private $typenameResolver;
 
@@ -55,7 +55,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
     public function __construct(
         RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader $typeHintReader,
         RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader $docBlockReader,
-        RestApiBundle\Services\Response\TypenameResolver $typenameResolver,
+        RestApiBundle\Services\ResponseModel\TypenameResolver $typenameResolver,
         RestApiBundle\Services\SettingsProvider $settingsProvider,
         RestApiBundle\Services\OpenApi\ExampleResolver $exampleResolver
     ) {
@@ -126,7 +126,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
             $properties[$propertyName] = $propertySchema;
         }
 
-        $properties[RestApiBundle\Services\Response\ResponseModelNormalizer::ATTRIBUTE_TYPENAME] = new OpenApi\Schema([
+        $properties[RestApiBundle\Services\ResponseModel\ResponseModelNormalizer::ATTRIBUTE_TYPENAME] = new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
             'nullable' => false,
             'default' => $typename,

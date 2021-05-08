@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\Request;
+namespace RestApiBundle\Services\RequestModel;
 
 use Mapper;
 use RestApiBundle;
@@ -17,7 +17,7 @@ class RequestHandler
     private $translator;
 
     /**
-     * @var RestApiBundle\Services\Request\MapperInitiator
+     * @var RestApiBundle\Services\RequestModel\MapperInitiator
      */
     private $mapperInitiator;
 
@@ -27,15 +27,15 @@ class RequestHandler
     private $settingsProvider;
 
     /**
-     * @var RestApiBundle\Services\Request\RequestModelValidator
+     * @var RestApiBundle\Services\RequestModel\RequestModelValidator
      */
     private $requestModelValidator;
 
     public function __construct(
         TranslatorInterface $translator,
-        RestApiBundle\Services\Request\MapperInitiator $mapperInitiator,
+        RestApiBundle\Services\RequestModel\MapperInitiator $mapperInitiator,
         RestApiBundle\Services\SettingsProvider $settingsProvider,
-        RestApiBundle\Services\Request\RequestModelValidator $requestModelValidator
+        RestApiBundle\Services\RequestModel\RequestModelValidator $requestModelValidator
     ) {
         $this->translator = $translator;
         $this->mapperInitiator = $mapperInitiator;
