@@ -27,7 +27,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
 
     public function resolveByClass(string $class, bool $nullable = false): OpenApi\Schema
     {
-        if (!RestApiBundle\Helper\ClassInterfaceChecker::isRequestModel($class)) {
+        if (!RestApiBundle\Helper\ClassInstanceHelper::isRequestModel($class)) {
             throw new \InvalidArgumentException(sprintf('Class %s is not a request model.', $class));
         }
 

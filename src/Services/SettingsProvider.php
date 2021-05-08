@@ -8,9 +8,9 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class SettingsProvider
 {
     /**
-     * @var array
+     * @var array<string, int|float|bool|string>
      */
-    private $settings;
+    private array $settings;
 
     public function __construct(ParameterBagInterface $parameterBag)
     {

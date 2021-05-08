@@ -7,34 +7,34 @@ use RestApiBundle;
 use function array_key_exists;
 use function class_exists;
 
-class ClassInterfaceChecker
+class ClassInstanceHelper
 {
     /**
      * @var array<string, bool>
      */
-    private static $responseModelCache = [];
+    private static array $responseModelCache = [];
 
     /**
      * @var array<string, bool>
      */
-    private static $dateTimeCache = [
+    private static array $dateTimeCache = [
         \DateTime::class => true,
     ];
 
     /**
      * @var array<string, bool>
      */
-    private static $serializableEnumCache = [];
+    private static array $serializableEnumCache = [];
 
     /**
      * @var array<string, bool>
      */
-    private static $serializableDateCache = [];
+    private static array $serializableDateCache = [];
 
     /**
      * @var array<string, bool>
      */
-    private static $requestModelCache = [];
+    private static array $requestModelCache = [];
 
     public static function isResponseModel(string $class): bool
     {

@@ -166,14 +166,14 @@ class EndpointFinder
 
                 break;
 
-            case $returnType instanceof RestApiBundle\Model\OpenApi\Types\ClassType && RestApiBundle\Helper\ClassInterfaceChecker::isResponseModel($returnType->getClass()):
+            case $returnType instanceof RestApiBundle\Model\OpenApi\Types\ClassType && RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($returnType->getClass()):
                 $result = new RestApiBundle\Model\OpenApi\Response\ResponseModel($returnType->getClass(), $returnType->getNullable());
 
                 break;
 
             case $returnType instanceof RestApiBundle\Model\OpenApi\Types\ArrayType:
                 $innerType = $returnType->getInnerType();
-                if (!$innerType instanceof RestApiBundle\Model\OpenApi\Types\ClassType || !RestApiBundle\Helper\ClassInterfaceChecker::isResponseModel($innerType->getClass())) {
+                if (!$innerType instanceof RestApiBundle\Model\OpenApi\Types\ClassType || !RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($innerType->getClass())) {
                     throw new \InvalidArgumentException('Invalid response type');
                 }
 
@@ -257,7 +257,7 @@ class EndpointFinder
 
         foreach ($reflectionMethod->getParameters() as $parameter) {
             $parameterType = $this->typeHintReader->resolveParameterType($parameter);
-            if ($parameterType instanceof RestApiBundle\Model\OpenApi\Types\ClassType && RestApiBundle\Helper\ClassInterfaceChecker::isRequestModel($parameterType->getClass())) {
+            if ($parameterType instanceof RestApiBundle\Model\OpenApi\Types\ClassType && RestApiBundle\Helper\ClassInstanceHelper::isRequestModel($parameterType->getClass())) {
                 $result = new RestApiBundle\Model\OpenApi\Request\RequestModel($parameterType->getClass(), $parameterType->getNullable());
 
                 break;

@@ -49,7 +49,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         if (isset($this->typenameCache[$class])) {
             $typename = $this->typenameCache[$class];
         } else {
-            if (!RestApiBundle\Helper\ClassInterfaceChecker::isResponseModel($class)) {
+            if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($class)) {
                 throw new \InvalidArgumentException(sprintf('Class %s is not a response model.', $class));
             }
 
@@ -157,7 +157,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
     private function convertClassType(RestApiBundle\Model\OpenApi\Types\ClassType $classType)
     {
         switch (true) {
-            case RestApiBundle\Helper\ClassInterfaceChecker::isResponseModel($classType->getClass()):
+            case RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($classType->getClass()):
                 $result = $this->resolveReferenceByClass($classType->getClass());
                 if ($classType->getNullable()) {
                     $result = new OpenApi\Schema([
@@ -168,7 +168,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
 
                 break;
 
-            case RestApiBundle\Helper\ClassInterfaceChecker::isDateTime($classType->getClass()):
+            case RestApiBundle\Helper\ClassInstanceHelper::isDateTime($classType->getClass()):
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date-time',
@@ -178,12 +178,12 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
 
                 break;
 
-            case RestApiBundle\Helper\ClassInterfaceChecker::isSerializableEnum($classType->getClass()):
+            case RestApiBundle\Helper\ClassInstanceHelper::isSerializableEnum($classType->getClass()):
                 $result = $this->convertSerializableEnum($classType);
 
                 break;
 
-            case RestApiBundle\Helper\ClassInterfaceChecker::isSerializableDate($classType->getClass()):
+            case RestApiBundle\Helper\ClassInstanceHelper::isSerializableDate($classType->getClass()):
                 $result = $this->convertSerializableDate($classType);
 
                 break;

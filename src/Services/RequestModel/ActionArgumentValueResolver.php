@@ -21,7 +21,7 @@ class ActionArgumentValueResolver implements ArgumentValueResolverInterface
 
     public function supports(Request $request, ArgumentMetadata $argument): bool
     {
-        return RestApiBundle\Helper\ClassInterfaceChecker::isRequestModel($argument->getType());
+        return RestApiBundle\Helper\ClassInstanceHelper::isRequestModel($argument->getType());
     }
 
     public function resolve(Request $request, ArgumentMetadata $argument): \Generator
@@ -37,7 +37,7 @@ class ActionArgumentValueResolver implements ArgumentValueResolverInterface
 
     private function instantiate(string $class): RestApiBundle\Mapping\RequestModel\RequestModelInterface
     {
-        if (!RestApiBundle\Helper\ClassInterfaceChecker::isRequestModel($class)) {
+        if (!RestApiBundle\Helper\ClassInstanceHelper::isRequestModel($class)) {
             throw new \InvalidArgumentException();
         }
 

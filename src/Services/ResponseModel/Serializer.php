@@ -8,15 +8,8 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 class Serializer
 {
-    /**
-     * @var RestApiBundle\Services\SettingsProvider
-     */
-    private $settingsProvider;
-
-    /**
-     * @var \Symfony\Component\Serializer\Serializer
-     */
-    private $serializer;
+    private RestApiBundle\Services\SettingsProvider $settingsProvider;
+    private \Symfony\Component\Serializer\Serializer $serializer;
 
     public function __construct(
         RestApiBundle\Services\SettingsProvider $settingsProvider,
