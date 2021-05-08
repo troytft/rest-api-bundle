@@ -9,7 +9,7 @@ class ReflectionClassStore
     /**
      * @var array<string,\ReflectionClass>
      */
-    private static $reflectionClassCache;
+    private static array $reflectionClassCache;
 
     private function __construct()
     {

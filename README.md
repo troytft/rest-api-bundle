@@ -2,34 +2,9 @@
 
 [![Build Status](https://github.com/troytft/rest-api-bundle/workflows/Tests/badge.svg)](https://github.com/troytft/rest-api-bundle/workflows/Tests/badge.svg)
 
-REST API Bundle is abstraction layer for requests and responses.
+Features:
+* Abstraction level for requests: describe jsonBody/queryString by php class, properties are configured by annotations 
+* Abstraction level for responses: describe response object by php class, properties are configured by public getters
+* Auto-generated documentation: generate OpenAPI specification without additional code, just add @Docs\Endpoint() annotation
 
 Work in progress.
-
-##### Roadmap
-* First stable release
-
-### Installation
-```bash
-composer require troytft/rest-api-bundle
-```
-
-Add bundle to `AppKernel.php`
-
-```php
-class AppKernel extends Kernel
-{
-    public function registerBundles()
-    {
-        $bundles = [
-            // ...
-            new RestApiBundle\RestApiBundle(),
-        ];
-
-        // ...
-    }
-}
-```
-
-### Documentation
-Full documentation can be found at [`docs/main.md`](docs/main.md)

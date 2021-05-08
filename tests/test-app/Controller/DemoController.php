@@ -4,7 +4,7 @@ namespace TestApp\Controller;
 
 use TestApp;
 use Symfony\Component\Routing\Annotation\Route;
-use RestApiBundle\Annotation\Docs;
+use RestApiBundle\Mapping\OpenApi as Docs;
 use Symfony\Component\HttpFoundation\Response;
 
 use function array_map;

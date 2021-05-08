@@ -3,7 +3,7 @@
 namespace TestApp\Controller\CommandTest\InvalidDefinition;
 
 use Symfony\Component\Routing\Annotation\Route;
-use RestApiBundle\Annotation\Docs;
+use RestApiBundle\Mapping\OpenApi as Docs;
 
 class DefaultController
 {

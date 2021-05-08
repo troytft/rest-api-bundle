@@ -4,7 +4,7 @@ namespace TestApp\Controller\Tags;
 
 use TestApp;
 use Symfony\Component\Routing\Annotation\Route;
-use RestApiBundle\Annotation\Docs;
+use RestApiBundle\Mapping\OpenApi as Docs;
 
 /**
  * @Route("/tag2")

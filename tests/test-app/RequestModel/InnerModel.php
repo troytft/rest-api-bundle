@@ -2,15 +2,14 @@
 
 namespace TestApp\RequestModel;
 
-use RestApiBundle\Annotation\Request as Mapper;
-use RestApiBundle\Mapping\RequestModel\RequestModelInterface;
+use RestApiBundle\Mapping\RequestModel as Mapping;
 
-class InnerModel implements RequestModelInterface
+class InnerModel implements Mapping\RequestModelInterface
 {
     /**
      * @var string
      *
-     * @Mapper\StringType()
+     * @Mapping\StringType()
      */
     private $field;
 

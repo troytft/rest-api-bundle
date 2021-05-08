@@ -4,10 +4,7 @@ namespace RestApiBundle\Mapping\ResponseModel;
 
 class SerializableDate implements SerializableDateInterface
 {
-    /**
-     * @var \DateTimeInterface
-     */
-    private $value;
+    private \DateTimeInterface $value;
 
     public function getValue(): \DateTimeInterface
     {
