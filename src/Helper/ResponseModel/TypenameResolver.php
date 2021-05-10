@@ -8,41 +8,28 @@ use function sprintf;
 
 class TypenameResolver
 {
-    /**
-     * @var array<string, string>
-     */
-    private static array $typenameCache = [];
-
     public static function resolve(string $class): string
     {
-        if (!isset(static::$typenameCache[$class])) {
-            $parts = [];
-            $isResponseModel = false;
+        $parts = [];
+        $hasResponseModelPart = false;
 
-            foreach (explode('\\', $class) as $part) {
-                if ($isResponseModel) {
-                    $parts[] = $part;
-                } elseif ($part === 'ResponseModel') {
-                    $isResponseModel = true;
-                }
+        foreach (explode('\\', $class) as $part) {
+            if ($hasResponseModelPart) {
+                $parts[] = $part;
+            } elseif ($part === 'ResponseModel') {
+                $hasResponseModelPart = true;
             }
-
-            if (!$isResponseModel) {
-                throw new \RuntimeException(
-                    sprintf('Response model "%s" must be in "ResponseModel" namespace', $class)
-                );
-            }
-
-            $typename = join('_', $parts);
-            if (!$typename) {
-                throw new \RuntimeException(
-                    sprintf('Response model "%s" must have typename', $class)
-                );
-            }
-
-            static::$typenameCache[$class] = $typename;
         }
 
-        return static::$typenameCache[$class];
+        if (!$hasResponseModelPart) {
+            throw new \RuntimeException(sprintf('Response model "%s" must be in "ResponseModel" namespace', $class));
+        }
+
+        $typename = join('_', $parts);
+        if (!$typename) {
+            throw new \RuntimeException(sprintf('Response model "%s" must have typename', $class));
+        }
+
+        return $typename;
     }
 }
