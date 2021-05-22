@@ -45,7 +45,7 @@ class EndpointFinder
     /**
      * @return RestApiBundle\Model\OpenApi\EndpointData[]
      */
-    public function findInDirectory(string $directory): array
+    public function findInDirectory(string $directory, ?string $excludePath = null): array
     {
         $result = [];
 
@@ -53,7 +53,8 @@ class EndpointFinder
         $finder
             ->files()
             ->in($directory)
-            ->name('*Controller.php');
+            ->name('*.php')
+            ->notPath($excludePath);
 
         $autoloadFixed = false;
 
