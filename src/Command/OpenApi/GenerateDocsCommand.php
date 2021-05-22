@@ -19,6 +19,7 @@ class GenerateDocsCommand extends Command
     private const ARGUMENT_OUTPUT = 'output';
     private const OPTION_TEMPLATE = 'template';
     private const OPTION_FORMAT = 'format';
+    private const OPTION_EXCLUDE_PATH = 'exclude-path';
 
     protected static $defaultName = 'rest-api:generate-docs';
 
@@ -48,7 +49,8 @@ class GenerateDocsCommand extends Command
             ->addArgument(static::ARGUMENT_INPUT, InputArgument::REQUIRED, 'Path to directory with controllers')
             ->addArgument(static::ARGUMENT_OUTPUT, InputArgument::REQUIRED, 'Path to output file')
             ->addOption(static::OPTION_TEMPLATE, null, InputOption::VALUE_REQUIRED, 'Path to template file')
-            ->addOption(static::OPTION_FORMAT, null, InputOption::VALUE_REQUIRED, 'File format (json|yaml)');
+            ->addOption(static::OPTION_FORMAT, null, InputOption::VALUE_REQUIRED, 'File format (json|yaml)')
+            ->addOption(static::OPTION_EXCLUDE_PATH, null, InputOption::VALUE_REQUIRED, 'Exclude files from search by string or regular expression');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -57,6 +59,7 @@ class GenerateDocsCommand extends Command
         $outputFile = $input->getArgument(static::ARGUMENT_OUTPUT);
         $templateFile = $input->getOption(static::OPTION_TEMPLATE);
         $format = $input->getOption(static::OPTION_FORMAT) ?? RestApiBundle\Enum\OpenApi\Format::YAML;
+        $excludePath = $input->getOption(static::OPTION_EXCLUDE_PATH);
 
         if (!in_array($format, RestApiBundle\Enum\OpenApi\Format::getValues(), true)) {
             $output->writeln('Invalid file format.');
@@ -65,7 +68,7 @@ class GenerateDocsCommand extends Command
         }
 
         try {
-            $endpoints = $this->endpointFinder->findInDirectory($inputDirectory);
+            $endpoints = $this->endpointFinder->findInDirectory($inputDirectory, $excludePath);
 
             if ($format === RestApiBundle\Enum\OpenApi\Format::YAML) {
                 $content = $this->specificationGenerator->generateYaml($endpoints, $templateFile);
