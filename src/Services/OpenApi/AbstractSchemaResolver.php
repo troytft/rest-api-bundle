@@ -2,7 +2,6 @@
 
 namespace RestApiBundle\Services\OpenApi;
 
-use RestApiBundle;
 use Symfony\Component\PropertyInfo;
 use cebe\openapi\spec as OpenApi;
 
