@@ -132,7 +132,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         if ($type instanceof RestApiBundle\Model\OpenApi\Types\ArrayType) {
             $result = $this->convertArrayType($type);
         } elseif ($type instanceof RestApiBundle\Model\OpenApi\Types\ScalarInterface) {
-            $result = $this->resolveScalarType($type);
+            $result = $this->resolveScalarTypeOld($type);
         } elseif ($type instanceof RestApiBundle\Model\OpenApi\Types\ClassType) {
             $result = $this->convertClassType($type);
         } else {
