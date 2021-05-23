@@ -23,19 +23,12 @@ use function strtolower;
 
 class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
-    /**
-     * @var RestApiBundle\Services\OpenApi\RequestModelResolver
-     */
-    private $requestModelResolver;
-
-    /**
-     * @var RestApiBundle\Services\OpenApi\ResponseModelResolver
-     */
-    private $responseModelResolver;
+    private RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver;
+    private RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver;
 
     public function __construct(
         RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver,
-        RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver,
+        RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver
     ) {
         $this->requestModelResolver = $requestModelResolver;
         $this->responseModelResolver = $responseModelResolver;
@@ -43,8 +36,6 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
     /**
      * @param RestApiBundle\Model\OpenApi\EndpointData[] $endpoints
-     *
-     * @return string
      */
     public function generateYaml(array $endpoints, ?string $template = null): string
     {
@@ -105,8 +96,6 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
     /**
      * @param RestApiBundle\Model\OpenApi\EndpointData[] $endpointDataItems
-     *
-     * @return OpenApi\OpenApi
      */
     private function generateSpecification(array $endpointDataItems, ?string $template = null): OpenApi\OpenApi
     {
