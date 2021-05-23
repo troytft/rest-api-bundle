@@ -200,9 +200,9 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 if ($pathParameter instanceof RestApiBundle\Model\OpenApi\PathParameter\ScalarParameter) {
                     $schema = $this->resolveScalarType(($pathParameter->getType()));
                 } elseif ($pathParameter instanceof RestApiBundle\Model\OpenApi\PathParameter\EntityTypeParameter) {
-                    $schema = $this->doctrineResolver->resolveByColumnType($pathParameter->getClassType()->getClass(), $pathParameter->getFieldName());
+                    $schema = $this->doctrineResolver->resolveByColumnType($pathParameter->getClassType()->getClassName(), $pathParameter->getFieldName());
                     $schema->description = sprintf('Element by "%s"', $pathParameter->getFieldName());
-                    $schema->nullable = $pathParameter->getClassType()->getNullable();
+                    $schema->nullable = $pathParameter->getClassType()->isNullable();
 
                 } else {
                     throw new \InvalidArgumentException();

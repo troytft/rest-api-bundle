@@ -9,12 +9,14 @@ use RestApiBundle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\PropertyInfo;
 
 use function array_merge;
 use function array_slice;
 use function count;
 use function explode;
 use function implode;
+use function in_array;
 use function is_array;
 use function is_string;
 use function preg_match_all;
@@ -23,6 +25,7 @@ use function spl_autoload_functions;
 use function sprintf;
 use function substr_count;
 use function token_get_all;
+use function var_dump;
 
 class EndpointFinder
 {
@@ -205,15 +208,25 @@ class EndpointFinder
      */
     private function extractPathParameters(string $path, \ReflectionMethod $reflectionMethod): array
     {
+        $builtinScalarTypes = [
+            PropertyInfo\Type::BUILTIN_TYPE_INT,
+            PropertyInfo\Type::BUILTIN_TYPE_BOOL,
+            PropertyInfo\Type::BUILTIN_TYPE_STRING,
+            PropertyInfo\Type::BUILTIN_TYPE_FLOAT,
+        ];
         $scalarTypes = [];
         $entityTypes = [];
 
-        foreach ($reflectionMethod->getParameters() as $parameter) {
-            $parameterType = $this->typeHintReader->resolveParameterType($parameter);
-            if ($parameterType instanceof RestApiBundle\Model\OpenApi\Types\ScalarInterface) {
-                $scalarTypes[$parameter->getName()] = $parameterType;
-            } elseif ($parameterType instanceof RestApiBundle\Model\OpenApi\Types\ClassType && $this->doctrineHelper->isEntity($parameterType->getClass())) {
-                $entityTypes[$parameter->getName()] = $parameterType;
+        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+            if (!$reflectionParameter->getType()) {
+                continue;
+            }
+
+            $parameterType = RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader::extractByReflectionType($reflectionParameter->getType());
+            if ($parameterType->getBuiltinType() && in_array($parameterType->getBuiltinType(), $builtinScalarTypes, true)) {
+                $scalarTypes[$reflectionParameter->getName()] = $parameterType;
+            } elseif ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $this->doctrineHelper->isEntity($parameterType->getClassName())) {
+                $entityTypes[$reflectionParameter->getName()] = $parameterType;
             }
         }
 
@@ -221,8 +234,6 @@ class EndpointFinder
         $placeholders = $this->getPathPlaceholders($path);
 
         foreach ($placeholders as $placeholder) {
-            $pathParameter = null;
-
             if (isset($scalarTypes[$placeholder])) {
                 $result[] = new RestApiBundle\Model\OpenApi\PathParameter\ScalarParameter($placeholder, $scalarTypes[$placeholder]);
             } elseif (isset($entityTypes[$placeholder])) {
@@ -230,7 +241,7 @@ class EndpointFinder
                 unset($entityTypes[$placeholder]);
             } else {
                 $entityType = reset($entityTypes);
-                if (!$entityType instanceof RestApiBundle\Model\OpenApi\Types\ClassType) {
+                if (!$entityType instanceof PropertyInfo\Type) {
                     throw new RestApiBundle\Exception\OpenApi\InvalidDefinition\NotMatchedRoutePlaceholderParameterException($placeholder);
                 }
                 $result[] = new RestApiBundle\Model\OpenApi\PathParameter\EntityTypeParameter($placeholder, $entityType, $placeholder);
@@ -256,10 +267,14 @@ class EndpointFinder
     {
         $result = null;
 
-        foreach ($reflectionMethod->getParameters() as $parameter) {
-            $parameterType = $this->typeHintReader->resolveParameterType($parameter);
-            if ($parameterType instanceof RestApiBundle\Model\OpenApi\Types\ClassType && RestApiBundle\Helper\ClassInstanceHelper::isRequestModel($parameterType->getClass())) {
-                $result = new RestApiBundle\Model\OpenApi\Request\RequestModel($parameterType->getClass(), $parameterType->getNullable());
+        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+            if (!$reflectionParameter->getType()) {
+                continue;
+            }
+
+            $parameterType = RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader::extractByReflectionType($reflectionParameter->getType());
+            if ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isRequestModel($parameterType->getClassName())) {
+                $result = new RestApiBundle\Model\OpenApi\Request\RequestModel($parameterType->getClassName(), $parameterType->isNullable());
 
                 break;
             }
