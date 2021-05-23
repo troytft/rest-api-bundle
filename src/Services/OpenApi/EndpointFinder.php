@@ -25,7 +25,6 @@ use function spl_autoload_functions;
 use function sprintf;
 use function substr_count;
 use function token_get_all;
-use function var_dump;
 
 class EndpointFinder
 {
