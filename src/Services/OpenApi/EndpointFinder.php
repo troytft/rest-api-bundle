@@ -200,12 +200,6 @@ class EndpointFinder
      */
     private function extractPathParameters(string $path, \ReflectionMethod $reflectionMethod): array
     {
-        $builtinScalarTypes = [
-            PropertyInfo\Type::BUILTIN_TYPE_INT,
-            PropertyInfo\Type::BUILTIN_TYPE_BOOL,
-            PropertyInfo\Type::BUILTIN_TYPE_STRING,
-            PropertyInfo\Type::BUILTIN_TYPE_FLOAT,
-        ];
         $scalarTypes = [];
         $entityTypes = [];
 
@@ -215,7 +209,7 @@ class EndpointFinder
             }
 
             $parameterType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionParameter->getType());
-            if ($parameterType->getBuiltinType() && in_array($parameterType->getBuiltinType(), $builtinScalarTypes, true)) {
+            if (RestApiBundle\Helper\TypeExtractor::isScalar($parameterType)) {
                 $scalarTypes[$reflectionParameter->getName()] = $parameterType;
             } elseif ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $this->doctrineHelper->isEntity($parameterType->getClassName())) {
                 $entityTypes[$reflectionParameter->getName()] = $parameterType;
