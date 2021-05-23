@@ -3,25 +3,15 @@
 namespace RestApiBundle\Model\OpenApi\PathParameter;
 
 use RestApiBundle;
+use Symfony\Component\PropertyInfo;
 
 class EntityTypeParameter implements RestApiBundle\Model\OpenApi\PathParameter\PathParameterInterface
 {
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
+    private PropertyInfo\Type $classType;
+    private string $fieldName;
 
-    /**
-     * @var RestApiBundle\Model\OpenApi\Types\ClassType
-     */
-    private $classType;
-
-    /**
-     * @var string
-     */
-    private $fieldName;
-
-    public function __construct(string $name, RestApiBundle\Model\OpenApi\Types\ClassType $class, string $fieldName)
+    public function __construct(string $name, PropertyInfo\Type $class, string $fieldName)
     {
         $this->name = $name;
         $this->classType = $class;
@@ -33,7 +23,7 @@ class EntityTypeParameter implements RestApiBundle\Model\OpenApi\PathParameter\P
         return $this->name;
     }
 
-    public function getClassType(): RestApiBundle\Model\OpenApi\Types\ClassType
+    public function getClassType(): PropertyInfo\Type
     {
         return $this->classType;
     }

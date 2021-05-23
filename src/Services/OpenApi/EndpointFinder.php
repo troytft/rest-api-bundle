@@ -9,6 +9,7 @@ use RestApiBundle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\PropertyInfo;
 
 use function array_merge;
 use function array_slice;
@@ -27,19 +28,10 @@ use function token_get_all;
 class EndpointFinder
 {
     private AnnotationReader $annotationReader;
-    private RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader $docBlockReader;
-    private RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader $typeHintReader;
-    private RestApiBundle\Services\OpenApi\DoctrineResolver $doctrineHelper;
 
-    public function __construct(
-        RestApiBundle\Services\OpenApi\Types\DocBlockTypeReader $docBlockSchemaReader,
-        RestApiBundle\Services\OpenApi\Types\TypeHintTypeReader $typeHintSchemaReader,
-        RestApiBundle\Services\OpenApi\DoctrineResolver $doctrineHelper
-    ) {
+    public function __construct()
+    {
         $this->annotationReader = AnnotationReaderFactory::create(true);
-        $this->docBlockReader = $docBlockSchemaReader;
-        $this->typeHintReader = $typeHintSchemaReader;
-        $this->doctrineHelper = $doctrineHelper;
     }
 
     /**
@@ -162,23 +154,23 @@ class EndpointFinder
         $returnType = $this->getReturnType($reflectionMethod);
 
         switch (true) {
-            case $returnType instanceof RestApiBundle\Model\OpenApi\Types\NullType:
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL:
                 $result = new RestApiBundle\Model\OpenApi\Response\EmptyResponse();
 
                 break;
 
-            case $returnType instanceof RestApiBundle\Model\OpenApi\Types\ClassType && RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($returnType->getClass()):
-                $result = new RestApiBundle\Model\OpenApi\Response\ResponseModel($returnType->getClass(), $returnType->getNullable());
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($returnType->getClassName()):
+                $result = new RestApiBundle\Model\OpenApi\Response\ResponseModel($returnType->getClassName(), $returnType->isNullable());
 
                 break;
 
-            case $returnType instanceof RestApiBundle\Model\OpenApi\Types\ArrayType:
-                $innerType = $returnType->getInnerType();
-                if (!$innerType instanceof RestApiBundle\Model\OpenApi\Types\ClassType || !RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($innerType->getClass())) {
+            case $returnType->isCollection() && $returnType->getCollectionValueType() && $returnType->getCollectionValueType()->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
+                $collectionValueType = $returnType->getCollectionValueType();
+                if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
                     throw new \InvalidArgumentException('Invalid response type');
                 }
 
-                $result = new RestApiBundle\Model\OpenApi\Response\ArrayOfResponseModels($innerType->getClass(), $returnType->getNullable());
+                $result = new RestApiBundle\Model\OpenApi\Response\ArrayOfResponseModels($collectionValueType->getClassName(), $returnType->isNullable());
 
                 break;
 
@@ -189,9 +181,9 @@ class EndpointFinder
         return $result;
     }
 
-    private function getReturnType(\ReflectionMethod $reflectionMethod): RestApiBundle\Model\OpenApi\Types\TypeInterface
+    private function getReturnType(\ReflectionMethod $reflectionMethod): PropertyInfo\Type
     {
-        $result = $this->docBlockReader->resolveReturnType($reflectionMethod) ?: $this->typeHintReader->resolveReturnType($reflectionMethod);
+        $result = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
         if (!$result) {
             $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
             throw new RestApiBundle\Exception\OpenApi\InvalidDefinitionException(new RestApiBundle\Exception\OpenApi\InvalidDefinition\EmptyReturnTypeException(), $context);
@@ -208,12 +200,16 @@ class EndpointFinder
         $scalarTypes = [];
         $entityTypes = [];
 
-        foreach ($reflectionMethod->getParameters() as $parameter) {
-            $parameterType = $this->typeHintReader->resolveParameterType($parameter);
-            if ($parameterType instanceof RestApiBundle\Model\OpenApi\Types\ScalarInterface) {
-                $scalarTypes[$parameter->getName()] = $parameterType;
-            } elseif ($parameterType instanceof RestApiBundle\Model\OpenApi\Types\ClassType && $this->doctrineHelper->isEntity($parameterType->getClass())) {
-                $entityTypes[$parameter->getName()] = $parameterType;
+        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+            if (!$reflectionParameter->getType()) {
+                continue;
+            }
+
+            $parameterType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionParameter->getType());
+            if (RestApiBundle\Helper\TypeExtractor::isScalar($parameterType)) {
+                $scalarTypes[$reflectionParameter->getName()] = $parameterType;
+            } elseif ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\DoctrineHelper::isEntity($parameterType->getClassName())) {
+                $entityTypes[$reflectionParameter->getName()] = $parameterType;
             }
         }
 
@@ -221,8 +217,6 @@ class EndpointFinder
         $placeholders = $this->getPathPlaceholders($path);
 
         foreach ($placeholders as $placeholder) {
-            $pathParameter = null;
-
             if (isset($scalarTypes[$placeholder])) {
                 $result[] = new RestApiBundle\Model\OpenApi\PathParameter\ScalarParameter($placeholder, $scalarTypes[$placeholder]);
             } elseif (isset($entityTypes[$placeholder])) {
@@ -230,7 +224,7 @@ class EndpointFinder
                 unset($entityTypes[$placeholder]);
             } else {
                 $entityType = reset($entityTypes);
-                if (!$entityType instanceof RestApiBundle\Model\OpenApi\Types\ClassType) {
+                if (!$entityType instanceof PropertyInfo\Type) {
                     throw new RestApiBundle\Exception\OpenApi\InvalidDefinition\NotMatchedRoutePlaceholderParameterException($placeholder);
                 }
                 $result[] = new RestApiBundle\Model\OpenApi\PathParameter\EntityTypeParameter($placeholder, $entityType, $placeholder);
@@ -256,10 +250,14 @@ class EndpointFinder
     {
         $result = null;
 
-        foreach ($reflectionMethod->getParameters() as $parameter) {
-            $parameterType = $this->typeHintReader->resolveParameterType($parameter);
-            if ($parameterType instanceof RestApiBundle\Model\OpenApi\Types\ClassType && RestApiBundle\Helper\ClassInstanceHelper::isRequestModel($parameterType->getClass())) {
-                $result = new RestApiBundle\Model\OpenApi\Request\RequestModel($parameterType->getClass(), $parameterType->getNullable());
+        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+            if (!$reflectionParameter->getType()) {
+                continue;
+            }
+
+            $parameterType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionParameter->getType());
+            if ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isRequestModel($parameterType->getClassName())) {
+                $result = new RestApiBundle\Model\OpenApi\Request\RequestModel($parameterType->getClassName(), $parameterType->isNullable());
 
                 break;
             }

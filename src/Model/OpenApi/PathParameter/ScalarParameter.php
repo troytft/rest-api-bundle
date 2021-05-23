@@ -3,20 +3,14 @@
 namespace RestApiBundle\Model\OpenApi\PathParameter;
 
 use RestApiBundle;
+use Symfony\Component\PropertyInfo;
 
 class ScalarParameter implements RestApiBundle\Model\OpenApi\PathParameter\PathParameterInterface
 {
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
+    private PropertyInfo\Type $type;
 
-    /**
-     * @var RestApiBundle\Model\OpenApi\Types\ScalarInterface
-     */
-    private $type;
-
-    public function __construct(string $name, RestApiBundle\Model\OpenApi\Types\ScalarInterface $type)
+    public function __construct(string $name, PropertyInfo\Type $type)
     {
         $this->name = $name;
         $this->type = $type;
@@ -27,7 +21,7 @@ class ScalarParameter implements RestApiBundle\Model\OpenApi\PathParameter\PathP
         return $this->name;
     }
 
-    public function getType(): RestApiBundle\Model\OpenApi\Types\ScalarInterface
+    public function getType(): PropertyInfo\Type
     {
         return $this->type;
     }

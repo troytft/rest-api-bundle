@@ -35,6 +35,7 @@
         "symfony/translation": "^4.4 || ^5.2",
         "symfony/validator": "^4.4 || ^5.2",
         "symfony/yaml": "^4.4 || ^5.2",
+        "symfony/property-info": "^4.4 || ^5.2",
         "troytft/mapper": "^2.1"
     },
     "bin": ["bin/generate-docs"],

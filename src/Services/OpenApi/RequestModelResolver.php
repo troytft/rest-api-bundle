@@ -6,21 +6,19 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Validator as Validator;
 use RestApiBundle;
 use Mapper;
+use Symfony\Component\PropertyInfo;
 use cebe\openapi\spec as OpenApi;
 
 use function sprintf;
 
 class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
-    private RestApiBundle\Services\OpenApi\DoctrineResolver $doctrineHelper;
     private AnnotationReader $annotationReader;
     private RestApiBundle\Services\SettingsProvider $settingsProvider;
 
     public function __construct(
-        RestApiBundle\Services\OpenApi\DoctrineResolver $doctrineHelper,
         RestApiBundle\Services\SettingsProvider $settingsProvider
     ) {
-        $this->doctrineHelper = $doctrineHelper;
         $this->annotationReader = Mapper\Helper\AnnotationReaderFactory::create(true);
         $this->settingsProvider = $settingsProvider;
     }
@@ -215,7 +213,19 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
                 $class = $type->getTransformerOptions()[RestApiBundle\Services\RequestModel\MapperTransformer\EntityTransformer::CLASS_OPTION];
                 $fieldName = $type->getTransformerOptions()[RestApiBundle\Services\RequestModel\MapperTransformer\EntityTransformer::FIELD_OPTION];
 
-                $result = $this->doctrineHelper->resolveByColumnType($class, $fieldName);
+                $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
+                if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
+                    $result = new OpenApi\Schema([
+                        'type' => OpenApi\Type::STRING,
+                    ]);
+                } elseif ($columnType === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+                    $result = new OpenApi\Schema([
+                        'type' => OpenApi\Type::INTEGER,
+                    ]);
+                } else {
+                    throw new \InvalidArgumentException();
+                }
+
                 $result->description = sprintf('Element by "%s"', $fieldName);
                 $result->nullable = (bool) $type->getNullable();
 
@@ -224,13 +234,25 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
             case RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::getName():
                 $class = $type->getTransformerOptions()[RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::CLASS_OPTION];
                 $fieldName = $type->getTransformerOptions()[RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::FIELD_OPTION];
-                $columnType = $this->doctrineHelper->resolveByColumnType($class, $fieldName);
-                $columnType
-                    ->nullable = false;
+
+                $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
+                if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
+                    $arrayValueType = new OpenApi\Schema([
+                        'type' => OpenApi\Type::STRING,
+                        'nullable' => false,
+                    ]);
+                } elseif ($columnType === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+                    $arrayValueType = new OpenApi\Schema([
+                        'type' => OpenApi\Type::INTEGER,
+                        'nullable' => false,
+                    ]);
+                } else {
+                    throw new \InvalidArgumentException();
+                }
 
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::ARRAY,
-                    'items' => $columnType,
+                    'items' => $arrayValueType,
                     'description' => sprintf('Array of elements by "%s"', $fieldName),
                     'nullable' => (bool) $type->getNullable(),
                 ]);
