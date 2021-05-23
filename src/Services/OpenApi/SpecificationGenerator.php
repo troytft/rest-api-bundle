@@ -5,6 +5,7 @@ namespace RestApiBundle\Services\OpenApi;
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\PropertyInfo;
 
 use function array_merge;
 use function array_values;
@@ -32,19 +33,12 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
      */
     private $responseModelResolver;
 
-    /**
-     * @var RestApiBundle\Services\OpenApi\DoctrineResolver
-     */
-    private $doctrineResolver;
-
     public function __construct(
         RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver,
         RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver,
-        RestApiBundle\Services\OpenApi\DoctrineResolver $doctrineResolver
     ) {
         $this->requestModelResolver = $requestModelResolver;
         $this->responseModelResolver = $responseModelResolver;
-        $this->doctrineResolver = $doctrineResolver;
     }
 
     /**
@@ -200,7 +194,19 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 if ($pathParameter instanceof RestApiBundle\Model\OpenApi\PathParameter\ScalarParameter) {
                     $schema = $this->resolveScalarType(($pathParameter->getType()));
                 } elseif ($pathParameter instanceof RestApiBundle\Model\OpenApi\PathParameter\EntityTypeParameter) {
-                    $schema = $this->doctrineResolver->resolveByColumnType($pathParameter->getClassType()->getClassName(), $pathParameter->getFieldName());
+                    $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($pathParameter->getClassType()->getClassName(), $pathParameter->getFieldName());
+                    if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
+                        $schema = new OpenApi\Schema([
+                            'type' => OpenApi\Type::STRING,
+                        ]);
+                    } elseif ($columnType === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+                        $schema = new OpenApi\Schema([
+                            'type' => OpenApi\Type::INTEGER,
+                        ]);
+                    } else {
+                        throw new \InvalidArgumentException();
+                    }
+
                     $schema->description = sprintf('Element by "%s"', $pathParameter->getFieldName());
                     $schema->nullable = $pathParameter->getClassType()->isNullable();
 

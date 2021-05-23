@@ -29,12 +29,10 @@ use function token_get_all;
 class EndpointFinder
 {
     private AnnotationReader $annotationReader;
-    private RestApiBundle\Services\OpenApi\DoctrineResolver $doctrineHelper;
 
-    public function __construct(RestApiBundle\Services\OpenApi\DoctrineResolver $doctrineHelper)
+    public function __construct()
     {
         $this->annotationReader = AnnotationReaderFactory::create(true);
-        $this->doctrineHelper = $doctrineHelper;
     }
 
     /**
@@ -211,7 +209,7 @@ class EndpointFinder
             $parameterType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionParameter->getType());
             if (RestApiBundle\Helper\TypeExtractor::isScalar($parameterType)) {
                 $scalarTypes[$reflectionParameter->getName()] = $parameterType;
-            } elseif ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $this->doctrineHelper->isEntity($parameterType->getClassName())) {
+            } elseif ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\DoctrineHelper::isEntity($parameterType->getClassName())) {
                 $entityTypes[$reflectionParameter->getName()] = $parameterType;
             }
         }
