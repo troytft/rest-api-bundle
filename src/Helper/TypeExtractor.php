@@ -7,6 +7,7 @@ use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
 use Symfony\Component\PropertyInfo;
 use phpDocumentor\Reflection as PhpDoc;
+
 use function in_array;
 
 class TypeExtractor
