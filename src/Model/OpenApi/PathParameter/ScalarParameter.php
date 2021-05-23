@@ -7,15 +7,8 @@ use Symfony\Component\PropertyInfo;
 
 class ScalarParameter implements RestApiBundle\Model\OpenApi\PathParameter\PathParameterInterface
 {
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var PropertyInfo\Type
-     */
-    private $type;
+    private string $name;
+    private PropertyInfo\Type $type;
 
     public function __construct(string $name, PropertyInfo\Type $type)
     {

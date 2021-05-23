@@ -7,20 +7,9 @@ use Symfony\Component\PropertyInfo;
 
 class EntityTypeParameter implements RestApiBundle\Model\OpenApi\PathParameter\PathParameterInterface
 {
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var RestApiBundle\Model\OpenApi\Types\ClassType
-     */
-    private $classType;
-
-    /**
-     * @var string
-     */
-    private $fieldName;
+    private string $name;
+    private PropertyInfo\Type $classType;
+    private string $fieldName;
 
     public function __construct(string $name, PropertyInfo\Type $class, string $fieldName)
     {
