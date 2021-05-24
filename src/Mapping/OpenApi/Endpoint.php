@@ -10,18 +10,11 @@ class Endpoint
 {
     /**
      * @Required
-     *
-     * @var string
      */
-    public $title;
-
-    /**
-     * @var string
-     */
-    public $description;
-
+    public string $title;
+    public string $description;
     /**
      * @var array<string>
      */
-    public $tags = [];
+    public array $tags = [];
 }

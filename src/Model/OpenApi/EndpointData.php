@@ -6,45 +6,26 @@ use RestApiBundle;
 
 class EndpointData
 {
-    /**
-     * @var string
-     */
-    private $title;
-
-    /**
-     * @var string|null
-     */
-    private $description;
+    private string $title;
+    private ?string $description;
 
     /**
      * @var string[]
      */
-    private $tags;
-
-    /**
-     * @var string
-     */
-    private $path;
+    private array $tags;
+    private string $path;
 
     /**
      * @var string[]
      */
-    private $methods;
-
-    /**
-     * @var RestApiBundle\Model\OpenApi\Request\RequestInterface|null
-     */
-    private $request;
-
-    /**
-     * @var RestApiBundle\Model\OpenApi\Response\ResponseInterface
-     */
-    private $response;
+    private array $methods;
+    private ?RestApiBundle\Model\OpenApi\Request\RequestInterface $request;
+    private RestApiBundle\Model\OpenApi\Response\ResponseInterface $response;
 
     /**
      * @var RestApiBundle\Model\OpenApi\PathParameter\PathParameterInterface[]
      */
-    private $pathParameters = [];
+    private array $pathParameters = [];
 
     public function getTitle(): string
     {

@@ -4,10 +4,7 @@ namespace RestApiBundle\Exception;
 
 class RequestModelMappingException extends \RuntimeException implements ExceptionInterface
 {
-    /**
-     * @var array
-     */
-    private $properties;
+    private array $properties;
 
     public function __construct(array $properties)
     {

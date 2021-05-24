@@ -8,10 +8,7 @@ use function sprintf;
 
 class InvalidDefinitionException extends \Exception
 {
-    /**
-     * @var string
-     */
-    private $context;
+    private string $context;
 
     public function __construct(RestApiBundle\Exception\OpenApi\InvalidDefinition\BaseInvalidDefinitionException $previous, string $context)
     {

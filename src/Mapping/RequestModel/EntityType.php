@@ -13,15 +13,8 @@ class EntityType implements ScalarTypeInterface
 {
     use NullableTrait;
 
-    /**
-     * @var string
-     */
-    public $class;
-
-    /**
-     * @var string
-     */
-    public $field = 'id';
+    public string $class;
+    public string $field = 'id';
 
     public function getTransformerName(): string
     {

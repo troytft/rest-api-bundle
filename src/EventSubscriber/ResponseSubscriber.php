@@ -9,10 +9,7 @@ use Symfony\Component\HttpKernel\Event\ViewEvent;
 
 class ResponseSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var RestApiBundle\Services\ResponseModel\ResponseHandler
-     */
-    private $responseHandler;
+    private RestApiBundle\Services\ResponseModel\ResponseHandler $responseHandler;
 
     public function __construct(RestApiBundle\Services\ResponseModel\ResponseHandler $responseHandler)
     {
