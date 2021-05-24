@@ -7,7 +7,7 @@ use RestApiBundle;
 class EndpointData
 {
     private string $title;
-    private ?string $description;
+    private ?string $description = null;
 
     /**
      * @var string[]
@@ -19,7 +19,7 @@ class EndpointData
      * @var string[]
      */
     private array $methods;
-    private ?RestApiBundle\Model\OpenApi\Request\RequestInterface $request;
+    private ?RestApiBundle\Model\OpenApi\Request\RequestInterface $request = null;
     private RestApiBundle\Model\OpenApi\Response\ResponseInterface $response;
 
     /**
