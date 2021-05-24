@@ -12,10 +12,7 @@ use function is_int;
 
 class ConfigExtensionConfiguration implements ConfigurationInterface
 {
-    /**
-     * @var string
-     */
-    private $alias;
+    private string $alias;
 
     public function __construct(string $alias)
     {

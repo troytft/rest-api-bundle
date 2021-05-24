@@ -14,15 +14,8 @@ use function range;
 
 class ResponseHandler
 {
-    /**
-     * @var RestApiBundle\Services\SettingsProvider
-     */
-    private $settingsProvider;
-
-    /**
-     * @var Serializer
-     */
-    private $serializer;
+    private RestApiBundle\Services\SettingsProvider $settingsProvider;
+    private Serializer $serializer;
 
     public function __construct(
         RestApiBundle\Services\SettingsProvider $settingsProvider,

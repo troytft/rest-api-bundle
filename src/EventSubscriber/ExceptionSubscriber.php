@@ -10,10 +10,7 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var RestApiBundle\Services\SettingsProvider
-     */
-    private $settingsProvider;
+    private RestApiBundle\Services\SettingsProvider $settingsProvider;
 
     public function __construct(RestApiBundle\Services\SettingsProvider $settingsProvider)
     {

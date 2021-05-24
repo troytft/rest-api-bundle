@@ -6,15 +6,8 @@ use RestApiBundle;
 
 class ResponseModel implements RestApiBundle\Model\OpenApi\Response\ResponseInterface
 {
-    /**
-     * @var string
-     */
-    private $class;
-
-    /**
-     * @var bool
-     */
-    private $nullable;
+    private string $class;
+    private bool $nullable;
 
     public function __construct(string $class, bool $nullable)
     {

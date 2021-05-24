@@ -12,15 +12,8 @@ class ArrayOfEntitiesType extends RestApiBundle\Mapping\RequestModel\ArrayType
 {
     use NullableTrait;
 
-    /**
-     * @var string
-     */
-    public $class;
-
-    /**
-     * @var string
-     */
-    public $field = 'id';
+    public string $class;
+    public string $field = 'id';
 
     public function __construct()
     {

@@ -6,15 +6,8 @@ use RestApiBundle;
 
 class RequestModel implements RestApiBundle\Model\OpenApi\Request\RequestInterface
 {
-    /**
-     * @var string
-     */
-    private $class;
-
-    /**
-     * @var bool
-     */
-    private $nullable;
+    private string $class;
+    private bool $nullable;
 
     public function __construct(string $class, bool $nullable)
     {
