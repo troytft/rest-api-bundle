@@ -3,12 +3,6 @@
 namespace RestApiBundle\Services\Mapper;
 
 use RestApiBundle;
-use Mapper\DTO\Settings;
-use Mapper\Exception\StackableMappingExceptionInterface;
-use Mapper\Exception\StackedMappingException;
-use Mapper\Exception\Transformer\TransformerExceptionInterface;
-use Mapper\Exception\Transformer\WrappedTransformerException;
-use Mapper\Transformer\TransformerInterface;
 
 use function array_diff;
 use function array_is_list;
@@ -21,20 +15,20 @@ use function call_user_func;
 class Mapper
 {
     private RestApiBundle\Model\Mapper\Settings $settings;
-    private RestApiBundle\Services\Mapper\SchemaGenerator $schemaGenerator;
+    private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver;
 
     /**
      * @var TransformerInterface[]
      */
     private array $transformers = [];
 
-    public function __construct(?RestApiBundle\Model\Mapper\Settings $settings = null)
+    public function __construct(RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver)
     {
-        $this->settings = $settings ?: new Settings();
-        $this->schemaGenerator = new SchemaGenerator($this->settings->isPropertiesNullableByDefault);
+        $this->settings = new RestApiBundle\Model\Mapper\Settings();
+        $this->schemaResolver = $schemaResolver;
     }
 
-    public function getSettings(): RestApiBundle\Model\Mapper\SettingsrSettings
+    public function getSettings(): RestApiBundle\Model\Mapper\Settings
     {
         return $this->settings;
     }
@@ -44,35 +38,38 @@ class Mapper
         $this->settings = $settings;
     }
 
-    public function map(RestApiBundle\Mapping\Mapper\ModelInterface $requestModel, array $data): void
+    public function map(RestApiBundle\Mapping\Mapper\ModelInterface $requestModel, array $data, ?RestApiBundle\Model\Mapper\Context $context = null): void
     {
-        $schema = $this->schemaGenerator->getSchemaByClassInstance($requestModel);
-        $this->mapObject($schema, $requestModel, $data, []);
+        $schema = $this->schemaResolver->resolveByInstance($requestModel);
+        $this->mapObject($schema, $requestModel, $data, [], $context ?: new RestApiBundle\Model\Mapper\Context());
     }
 
-    private function mapObject(RestApiBundle\Model\Mapper\Schema\ObjectTypeInterface $schema, ModelInterface $model, array $rawValue, array $basePath): void
+    private function mapObject(RestApiBundle\Model\Mapper\Schema\ObjectTypeInterface $schema, RestApiBundle\Mapping\Mapper\ModelInterface $model, array $data, array $basePath, RestApiBundle\Model\Mapper\Context $context): void
     {
-        if ($this->settings->getIsClearMissing()) {
-            $propertiesNotPresentedInData = array_diff(array_keys($schema->getProperties()), array_keys($rawValue));
+        if ($context->isClearMissing) {
+            $propertiesNotPresentedInData = array_diff(array_keys($schema->getProperties()), array_keys($data));
             foreach ($propertiesNotPresentedInData as $propertyName) {
-                $rawValue[$propertyName] = null;
+                $data[$propertyName] = null;
             }
         }
 
         $mappingExceptionsStack = [];
 
-        foreach ($rawValue as $propertyName => $propertyValue) {
+        foreach ($data as $propertyName => $propertyValue) {
             try {
                 if (!isset($schema->getProperties()[$propertyName])) {
-                    if ($this->settings->getIsAllowedUndefinedKeysInData()) {
-                        continue;
-                    } else {
-                        throw new RestApiBundle\Exception\Mapper\MappingValidation\UndefinedKeyException($this->resolvePath($basePath, $propertyName));
-                    }
+                    throw new RestApiBundle\Exception\Mapper\MappingValidation\UndefinedKeyException($this->resolvePath($basePath, $propertyName));
                 }
 
                 $propertySchema = $schema->getProperties()[$propertyName];
-                $this->setPropertyToModel($model, $propertyName, $propertySchema, $propertyValue, $basePath);
+
+                $value = $this->mapType($propertySchema, $propertyValue, $this->resolvePath($basePath, $propertyName), $context);
+
+                if ($propertySchema->getSetterName()) {
+                    call_user_func([$model, $propertySchema->getSetterName()], $value);
+                } else {
+                    $model->$propertyName = $value;
+                }
             } catch (RestApiBundle\Exception\Mapper\StackableMappingExceptionInterface $exception) {
                 $mappingExceptionsStack[] = $exception;
             } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
@@ -85,18 +82,7 @@ class Mapper
         }
     }
 
-    private function setPropertyToModel(RestApiBundle\Mapping\Mapper\ModelInterface $model, string $propertyName, RestApiBundle\Model\Mapper\Schema\TypeInterface $schema, $rawValue, array $basePath): void
-    {
-        $value = $this->mapType($schema, $rawValue, $this->resolvePath($basePath, $propertyName));
-
-        if ($schema->getSetterName()) {
-            call_user_func([$model, $schema->getSetterName()], $value);
-        } else {
-            $model->$propertyName = $value;
-        }
-    }
-
-    private function mapType(RestApiBundle\Model\Mapper\Schema\TypeInterface $schema, $rawValue, array $basePath)
+    private function mapType(RestApiBundle\Model\Mapper\Schema\TypeInterface $schema, $rawValue, array $basePath, RestApiBundle\Model\Mapper\Context $context)
     {
         if ($rawValue === null && $schema->getNullable()) {
             return null;
@@ -115,12 +101,14 @@ class Mapper
                 if (!is_array($rawValue) || (count($rawValue) > 0 && array_is_list($rawValue))) {
                     throw new RestApiBundle\Exception\Mapper\MappingValidation\ObjectRequiredException($basePath);
                 }
-                $value = $this->mapObject($schema, new $class(), $rawValue, $basePath);
+
+                $value = new $class();
+                $this->mapObject($schema, $value, $rawValue, $basePath, $context);
 
                 break;
 
             case $schema instanceof RestApiBundle\Model\Mapper\Schema\CollectionTypeInterface:
-                $value = $this->mapCollectionType($schema, $rawValue, $basePath);
+                $value = $this->mapCollectionType($schema, $rawValue, $basePath, $context);
 
                 break;
 
@@ -132,8 +120,8 @@ class Mapper
         if ($schema->getTransformerName()) {
             try {
                 $value = $this->transformers[$schema->getTransformerName()]->transform($value, $schema->getTransformerOptions());
-            } catch (TransformerExceptionInterface $transformerException) {
-                throw new WrappedTransformerException($transformerException, $basePath);
+            } catch (RestApiBundle\Exception\Mapper\Transformer\TransformerExceptionInterface $transformerException) {
+                throw new RestApiBundle\Exception\Mapper\Transformer\WrappedTransformerException($transformerException, $basePath);
             }
         }
 
@@ -145,7 +133,7 @@ class Mapper
         return $rawValue;
     }
 
-    private function mapCollectionType(RestApiBundle\Model\Mapper\Schema\CollectionTypeInterface $schema, $rawValue, array $basePath): array
+    private function mapCollectionType(RestApiBundle\Model\Mapper\Schema\CollectionTypeInterface $schema, $rawValue, array $basePath, RestApiBundle\Model\Mapper\Context $context): array
     {
         if (!is_array($rawValue) || !array_is_list($rawValue)) {
             throw new RestApiBundle\Exception\Mapper\MappingValidation\CollectionRequiredException($basePath);
@@ -154,7 +142,7 @@ class Mapper
         $value = [];
 
         foreach ($rawValue as $i => $item) {
-            $value[] = $this->mapType($schema->getValuesType(), $item, $this->resolvePath($basePath, $i));
+            $value[] = $this->mapType($schema->getValuesType(), $item, $this->resolvePath($basePath, $i), $context);
         }
 
         return $value;

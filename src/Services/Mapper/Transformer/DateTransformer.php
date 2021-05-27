@@ -1,11 +1,13 @@
 <?php
 
-namespace RestApiBundle\Services\RequestModel\MapperTransformer;
+namespace RestApiBundle\Services\Mapper\Transformer;
 
 use RestApiBundle;
 
 class DateTransformer extends \Mapper\Transformer\DateTransformer
 {
+    public const FORMAT_OPTION_NAME = 'format';
+
     private RestApiBundle\Services\SettingsProvider $settingsProvider;
 
     public function __construct(RestApiBundle\Services\SettingsProvider $settingsProvider)
