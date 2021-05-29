@@ -4,7 +4,11 @@ namespace RestApiBundle\Services\Mapper\Transformer;
 
 use RestApiBundle;
 
-class DateTransformer extends \Mapper\Transformer\DateTransformer
+use function array_merge;
+use function array_values;
+use function implode;
+
+class DateTransformer implements TransformerInterface
 {
     public const FORMAT_OPTION_NAME = 'format';
 
@@ -17,15 +21,22 @@ class DateTransformer extends \Mapper\Transformer\DateTransformer
 
     public function transform($value, array $options = [])
     {
-        if (!isset($options[static::FORMAT_OPTION_NAME])) {
-            $options[static::FORMAT_OPTION_NAME] = $this->settingsProvider->getDefaultRequestDateFormat();
+        $format = $options[static::FORMAT_OPTION_NAME] ?? $this->settingsProvider->getDefaultRequestDateFormat();
+
+        $result = \DateTime::createFromFormat($format, $value);
+        if ($result === false) {
+            throw new RestApiBundle\Exception\Mapper\Transformer\InvalidDateFormatException($format);
         }
 
-        return parent::transform($value, $options);
-    }
+        $lastErrors = \DateTime::getLastErrors();
+        if ($lastErrors['warning_count'] || $lastErrors['error_count']) {
+            $errorMessage = implode(', ', array_merge(array_values($lastErrors['warnings']), array_values($lastErrors['errors'])));
 
-    public static function getName(): string
-    {
-        return \Mapper\Transformer\DateTransformer::getName();
+            throw new RestApiBundle\Exception\Mapper\Transformer\InvalidDateException($errorMessage);
+        }
+
+        $result->setTime(0, 0);
+
+        return $result;
     }
 }

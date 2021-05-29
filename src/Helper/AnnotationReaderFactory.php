@@ -16,7 +16,7 @@ class AnnotationReaderFactory
     {
         $key = (int) $ignoreNotImportedAnnotations;
 
-        if (!static::$cache[$key]) {
+        if (!isset(static::$cache[$key])) {
             $parser = new DocParser();
             $parser
                 ->setIgnoreNotImportedAnnotations($ignoreNotImportedAnnotations);

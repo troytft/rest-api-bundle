@@ -40,7 +40,7 @@ class CollectionType implements CollectionTypeInterface
         return $this;
     }
 
-    public function getTransformerName(): ?string
+    public function getTransformerClass(): ?string
     {
         return $this->transformerName;
     }

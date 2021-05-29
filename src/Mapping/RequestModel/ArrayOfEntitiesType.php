@@ -20,16 +20,16 @@ class ArrayOfEntitiesType extends RestApiBundle\Mapping\RequestModel\ArrayType
         $this->type = new IntegerType();
     }
 
-    public function getTransformerName(): ?string
+    public function getTransformerClass(): ?string
     {
-        return RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::getName();
+        return RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::class;
     }
 
     public function getTransformerOptions(): array
     {
         return [
-            RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::CLASS_OPTION => $this->class,
-            RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::FIELD_OPTION => $this->field,
+            RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::CLASS_OPTION => $this->class,
+            RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::FIELD_OPTION => $this->field,
         ];
     }
 }

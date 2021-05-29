@@ -21,7 +21,7 @@ class ScalarType implements ScalarTypeInterface
         return $this;
     }
 
-    public function getTransformerName(): ?string
+    public function getTransformerClass(): ?string
     {
         return $this->transformerName;
     }

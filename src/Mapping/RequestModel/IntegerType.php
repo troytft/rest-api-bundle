@@ -2,9 +2,22 @@
 
 namespace RestApiBundle\Mapping\RequestModel;
 
+use RestApiBundle;
+
 /**
  * @Annotation
  */
-class IntegerType extends \Mapper\Annotation\IntegerType
+class IntegerType implements RestApiBundle\Mapping\Mapper\ScalarTypeInterface
 {
+    use NullableTrait;
+
+    public function getTransformerClass(): string
+    {
+        return RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class;
+    }
+
+    public function getTransformerOptions(): array
+    {
+        return [];
+    }
 }

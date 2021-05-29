@@ -1,11 +1,18 @@
 <?php
 
-namespace RestApiBundle\Services\RequestModel\MapperTransformer;
+namespace RestApiBundle\Services\Mapper\Transformer;
 
 use RestApiBundle;
 
-class DateTimeTransformer extends \Mapper\Transformer\DateTimeTransformer
+use function array_merge;
+use function array_values;
+use function implode;
+
+class DateTimeTransformer implements TransformerInterface
 {
+    public const FORMAT_OPTION_NAME = 'format';
+    public const FORCE_LOCAL_TIMEZONE_OPTION_NAME = 'forceLocalTimezone';
+
     private RestApiBundle\Services\SettingsProvider $settingsProvider;
 
     public function __construct(RestApiBundle\Services\SettingsProvider $settingsProvider)
@@ -15,19 +22,26 @@ class DateTimeTransformer extends \Mapper\Transformer\DateTimeTransformer
 
     public function transform($value, array $options = [])
     {
-        if (!isset($options[static::FORMAT_OPTION_NAME])) {
-            $options[static::FORMAT_OPTION_NAME] = $this->settingsProvider->getDefaultRequestDatetimeFormat();
+        $format = $options[static::FORMAT_OPTION_NAME] ?? $this->settingsProvider->getDefaultRequestDatetimeFormat();
+        $forceLocalTimezone = $options[static::FORCE_LOCAL_TIMEZONE_OPTION_NAME] ?? $this->settingsProvider->isForceRequestDatetimeToLocalTimezone();
+
+        $result = \DateTime::createFromFormat($format, $value);
+        if ($result === false) {
+            throw new RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeFormatException($format);
         }
 
-        if (!isset($options[static::FORCE_LOCAL_TIMEZONE_OPTION_NAME])) {
-            $options[static::FORCE_LOCAL_TIMEZONE_OPTION_NAME] = $this->settingsProvider->isForceRequestDatetimeToLocalTimezone();
+        $lastErrors = \DateTime::getLastErrors();
+        if ($lastErrors['warning_count'] || $lastErrors['error_count']) {
+            $errorMessage = implode(', ', array_merge(array_values($lastErrors['warnings']), array_values($lastErrors['errors'])));
+
+            throw new RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeException($errorMessage);
         }
 
-        return parent::transform($value, $options);
-    }
+        if ($forceLocalTimezone) {
+            $dateTime = new \DateTime();
+            $result->setTimezone($dateTime->getTimezone());
+        }
 
-    public static function getName(): string
-    {
-        return \Mapper\Transformer\DateTimeTransformer::getName();
+        return $result;
     }
 }

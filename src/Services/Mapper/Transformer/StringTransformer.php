@@ -1,8 +1,8 @@
 <?php
 
-namespace Mapper\Transformer;
+namespace RestApiBundle\Services\Mapper\Transformer;
 
-use Mapper\Exception\Transformer\StringRequiredException;
+use RestApiBundle;
 
 use function is_string;
 
@@ -16,7 +16,7 @@ class StringTransformer implements TransformerInterface
     public function transform($value, array $options = [])
     {
         if (!is_string($value)) {
-            throw new StringRequiredException();
+            throw new RestApiBundle\Exception\Mapper\Transformer\StringRequiredException();
         }
 
         return $value;

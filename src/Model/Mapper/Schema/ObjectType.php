@@ -5,7 +5,7 @@ namespace RestApiBundle\Model\Mapper\Schema;
 class ObjectType implements ObjectTypeInterface
 {
     /**
-     * @var TypeInterface[]
+     * @var array<string, TypeInterface>
      */
     private array $properties = [];
     private string $className;
@@ -74,7 +74,7 @@ class ObjectType implements ObjectTypeInterface
         return $this;
     }
 
-    public function getTransformerName(): ?string
+    public function getTransformerClass(): ?string
     {
         return $this->transformerName;
     }

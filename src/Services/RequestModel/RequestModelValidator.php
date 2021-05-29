@@ -19,14 +19,14 @@ use function ucfirst;
 
 class RequestModelValidator
 {
-    private RestApiBundle\Services\RequestModel\MapperInitiator $mapperInitiator;
+    private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver;
     private ValidatorInterface $validator;
 
     public function __construct(
-        RestApiBundle\Services\RequestModel\MapperInitiator $mapperInitiator,
+        RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver,
         ValidatorInterface $validator
     ) {
-        $this->mapperInitiator = $mapperInitiator;
+        $this->schemaResolver = $schemaResolver;
         $this->validator = $validator;
     }
 
@@ -65,11 +65,7 @@ class RequestModelValidator
     {
         $result = [];
 
-        $schema = $this
-            ->mapperInitiator
-            ->getMapper()
-            ->getSchemaGenerator()
-            ->getSchemaByClassInstance($requestModel);
+        $schema = $this->schemaResolver->resolveByInstance($requestModel);
 
         foreach ($schema->getProperties() as $propertyName => $propertyType) {
             if ($propertyType instanceof ObjectType) {
@@ -140,12 +136,7 @@ class RequestModelValidator
         $pathParts = explode('.', $path);
         $lastPartKey = array_key_last($pathParts);
 
-        $isProperty = $this
-            ->mapperInitiator
-            ->getMapper()
-            ->getSchemaGenerator()
-            ->isModelHasProperty($constraintViolation->getRoot(), $pathParts[$lastPartKey]);
-
+        $isProperty = $this->hasProperty($constraintViolation->getRoot(), $pathParts[$lastPartKey]);
         $isItemOfCollection = is_numeric($pathParts[$lastPartKey]);
 
         if (!$isProperty && !$isItemOfCollection) {
@@ -154,5 +145,12 @@ class RequestModelValidator
         }
 
         return $path;
+    }
+
+    private function hasProperty(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel, string $propertyName): bool
+    {
+        $schema = $this->schemaResolver->resolveByInstance($requestModel);
+
+        return isset($schema->getProperties()[$propertyName]);
     }
 }

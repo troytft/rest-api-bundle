@@ -2,8 +2,8 @@
 
 namespace RestApiBundle\Mapping\RequestModel;
 
-use Mapper\ModelInterface;
+use RestApiBundle;
 
-interface RequestModelInterface extends ModelInterface
+interface RequestModelInterface extends RestApiBundle\Mapping\Mapper\ModelInterface
 {
 }

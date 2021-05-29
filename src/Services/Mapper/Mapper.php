@@ -9,6 +9,7 @@ use function array_is_list;
 use function array_keys;
 use function array_merge;
 use function count;
+use function get_class;
 use function is_array;
 use function call_user_func;
 
@@ -18,7 +19,7 @@ class Mapper
     private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver;
 
     /**
-     * @var TransformerInterface[]
+     * @var RestApiBundle\Services\Mapper\Transformer\TransformerInterface[]
      */
     private array $transformers = [];
 
@@ -117,9 +118,9 @@ class Mapper
 
         }
 
-        if ($schema->getTransformerName()) {
+        if ($schema->getTransformerClass()) {
             try {
-                $value = $this->transformers[$schema->getTransformerName()]->transform($value, $schema->getTransformerOptions());
+                $value = $this->transformers[$schema->getTransformerClass()]->transform($value, $schema->getTransformerOptions());
             } catch (RestApiBundle\Exception\Mapper\Transformer\TransformerExceptionInterface $transformerException) {
                 throw new RestApiBundle\Exception\Mapper\Transformer\WrappedTransformerException($transformerException, $basePath);
             }
@@ -156,9 +157,9 @@ class Mapper
         return $path;
     }
 
-    public function addTransformer(TransformerInterface $transformer)
+    public function addTransformer(RestApiBundle\Services\Mapper\Transformer\TransformerInterface $transformer)
     {
-        $this->transformers[$transformer::getName()] = $transformer;
+        $this->transformers[get_class($transformer)] = $transformer;
 
         return $this;
     }

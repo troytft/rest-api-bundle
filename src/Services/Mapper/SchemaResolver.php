@@ -91,7 +91,7 @@ class SchemaResolver
         switch (true) {
             case $mapping instanceof RestApiBundle\Mapping\Mapper\ObjectTypeInterface:
                 $schema = $this->processObjectType(
-                    $mapping->getTransformerName(),
+                    $mapping->getTransformerClass(),
                     $mapping->getTransformerOptions(),
                     $mapping->getNullable() ?: true,
                     $mapping->getClassName()
@@ -101,7 +101,7 @@ class SchemaResolver
 
             case $mapping instanceof RestApiBundle\Mapping\Mapper\ScalarTypeInterface:
                 $schema = $this->processScalarType(
-                    $mapping->getTransformerName(),
+                    $mapping->getTransformerClass(),
                     $mapping->getTransformerOptions(),
                     $mapping->getNullable() ?: true
                 );
@@ -110,7 +110,7 @@ class SchemaResolver
 
             case $mapping instanceof RestApiBundle\Mapping\Mapper\CollectionTypeInterface:
                 $schema = $this->processCollectionType(
-                    $mapping->getTransformerName(),
+                    $mapping->getTransformerClass(),
                     $mapping->getTransformerOptions(),
                     $mapping->getNullable() ?: true,
                     $mapping->getType()

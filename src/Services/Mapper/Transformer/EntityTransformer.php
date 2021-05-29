@@ -1,15 +1,14 @@
 <?php
 
-namespace RestApiBundle\Services\RequestModel\MapperTransformer;
+namespace RestApiBundle\Services\Mapper\Transformer;
 
-use Mapper;
+use RestApiBundle;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use RestApiBundle\Exception\RequestModel\EntityNotFoundException;
 
 use function sprintf;
 
-class EntityTransformer implements Mapper\Transformer\TransformerInterface
+class EntityTransformer implements TransformerInterface
 {
     public const CLASS_OPTION = 'class';
     public const FIELD_OPTION = 'field';
@@ -31,10 +30,10 @@ class EntityTransformer implements Mapper\Transformer\TransformerInterface
         if ($fieldType === null) {
             throw new \InvalidArgumentException(sprintf('Class "%s" has not a field with name "%s"', $class, $field));
         } elseif ($fieldType === \Doctrine\DBAL\Types\Type::INTEGER) {
-            $transformer = new Mapper\Transformer\IntegerTransformer();
+            $transformer = new IntegerTransformer();
             $value = $transformer->transform($value);
         } elseif ($fieldType === \Doctrine\DBAL\Types\Type::STRING) {
-            $transformer = new Mapper\Transformer\StringTransformer();
+            $transformer = new StringTransformer();
             $value = $transformer->transform($value);
         } else {
             throw new \InvalidArgumentException(sprintf('Unsupported field type "%s"', $fieldType));
@@ -45,14 +44,9 @@ class EntityTransformer implements Mapper\Transformer\TransformerInterface
         $entity = $repository->findOneBy([$options[static::FIELD_OPTION] => $value]);
 
         if (!$entity) {
-            throw new EntityNotFoundException();
+            throw new RestApiBundle\Exception\RequestModel\EntityNotFoundException();
         }
 
         return $entity;
-    }
-
-    public static function getName(): string
-    {
-        return static::class;
     }
 }

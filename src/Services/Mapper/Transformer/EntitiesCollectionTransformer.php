@@ -1,16 +1,15 @@
 <?php
 
-namespace RestApiBundle\Services\RequestModel\MapperTransformer;
+namespace RestApiBundle\Services\Mapper\Transformer;
 
-use Mapper;
+use RestApiBundle;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use RestApiBundle;
 
 use function count;
 use function ucfirst;
 
-class EntitiesCollectionTransformer implements Mapper\Transformer\TransformerInterface
+class EntitiesCollectionTransformer implements TransformerInterface
 {
     public const CLASS_OPTION = 'class';
     public const FIELD_OPTION = 'field';
@@ -59,10 +58,5 @@ class EntitiesCollectionTransformer implements Mapper\Transformer\TransformerInt
         ksort($sortedResults);
 
         return $sortedResults;
-    }
-
-    public static function getName(): string
-    {
-        return static::class;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mapper\Transformer;
+namespace RestApiBundle\Services\Mapper\Transformer;
 
 class TimestampTransformer extends IntegerTransformer
 {

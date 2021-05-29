@@ -1,8 +1,8 @@
 <?php
 
-namespace Mapper\Transformer;
+namespace RestApiBundle\Services\Mapper\Transformer;
 
-use Mapper\Exception\Transformer\IntegerRequiredException;
+use RestApiBundle;
 
 use function filter_var;
 use function is_numeric;
@@ -17,12 +17,12 @@ class IntegerTransformer implements TransformerInterface
     public function transform($value, array $options = [])
     {
         if (!is_numeric($value)) {
-            throw new IntegerRequiredException();
+            throw new RestApiBundle\Exception\Mapper\Transformer\IntegerRequiredException();
         }
 
         $value = filter_var($value, FILTER_VALIDATE_INT);
         if ($value === false) {
-            throw new IntegerRequiredException();
+            throw new RestApiBundle\Exception\Mapper\Transformer\IntegerRequiredException();
         }
 
         return $value;
