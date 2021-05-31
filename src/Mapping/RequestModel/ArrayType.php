@@ -18,7 +18,7 @@ class ArrayType implements RestApiBundle\Mapping\Mapper\CollectionTypeInterface
      */
     public $type;
 
-    public function getType(): \RestApiBundle\Mapping\Mapper\TypeInterface
+    public function getValueType(): \RestApiBundle\Mapping\Mapper\TypeInterface
     {
         if (!$this->type instanceof RestApiBundle\Mapping\Mapper\TypeInterface) {
             throw new \InvalidArgumentException();

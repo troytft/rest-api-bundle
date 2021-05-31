@@ -11,7 +11,7 @@ class DateTimeType implements RestApiBundle\Mapping\Mapper\ScalarTypeInterface
 {
     use NullableTrait;
 
-    public ?string $format;
+    public ?string $format = null;
 
     public function getTransformerClass(): string
     {

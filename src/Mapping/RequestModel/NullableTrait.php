@@ -4,7 +4,7 @@ namespace RestApiBundle\Mapping\RequestModel;
 
 trait NullableTrait
 {
-    public ?bool $nullable;
+    public ?bool $nullable = null;
 
     public function getNullable(): ?bool
     {

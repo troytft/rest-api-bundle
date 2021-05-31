@@ -3,7 +3,6 @@
 namespace RestApiBundle\Mapping\RequestModel;
 
 use RestApiBundle;
-use Mapper\Annotation\NullableTrait;
 
 /**
  * @Annotation

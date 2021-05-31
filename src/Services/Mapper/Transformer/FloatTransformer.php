@@ -9,11 +9,6 @@ use function is_numeric;
 
 class FloatTransformer implements TransformerInterface
 {
-    public static function getName(): string
-    {
-        return static::class;
-    }
-
     public function transform($value, array $options = [])
     {
         if (!is_numeric($value)) {

@@ -22,11 +22,6 @@ class RequestModelResolverTest extends Tests\BaseTestCase
 
     private function getRequestModelResolver(): RestApiBundle\Services\OpenApi\RequestModelResolver
     {
-        $result = $this->getContainer()->get(RestApiBundle\Services\OpenApi\RequestModelResolver::class);
-        if (!$result instanceof RestApiBundle\Services\OpenApi\RequestModelResolver) {
-            throw new \InvalidArgumentException();
-        }
-
-        return $result;
+        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\RequestModelResolver::class);
     }
 }

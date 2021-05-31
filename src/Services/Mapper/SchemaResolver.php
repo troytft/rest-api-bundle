@@ -113,7 +113,7 @@ class SchemaResolver
                     $mapping->getTransformerClass(),
                     $mapping->getTransformerOptions(),
                     $mapping->getNullable() ?: true,
-                    $mapping->getType()
+                    $mapping->getValueType()
                 );
 
                 break;

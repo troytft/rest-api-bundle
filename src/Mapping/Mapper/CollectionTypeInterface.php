@@ -4,5 +4,5 @@ namespace RestApiBundle\Mapping\Mapper;
 
 interface CollectionTypeInterface extends TypeInterface
 {
-    public function getType(): TypeInterface;
+    public function getValueType(): TypeInterface;
 }
