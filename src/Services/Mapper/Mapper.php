@@ -15,7 +15,6 @@ use function call_user_func;
 
 class Mapper
 {
-    private RestApiBundle\Model\Mapper\Settings $settings;
     private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver;
 
     /**
@@ -25,18 +24,7 @@ class Mapper
 
     public function __construct(RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver)
     {
-        $this->settings = new RestApiBundle\Model\Mapper\Settings();
         $this->schemaResolver = $schemaResolver;
-    }
-
-    public function getSettings(): RestApiBundle\Model\Mapper\Settings
-    {
-        return $this->settings;
-    }
-
-    public function setSettings(RestApiBundle\Model\Mapper\Settings $settings): void
-    {
-        $this->settings = $settings;
     }
 
     public function map(RestApiBundle\Mapping\Mapper\ModelInterface $requestModel, array $data, ?RestApiBundle\Model\Mapper\Context $context = null): void

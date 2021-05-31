@@ -19,12 +19,12 @@ class SchemaResolver
 
     public function resolveByInstance(RestApiBundle\Mapping\Mapper\ModelInterface $model): RestApiBundle\Model\Mapper\Schema\ObjectType
     {
-        return $this->processObjectType(null, [], true, get_class($model));
+        return $this->processObjectType(null, [], false, get_class($model));
     }
 
     public function resolveByClass(string $class): RestApiBundle\Model\Mapper\Schema\ObjectType
     {
-        return $this->processObjectType(null, [], true, $class);
+        return $this->processObjectType(null, [], false, $class);
     }
 
     private function processObjectType(?string $transformerName, array $transformerOptions, bool $isNullable, string $className): RestApiBundle\Model\Mapper\Schema\ObjectType
@@ -93,7 +93,7 @@ class SchemaResolver
                 $schema = $this->processObjectType(
                     $mapping->getTransformerClass(),
                     $mapping->getTransformerOptions(),
-                    $mapping->getNullable() ?: true,
+                    $mapping->getNullable() ?: false,
                     $mapping->getClassName()
                 );
 
@@ -103,7 +103,7 @@ class SchemaResolver
                 $schema = $this->processScalarType(
                     $mapping->getTransformerClass(),
                     $mapping->getTransformerOptions(),
-                    $mapping->getNullable() ?: true
+                    $mapping->getNullable() ?: false
                 );
 
                 break;
@@ -112,7 +112,7 @@ class SchemaResolver
                 $schema = $this->processCollectionType(
                     $mapping->getTransformerClass(),
                     $mapping->getTransformerOptions(),
-                    $mapping->getNullable() ?: true,
+                    $mapping->getNullable() ?: false,
                     $mapping->getValueType()
                 );
 
