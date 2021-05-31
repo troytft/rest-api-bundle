@@ -4,7 +4,6 @@ namespace RestApiBundle\Services\OpenApi;
 
 use Composer\Autoload\ClassLoader;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Mapper\Helper\AnnotationReaderFactory;
 use RestApiBundle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -31,7 +30,7 @@ class EndpointFinder
 
     public function __construct()
     {
-        $this->annotationReader = AnnotationReaderFactory::create(true);
+        $this->annotationReader = RestApiBundle\Helper\AnnotationReaderFactory::create(true);
     }
 
     /**

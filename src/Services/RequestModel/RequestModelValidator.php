@@ -2,8 +2,6 @@
 
 namespace RestApiBundle\Services\RequestModel;
 
-use Mapper\DTO\Schema\CollectionType;
-use Mapper\DTO\Schema\ObjectType;
 use RestApiBundle;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -68,7 +66,7 @@ class RequestModelValidator
         $schema = $this->schemaResolver->resolveByInstance($requestModel);
 
         foreach ($schema->getProperties() as $propertyName => $propertyType) {
-            if ($propertyType instanceof ObjectType) {
+            if ($propertyType instanceof RestApiBundle\Model\Mapper\Schema\ObjectType) {
                 $propertyValue = $this->getPropertyValueFromInstance($requestModel, $propertyName);
                 if (!$propertyValue) {
                     continue;
@@ -79,7 +77,7 @@ class RequestModelValidator
                     $prefix = sprintf('%s.', $propertyName);
                     $result[] = $this->appendPrefixToArrayKeys($prefix, $innerErrors);
                 }
-            } elseif ($propertyType instanceof CollectionType && $propertyType->getItems() instanceof ObjectType) {
+            } elseif ($propertyType instanceof RestApiBundle\Model\Mapper\Schema\CollectionType && $propertyType->getValuesType() instanceof RestApiBundle\Model\Mapper\Schema\ObjectType) {
                 $propertyValue = $this->getPropertyValueFromInstance($requestModel, $propertyName);
                 if (!$propertyValue) {
                     continue;

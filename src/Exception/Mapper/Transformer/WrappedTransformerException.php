@@ -2,12 +2,11 @@
 
 namespace RestApiBundle\Exception\Mapper\Transformer;
 
-use Mapper\Exception\StackableMappingExceptionInterface;
-use RestApiBundle\Exception\Mapper\PathTrait;
+use RestApiBundle;
 
-class WrappedTransformerException extends \Exception implements StackableMappingExceptionInterface
+class WrappedTransformerException extends \Exception implements RestApiBundle\Exception\Mapper\StackableMappingExceptionInterface
 {
-    use PathTrait;
+    use RestApiBundle\Exception\Mapper\PathTrait;
 
     /**
      * @var TransformerExceptionInterface

@@ -4,24 +4,15 @@ namespace RestApiBundle\Exception\Mapper\Transformer;
 
 class InvalidDateTimeFormatException extends \Exception implements TransformerExceptionInterface
 {
-    /**
-     * @var string
-     */
-    private $format;
+    private string $format;
 
-    /**
-     * @param string $errorMessage
-     */
-    public function __construct(string $errorMessage)
+    public function __construct(string $format)
     {
         parent::__construct();
 
-        $this->format = $errorMessage;
+        $this->format = $format;
     }
 
-    /**
-     * @return string
-     */
     public function getFormat(): string
     {
         return $this->format;

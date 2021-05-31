@@ -4,24 +4,15 @@ namespace RestApiBundle\Exception\Mapper\Transformer;
 
 class InvalidDateException extends \Exception implements TransformerExceptionInterface
 {
-    /**
-     * @var string
-     */
-    private $errorMessage;
+    private string $errorMessage;
 
-    /**
-     * @param string $errorMessage
-     */
-    public function __construct(string $errorMessage)
+    public function __construct(string $format)
     {
         parent::__construct();
 
-        $this->errorMessage = $errorMessage;
+        $this->errorMessage = $format;
     }
 
-    /**
-     * @return string
-     */
     public function getErrorMessage(): string
     {
         return $this->errorMessage;

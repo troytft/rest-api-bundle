@@ -2,8 +2,8 @@
 
 namespace RestApiBundle\Exception\Mapper\MappingValidation;
 
-use Mapper\Exception\StackableMappingExceptionInterface;
+use RestApiBundle;
 
-interface MappingValidationExceptionInterface extends StackableMappingExceptionInterface
+interface MappingValidationExceptionInterface extends RestApiBundle\Exception\Mapper\StackableMappingExceptionInterface
 {
 }

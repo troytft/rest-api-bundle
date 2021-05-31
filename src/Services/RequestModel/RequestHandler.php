@@ -2,7 +2,6 @@
 
 namespace RestApiBundle\Services\RequestModel;
 
-use Mapper;
 use RestApiBundle;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -57,18 +56,18 @@ class RequestHandler
         foreach ($exception->getExceptions() as $stackableException) {
             $translationParameters = [];
 
-            if ($stackableException instanceof Mapper\Exception\Transformer\WrappedTransformerException) {
+            if ($stackableException instanceof RestApiBundle\Exception\Mapper\Transformer\WrappedTransformerException) {
                 $path = $stackableException->getPathAsString();
                 $previousException = $stackableException->getPrevious();
                 $translationId = get_class($previousException);
 
-                if ($previousException instanceof Mapper\Exception\Transformer\InvalidDateFormatException) {
+                if ($previousException instanceof RestApiBundle\Exception\Mapper\Transformer\InvalidDateFormatException) {
                     $translationParameters = [
                         '{format}' => $previousException->getFormat(),
                     ];
                 }
 
-                if ($previousException instanceof Mapper\Exception\Transformer\InvalidDateTimeFormatException) {
+                if ($previousException instanceof RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeFormatException) {
                     $translationParameters = [
                         '{format}' => $previousException->getFormat(),
                     ];
