@@ -62,9 +62,6 @@ class MapperTest extends Tests\BaseTestCase
             $this->getMapper()->map($model, $data, $context);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
-            foreach ($exception->getExceptions() as $exception2) {
-                var_dump(get_class($exception2));
-            }
             $this->assertCount(1, $exception->getExceptions());
             $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\UndefinedKeyException::class, $exception->getExceptions()[0]);
             $this->assertSame('releases.0.name', $exception->getExceptions()[0]->getPathAsString());

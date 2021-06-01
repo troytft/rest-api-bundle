@@ -2,7 +2,6 @@
 
 namespace TestApp\RequestModel;
 
-use RestApiBundle;
 use RestApiBundle\Mapping\Mapper as Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
 

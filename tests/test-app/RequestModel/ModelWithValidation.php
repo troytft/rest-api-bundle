@@ -3,7 +3,6 @@
 namespace TestApp\RequestModel;
 
 use RestApiBundle\Mapping\Mapper as Mapper;
-use RestApiBundle\RestApiBundle;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class ModelWithValidation implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
