@@ -8,7 +8,7 @@ class ObjectType implements ObjectTypeInterface
      * @var array<string, TypeInterface>
      */
     private array $properties = [];
-    private string $className;
+    private string $class;
     private bool $nullable;
     private ?string $transformerName;
     private array $transformerOptions = [];
@@ -17,19 +17,19 @@ class ObjectType implements ObjectTypeInterface
     /**
      * @return string
      */
-    public function getClassName(): string
+    public function getClass(): string
     {
-        return $this->className;
+        return $this->class;
     }
 
     /**
-     * @param string $className
+     * @param string $class
      *
      * @return $this
      */
-    public function setClassName(string $className)
+    public function setClass(string $class)
     {
-        $this->className = $className;
+        $this->class = $class;
 
         return $this;
     }

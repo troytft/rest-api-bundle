@@ -86,7 +86,7 @@ class Mapper
                 break;
 
             case $schema instanceof RestApiBundle\Model\Mapper\Schema\ObjectTypeInterface:
-                $class = $schema->getClassName();
+                $class = $schema->getClass();
                 if (!is_array($rawValue) || (count($rawValue) > 0 && array_is_list($rawValue))) {
                     throw new RestApiBundle\Exception\Mapper\MappingValidation\ObjectRequiredException($basePath);
                 }

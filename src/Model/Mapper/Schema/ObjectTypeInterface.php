@@ -4,7 +4,7 @@ namespace RestApiBundle\Model\Mapper\Schema;
 
 interface ObjectTypeInterface extends TypeInterface
 {
-    public function getClassName(): string;
+    public function getClass(): string;
 
     /**
      * @return TypeInterface[]

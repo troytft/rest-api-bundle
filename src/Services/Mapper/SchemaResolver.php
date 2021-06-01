@@ -6,11 +6,14 @@ use RestApiBundle;
 use Doctrine\Common\Annotations\AnnotationReader;
 
 use function get_class;
+use function ltrim;
 use function ucfirst;
 
 class SchemaResolver
 {
     private AnnotationReader $annotationReader;
+    /** @var array<string, RestApiBundle\Model\Mapper\Schema\ObjectType> */
+    private array $cache = [];
 
     public function __construct()
     {
@@ -19,20 +22,23 @@ class SchemaResolver
 
     public function resolveByInstance(RestApiBundle\Mapping\Mapper\ModelInterface $model): RestApiBundle\Model\Mapper\Schema\ObjectType
     {
-        return $this->processObjectType(null, [], false, get_class($model));
+        return $this->resolveByClass(get_class($model));
     }
 
     public function resolveByClass(string $class): RestApiBundle\Model\Mapper\Schema\ObjectType
     {
-        return $this->processObjectType(null, [], false, $class);
+        $class = ltrim($class, '\\');
+        if (!isset($this->cache[$class])) {
+            $this->cache[$class] = $this->processObjectType(null, [], false, $class);
+        }
+
+        return $this->cache[$class];
     }
 
-    private function processObjectType(?string $transformerName, array $transformerOptions, bool $isNullable, string $className): RestApiBundle\Model\Mapper\Schema\ObjectType
+    private function processObjectType(?string $transformerName, array $transformerOptions, bool $isNullable, string $class): RestApiBundle\Model\Mapper\Schema\ObjectType
     {
-        $className = ltrim($className, '\\');
-        
         $properties = [];
-        $reflectionClass = new \ReflectionClass($className);
+        $reflectionClass = new \ReflectionClass($class);
 
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             $annotation = $this->annotationReader->getPropertyAnnotation($reflectionProperty, RestApiBundle\Mapping\Mapper\TypeInterface::class);
@@ -54,7 +60,7 @@ class SchemaResolver
 
         $schema = new RestApiBundle\Model\Mapper\Schema\ObjectType();
         $schema
-            ->setClassName($className)
+            ->setClass($class)
             ->setNullable($isNullable)
             ->setProperties($properties)
             ->setTransformerName($transformerName)
