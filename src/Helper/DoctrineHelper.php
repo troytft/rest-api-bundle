@@ -2,7 +2,6 @@
 
 namespace RestApiBundle\Helper;
 
-use Mapper\Helper\AnnotationReaderFactory;
 use RestApiBundle;
 use Doctrine;
 use Symfony\Component\PropertyInfo;
@@ -51,7 +50,7 @@ class DoctrineHelper extends RestApiBundle\Services\OpenApi\AbstractSchemaResolv
     private static function getAnnotationReader(): Doctrine\Common\Annotations\AnnotationReader
     {
         if (!static::$annotationReader) {
-            static::$annotationReader = AnnotationReaderFactory::create(true);
+            static::$annotationReader = RestApiBundle\Helper\AnnotationReaderFactory::create(true);
         }
 
         return static::$annotationReader;

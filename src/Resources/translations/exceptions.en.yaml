@@ -1,15 +1,15 @@
-Mapper\Exception\MappingValidation\CollectionRequiredException: This value should be a collection.
-Mapper\Exception\MappingValidation\ObjectRequiredException: This value should be an object.
-Mapper\Exception\MappingValidation\CanNotBeNullException: This value should not be null.
-Mapper\Exception\MappingValidation\UndefinedKeyException: The key is not defined in the model.
-Mapper\Exception\Transformer\BooleanRequiredException: This value should be a boolean.
-Mapper\Exception\Transformer\FloatRequiredException: This value should be a float.
-Mapper\Exception\Transformer\StringRequiredException: This value should be a string.
-Mapper\Exception\Transformer\IntegerRequiredException: This value should be an integer.
-Mapper\Exception\Transformer\InvalidDateFormatException: This value should be valid date with format "{format}".
-Mapper\Exception\Transformer\InvalidDateException: This value is not a valid date.
-Mapper\Exception\Transformer\InvalidDateTimeFormatException: This value should be valid date time with format "{format}".
-Mapper\Exception\Transformer\InvalidDateTimeException: This value is not a valid datetime.
+RestApiBundle\Exception\Mapper\MappingValidation\CollectionRequiredException: This value should be a collection.
+RestApiBundle\Exception\Mapper\MappingValidation\ObjectRequiredException: This value should be an object.
+RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException: This value should not be null.
+RestApiBundle\Exception\Mapper\MappingValidation\UndefinedKeyException: The key is not defined in the model.
+RestApiBundle\Exception\Mapper\Transformer\BooleanRequiredException: This value should be a boolean.
+RestApiBundle\Exception\Mapper\Transformer\FloatRequiredException: This value should be a float.
+RestApiBundle\Exception\Mapper\Transformer\StringRequiredException: This value should be a string.
+RestApiBundle\Exception\Mapper\Transformer\IntegerRequiredException: This value should be an integer.
+RestApiBundle\Exception\Mapper\Transformer\InvalidDateFormatException: This value should be valid date with format "{format}".
+RestApiBundle\Exception\Mapper\Transformer\InvalidDateException: This value is not a valid date.
+RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeFormatException: This value should be valid date time with format "{format}".
+RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeException: This value is not a valid datetime.
 RestApiBundle\Exception\RequestModel\EntityNotFoundException: An entity with specified value not found.
 RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException: One entity of entities collection not found.
 RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException: Values should be unique.

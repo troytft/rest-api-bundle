@@ -2,8 +2,6 @@
 
 namespace RestApiBundle\Services\RequestModel;
 
-use Mapper\DTO\Schema\CollectionType;
-use Mapper\DTO\Schema\ObjectType;
 use RestApiBundle;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -19,14 +17,14 @@ use function ucfirst;
 
 class RequestModelValidator
 {
-    private RestApiBundle\Services\RequestModel\MapperInitiator $mapperInitiator;
+    private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver;
     private ValidatorInterface $validator;
 
     public function __construct(
-        RestApiBundle\Services\RequestModel\MapperInitiator $mapperInitiator,
+        RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver,
         ValidatorInterface $validator
     ) {
-        $this->mapperInitiator = $mapperInitiator;
+        $this->schemaResolver = $schemaResolver;
         $this->validator = $validator;
     }
 
@@ -65,14 +63,10 @@ class RequestModelValidator
     {
         $result = [];
 
-        $schema = $this
-            ->mapperInitiator
-            ->getMapper()
-            ->getSchemaGenerator()
-            ->getSchemaByClassInstance($requestModel);
+        $schema = $this->schemaResolver->resolveByInstance($requestModel);
 
         foreach ($schema->getProperties() as $propertyName => $propertyType) {
-            if ($propertyType instanceof ObjectType) {
+            if ($propertyType instanceof RestApiBundle\Model\Mapper\Schema\ObjectType) {
                 $propertyValue = $this->getPropertyValueFromInstance($requestModel, $propertyName);
                 if (!$propertyValue) {
                     continue;
@@ -83,7 +77,7 @@ class RequestModelValidator
                     $prefix = sprintf('%s.', $propertyName);
                     $result[] = $this->appendPrefixToArrayKeys($prefix, $innerErrors);
                 }
-            } elseif ($propertyType instanceof CollectionType && $propertyType->getItems() instanceof ObjectType) {
+            } elseif ($propertyType instanceof RestApiBundle\Model\Mapper\Schema\CollectionType && $propertyType->getValuesType() instanceof RestApiBundle\Model\Mapper\Schema\ObjectType) {
                 $propertyValue = $this->getPropertyValueFromInstance($requestModel, $propertyName);
                 if (!$propertyValue) {
                     continue;
@@ -140,12 +134,7 @@ class RequestModelValidator
         $pathParts = explode('.', $path);
         $lastPartKey = array_key_last($pathParts);
 
-        $isProperty = $this
-            ->mapperInitiator
-            ->getMapper()
-            ->getSchemaGenerator()
-            ->isModelHasProperty($constraintViolation->getRoot(), $pathParts[$lastPartKey]);
-
+        $isProperty = $this->hasProperty($constraintViolation->getRoot(), $pathParts[$lastPartKey]);
         $isItemOfCollection = is_numeric($pathParts[$lastPartKey]);
 
         if (!$isProperty && !$isItemOfCollection) {
@@ -154,5 +143,12 @@ class RequestModelValidator
         }
 
         return $path;
+    }
+
+    private function hasProperty(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel, string $propertyName): bool
+    {
+        $schema = $this->schemaResolver->resolveByInstance($requestModel);
+
+        return isset($schema->getProperties()[$propertyName]);
     }
 }

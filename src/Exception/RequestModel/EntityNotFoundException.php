@@ -2,7 +2,7 @@
 
 namespace RestApiBundle\Exception\RequestModel;
 
-use Mapper\Exception\Transformer\TransformerExceptionInterface;
+use RestApiBundle\Exception\Mapper\Transformer\TransformerExceptionInterface;
 
 class EntityNotFoundException extends \Exception implements TransformerExceptionInterface
 {

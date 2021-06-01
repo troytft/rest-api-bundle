@@ -5,7 +5,6 @@ namespace RestApiBundle\Services\OpenApi;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Validator as Validator;
 use RestApiBundle;
-use Mapper;
 use Symfony\Component\PropertyInfo;
 use cebe\openapi\spec as OpenApi;
 
@@ -19,7 +18,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
     public function __construct(
         RestApiBundle\Services\SettingsProvider $settingsProvider
     ) {
-        $this->annotationReader = Mapper\Helper\AnnotationReaderFactory::create(true);
+        $this->annotationReader = RestApiBundle\Helper\AnnotationReaderFactory::create(true);
         $this->settingsProvider = $settingsProvider;
     }
 
@@ -38,7 +37,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
 
             $annotations = $this->annotationReader->getPropertyAnnotations($property);
             foreach ($annotations as $annotation) {
-                if ($annotation instanceof Mapper\DTO\Mapping\TypeInterface) {
+                if ($annotation instanceof RestApiBundle\Mapping\Mapper\TypeInterface) {
                     $mappingAnnotation = $annotation;
                 }
 
@@ -110,21 +109,20 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
     }
 
     /**
-     * @param Mapper\DTO\Mapping\TypeInterface $type
      * @param Validator\Constraint[] $validationConstraints
      */
-    private function convert(Mapper\DTO\Mapping\TypeInterface $type, array $validationConstraints): OpenApi\Schema
+    private function convert(RestApiBundle\Mapping\Mapper\TypeInterface $type, array $validationConstraints): OpenApi\Schema
     {
         switch (true) {
-            case $type instanceof Mapper\DTO\Mapping\ObjectTypeInterface:
+            case $type instanceof RestApiBundle\Mapping\Mapper\ObjectTypeInterface:
                 $result = $this->resolveByClass($type->getClassName(), $type->getNullable() === true);
 
                 break;
-            case $type->getTransformerName() !== null:
+            case $type->getTransformerClass() !== null:
                 $result = $this->convertByTransformer($type, $validationConstraints);
 
                 break;
-            case $type instanceof Mapper\DTO\Mapping\CollectionTypeInterface:
+            case $type instanceof RestApiBundle\Mapping\Mapper\CollectionTypeInterface:
                 $result = $this->convertCollectionType($type, $validationConstraints);
 
                 break;
@@ -137,13 +135,12 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
     }
 
     /**
-     * @param Mapper\DTO\Mapping\TypeInterface $type
      * @param Validator\Constraint[] $validationConstraints
      */
-    private function convertByTransformer(Mapper\DTO\Mapping\TypeInterface $type, array $validationConstraints): OpenApi\Schema
+    private function convertByTransformer(RestApiBundle\Mapping\Mapper\TypeInterface $type, array $validationConstraints): OpenApi\Schema
     {
-        switch ($type->getTransformerName()) {
-            case Mapper\Transformer\BooleanTransformer::getName():
+        switch ($type->getTransformerClass()) {
+            case RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class:
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::BOOLEAN,
                     'nullable' => (bool) $type->getNullable(),
@@ -152,7 +149,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
 
                 break;
 
-            case Mapper\Transformer\IntegerTransformer::getName():
+            case RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class:
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::INTEGER,
                     'nullable' => (bool) $type->getNullable(),
@@ -161,7 +158,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
 
                 break;
 
-            case Mapper\Transformer\StringTransformer::getName():
+            case RestApiBundle\Services\Mapper\Transformer\StringTransformer::class:
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'nullable' => (bool) $type->getNullable(),
@@ -170,7 +167,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
 
                 break;
 
-            case Mapper\Transformer\FloatTransformer::getName():
+            case RestApiBundle\Services\Mapper\Transformer\FloatTransformer::class:
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::NUMBER,
                     'format' => 'double',
@@ -180,8 +177,8 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
 
                 break;
 
-            case Mapper\Transformer\DateTimeTransformer::getName():
-                if (!$type instanceof RestApiBundle\Mapping\RequestModel\DateTimeType) {
+            case RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class:
+                if (!$type instanceof RestApiBundle\Mapping\Mapper\DateTimeType) {
                     throw new \LogicException();
                 }
 
@@ -195,8 +192,8 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
 
                 break;
 
-            case Mapper\Transformer\DateTransformer::getName():
-                if (!$type instanceof RestApiBundle\Mapping\RequestModel\DateType) {
+            case RestApiBundle\Services\Mapper\Transformer\DateTransformer::class:
+                if (!$type instanceof RestApiBundle\Mapping\Mapper\DateType) {
                     throw new \LogicException();
                 }
 
@@ -209,9 +206,9 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
 
                 break;
 
-            case RestApiBundle\Services\RequestModel\MapperTransformer\EntityTransformer::getName():
-                $class = $type->getTransformerOptions()[RestApiBundle\Services\RequestModel\MapperTransformer\EntityTransformer::CLASS_OPTION];
-                $fieldName = $type->getTransformerOptions()[RestApiBundle\Services\RequestModel\MapperTransformer\EntityTransformer::FIELD_OPTION];
+            case RestApiBundle\Services\Mapper\Transformer\EntityTransformer::class:
+                $class = $type->getTransformerOptions()[RestApiBundle\Services\Mapper\Transformer\EntityTransformer::CLASS_OPTION];
+                $fieldName = $type->getTransformerOptions()[RestApiBundle\Services\Mapper\Transformer\EntityTransformer::FIELD_OPTION];
 
                 $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
                 if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
@@ -231,9 +228,9 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
 
                 break;
 
-            case RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::getName():
-                $class = $type->getTransformerOptions()[RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::CLASS_OPTION];
-                $fieldName = $type->getTransformerOptions()[RestApiBundle\Services\RequestModel\MapperTransformer\EntitiesCollectionTransformer::FIELD_OPTION];
+            case RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::class:
+                $class = $type->getTransformerOptions()[RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::CLASS_OPTION];
+                $fieldName = $type->getTransformerOptions()[RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::FIELD_OPTION];
 
                 $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
                 if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
@@ -260,21 +257,20 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
                 break;
 
             default:
-                throw new \InvalidArgumentException(sprintf('Invalid type "%s"', $type->getTransformerName()));
+                throw new \InvalidArgumentException(sprintf('Invalid type "%s"', $type->getTransformerClass()));
         }
 
         return $result;
     }
 
     /**
-     * @param Mapper\DTO\Mapping\CollectionTypeInterface $collectionType
      * @param Validator\Constraint[] $validationConstraints
      */
-    private function convertCollectionType(Mapper\DTO\Mapping\CollectionTypeInterface $collectionType, array $validationConstraints): OpenApi\Schema
+    private function convertCollectionType(RestApiBundle\Mapping\Mapper\CollectionTypeInterface $collectionType, array $validationConstraints): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
-            'items' => $this->convert($collectionType->getType(), $validationConstraints),
+            'items' => $this->convert($collectionType->getValueType(), $validationConstraints),
             'nullable' => (bool) $collectionType->getNullable(),
         ]);
     }

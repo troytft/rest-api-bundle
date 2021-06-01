@@ -3,15 +3,12 @@ services:
         autoconfigure: true
         autowire: true
         public: true
-        bind:
-            $parameterBag: '@=service("kernel").getContainer().getParameterBag()' # symfony 4 magic
-
     _instanceof:
         Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface:
             tags:
                 - { name: controller.argument_value_resolver, priority: 25 }
 
-        Mapper\Transformer\TransformerInterface:
+        RestApiBundle\Services\Mapper\Transformer\TransformerInterface:
             tags: [!php/const RestApiBundle\DependencyInjection\CompilerPass\RequestModelTransformerCompilerPass::TAG]
 
     RestApiBundle\:

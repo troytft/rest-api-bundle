@@ -3,29 +3,29 @@
 namespace TestApp\RequestModel;
 
 use TestApp;
-use RestApiBundle\Mapping\RequestModel as Mapping;
+use RestApiBundle\Mapping\Mapper as Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class WriterList implements Mapping\RequestModelInterface
+class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     /**
      * @var int
      *
-     * @Mapping\IntegerType()
+     * @Mapper\IntegerType()
      */
     private $offset;
 
     /**
      * @var int
      *
-     * @Mapping\IntegerType()
+     * @Mapper\IntegerType()
      */
     private $limit;
 
     /**
      * @var string|null
      *
-     * @Mapping\StringType(nullable=true)
+     * @Mapper\StringType(nullable=true)
      * @Assert\Length(min=1, max=255, allowEmptyString=false)
      */
     private $name;
@@ -33,7 +33,7 @@ class WriterList implements Mapping\RequestModelInterface
     /**
      * @var string|null
      *
-     * @Mapping\StringType(nullable=true)
+     * @Mapper\StringType(nullable=true)
      * @Assert\Length(min=1, max=255, allowEmptyString=false)
      */
     private $surname;
@@ -41,21 +41,21 @@ class WriterList implements Mapping\RequestModelInterface
     /**
      * @var \DateTime|null
      *
-     * @Mapping\DateType(nullable=true)
+     * @Mapper\DateType(nullable=true)
      */
     private $birthday;
 
     /**
      * @var TestApp\Entity\Book[]|null
      *
-     * @Mapping\ArrayOfEntitiesType(class="TestApp\Entity\Book", nullable=true)
+     * @Mapper\ArrayOfEntitiesType(class="TestApp\Entity\Book", nullable=true)
      */
     private $genres;
 
     /**
      * @var TestApp\Entity\Book|null
      *
-     * @Mapping\EntityType(class="TestApp\Entity\Book", nullable=true)
+     * @Mapper\EntityType(class="TestApp\Entity\Book", nullable=true)
      */
     private $writer;
 

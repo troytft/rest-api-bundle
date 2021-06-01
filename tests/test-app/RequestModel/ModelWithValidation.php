@@ -2,15 +2,15 @@
 
 namespace TestApp\RequestModel;
 
-use RestApiBundle\Mapping\RequestModel as Mapping;
+use RestApiBundle\Mapping\Mapper as Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ModelWithValidation implements Mapping\RequestModelInterface
+class ModelWithValidation implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     /**
      * @var string
      *
-     * @Mapping\StringType()
+     * @Mapper\StringType()
      *
      * @Assert\Length(min=6, max=255, allowEmptyString=false)
      * @Assert\Email()
@@ -20,21 +20,21 @@ class ModelWithValidation implements Mapping\RequestModelInterface
     /**
      * @var InnerModelWithValidation
      *
-     * @Mapping\RequestModelType(class="TestApp\RequestModel\InnerModelWithValidation")
+     * @Mapper\ModelType(class="TestApp\RequestModel\InnerModelWithValidation")
      */
     private $modelField;
 
     /**
      * @var array
      *
-     * @Mapping\ArrayType(type=@Mapping\RequestModelType(class="TestApp\RequestModel\InnerModelWithValidation"))
+     * @Mapper\ArrayType(type=@Mapper\ModelType(class="TestApp\RequestModel\InnerModelWithValidation"))
      */
     private $collectionField;
 
     /**
      * @var int[]
      *
-     * @Mapping\ArrayType(type=@Mapping\IntegerType())
+     * @Mapper\ArrayType(type=@Mapper\IntegerType())
      *
      * @Assert\All(constraints={
      *     @Assert\Range(min=10)

@@ -2,7 +2,6 @@
 
 namespace RestApiBundle\Services\RequestModel;
 
-use Mapper;
 use RestApiBundle;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -12,16 +11,16 @@ use function sprintf;
 class RequestHandler
 {
     private TranslatorInterface $translator;
-    private RestApiBundle\Services\RequestModel\MapperInitiator $mapperInitiator;
+    private RestApiBundle\Services\Mapper\Mapper $mapper;
     private RestApiBundle\Services\RequestModel\RequestModelValidator $requestModelValidator;
 
     public function __construct(
         TranslatorInterface $translator,
-        RestApiBundle\Services\RequestModel\MapperInitiator $mapperInitiator,
+        RestApiBundle\Services\Mapper\Mapper $mapper,
         RestApiBundle\Services\RequestModel\RequestModelValidator $requestModelValidator
     ) {
         $this->translator = $translator;
-        $this->mapperInitiator = $mapperInitiator;
+        $this->mapper = $mapper;
         $this->requestModelValidator = $requestModelValidator;
     }
 
@@ -44,31 +43,31 @@ class RequestHandler
     private function map(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel, array $data): void
     {
         try {
-            $this->mapperInitiator->getMapper()->map($requestModel, $data);
-        } catch (Mapper\Exception\StackedMappingException $exception) {
+            $this->mapper->map($requestModel, $data);
+        } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
             throw $this->convertStackedMappingException($exception);
         }
     }
 
-    private function convertStackedMappingException(Mapper\Exception\StackedMappingException $exception): RestApiBundle\Exception\RequestModelMappingException
+    private function convertStackedMappingException(RestApiBundle\Exception\Mapper\StackedMappingException $exception): RestApiBundle\Exception\RequestModelMappingException
     {
         $result = [];
 
         foreach ($exception->getExceptions() as $stackableException) {
             $translationParameters = [];
 
-            if ($stackableException instanceof Mapper\Exception\Transformer\WrappedTransformerException) {
+            if ($stackableException instanceof RestApiBundle\Exception\Mapper\Transformer\WrappedTransformerException) {
                 $path = $stackableException->getPathAsString();
                 $previousException = $stackableException->getPrevious();
                 $translationId = get_class($previousException);
 
-                if ($previousException instanceof Mapper\Exception\Transformer\InvalidDateFormatException) {
+                if ($previousException instanceof RestApiBundle\Exception\Mapper\Transformer\InvalidDateFormatException) {
                     $translationParameters = [
                         '{format}' => $previousException->getFormat(),
                     ];
                 }
 
-                if ($previousException instanceof Mapper\Exception\Transformer\InvalidDateTimeFormatException) {
+                if ($previousException instanceof RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeFormatException) {
                     $translationParameters = [
                         '{format}' => $previousException->getFormat(),
                     ];

@@ -3,8 +3,8 @@
 namespace RestApiBundle\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -31,7 +31,7 @@ class BodySubscriber implements EventSubscriberInterface
             throw new \Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException();
         }
 
-        $request->request = new ParameterBag((array) $decodedContent);
+        $request->request = new InputBag((array) $decodedContent);
     }
 
     private function isSupportedRequest(Request $request): bool
