@@ -2,26 +2,25 @@
 
 namespace TestApp\RequestModel;
 
-use RestApiBundle;
-use RestApiBundle\Mapping\RequestModel as Mapping;
+use RestApiBundle\Mapping\Mapper as Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class BookList implements RestApiBundle\Mapping\RequestModel\RequestModelInterface
+class BookList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     /**
-     * @Mapping\IntegerType(nullable=true)
+     * @Mapper\IntegerType(nullable=true)
      */
     public ?int $offset;
 
     /**
-     * @Mapping\IntegerType(nullable=true)
+     * @Mapper\IntegerType(nullable=true)
      */
     public ?int $limit;
 
     /**
      * @var string[]|null
      *
-     * @Mapping\ArrayType(type=@Mapping\StringType(), nullable=true)
+     * @Mapper\ArrayType(type=@Mapper\StringType(), nullable=true)
      * @Assert\Choice(callback="TestApp\Enum\BookStatus::getValues", multiple=true)
      */
     private $statuses;

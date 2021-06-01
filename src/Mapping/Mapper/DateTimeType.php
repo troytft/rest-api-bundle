@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Mapping\RequestModel;
+namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
 
@@ -21,7 +21,7 @@ class DateTimeType implements RestApiBundle\Mapping\Mapper\ScalarTypeInterface
     public function getTransformerOptions(): array
     {
         return [
-            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION_NAME => $this->format,
+            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION => $this->format,
         ];
     }
 }

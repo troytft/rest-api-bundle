@@ -1,13 +1,13 @@
 <?php
 
-namespace RestApiBundle\Mapping\RequestModel;
+namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
 
 /**
  * @Annotation
  */
-class RequestModelType implements RestApiBundle\Mapping\Mapper\ObjectTypeInterface
+class ModelType implements RestApiBundle\Mapping\Mapper\ObjectTypeInterface
 {
     use NullableTrait;
 

@@ -178,7 +178,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
                 break;
 
             case RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class:
-                if (!$type instanceof RestApiBundle\Mapping\RequestModel\DateTimeType) {
+                if (!$type instanceof RestApiBundle\Mapping\Mapper\DateTimeType) {
                     throw new \LogicException();
                 }
 
@@ -193,7 +193,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
                 break;
 
             case RestApiBundle\Services\Mapper\Transformer\DateTransformer::class:
-                if (!$type instanceof RestApiBundle\Mapping\RequestModel\DateType) {
+                if (!$type instanceof RestApiBundle\Mapping\Mapper\DateType) {
                     throw new \LogicException();
                 }
 

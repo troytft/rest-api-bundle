@@ -1,13 +1,13 @@
 <?php
 
-namespace RestApiBundle\Mapping\RequestModel;
+namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
 
 /**
  * @Annotation
  */
-class ArrayOfEntitiesType extends RestApiBundle\Mapping\RequestModel\ArrayType
+class ArrayOfEntitiesType extends RestApiBundle\Mapping\Mapper\ArrayType
 {
     use NullableTrait;
 

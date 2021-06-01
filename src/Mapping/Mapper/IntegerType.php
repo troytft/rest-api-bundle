@@ -1,19 +1,19 @@
 <?php
 
-namespace RestApiBundle\Mapping\RequestModel;
+namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
 
 /**
  * @Annotation
  */
-class BooleanType implements RestApiBundle\Mapping\Mapper\ScalarTypeInterface
+class IntegerType implements RestApiBundle\Mapping\Mapper\ScalarTypeInterface
 {
     use NullableTrait;
 
     public function getTransformerClass(): string
     {
-        return RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class;
+        return RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class;
     }
 
     public function getTransformerOptions(): array

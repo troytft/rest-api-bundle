@@ -1,19 +1,19 @@
 <?php
 
-namespace RestApiBundle\Mapping\RequestModel;
+namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
 
 /**
  * @Annotation
  */
-class StringType implements RestApiBundle\Mapping\Mapper\ScalarTypeInterface
+class TimestampType implements RestApiBundle\Mapping\Mapper\ScalarTypeInterface
 {
     use NullableTrait;
 
     public function getTransformerClass(): string
     {
-        return RestApiBundle\Services\Mapper\Transformer\StringTransformer::class;
+        return RestApiBundle\Services\Mapper\Transformer\TimestampTransformer::class;
     }
 
     public function getTransformerOptions(): array

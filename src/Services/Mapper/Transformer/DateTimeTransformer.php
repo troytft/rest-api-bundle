@@ -10,8 +10,8 @@ use function implode;
 
 class DateTimeTransformer implements TransformerInterface
 {
-    public const FORMAT_OPTION_NAME = 'format';
-    public const FORCE_LOCAL_TIMEZONE_OPTION_NAME = 'forceLocalTimezone';
+    public const FORMAT_OPTION = 'format';
+    public const FORCE_LOCAL_TIMEZONE_OPTION = 'forceLocalTimezone';
 
     private RestApiBundle\Services\SettingsProvider $settingsProvider;
 
@@ -22,8 +22,8 @@ class DateTimeTransformer implements TransformerInterface
 
     public function transform($value, array $options = [])
     {
-        $format = $options[static::FORMAT_OPTION_NAME] ?? $this->settingsProvider->getDefaultRequestDatetimeFormat();
-        $forceLocalTimezone = $options[static::FORCE_LOCAL_TIMEZONE_OPTION_NAME] ?? $this->settingsProvider->isForceRequestDatetimeToLocalTimezone();
+        $format = $options[static::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDatetimeFormat();
+        $forceLocalTimezone = $options[static::FORCE_LOCAL_TIMEZONE_OPTION] ?? $this->settingsProvider->isForceRequestDatetimeToLocalTimezone();
 
         $result = \DateTime::createFromFormat($format, $value);
         if ($result === false) {

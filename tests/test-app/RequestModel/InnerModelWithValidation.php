@@ -2,15 +2,15 @@
 
 namespace TestApp\RequestModel;
 
-use RestApiBundle\Mapping\RequestModel as Mapping;
+use RestApiBundle\Mapping\Mapper as Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class InnerModelWithValidation implements Mapping\RequestModelInterface
+class InnerModelWithValidation implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     /**
      * @var string
      *
-     * @Mapping\StringType()
+     * @Mapper\StringType()
      *
      * @Assert\Length(min=3, max=255, allowEmptyString=false)
      */
