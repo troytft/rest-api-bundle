@@ -11,9 +11,9 @@ use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 class ActionArgumentValueResolver implements ArgumentValueResolverInterface
 {
     private RequestStack $requestStack;
-    private RestApiBundle\Services\RequestModel\RequestHandler $requestHandler;
+    private RestApiBundle\Services\RequestModel\RequestModelHandler $requestHandler;
 
-    public function __construct(RequestStack $requestStack, RestApiBundle\Services\RequestModel\RequestHandler $requestHandler)
+    public function __construct(RequestStack $requestStack, RestApiBundle\Services\RequestModel\RequestModelHandler $requestHandler)
     {
         $this->requestStack = $requestStack;
         $this->requestHandler = $requestHandler;

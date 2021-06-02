@@ -56,8 +56,8 @@ class RequestModelValidationTest extends Tests\BaseTestCase
         }
     }
 
-    private function getRequestHandler(): RestApiBundle\Services\RequestModel\RequestHandler
+    private function getRequestHandler(): RestApiBundle\Services\RequestModel\RequestModelHandler
     {
-        return $this->getContainer()->get(RestApiBundle\Services\RequestModel\RequestHandler::class);
+        return $this->getContainer()->get(RestApiBundle\Services\RequestModel\RequestModelHandler::class);
     }
 }
