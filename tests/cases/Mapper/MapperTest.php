@@ -12,21 +12,13 @@ class MapperTest extends Tests\BaseTestCase
             $this->getMapper()->map(new Tests\Fixture\Mapper\Movie(), [], $context);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
-            $this->assertCount(6, $exception->getExceptions());
+            $this->assertCount(2, $exception->getExceptions());
 
             $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[0]);
             $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[1]);
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[2]);
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[3]);
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[4]);
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[5]);
 
             $this->assertSame('name', $exception->getExceptions()[0]->getPathAsString());
             $this->assertSame('rating', $exception->getExceptions()[1]->getPathAsString());
-            $this->assertSame('lengthMinutes', $exception->getExceptions()[2]->getPathAsString());
-            $this->assertSame('isOnlineWatchAvailable', $exception->getExceptions()[3]->getPathAsString());
-            $this->assertSame('genres', $exception->getExceptions()[4]->getPathAsString());
-            $this->assertSame('releases', $exception->getExceptions()[5]->getPathAsString());
         }
     }
 

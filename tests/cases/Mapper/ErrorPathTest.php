@@ -6,28 +6,21 @@ class ErrorPathTest extends Tests\BaseTestCase
     {
         $model = new Tests\Fixture\Mapper\Movie();
         $data = [
-            'name' => '',
-            'genres' => null,
-            'releases' => [],
+            'name' => null,
+            'rating' => null,
         ];
 
         try {
             $this->getMapper()->map($model, $data);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
-            $this->assertCount(4, $exception->getExceptions());
+            $this->assertCount(2, $exception->getExceptions());
 
             $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[0]);
-            $this->assertSame('genres', $exception->getExceptions()[0]->getPathAsString());
+            $this->assertSame('name', $exception->getExceptions()[0]->getPathAsString());
 
             $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[1]);
             $this->assertSame('rating', $exception->getExceptions()[1]->getPathAsString());
-
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[2]);
-            $this->assertSame('lengthMinutes', $exception->getExceptions()[2]->getPathAsString());
-
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[3]);
-            $this->assertSame('isOnlineWatchAvailable', $exception->getExceptions()[3]->getPathAsString());
         }
     }
 
@@ -35,8 +28,8 @@ class ErrorPathTest extends Tests\BaseTestCase
     {
         $model = new Tests\Fixture\Mapper\Movie();
         $data = [
-            'name' => '',
-            'genres' => [],
+            'name' => 'Taxi 3',
+            'rating' => 8.3,
             'releases' => [
                 null,
             ]
@@ -46,29 +39,19 @@ class ErrorPathTest extends Tests\BaseTestCase
             $this->getMapper()->map($model, $data);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
-            $this->assertCount(4, $exception->getExceptions());
+            $this->assertCount(1, $exception->getExceptions());
 
             $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[0]);
             $this->assertSame('releases.0', $exception->getExceptions()[0]->getPathAsString());
-
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[1]);
-            $this->assertSame('rating', $exception->getExceptions()[1]->getPathAsString());
-
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[2]);
-            $this->assertSame('lengthMinutes', $exception->getExceptions()[2]->getPathAsString());
-
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[3]);
-            $this->assertSame('isOnlineWatchAvailable', $exception->getExceptions()[3]->getPathAsString());
         }
     }
 
     public function testObjectPropertyInsideCollection()
     {
-        // object property inside collection
         $model = new Tests\Fixture\Mapper\Movie();
         $data = [
-            'name' => '',
-            'genres' => [],
+            'name' => 'Taxi 3',
+            'rating' => 8.3,
             'releases' => [
                 [
                     'country' => null,
@@ -81,22 +64,13 @@ class ErrorPathTest extends Tests\BaseTestCase
             $this->getMapper()->map($model, $data);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
-            $this->assertCount(5, $exception->getExceptions());
+            $this->assertCount(2, $exception->getExceptions());
 
             $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[0]);
             $this->assertSame('releases.0.country', $exception->getExceptions()[0]->getPathAsString());
 
             $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[1]);
             $this->assertSame('releases.0.date', $exception->getExceptions()[1]->getPathAsString());
-
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[2]);
-            $this->assertSame('rating', $exception->getExceptions()[2]->getPathAsString());
-
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[3]);
-            $this->assertSame('lengthMinutes', $exception->getExceptions()[3]->getPathAsString());
-
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[4]);
-            $this->assertSame('isOnlineWatchAvailable', $exception->getExceptions()[4]->getPathAsString());
         }
     }
 
