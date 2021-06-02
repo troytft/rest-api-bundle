@@ -52,13 +52,6 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
      */
     private $genres;
 
-    /**
-     * @var TestApp\Entity\Book|null
-     *
-     * @Mapper\EntityType(class="TestApp\Entity\Book", nullable=true)
-     */
-    private $writer;
-
     public function getOffset(): int
     {
         return $this->offset;
