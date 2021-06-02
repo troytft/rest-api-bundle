@@ -34,7 +34,7 @@ class ClassInstanceHelper
     /**
      * @var array<string, bool>
      */
-    private static array $requestModelCache = [];
+    private static array $mapperModelCache = [];
 
     public static function isResponseModel(string $class): bool
     {
@@ -98,19 +98,19 @@ class ClassInstanceHelper
         return static::$serializableDateCache[$class];
     }
 
-    public static function isRequestModel(string $class): bool
+    public static function isMapperModel(string $class): bool
     {
         if (!class_exists($class)) {
             return false;
         }
 
-        if (!array_key_exists($class, static::$requestModelCache)) {
+        if (!array_key_exists($class, static::$mapperModelCache)) {
             $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
-            static::$requestModelCache[$class] = $reflectionClass->isInstantiable()
-                && $reflectionClass->implementsInterface(RestApiBundle\Mapping\RequestModel\RequestModelInterface::class);
+            static::$mapperModelCache[$class] = $reflectionClass->isInstantiable()
+                && $reflectionClass->implementsInterface(RestApiBundle\Mapping\Mapper\ModelInterface::class);
         }
 
-        return static::$requestModelCache[$class];
+        return static::$mapperModelCache[$class];
     }
 }
