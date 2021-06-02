@@ -1,6 +1,6 @@
 <?php
 
-namespace TestApp\RequestModel;
+namespace Tests\Fixture\RequestModel;
 
 use RestApiBundle\Mapping\Mapper as Mapper;
 
