@@ -21,7 +21,7 @@ class DateType implements RestApiBundle\Mapping\Mapper\ScalarTypeInterface
     public function getTransformerOptions(): array
     {
         return [
-            RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION_NAME => $this->format,
+            RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION => $this->format,
         ];
     }
 }

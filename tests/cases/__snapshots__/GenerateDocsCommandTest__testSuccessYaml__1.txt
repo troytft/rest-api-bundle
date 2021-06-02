@@ -155,14 +155,6 @@ paths:
                             nullable: false
                         nullable: true
                     description: 'Array of elements by "id"'
-                -
-                    name: writer
-                    in: query
-                    required: false
-                    schema:
-                        type: integer
-                        nullable: true
-                    description: 'Element by "id"'
             tags:
                 - writers
     '/writers/{id}':

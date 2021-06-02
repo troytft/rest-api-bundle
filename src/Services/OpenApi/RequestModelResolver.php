@@ -14,12 +14,15 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
 {
     private AnnotationReader $annotationReader;
     private RestApiBundle\Services\SettingsProvider $settingsProvider;
+    private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver;
 
     public function __construct(
-        RestApiBundle\Services\SettingsProvider $settingsProvider
+        RestApiBundle\Services\SettingsProvider $settingsProvider,
+        RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver
     ) {
         $this->annotationReader = RestApiBundle\Helper\AnnotationReaderFactory::create(true);
         $this->settingsProvider = $settingsProvider;
+        $this->schemaResolver = $schemaResolver;
     }
 
     public function resolveByClass(string $class, bool $nullable = false): OpenApi\Schema
@@ -31,26 +34,20 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
         $properties = [];
         $reflectedClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
-        foreach ($reflectedClass->getProperties() as $property) {
-            $mappingAnnotation = null;
+        $schema = $this->schemaResolver->resolveByClass($class);
+
+        foreach ($schema->getProperties() as $propertyName => $propertySchema) {
+            $property = $reflectedClass->getProperty($propertyName);
             $propertyConstraints = [];
 
             $annotations = $this->annotationReader->getPropertyAnnotations($property);
             foreach ($annotations as $annotation) {
-                if ($annotation instanceof RestApiBundle\Mapping\Mapper\TypeInterface) {
-                    $mappingAnnotation = $annotation;
-                }
-
                 if ($annotation instanceof Validator\Constraint) {
                     $propertyConstraints[] = $annotation;
                 }
             }
 
-            if (!$mappingAnnotation) {
-                continue;
-            }
-
-            $properties[$property->getName()] = $this->convert($mappingAnnotation, $propertyConstraints);
+            $properties[$propertyName] = $this->convert($propertySchema, $propertyConstraints);
         }
 
         return new OpenApi\Schema([
@@ -111,18 +108,18 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
     /**
      * @param Validator\Constraint[] $validationConstraints
      */
-    private function convert(RestApiBundle\Mapping\Mapper\TypeInterface $type, array $validationConstraints): OpenApi\Schema
+    private function convert(RestApiBundle\Model\Mapper\Schema\TypeInterface $type, array $validationConstraints): OpenApi\Schema
     {
         switch (true) {
-            case $type instanceof RestApiBundle\Mapping\Mapper\ObjectTypeInterface:
-                $result = $this->resolveByClass($type->getClassName(), $type->getNullable() === true);
+            case $type instanceof RestApiBundle\Model\Mapper\Schema\ObjectType:
+                $result = $this->resolveByClass($type->getClass(), $type->getNullable());
 
                 break;
             case $type->getTransformerClass() !== null:
                 $result = $this->convertByTransformer($type, $validationConstraints);
 
                 break;
-            case $type instanceof RestApiBundle\Mapping\Mapper\CollectionTypeInterface:
+            case $type instanceof RestApiBundle\Model\Mapper\Schema\CollectionType:
                 $result = $this->convertCollectionType($type, $validationConstraints);
 
                 break;
@@ -137,7 +134,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
     /**
      * @param Validator\Constraint[] $validationConstraints
      */
-    private function convertByTransformer(RestApiBundle\Mapping\Mapper\TypeInterface $type, array $validationConstraints): OpenApi\Schema
+    private function convertByTransformer(RestApiBundle\Model\Mapper\Schema\TypeInterface $type, array $validationConstraints): OpenApi\Schema
     {
         switch ($type->getTransformerClass()) {
             case RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class:
@@ -178,14 +175,12 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
                 break;
 
             case RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class:
-                if (!$type instanceof RestApiBundle\Mapping\Mapper\DateTimeType) {
-                    throw new \LogicException();
-                }
+                $format = $type->getTransformerOptions()[RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
 
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date-time',
-                    'example' => RestApiBundle\Helper\OpenApi\ExampleHelper::getExampleDate()->format($type->format ?: $this->settingsProvider->getDefaultRequestDatetimeFormat()),
+                    'example' => RestApiBundle\Helper\OpenApi\ExampleHelper::getExampleDate()->format($format),
                     'nullable' => (bool) $type->getNullable(),
                 ]);
                 $this->applyConstraints($result, $validationConstraints);
@@ -193,14 +188,11 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
                 break;
 
             case RestApiBundle\Services\Mapper\Transformer\DateTransformer::class:
-                if (!$type instanceof RestApiBundle\Mapping\Mapper\DateType) {
-                    throw new \LogicException();
-                }
-
+                $format = $type->getTransformerOptions()[RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date',
-                    'example' => RestApiBundle\Helper\OpenApi\ExampleHelper::getExampleDate()->format($type->format ?: $this->settingsProvider->getDefaultRequestDateFormat()),
+                    'example' => RestApiBundle\Helper\OpenApi\ExampleHelper::getExampleDate()->format($format),
                     'nullable' => (bool) $type->getNullable(),
                 ]);
 
@@ -266,11 +258,11 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
     /**
      * @param Validator\Constraint[] $validationConstraints
      */
-    private function convertCollectionType(RestApiBundle\Mapping\Mapper\CollectionTypeInterface $collectionType, array $validationConstraints): OpenApi\Schema
+    private function convertCollectionType(RestApiBundle\Model\Mapper\Schema\CollectionType $collectionType, array $validationConstraints): OpenApi\Schema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
-            'items' => $this->convert($collectionType->getValueType(), $validationConstraints),
+            'items' => $this->convert($collectionType->getValuesType(), $validationConstraints),
             'nullable' => (bool) $collectionType->getNullable(),
         ]);
     }

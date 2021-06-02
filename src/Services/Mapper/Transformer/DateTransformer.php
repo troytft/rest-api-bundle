@@ -10,7 +10,7 @@ use function implode;
 
 class DateTransformer implements TransformerInterface
 {
-    public const FORMAT_OPTION_NAME = 'format';
+    public const FORMAT_OPTION = 'format';
 
     private RestApiBundle\Services\SettingsProvider $settingsProvider;
 
@@ -21,7 +21,7 @@ class DateTransformer implements TransformerInterface
 
     public function transform($value, array $options = [])
     {
-        $format = $options[static::FORMAT_OPTION_NAME] ?? $this->settingsProvider->getDefaultRequestDateFormat();
+        $format = $options[static::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
 
         $result = \DateTime::createFromFormat($format, $value);
         if ($result === false) {

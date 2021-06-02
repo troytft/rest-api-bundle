@@ -78,7 +78,7 @@ class TransformersTest extends Tests\BaseTestCase
     public function testDateFormatOption()
     {
         $options = [
-            RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION_NAME => 'Y/m/d'
+            RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION => 'Y/m/d'
         ];
 
         // invalid date format
