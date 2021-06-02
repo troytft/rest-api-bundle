@@ -10,38 +10,38 @@ class Movie implements Mapper\ModelInterface
     /**
      * @Mapper\StringType()
      */
-    public ?string $name = 'Taxi 2';
+    public string $name = 'Taxi 2';
 
     /**
      * @Mapper\FloatType()
      */
-    public ?float $rating = 4.7;
+    public float $rating = 4.7;
 
     /**
      * @var int|null
      *
-     * @Mapper\IntegerType()
+     * @Mapper\IntegerType(nullable=true)
      */
     private ?int $lengthMinutes = null;
 
     /**
      * @var bool|null
      *
-     * @Mapper\BooleanType()
+     * @Mapper\BooleanType(nullable=true)
      */
     private ?bool $isOnlineWatchAvailable = null;
 
     /**
      * @var string[]|null
      *
-     * @Mapper\ArrayType(type=@Mapper\StringType())
+     * @Mapper\ArrayType(type=@Mapper\StringType(), nullable=true)
      */
     private ?array $genres = null;
 
     /**
      * @var Tests\Fixture\Mapper\Release[]|null
      *
-     * @Mapper\ArrayType(type=@Mapper\ModelType(class="Tests\Fixture\Mapper\Release"))
+     * @Mapper\ArrayType(type=@Mapper\ModelType(class="Tests\Fixture\Mapper\Release"), nullable=true)
      */
     private ?array $releases = null;
 

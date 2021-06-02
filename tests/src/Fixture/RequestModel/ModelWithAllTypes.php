@@ -1,7 +1,8 @@
 <?php
 
-namespace TestApp\RequestModel;
+namespace Tests\Fixture\RequestModel;
 
+use Tests;
 use RestApiBundle\Mapping\Mapper as Mapper;
 
 class ModelWithAllTypes implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
@@ -35,9 +36,9 @@ class ModelWithAllTypes implements \RestApiBundle\Mapping\RequestModel\RequestMo
     private $stringType;
 
     /**
-     * @var InnerModel|null
+     * @var Tests\Fixture\RequestModel\InnerModel|null
      *
-     * @Mapper\ModelType(class="TestApp\RequestModel\InnerModel", nullable=true)
+     * @Mapper\ModelType(class="Tests\Fixture\RequestModel\InnerModel", nullable=true)
      */
     private $model;
 
@@ -110,12 +111,12 @@ class ModelWithAllTypes implements \RestApiBundle\Mapping\RequestModel\RequestMo
         return $this;
     }
 
-    public function getModel(): ?InnerModel
+    public function getModel(): ?Tests\Fixture\RequestModel\InnerModel
     {
         return $this->model;
     }
 
-    public function setModel(?InnerModel $model)
+    public function setModel(?Tests\Fixture\RequestModel\InnerModel $model)
     {
         $this->model = $model;
 

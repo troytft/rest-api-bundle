@@ -5,7 +5,7 @@ class ExceptionTranslationsTest extends Tests\BaseTestCase
     public function testAll()
     {
         try {
-            $model = new TestApp\RequestModel\ModelWithAllTypes();
+            $model = new Tests\Fixture\RequestModel\ModelWithAllTypes();
             $this->getRequestHandler()->handle($model, [
                 'booleanType' => 'string',
                 'stringType' => false,
@@ -37,7 +37,7 @@ class ExceptionTranslationsTest extends Tests\BaseTestCase
     public function testInvalidDates()
     {
         try {
-            $model = new TestApp\RequestModel\ModelWithAllTypes();
+            $model = new Tests\Fixture\RequestModel\ModelWithAllTypes();
             $this->getRequestHandler()->handle($model, [
                 'date' => '2010-03-45',
                 'dateTime' => '2010-03-45T10:00:00+00:00',
