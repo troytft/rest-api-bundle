@@ -45,6 +45,14 @@ paths:
                                 - published
                                 - archived
                         nullable: true
+                -
+                    name: author
+                    in: query
+                    required: false
+                    schema:
+                        type: integer
+                        nullable: true
+                    description: 'Element by "id"'
             tags:
                 - books
     /writers:
