@@ -27,10 +27,9 @@ class GenerateDocsCommand extends Command
     private RestApiBundle\Services\OpenApi\SpecificationGenerator $specificationGenerator;
 
     public function __construct(
-        RestApiBundle\Services\OpenApi\EndpointFinder $endpointFinder,
         RestApiBundle\Services\OpenApi\SpecificationGenerator $specificationGenerator
     ) {
-        $this->endpointFinder = $endpointFinder;
+        $this->endpointFinder = new RestApiBundle\Services\OpenApi\EndpointFinder();
         $this->specificationGenerator = $specificationGenerator;
 
         parent::__construct();
