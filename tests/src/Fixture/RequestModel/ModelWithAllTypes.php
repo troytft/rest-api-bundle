@@ -38,7 +38,7 @@ class ModelWithAllTypes implements \RestApiBundle\Mapping\RequestModel\RequestMo
     /**
      * @var Tests\Fixture\RequestModel\InnerModel|null
      *
-     * @Mapper\ModelType(class="Tests\Fixture\RequestModel\NestedModel", nullable=true)
+     * @Mapper\ModelType(class="Tests\Fixture\RequestModel\InnerModel", nullable=true)
      */
     private $model;
 
