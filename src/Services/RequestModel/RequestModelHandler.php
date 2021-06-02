@@ -8,7 +8,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use function get_class;
 use function sprintf;
 
-class RequestHandler
+class RequestModelHandler
 {
     private TranslatorInterface $translator;
     private RestApiBundle\Services\Mapper\Mapper $mapper;
