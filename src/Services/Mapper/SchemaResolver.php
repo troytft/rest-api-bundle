@@ -3,6 +3,7 @@
 namespace RestApiBundle\Services\Mapper;
 
 use RestApiBundle;
+use Symfony\Component\PropertyInfo;
 use Doctrine\Common\Annotations\AnnotationReader;
 
 use function get_class;
@@ -35,6 +36,70 @@ class SchemaResolver
         return $this->cache[$class];
     }
 
+    private function resolveAutoType(\ReflectionProperty $reflectionProperty): RestApiBundle\Mapping\Mapper\TypeInterface
+    {
+        if (!$reflectionProperty->getType()) {
+            throw new \LogicException();
+        }
+
+        $type = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionProperty->getType());
+        switch (true) {
+            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING:
+                $result = new RestApiBundle\Mapping\Mapper\StringType();
+                $result
+                    ->nullable = $type->isNullable();
+
+                break;
+
+            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT:
+                $result = new RestApiBundle\Mapping\Mapper\IntegerType();
+                $result
+                    ->nullable = $type->isNullable();
+
+                break;
+
+            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_FLOAT:
+                $result = new RestApiBundle\Mapping\Mapper\FloatType();
+                $result
+                    ->nullable = $type->isNullable();
+
+                break;
+
+            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_BOOL:
+                $result = new RestApiBundle\Mapping\Mapper\BooleanType();
+                $result
+                    ->nullable = $type->isNullable();
+
+                break;
+
+            case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isDateTime($type->getClassName()):
+                $result = new RestApiBundle\Mapping\Mapper\DateTimeType();
+                $result
+                    ->nullable = $type->isNullable();
+
+                break;
+
+            case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($type->getClassName()):
+                $result = new RestApiBundle\Mapping\Mapper\ModelType();
+                $result->class = (string) $type->getClassName();
+                $result->nullable = $type->isNullable();
+
+                break;
+
+            case $type->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($type->getClassName()):
+                $result = new RestApiBundle\Mapping\Mapper\EntityType();
+                $result->class = (string) $type->getClassName();
+                $result->nullable = $type->isNullable();
+
+                break;
+
+            default:
+                throw new \InvalidArgumentException();
+        }
+
+        return $result;
+    }
+
     private function processObjectType(?string $transformerName, array $transformerOptions, bool $isNullable, string $class): RestApiBundle\Model\Mapper\Schema\ObjectType
     {
         $properties = [];
@@ -44,6 +109,10 @@ class SchemaResolver
             $annotation = $this->annotationReader->getPropertyAnnotation($reflectionProperty, RestApiBundle\Mapping\Mapper\TypeInterface::class);
             if (!$annotation instanceof RestApiBundle\Mapping\Mapper\TypeInterface) {
                 continue;
+            }
+
+            if ($annotation instanceof RestApiBundle\Mapping\Mapper\AutoType) {
+                $annotation = $this->resolveAutoType($reflectionProperty);
             }
 
             $propertySchema = $this->processType($annotation);
