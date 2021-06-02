@@ -27,25 +27,17 @@ class RequestHandler
     /**
      * @throws RestApiBundle\Exception\RequestModelMappingException
      */
-    public function handle(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel, array $data): void
+    public function handle(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel, array $data, ?RestApiBundle\Model\Mapper\Context $context = null): void
     {
-        $this->map($requestModel, $data);
+        try {
+            $this->mapper->map($requestModel, $data, $context);
+        } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
+            throw $this->convertStackedMappingException($exception);
+        }
 
         $validationErrors = $this->requestModelValidator->validate($requestModel);
         if ($validationErrors) {
             throw new RestApiBundle\Exception\RequestModelMappingException($validationErrors);
-        }
-    }
-
-    /**
-     * @throws RestApiBundle\Exception\RequestModelMappingException
-     */
-    private function map(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel, array $data): void
-    {
-        try {
-            $this->mapper->map($requestModel, $data);
-        } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
-            throw $this->convertStackedMappingException($exception);
         }
     }
 
