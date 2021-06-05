@@ -22,8 +22,7 @@ class SchemaResolver
 
     public function resolve(string $class, bool $isNullable = false): RestApiBundle\Model\Mapper\Schema
     {
-        $class = ltrim($class, '\\');
-        $key = $class . $isNullable;
+        $key = ltrim($class, '\\') . $isNullable;
 
         if (!isset($this->cache[$key])) {
             $properties = [];
@@ -42,14 +41,16 @@ class SchemaResolver
                 $propertySchema = $this->processType($annotation);
                 $propertySetterName = 'set' . ucfirst($reflectionProperty->getName());
 
-                if (!$reflectionClass->hasMethod($propertySetterName) && !$reflectionProperty->isPublic()) {
+                if ($reflectionClass->hasMethod($propertySetterName) && $reflectionClass->getMethod($propertySetterName)->isPublic()) {
+                    $propertySchema->setPropertySetterName($propertySetterName);
+                } elseif (!$reflectionProperty->isPublic()) {
                     throw new RestApiBundle\Exception\Mapper\SetterDoesNotExistException($propertySetterName);
                 }
 
                 $properties[$reflectionProperty->getName()] = $propertySchema;
             }
 
-            $this->cache[$key] = RestApiBundle\Model\Mapper\Schema::createObject($class, $properties, $isNullable);
+            $this->cache[$key] = RestApiBundle\Model\Mapper\Schema::createModelType($class, $properties, $isNullable);
         }
 
         return $this->cache[$key];
@@ -59,24 +60,18 @@ class SchemaResolver
     {
         $isNullable = $mapping->getNullable() ?: false;
 
-        switch (true) {
-            case $mapping instanceof RestApiBundle\Mapping\Mapper\ObjectTypeInterface:
-                $schema = $this->resolve($mapping->getClassName(), $isNullable);
-
-                break;
-
-            case $mapping instanceof RestApiBundle\Mapping\Mapper\ScalarTypeInterface:
-                $schema = RestApiBundle\Model\Mapper\Schema::createScalar($mapping->getTransformerClass(), $mapping->getTransformerOptions(), $isNullable);
-
-                break;
-
-            case $mapping instanceof RestApiBundle\Mapping\Mapper\CollectionTypeInterface:
-                $schema = RestApiBundle\Model\Mapper\Schema::createCollection($this->processType($mapping->getValueType()), $isNullable);
-
-                break;
-
-            default:
-                throw new \InvalidArgumentException();
+        if ($mapping->getTransformerClass()) {
+            $schema = RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(
+                $mapping->getTransformerClass(),
+                $mapping->getTransformerOptions(),
+                $isNullable
+            );
+        } elseif ($mapping instanceof RestApiBundle\Mapping\Mapper\ModelType) {
+            $schema = $this->resolve($mapping->getClassName(), $isNullable);
+        } elseif ($mapping instanceof RestApiBundle\Mapping\Mapper\ArrayType) {
+            $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($this->processType($mapping->getValueType()), $isNullable);
+        } else {
+            throw new \InvalidArgumentException();
         }
 
         return $schema;

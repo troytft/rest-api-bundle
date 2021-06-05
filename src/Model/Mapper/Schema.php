@@ -4,9 +4,9 @@ namespace RestApiBundle\Model\Mapper;
 
 final class Schema
 {
-    private const TYPE_COLLECTION = 'collection';
-    private const TYPE_OBJECT = 'object';
-    private const TYPE_SCALAR = 'scalar';
+    private const ARRAY_TYPE = 'array';
+    private const MODEL_TYPE = 'model';
+    private const TRANSFORMER_AWARE_TYPE = 'transformer-aware';
 
     /** @var array<string, self> */
     private array $properties = [];
@@ -15,39 +15,35 @@ final class Schema
     private ?string $transformerClass;
     private array $transformerOptions = [];
     private string $type;
-    private ?self $collectionValuesType = null;
+    private ?self $valuesType = null;
+    private ?string $propertySetterName = null;
 
     private function __construct()
     {
     }
 
-    public function isScalar(): bool
+    public function isTransformerAwareType(): bool
     {
-        return $this->type === self::TYPE_SCALAR;
+        return $this->type === self::TRANSFORMER_AWARE_TYPE;
     }
 
-    public function isCollection(): bool
-    {
-        return $this->type === self::TYPE_COLLECTION;
-    }
-
-    public function isObject(): bool
-    {
-        return $this->type === self::TYPE_OBJECT;
-    }
-
-    public static function createScalar(
+    public static function createTransformerAwareType(
         string $transformerClass,
         array $transformerOptions,
         bool $isNullable
     ): self {
         $instance = new self();
-        $instance->type = self::TYPE_SCALAR;
+        $instance->type = self::TRANSFORMER_AWARE_TYPE;
         $instance->isNullable = $isNullable;
         $instance->transformerClass = $transformerClass;
         $instance->transformerOptions = $transformerOptions;
 
         return $instance;
+    }
+
+    public function isModelType(): bool
+    {
+        return $this->type === self::MODEL_TYPE;
     }
 
     /**
@@ -57,13 +53,13 @@ final class Schema
      *
      * @return self
      */
-    public static function createObject(
+    public static function createModelType(
         string $class,
         array $properties,
         bool $isNullable
     ): self {
         $instance = new self();
-        $instance->type = self::TYPE_OBJECT;
+        $instance->type = self::MODEL_TYPE;
         $instance->class = $class;
         $instance->isNullable = $isNullable;
         $instance->properties = $properties;
@@ -71,13 +67,18 @@ final class Schema
         return $instance;
     }
 
-    public static function createCollection(
+    public function isArrayType(): bool
+    {
+        return $this->type === self::ARRAY_TYPE;
+    }
+
+    public static function createArrayType(
         self $valuesType,
         bool $isNullable
     ): self {
         $instance = new self();
-        $instance->collectionValuesType = $valuesType;
-        $instance->type = self::TYPE_COLLECTION;
+        $instance->valuesType = $valuesType;
+        $instance->type = self::ARRAY_TYPE;
         $instance->isNullable = $isNullable;
 
         return $instance;
@@ -111,8 +112,20 @@ final class Schema
         return $this->transformerOptions;
     }
 
-    public function getCollectionValuesType(): ?self
+    public function getValuesType(): ?self
     {
-        return $this->collectionValuesType;
+        return $this->valuesType;
+    }
+
+    public function getPropertySetterName(): ?string
+    {
+        return $this->propertySetterName;
+    }
+
+    public function setPropertySetterName(?string $propertySetterName)
+    {
+        $this->propertySetterName = $propertySetterName;
+
+        return $this;
     }
 }
