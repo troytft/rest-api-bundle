@@ -85,7 +85,7 @@ class Mapper
 
         switch (true) {
             case $schema->isTransformerAwareType():
-                $value = $this->mapScalarType($schema, $rawValue, $basePath);
+                $value = $this->mapTransformerAwareType($schema, $rawValue, $basePath);
 
                 break;
 
@@ -113,17 +113,13 @@ class Mapper
         return $value;
     }
 
-    private function mapScalarType(RestApiBundle\Model\Mapper\Schema $schema, $rawValue, array $basePath)
+    private function mapTransformerAwareType(RestApiBundle\Model\Mapper\Schema $schema, $rawValue, array $basePath)
     {
-        if ($schema->getTransformerClass()) {
-            try {
-                $value = $this->transformers[$schema->getTransformerClass()]->transform($rawValue, $schema->getTransformerOptions());
-            } catch (RestApiBundle\Exception\Mapper\Transformer\TransformerExceptionInterface $transformerException) {
-                throw new RestApiBundle\Exception\Mapper\Transformer\WrappedTransformerException($transformerException, $basePath);
-            }
+        try {
+            return $this->transformers[$schema->getTransformerClass()]->transform($rawValue, $schema->getTransformerOptions());
+        } catch (RestApiBundle\Exception\Mapper\Transformer\TransformerExceptionInterface $transformerException) {
+            throw new RestApiBundle\Exception\Mapper\Transformer\WrappedTransformerException($transformerException, $basePath);
         }
-
-        return $rawValue;
     }
 
     private function mapCollectionType(RestApiBundle\Model\Mapper\Schema $schema, $rawValue, array $basePath, RestApiBundle\Model\Mapper\Context $context): array

@@ -12,7 +12,7 @@ use function ucfirst;
 class SchemaResolver
 {
     private AnnotationReader $annotationReader;
-    /** @var array<string, RestApiBundle\Model\Mapper\Schema\ObjectType> */
+    /** @var array<string, RestApiBundle\Model\Mapper\Schema> */
     private array $cache = [];
 
     public function __construct()
@@ -58,16 +58,16 @@ class SchemaResolver
 
     private function processType(RestApiBundle\Mapping\Mapper\TypeInterface $mapping): RestApiBundle\Model\Mapper\Schema
     {
-        $isNullable = $mapping->getNullable() ?: false;
+        $isNullable = $mapping->getIsNullable() ?: false;
 
-        if ($mapping->getTransformerClass()) {
+        if ($mapping instanceof RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface) {
             $schema = RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(
                 $mapping->getTransformerClass(),
                 $mapping->getTransformerOptions(),
-                $isNullable
+                $mapping->getIsNullable()
             );
         } elseif ($mapping instanceof RestApiBundle\Mapping\Mapper\ModelType) {
-            $schema = $this->resolve($mapping->getClassName(), $isNullable);
+            $schema = $this->resolve($mapping->class, $isNullable);
         } elseif ($mapping instanceof RestApiBundle\Mapping\Mapper\ArrayType) {
             $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($this->processType($mapping->getValueType()), $isNullable);
         } else {

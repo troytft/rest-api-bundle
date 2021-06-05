@@ -7,7 +7,7 @@ use RestApiBundle;
 /**
  * @Annotation
  */
-class ArrayType implements RestApiBundle\Mapping\Mapper\CollectionTypeInterface
+class ArrayType implements RestApiBundle\Mapping\Mapper\TypeInterface
 {
     use NullableTrait;
 
@@ -18,22 +18,8 @@ class ArrayType implements RestApiBundle\Mapping\Mapper\CollectionTypeInterface
      */
     public $type;
 
-    public function getValueType(): \RestApiBundle\Mapping\Mapper\TypeInterface
+    public function getValueType(): RestApiBundle\Mapping\Mapper\TypeInterface
     {
-        if (!$this->type instanceof RestApiBundle\Mapping\Mapper\TypeInterface) {
-            throw new \InvalidArgumentException();
-        }
-
         return $this->type;
-    }
-
-    public function getTransformerClass(): ?string
-    {
-        return null;
-    }
-
-    public function getTransformerOptions(): array
-    {
-        return [];
     }
 }

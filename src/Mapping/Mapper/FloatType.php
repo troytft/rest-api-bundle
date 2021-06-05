@@ -7,7 +7,7 @@ use RestApiBundle;
 /**
  * @Annotation
  */
-class FloatType implements RestApiBundle\Mapping\Mapper\ScalarTypeInterface
+class FloatType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
     use NullableTrait;
 
