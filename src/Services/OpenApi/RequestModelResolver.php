@@ -34,7 +34,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
         $properties = [];
         $reflectedClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
-        $schema = $this->schemaResolver->resolveByClass($class);
+        $schema = $this->schemaResolver->resolve($class);
 
         foreach ($schema->getProperties() as $propertyName => $propertySchema) {
             $property = $reflectedClass->getProperty($propertyName);

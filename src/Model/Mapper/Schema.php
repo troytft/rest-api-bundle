@@ -1,17 +1,12 @@
 <?php
 
-namespace RestApiBundle\Model\Mapper\Schema;
+namespace RestApiBundle\Model\Mapper;
 
-use function in_array;
-
-final class Type
+final class Schema
 {
     private const TYPE_COLLECTION = 'collection';
     private const TYPE_OBJECT = 'object';
-    private const TYPE_STRING = 'string';
-    private const TYPE_INT = 'int';
-    private const TYPE_BOOL = 'bool';
-    private const TYPE_FLOAT = 'float';
+    private const TYPE_SCALAR = 'scalar';
 
     /** @var array<string, self> */
     private array $properties = [];
@@ -19,7 +14,6 @@ final class Type
     private bool $isNullable;
     private ?string $transformerClass;
     private array $transformerOptions = [];
-    private ?string $setterName = null;
     private string $type;
     private ?self $collectionValuesType = null;
 
@@ -29,12 +23,7 @@ final class Type
 
     public function isScalar(): bool
     {
-        return in_array($this->type, [
-            self::TYPE_STRING,
-            self::TYPE_INT,
-            self::TYPE_BOOL,
-            self::TYPE_FLOAT,
-        ], true);
+        return $this->type === self::TYPE_SCALAR;
     }
 
     public function isCollection(): bool
@@ -48,18 +37,15 @@ final class Type
     }
 
     public static function createScalar(
-        string $type,
-        bool $isNullable,
-        ?string $transformerClass,
-        array $transformerOptions = [],
-        ?string $setterName = null
+        string $transformerClass,
+        array $transformerOptions,
+        bool $isNullable
     ): self {
         $instance = new self();
-        $instance->type = $type;
+        $instance->type = self::TYPE_SCALAR;
         $instance->isNullable = $isNullable;
         $instance->transformerClass = $transformerClass;
         $instance->transformerOptions = $transformerOptions;
-        $instance->setterName = $setterName;
 
         return $instance;
     }
@@ -68,36 +54,31 @@ final class Type
      * @param string $class
      * @param array<string, self> $properties
      * @param bool $isNullable
-     * @param string|null $setterName
      *
      * @return self
      */
     public static function createObject(
         string $class,
         array $properties,
-        bool $isNullable,
-        ?string $setterName = null
+        bool $isNullable
     ): self {
         $instance = new self();
-        $instance->class = $class;
         $instance->type = self::TYPE_OBJECT;
+        $instance->class = $class;
         $instance->isNullable = $isNullable;
         $instance->properties = $properties;
-        $instance->setterName = $setterName;
 
         return $instance;
     }
 
     public static function createCollection(
         self $valuesType,
-        bool $isNullable,
-        ?string $setterName = null
+        bool $isNullable
     ): self {
         $instance = new self();
         $instance->collectionValuesType = $valuesType;
         $instance->type = self::TYPE_COLLECTION;
         $instance->isNullable = $isNullable;
-        $instance->setterName = $setterName;
 
         return $instance;
     }
@@ -128,11 +109,6 @@ final class Type
     public function getTransformerOptions(): array
     {
         return $this->transformerOptions;
-    }
-
-    public function getSetterName(): ?string
-    {
-        return $this->setterName;
     }
 
     public function getCollectionValuesType(): ?self

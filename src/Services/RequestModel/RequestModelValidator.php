@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 use function array_merge_recursive;
 use function explode;
+use function get_class;
 use function implode;
 use function is_numeric;
 use function sprintf;
@@ -63,7 +64,7 @@ class RequestModelValidator
     {
         $result = [];
 
-        $schema = $this->schemaResolver->resolveByInstance($requestModel);
+        $schema = $this->schemaResolver->resolve(get_class($requestModel));
 
         foreach ($schema->getProperties() as $propertyName => $propertyType) {
             if ($propertyType instanceof RestApiBundle\Model\Mapper\Schema\ObjectType) {
@@ -147,7 +148,7 @@ class RequestModelValidator
 
     private function hasProperty(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel, string $propertyName): bool
     {
-        $schema = $this->schemaResolver->resolveByInstance($requestModel);
+        $schema = $this->schemaResolver->resolve(get_class($requestModel));
 
         return isset($schema->getProperties()[$propertyName]);
     }

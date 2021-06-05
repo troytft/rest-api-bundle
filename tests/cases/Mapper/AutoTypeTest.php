@@ -6,7 +6,7 @@ class AutoTypeTest extends Tests\BaseTestCase
     {
         $properties = $this
             ->getSchemaResolver()
-            ->resolveByClass(Tests\Fixture\Mapper\AutoType\AllSupportedTypes::class)
+            ->resolve(Tests\Fixture\Mapper\AutoType\AllSupportedTypes::class)
             ->getProperties();
 
         $this->assertCount(14, $properties);
