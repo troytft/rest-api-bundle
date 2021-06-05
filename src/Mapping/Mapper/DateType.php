@@ -7,7 +7,7 @@ use RestApiBundle;
 /**
  * @Annotation
  */
-class DateType implements RestApiBundle\Mapping\Mapper\ScalarTypeInterface
+class DateType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
     use NullableTrait;
 
