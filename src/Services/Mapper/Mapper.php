@@ -12,7 +12,6 @@ use function count;
 use function get_class;
 use function is_array;
 use function call_user_func;
-use function ucfirst;
 
 class Mapper
 {
