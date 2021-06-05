@@ -7,10 +7,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
-class RequestModelTransformerCompilerPass implements CompilerPassInterface
+class MapperTransformerCompilerPass implements CompilerPassInterface
 {
-    public const TAG = 'rest_api.mapper.transformer';
-
     public function process(ContainerBuilder $container)
     {
         if (!$container->has(RestApiBundle\Services\Mapper\Mapper::class)) {
@@ -18,7 +16,7 @@ class RequestModelTransformerCompilerPass implements CompilerPassInterface
         }
 
         $definition = $container->findDefinition(RestApiBundle\Services\Mapper\Mapper::class);
-        $taggedServices = $container->findTaggedServiceIds(static::TAG);
+        $taggedServices = $container->findTaggedServiceIds(RestApiBundle\Enum\DependencyInjection\ServiceTag::MAPPER_TRANSFORMER);
 
         foreach ($taggedServices as $id => $tags) {
             $definition->addMethodCall('addTransformer', [new Reference($id)]);
