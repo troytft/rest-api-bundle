@@ -22,7 +22,7 @@ final class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader): void
     {
-        $loader->load(__DIR__ . '/../Resources/config/openapi.yaml');
+        $loader->load(__DIR__ . '/../Resources/config/openapi.php');
     }
 
     public static function createConsoleApplication(): Application
