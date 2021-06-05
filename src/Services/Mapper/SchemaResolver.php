@@ -29,16 +29,16 @@ class SchemaResolver
             $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
             foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-                $annotation = $this->annotationReader->getPropertyAnnotation($reflectionProperty, RestApiBundle\Mapping\Mapper\TypeInterface::class);
-                if (!$annotation instanceof RestApiBundle\Mapping\Mapper\TypeInterface) {
+                $mapping = $this->annotationReader->getPropertyAnnotation($reflectionProperty, RestApiBundle\Mapping\Mapper\TypeInterface::class);
+                if (!$mapping instanceof RestApiBundle\Mapping\Mapper\TypeInterface) {
                     continue;
                 }
 
-                if ($annotation instanceof RestApiBundle\Mapping\Mapper\AutoType) {
-                    $annotation = $this->resolveAutoType($reflectionProperty);
+                if ($mapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
+                    $mapping = $this->resolveMappingByReflection($reflectionProperty);
                 }
 
-                $propertySchema = $this->processType($annotation);
+                $propertySchema = $this->resolveSchemaByMapping($mapping);
                 $propertySetterName = 'set' . ucfirst($reflectionProperty->getName());
 
                 if ($reflectionClass->hasMethod($propertySetterName) && $reflectionClass->getMethod($propertySetterName)->isPublic()) {
@@ -56,10 +56,8 @@ class SchemaResolver
         return $this->cache[$key];
     }
 
-    private function processType(RestApiBundle\Mapping\Mapper\TypeInterface $mapping): RestApiBundle\Model\Mapper\Schema
+    private function resolveSchemaByMapping(RestApiBundle\Mapping\Mapper\TypeInterface $mapping): RestApiBundle\Model\Mapper\Schema
     {
-        $isNullable = $mapping->getIsNullable() ?: false;
-
         if ($mapping instanceof RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface) {
             $schema = RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(
                 $mapping->getTransformerClass(),
@@ -67,9 +65,18 @@ class SchemaResolver
                 $mapping->getIsNullable()
             );
         } elseif ($mapping instanceof RestApiBundle\Mapping\Mapper\ModelType) {
-            $schema = $this->resolve($mapping->class, $isNullable);
+            $schema = $this->resolve($mapping->class, $mapping->nullable);
         } elseif ($mapping instanceof RestApiBundle\Mapping\Mapper\ArrayType) {
-            $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($this->processType($mapping->getValueType()), $isNullable);
+            $valuesType = $mapping->getValuesType();
+            if ($valuesType instanceof RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface && $valuesType->getTransformerClass() === RestApiBundle\Services\Mapper\Transformer\EntityTransformer::class) {
+                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(
+                    RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::class,
+                    $valuesType->getTransformerOptions(),
+                    $valuesType->getIsNullable()
+                );
+            } else {
+                $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($this->resolveSchemaByMapping($valuesType), $mapping->nullable);
+            }
         } else {
             throw new \InvalidArgumentException();
         }
@@ -77,7 +84,7 @@ class SchemaResolver
         return $schema;
     }
 
-    private function resolveAutoType(\ReflectionProperty $reflectionProperty): RestApiBundle\Mapping\Mapper\TypeInterface
+    private function resolveMappingByReflection(\ReflectionProperty $reflectionProperty): RestApiBundle\Mapping\Mapper\TypeInterface
     {
         if (!$reflectionProperty->getType()) {
             throw new \LogicException();

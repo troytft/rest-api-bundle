@@ -33,6 +33,17 @@ class SchemaResolverTest extends Tests\BaseTestCase
         $this->assertTrue($releases->isArrayType());
     }
 
+    public function testAutoConvertToEntitiesCollection()
+    {
+        $schema = $this->getSchemaResolver()->resolve(Tests\Fixture\Mapper\AutoConvertToEntitiesCollection\Model::class);
+
+        $this->assertCount(1, $schema->getProperties());
+
+        $books = $schema->getProperties()['books'] ?? null;
+        $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $books);
+        $this->assertEquals(RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::class, $books->getTransformerClass());
+    }
+
     private function getSchemaResolver(): RestApiBundle\Services\Mapper\SchemaResolver
     {
         return $this->getContainer()->get(RestApiBundle\Services\Mapper\SchemaResolver::class);

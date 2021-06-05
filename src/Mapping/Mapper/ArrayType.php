@@ -18,7 +18,7 @@ class ArrayType implements RestApiBundle\Mapping\Mapper\TypeInterface
      */
     public $type;
 
-    public function getValueType(): RestApiBundle\Mapping\Mapper\TypeInterface
+    public function getValuesType(): RestApiBundle\Mapping\Mapper\TypeInterface
     {
         return $this->type;
     }
