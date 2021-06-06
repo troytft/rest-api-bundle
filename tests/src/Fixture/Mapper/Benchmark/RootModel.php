@@ -2,7 +2,6 @@
 
 namespace Tests\Fixture\Mapper\Benchmark;
 
-use Tests;
 use RestApiBundle\Mapping\Mapper;
 
 class RootModel implements Mapper\ModelInterface
