@@ -27,10 +27,10 @@ class Mapper
         $this->schemaResolver = $schemaResolver;
     }
 
-    public function map(RestApiBundle\Mapping\Mapper\ModelInterface $requestModel, array $data, ?RestApiBundle\Model\Mapper\Context $context = null): void
+    public function map(RestApiBundle\Mapping\Mapper\ModelInterface $model, array $data, ?RestApiBundle\Model\Mapper\Context $context = null): void
     {
-        $schema = $this->schemaResolver->resolve(get_class($requestModel));
-        $this->mapObject($schema, $requestModel, $data, [], $context ?: new RestApiBundle\Model\Mapper\Context());
+        $schema = $this->schemaResolver->resolve(get_class($model));
+        $this->mapObject($schema, $model, $data, [], $context ?: new RestApiBundle\Model\Mapper\Context());
     }
 
     private function mapObject(RestApiBundle\Model\Mapper\Schema $schema, RestApiBundle\Mapping\Mapper\ModelInterface $model, array $data, array $basePath, RestApiBundle\Model\Mapper\Context $context): void
