@@ -1,8 +1,5 @@
-benchmark:
-	vendor/bin/phpbench run --report=aggregate --iterations=20
+benchmark-compare:
+	vendor/bin/phpbench run --report=aggregate --ref=original
 
-save-benchmark:
-	vendor/bin/phpbench run --report=aggregate --iterations=20 --store
-
-benchmark-history:
-	vendor/bin/phpbench log
+benchmark-save:
+	vendor/bin/phpbench run --tag=original

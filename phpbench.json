@@ -1,5 +1,7 @@
 {
     "runner.bootstrap": "vendor/autoload.php",
     "runner.path": "tests/src/Benchmark",
+    "runner.retry_threshold": 5,
+    "runner.iterations": 20,
     "storage.xml_storage_path": "tests/benchmark-reports"
 }
