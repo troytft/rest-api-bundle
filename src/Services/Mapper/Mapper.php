@@ -15,7 +15,7 @@ use function call_user_func;
 
 class Mapper
 {
-    private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver;
+    private RestApiBundle\Services\Mapper\SchemaResolverInterface $schemaResolver;
 
     /**
      * @var RestApiBundle\Services\Mapper\Transformer\TransformerInterface[]
