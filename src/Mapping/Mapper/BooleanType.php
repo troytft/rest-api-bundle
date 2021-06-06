@@ -7,7 +7,7 @@ use RestApiBundle;
 /**
  * @Annotation
  */
-class BooleanType implements RestApiBundle\Mapping\Mapper\ScalarTypeInterface
+class BooleanType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
     use NullableTrait;
 
