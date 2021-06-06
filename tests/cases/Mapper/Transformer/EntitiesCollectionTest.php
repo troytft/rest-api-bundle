@@ -57,19 +57,6 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
         }
     }
 
-    public function testInvalidItemType()
-    {
-        try {
-            $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
-            $this->getRequestHandler()->handle($model, [
-                'books' => [1, 'string']
-            ]);
-            $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['books.1' => ['This value should be an integer.']], $exception->getProperties());
-        }
-    }
-
     public function testRepeatableEntity()
     {
         try {

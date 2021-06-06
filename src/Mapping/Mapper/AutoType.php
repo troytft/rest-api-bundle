@@ -9,18 +9,8 @@ use RestApiBundle;
  */
 class AutoType implements RestApiBundle\Mapping\Mapper\TypeInterface
 {
-    public function getTransformerClass(): ?string
+    public function getIsNullable(): bool
     {
-        return null;
-    }
-
-    public function getTransformerOptions(): array
-    {
-        return [];
-    }
-
-    public function getNullable(): ?bool
-    {
-        return null;
+        return false;
     }
 }
