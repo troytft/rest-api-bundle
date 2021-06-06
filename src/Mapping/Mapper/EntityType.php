@@ -7,7 +7,7 @@ use RestApiBundle;
 /**
  * @Annotation
  */
-class EntityType implements RestApiBundle\Mapping\Mapper\ScalarTypeInterface
+class EntityType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
     use NullableTrait;
 

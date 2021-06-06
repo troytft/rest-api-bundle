@@ -4,9 +4,9 @@ namespace RestApiBundle\Mapping\Mapper;
 
 trait NullableTrait
 {
-    public ?bool $nullable = null;
+    public bool $nullable = false;
 
-    public function getNullable(): ?bool
+    public function getIsNullable(): bool
     {
         return $this->nullable;
     }
