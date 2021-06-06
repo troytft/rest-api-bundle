@@ -5,12 +5,11 @@ namespace Tests\Benchmark;
 use Tests;
 use RestApiBundle;
 use PhpBench\Benchmark\Metadata\Annotations\Revs;
-use function var_dump;
 
 class MapperBench
 {
     /**
-     * @Revs(10)
+     * @Revs(100)
      */
     public function benchComplexModelSchemaResolving(): void
     {
@@ -20,7 +19,7 @@ class MapperBench
     }
 
     /**
-     * @Revs(10)
+     * @Revs(100)
      */
     public function benchComplexModelMapping(): void
     {
@@ -356,10 +355,6 @@ class MapperBench
             ->addTransformer(new RestApiBundle\Services\Mapper\Transformer\FloatTransformer())
             ->addTransformer(new RestApiBundle\Services\Mapper\Transformer\BooleanTransformer());
 
-        try {
-            $mapper->map($model, $data);
-        } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
-            var_dump($exception->getExceptions()[0]);
-        }
+        $mapper->map($model, $data);
     }
 }
