@@ -15,7 +15,7 @@ class MapperBench
     {
         $schemaResolver = new RestApiBundle\Services\Mapper\SchemaResolver();
         $schemaResolver
-            ->resolveByClass(Tests\Fixture\Mapper\Benchmark\RootModel::class);
+            ->resolve(Tests\Fixture\Mapper\Benchmark\RootModel::class);
     }
 
     /**
