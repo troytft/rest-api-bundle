@@ -42,7 +42,16 @@ class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolve
      */
     public function warmUp(): array
     {
-        var_dump(count(get_declared_classes()));
+        foreach (get_declared_classes() as $class) {
+            if (!RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($class)) {
+                continue;
+            }
+
+            print $class;
+
+            $this->resolve($class);
+        }
+        
         var_dump('warm');die();
 
         return [];
