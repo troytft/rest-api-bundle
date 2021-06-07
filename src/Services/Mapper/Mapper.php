@@ -22,7 +22,7 @@ class Mapper
      */
     private array $transformers = [];
 
-    public function __construct(RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver)
+    public function __construct(RestApiBundle\Services\Mapper\CacheSchemaResolver $schemaResolver)
     {
         $this->schemaResolver = $schemaResolver;
     }

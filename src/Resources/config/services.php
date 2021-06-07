@@ -13,13 +13,21 @@ return function (ContainerConfigurator $configurator) {
             ->public();
 
     $services
+        ->load('RestApiBundle\\', '../../../src/{EventSubscriber,Services,Command,CacheWarmer}/*');
+
+    $services
         ->instanceof(RestApiBundle\Services\Mapper\Transformer\TransformerInterface::class)
         ->tag(RestApiBundle\Enum\DependencyInjection\ServiceTag::MAPPER_TRANSFORMER);
 
     $services
         ->instanceof(ArgumentValueResolverInterface::class)
-            ->tag('controller.argument_value_resolver', ['priority' => 25]);
+        ->tag('controller.argument_value_resolver', ['priority' => 25]);
 
     $services
-        ->load('RestApiBundle\\', '../../../src/{EventSubscriber,Services,Command}/*');
+        ->instanceof(ArgumentValueResolverInterface::class)
+        ->tag('controller.argument_value_resolver', ['priority' => 25]);
+
+    $services
+        ->get(RestApiBundle\Services\Mapper\CacheSchemaResolver::class)
+        ->arg('$cacheDir', '%kernel.cache_dir%');
 };
