@@ -13,9 +13,6 @@ return function (ContainerConfigurator $configurator) {
             ->public();
 
     $services
-        ->load('RestApiBundle\\', '../../../src/{EventSubscriber,Services,Command,CacheWarmer}/*');
-
-    $services
         ->instanceof(RestApiBundle\Services\Mapper\Transformer\TransformerInterface::class)
         ->tag(RestApiBundle\Enum\DependencyInjection\ServiceTag::MAPPER_TRANSFORMER);
 
@@ -26,6 +23,9 @@ return function (ContainerConfigurator $configurator) {
     $services
         ->instanceof(ArgumentValueResolverInterface::class)
         ->tag('controller.argument_value_resolver', ['priority' => 25]);
+
+    $services
+        ->load('RestApiBundle\\', '../../../src/{EventSubscriber,Services,Command,CacheWarmer}/*');
 
     $services
         ->get(RestApiBundle\Services\Mapper\CacheSchemaResolver::class)
