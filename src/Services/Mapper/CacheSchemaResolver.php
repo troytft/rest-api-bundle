@@ -4,12 +4,9 @@ namespace RestApiBundle\Services\Mapper;
 
 use RestApiBundle;
 use Symfony\Component\Cache;
-
 use Symfony\Component\Finder\Finder;
-use function count;
-use function get_declared_classes;
+
 use function ltrim;
-use function var_dump;
 
 class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInterface
 {
@@ -51,28 +48,33 @@ class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolve
         $finder = new Finder();
         $finder
             ->files()
-            ->in($this->projectDir)
+            ->in($this->projectDir . \DIRECTORY_SEPARATOR . 'src')
             ->name('*.php');
 
+        $classes = [];
         $values = [];
 
         foreach ($finder as $fileInfo) {
-            $class = RestApiBundle\Helper\PhpFileParserHelper::getClassByFileInfo($fileInfo);
-            if (!$class || !RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($class)) {
+            try {
+                $class = RestApiBundle\Helper\PhpFileParserHelper::getClassByFileInfo($fileInfo);
+                if (!$class || !RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($class)) {
+                    continue;
+                }
+            } catch (\Throwable $throwable) {
                 continue;
             }
 
-//            $values[$this->resolveCacheKey($class, false)] = $this->resolve($class);
+            $classes[] = $class;
+            $values[$this->resolveCacheKey($class, false)] = $this->resolve($class);
         }
 
-        var_dump($values);
-        die();
+        $this->cacheAdapter->warmUp($values);
 
-        return [];
+        return $classes;
     }
 
     private function resolveCacheKey(string $class, bool $isNullable): string
     {
-        return strtr(ltrim('\\', $class), '\\', '.') . $isNullable;
+        return strtr(ltrim($class, '\\'), '\\', '.') . $isNullable;
     }
 }
