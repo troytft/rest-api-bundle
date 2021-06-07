@@ -29,5 +29,6 @@ return function (ContainerConfigurator $configurator) {
 
     $services
         ->get(RestApiBundle\Services\Mapper\CacheSchemaResolver::class)
-        ->arg('$cacheDir', '%kernel.cache_dir%');
+        ->arg('$cacheDir', '%kernel.cache_dir%')
+        ->arg('$projectDir', '%kernel.project_dir%');
 };

@@ -5,6 +5,7 @@ namespace RestApiBundle\Services\Mapper;
 use RestApiBundle;
 use Symfony\Component\Cache;
 
+use Symfony\Component\Finder\Finder;
 use function count;
 use function get_declared_classes;
 use function ltrim;
@@ -16,10 +17,15 @@ class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolve
 
     private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver;
     private Cache\Adapter\PhpArrayAdapter $cacheAdapter;
+    private string $projectDir;
 
-    public function __construct(RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver, string $cacheDir)
-    {
+    public function __construct(
+        RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver,
+        string $cacheDir,
+        string $projectDir
+    ) {
         $this->schemaResolver = $schemaResolver;
+        $this->projectDir = $projectDir;
         $this->cacheAdapter = new Cache\Adapter\PhpArrayAdapter(
             $cacheDir . \DIRECTORY_SEPARATOR . static::CACHE_FILENAME,
             new Cache\Adapter\NullAdapter()
@@ -42,18 +48,25 @@ class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolve
      */
     public function warmUp(): array
     {
-        foreach (get_declared_classes() as $class) {
-            var_dump($class);
-            if (!RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($class)) {
+        $finder = new Finder();
+        $finder
+            ->files()
+            ->in($this->projectDir)
+            ->name('*.php');
+
+        $values = [];
+
+        foreach ($finder as $fileInfo) {
+            $class = RestApiBundle\Helper\PhpFileParserHelper::getClassByFileInfo($fileInfo);
+            if (!$class || !RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($class)) {
                 continue;
             }
 
-            print $class;
-
-            $this->resolve($class);
+//            $values[$this->resolveCacheKey($class, false)] = $this->resolve($class);
         }
 
-        var_dump('warm');die();
+        var_dump($values);
+        die();
 
         return [];
     }

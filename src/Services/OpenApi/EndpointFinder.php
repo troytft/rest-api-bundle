@@ -50,7 +50,10 @@ class EndpointFinder
         $autoloadFixed = false;
 
         foreach ($finder as $fileInfo) {
-            $class = $this->getClassByFileInfo($fileInfo);
+            $class = RestApiBundle\Helper\PhpFileParserHelper::getClassByFileInfo($fileInfo);
+            if (!$class) {
+                continue;
+            }
 
             if (!$autoloadFixed) {
                 $filePathParts = explode('/', $fileInfo->getPathname());
@@ -65,32 +68,6 @@ class EndpointFinder
         }
 
         return array_merge(...$result);
-    }
-
-    private function getClassByFileInfo(SplFileInfo $fileInfo): string
-    {
-        $tokens = token_get_all($fileInfo->getContents());
-
-        $namespaceTokenOpened = false;
-        $namespace = '';
-
-        foreach ($tokens as $token) {
-            if (is_array($token) && $token[0] === \T_NAMESPACE) {
-                $namespaceTokenOpened = true;
-            } elseif ($namespaceTokenOpened && is_array($token) && $token[0] !== \T_WHITESPACE) {
-                $namespace .= $token[1];
-            } elseif ($namespaceTokenOpened && is_string($token) && $token === ';') {
-                break;
-            }
-        }
-
-        if (!$namespace) {
-            throw new \LogicException();
-        }
-
-        $fileNameWithoutExtension = $fileInfo->getBasename('.' . $fileInfo->getExtension());
-
-        return sprintf('%s\%s', $namespace, $fileNameWithoutExtension);
     }
 
     /**
