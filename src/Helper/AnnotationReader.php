@@ -27,11 +27,8 @@ class AnnotationReader
         $result = static::getAnnotationReader()->getPropertyAnnotations($reflectionProperty);
 
         if (\PHP_VERSION_ID >= 80000) {
-            $result = array_merge($result, array_map(function (\ReflectionAttribute $reflectionAttribute) {
-                $class = $reflectionAttribute->getName();
-
-                return new $class(...$reflectionAttribute->getArguments());
-            }, $reflectionProperty->getAttributes()));
+            // @phpstan-ignore-next-line
+            $result = array_merge($result, static::createAnnotationsFromAttributes($reflectionProperty->getAttributes()));
         }
 
         return $result;
@@ -53,11 +50,8 @@ class AnnotationReader
         $result = static::getAnnotationReader()->getClassAnnotations($reflectionClass);
 
         if (\PHP_VERSION_ID >= 80000) {
-            $result = array_merge($result, array_map(function (\ReflectionAttribute $reflectionAttribute) {
-                $class = $reflectionAttribute->getName();
-
-                return new $class(...$reflectionAttribute->getArguments());
-            }, $reflectionClass->getAttributes()));
+            // @phpstan-ignore-next-line
+            $result = array_merge($result, static::createAnnotationsFromAttributes($reflectionClass->getAttributes()));
         }
 
         return $result;
@@ -79,11 +73,8 @@ class AnnotationReader
         $result = static::getAnnotationReader()->getMethodAnnotations($reflectionMethod);
 
         if (\PHP_VERSION_ID >= 80000) {
-            $result = array_merge($result, array_map(function (\ReflectionAttribute $reflectionAttribute) {
-                $class = $reflectionAttribute->getName();
-
-                return new $class(...$reflectionAttribute->getArguments());
-            }, $reflectionMethod->getAttributes()));
+            // @phpstan-ignore-next-line
+            $result = array_merge($result, static::createAnnotationsFromAttributes($reflectionMethod->getAttributes()));
         }
 
         return $result;
@@ -99,5 +90,17 @@ class AnnotationReader
         }
 
         return null;
+    }
+
+    private static function createAnnotationsFromAttributes(array $attributes): array
+    {
+        // @phpstan-ignore-next-line
+        return array_map(function (\ReflectionAttribute $reflectionAttribute) {
+            // @phpstan-ignore-next-line
+            $class = $reflectionAttribute->getName();
+
+            // @phpstan-ignore-next-line
+            return new $class(...$reflectionAttribute->getArguments());
+        }, $attributes);
     }
 }
