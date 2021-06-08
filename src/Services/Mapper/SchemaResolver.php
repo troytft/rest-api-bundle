@@ -29,7 +29,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             }
 
             if ($mapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
-                $mapping = $this->resolveMappingByReflection($reflectionProperty);
+                $mapping = $this->resolveAutoTypeMapping($reflectionProperty);
             }
 
             $propertySchema = $this->resolveSchemaByMapping($mapping);
@@ -63,7 +63,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 $schema = RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(
                     RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::class,
                     $valuesType->getTransformerOptions(),
-                    $valuesType->getIsNullable()
+                    $mapping->getIsNullable()
                 );
             } else {
                 $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($this->resolveSchemaByMapping($valuesType), $mapping->nullable);
@@ -75,13 +75,36 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         return $schema;
     }
 
-    private function resolveMappingByReflection(\ReflectionProperty $reflectionProperty): RestApiBundle\Mapping\Mapper\TypeInterface
+    private function resolveAutoTypeMapping(\ReflectionProperty $reflectionProperty): RestApiBundle\Mapping\Mapper\TypeInterface
     {
-        if (!$reflectionProperty->getType()) {
+        $type = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
+        if (!$type) {
             throw new \LogicException();
         }
 
-        $type = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionProperty->getType());
+        if ($type->isCollection()) {
+            $innerType = $this->resolveMappingByType($type->getCollectionValueType());
+            if (!$innerType) {
+                throw new \LogicException();
+            }
+
+            $result = new RestApiBundle\Mapping\Mapper\ArrayType();
+            $result->type = $innerType;
+            $result->nullable = $type->isNullable();
+        } else {
+            $result = $this->resolveMappingByType($type);
+            if (!$result) {
+                throw new \LogicException();
+            }
+        }
+
+        return $result;
+    }
+
+    private function resolveMappingByType(PropertyInfo\Type $type): ?RestApiBundle\Mapping\Mapper\TypeInterface
+    {
+        $result = null;
+
         switch (true) {
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING:
                 $result = new RestApiBundle\Mapping\Mapper\StringType();
@@ -131,9 +154,6 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 $result->nullable = $type->isNullable();
 
                 break;
-
-            default:
-                throw new \InvalidArgumentException();
         }
 
         return $result;
