@@ -2,8 +2,6 @@
 
 namespace RestApiBundle\Helper;
 
-use function ltrim;
-
 class ReflectionClassStore
 {
     /**

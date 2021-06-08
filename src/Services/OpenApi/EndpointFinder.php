@@ -2,11 +2,10 @@
 
 namespace RestApiBundle\Services\OpenApi;
 
+use RestApiBundle;
 use Composer\Autoload\ClassLoader;
 use Doctrine\Common\Annotations\AnnotationReader;
-use RestApiBundle;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PropertyInfo;
 
@@ -16,13 +15,11 @@ use function count;
 use function explode;
 use function implode;
 use function is_array;
-use function is_string;
 use function preg_match_all;
 use function reset;
 use function spl_autoload_functions;
 use function sprintf;
 use function substr_count;
-use function token_get_all;
 
 class EndpointFinder
 {
