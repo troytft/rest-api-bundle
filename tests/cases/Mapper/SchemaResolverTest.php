@@ -24,7 +24,7 @@ class SchemaResolverTest extends Tests\BaseTestCase
 
         $isOnlineWatchAvailable = $schema->properties['isOnlineWatchAvailable'] ?? null;
         $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $isOnlineWatchAvailable);
-        $this->assertTrue($isOnlineWatchAvailable->isTransformerAwareType());
+        $this->assertEquals(Schema::TRANSFORMER_AWARE_TYPE, $isOnlineWatchAvailable->type);
 
         $genres = $schema->properties['genres'] ?? null;
         $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $genres);
