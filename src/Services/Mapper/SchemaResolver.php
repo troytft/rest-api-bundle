@@ -7,7 +7,6 @@ use Symfony\Component\PropertyInfo;
 use Doctrine\Common\Annotations\AnnotationReader;
 
 use function ucfirst;
-use function var_dump;
 
 class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInterface
 {
