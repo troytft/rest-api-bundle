@@ -81,6 +81,20 @@ class TypeExtractor
         return $result;
     }
 
+    public static function extractPropertyType(\ReflectionProperty $reflectionProperty): ?PropertyInfo\Type
+    {
+        $result = null;
+        $varTag = static::resolveVarTag($reflectionProperty);
+
+        if ($varTag) {
+            $result = RestApiBundle\Helper\TypeExtractor::extractByPhpDocType($varTag->getType());
+        } elseif ($reflectionProperty->getType()) {
+            $result = static::extractByReflectionType($reflectionProperty->getType());
+        }
+
+        return $result;
+    }
+
     private static function resolveReturnTag(\ReflectionMethod $reflectionMethod): ?Return_
     {
         if (!$reflectionMethod->getDocComment()) {
@@ -104,6 +118,31 @@ class TypeExtractor
         }
 
         return $returnTag;
+    }
+
+    private static function resolveVarTag(\ReflectionProperty $reflectionProperty): ?PhpDoc\DocBlock\Tags\Var_
+    {
+        if (!$reflectionProperty->getDocComment()) {
+            return null;
+        }
+
+        $docBlock = static::getDocBlockFactory()->create($reflectionProperty->getDocComment());
+        $count = count($docBlock->getTagsByName('var'));
+
+        if ($count === 0) {
+            return null;
+        }
+
+        if ($count > 1) {
+            throw new \LogicException();
+        }
+
+        $varTag = $docBlock->getTagsByName('var')[0];
+        if (!$varTag instanceof PhpDoc\DocBlock\Tags\Var_ || !$varTag->getType()) {
+            throw new \InvalidArgumentException();
+        }
+
+        return $varTag;
     }
 
     private static function getDocBlockFactory(): DocBlockFactory
