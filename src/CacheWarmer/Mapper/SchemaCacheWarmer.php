@@ -4,7 +4,6 @@ namespace RestApiBundle\CacheWarmer\Mapper;
 
 use RestApiBundle;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
-use function var_dump;
 
 class SchemaCacheWarmer implements CacheWarmerInterface
 {
@@ -17,7 +16,7 @@ class SchemaCacheWarmer implements CacheWarmerInterface
 
     public function warmUp($cacheDir)
     {
-        var_dump($this->cacheSchemaResolver->warmUpCache());die();
+        return $this->cacheSchemaResolver->warmUpCache();
     }
 
     public function isOptional()
