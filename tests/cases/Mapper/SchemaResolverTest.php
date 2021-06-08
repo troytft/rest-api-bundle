@@ -66,7 +66,7 @@ class SchemaResolverTest extends Tests\BaseTestCase
             $this->assertEquals(Schema::TRANSFORMER_AWARE_TYPE, $rating->type);
         } else {
             $this->assertCount(1, $schema->properties);
-            
+
             $rating = $schema->properties['rating'] ?? null;
             $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $rating);
             $this->assertEquals(Schema::TRANSFORMER_AWARE_TYPE, $rating->type);

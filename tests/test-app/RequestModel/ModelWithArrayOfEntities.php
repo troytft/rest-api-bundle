@@ -10,7 +10,7 @@ class ModelWithArrayOfEntities implements \RestApiBundle\Mapping\RequestModel\Re
     /**
      * @var \TestApp\Entity\Book[]
      *
-     * @Mapper\ArrayOfEntitiesType(class="TestApp\Entity\Book")
+     * @Mapper\ArrayType(type=@Mapper\EntityType(class="TestApp\Entity\Book"))
      */
     private $books;
 
