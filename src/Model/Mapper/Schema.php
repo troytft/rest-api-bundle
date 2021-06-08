@@ -22,11 +22,6 @@ final class Schema
     {
     }
 
-    public function isTransformerAwareType(): bool
-    {
-        return $this->type === self::TRANSFORMER_AWARE_TYPE;
-    }
-
     public static function createTransformerAwareType(
         string $transformerClass,
         array $transformerOptions,
@@ -39,11 +34,6 @@ final class Schema
         $instance->transformerOptions = $transformerOptions;
 
         return $instance;
-    }
-
-    public function isModelType(): bool
-    {
-        return $this->type === self::MODEL_TYPE;
     }
 
     /**
@@ -67,11 +57,6 @@ final class Schema
         return $instance;
     }
 
-    public function isArrayType(): bool
-    {
-        return $this->type === self::ARRAY_TYPE;
-    }
-
     public static function createArrayType(
         self $valuesType,
         bool $isNullable
@@ -83,7 +68,6 @@ final class Schema
 
         return $instance;
     }
-
 
     /**
      * @return string[]
