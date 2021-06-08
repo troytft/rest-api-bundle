@@ -4,7 +4,6 @@ namespace RestApiBundle\Services\OpenApi;
 
 use RestApiBundle;
 use Composer\Autoload\ClassLoader;
-use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PropertyInfo;
@@ -23,13 +22,6 @@ use function substr_count;
 
 class EndpointFinder
 {
-    private AnnotationReader $annotationReader;
-
-    public function __construct()
-    {
-        $this->annotationReader = RestApiBundle\Helper\AnnotationReaderFactory::create(true);
-    }
-
     /**
      * @return RestApiBundle\Model\OpenApi\EndpointData[]
      */
@@ -75,15 +67,15 @@ class EndpointFinder
         $result = [];
 
         $reflectionController = RestApiBundle\Helper\ReflectionClassStore::get($class);
-        $controllerRouteAnnotation = $this->annotationReader->getClassAnnotation($reflectionController, Route::class);
+        $controllerRouteAnnotation = RestApiBundle\Helper\AnnotationReader::getClassAnnotation($reflectionController, Route::class);
 
         foreach ($reflectionController->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-            $actionRouteAnnotation = $this->annotationReader->getMethodAnnotation($reflectionMethod, Route::class);
+            $actionRouteAnnotation = RestApiBundle\Helper\AnnotationReader::getMethodAnnotation($reflectionMethod, Route::class);
             if (!$actionRouteAnnotation instanceof Route) {
                 continue;
             }
 
-            $endpointAnnotation = $this->annotationReader->getMethodAnnotation($reflectionMethod, RestApiBundle\Mapping\OpenApi\Endpoint::class);
+            $endpointAnnotation = RestApiBundle\Helper\AnnotationReader::getMethodAnnotation($reflectionMethod, RestApiBundle\Mapping\OpenApi\Endpoint::class);
             if (!$endpointAnnotation instanceof RestApiBundle\Mapping\OpenApi\Endpoint) {
                 continue;
             }

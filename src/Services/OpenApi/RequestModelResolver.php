@@ -2,7 +2,6 @@
 
 namespace RestApiBundle\Services\OpenApi;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Validator as Validator;
 use RestApiBundle;
 use Symfony\Component\PropertyInfo;
@@ -12,7 +11,6 @@ use function sprintf;
 
 class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
-    private AnnotationReader $annotationReader;
     private RestApiBundle\Services\SettingsProvider $settingsProvider;
     private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver;
 
@@ -20,7 +18,6 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
         RestApiBundle\Services\SettingsProvider $settingsProvider,
         RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver
     ) {
-        $this->annotationReader = RestApiBundle\Helper\AnnotationReaderFactory::create(true);
         $this->settingsProvider = $settingsProvider;
         $this->schemaResolver = $schemaResolver;
     }
@@ -37,10 +34,10 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
         $schema = $this->schemaResolver->resolve($class);
 
         foreach ($schema->properties as $propertyName => $propertySchema) {
-            $property = $reflectedClass->getProperty($propertyName);
+            $reflectionProperty = $reflectedClass->getProperty($propertyName);
             $propertyConstraints = [];
 
-            $annotations = $this->annotationReader->getPropertyAnnotations($property);
+            $annotations = RestApiBundle\Helper\AnnotationReader::getPropertyAnnotations($reflectionProperty);
             foreach ($annotations as $annotation) {
                 if ($annotation instanceof Validator\Constraint) {
                     $propertyConstraints[] = $annotation;

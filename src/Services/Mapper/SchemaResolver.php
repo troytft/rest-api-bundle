@@ -4,26 +4,18 @@ namespace RestApiBundle\Services\Mapper;
 
 use RestApiBundle;
 use Symfony\Component\PropertyInfo;
-use Doctrine\Common\Annotations\AnnotationReader;
 
 use function ucfirst;
 
 class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInterface
 {
-    private AnnotationReader $annotationReader;
-
-    public function __construct()
-    {
-        $this->annotationReader = RestApiBundle\Helper\AnnotationReaderFactory::create(true);
-    }
-
     public function resolve(string $class, bool $isNullable = false): RestApiBundle\Model\Mapper\Schema
     {
         $properties = [];
         $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            $mapping = $this->annotationReader->getPropertyAnnotation($reflectionProperty, RestApiBundle\Mapping\Mapper\TypeInterface::class);
+            $mapping = RestApiBundle\Helper\AnnotationReader::getPropertyAnnotation($reflectionProperty, RestApiBundle\Mapping\Mapper\TypeInterface::class);
             if (!$mapping instanceof RestApiBundle\Mapping\Mapper\TypeInterface) {
                 continue;
             }
