@@ -6,14 +6,11 @@ use RestApiBundle;
 use Symfony\Component\PropertyInfo;
 use Doctrine\Common\Annotations\AnnotationReader;
 
-use function ltrim;
 use function ucfirst;
 
-class SchemaResolver
+class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInterface
 {
     private AnnotationReader $annotationReader;
-    /** @var array<string, RestApiBundle\Model\Mapper\Schema> */
-    private array $cache = [];
 
     public function __construct()
     {
@@ -22,38 +19,32 @@ class SchemaResolver
 
     public function resolve(string $class, bool $isNullable = false): RestApiBundle\Model\Mapper\Schema
     {
-        $key = ltrim($class, '\\') . $isNullable;
+        $properties = [];
+        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
-        if (!isset($this->cache[$key])) {
-            $properties = [];
-            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
-
-            foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-                $mapping = $this->annotationReader->getPropertyAnnotation($reflectionProperty, RestApiBundle\Mapping\Mapper\TypeInterface::class);
-                if (!$mapping instanceof RestApiBundle\Mapping\Mapper\TypeInterface) {
-                    continue;
-                }
-
-                if ($mapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
-                    $mapping = $this->resolveMappingByReflection($reflectionProperty);
-                }
-
-                $propertySchema = $this->resolveSchemaByMapping($mapping);
-                $propertySetterName = 'set' . ucfirst($reflectionProperty->getName());
-
-                if ($reflectionClass->hasMethod($propertySetterName) && $reflectionClass->getMethod($propertySetterName)->isPublic()) {
-                    $propertySchema->setPropertySetterName($propertySetterName);
-                } elseif (!$reflectionProperty->isPublic()) {
-                    throw new RestApiBundle\Exception\Mapper\SetterDoesNotExistException($propertySetterName);
-                }
-
-                $properties[$reflectionProperty->getName()] = $propertySchema;
+        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+            $mapping = $this->annotationReader->getPropertyAnnotation($reflectionProperty, RestApiBundle\Mapping\Mapper\TypeInterface::class);
+            if (!$mapping instanceof RestApiBundle\Mapping\Mapper\TypeInterface) {
+                continue;
             }
 
-            $this->cache[$key] = RestApiBundle\Model\Mapper\Schema::createModelType($class, $properties, $isNullable);
+            if ($mapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
+                $mapping = $this->resolveMappingByReflection($reflectionProperty);
+            }
+
+            $propertySchema = $this->resolveSchemaByMapping($mapping);
+            $propertySetterName = 'set' . ucfirst($reflectionProperty->getName());
+
+            if ($reflectionClass->hasMethod($propertySetterName) && $reflectionClass->getMethod($propertySetterName)->isPublic()) {
+                $propertySchema->propertySetterName = $propertySetterName;
+            } elseif (!$reflectionProperty->isPublic()) {
+                throw new RestApiBundle\Exception\Mapper\SetterDoesNotExistException($propertySetterName);
+            }
+
+            $properties[$reflectionProperty->getName()] = $propertySchema;
         }
 
-        return $this->cache[$key];
+        return RestApiBundle\Model\Mapper\Schema::createModelType($class, $properties, $isNullable);
     }
 
     private function resolveSchemaByMapping(RestApiBundle\Mapping\Mapper\TypeInterface $mapping): RestApiBundle\Model\Mapper\Schema

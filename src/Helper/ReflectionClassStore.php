@@ -2,8 +2,6 @@
 
 namespace RestApiBundle\Helper;
 
-use function ltrim;
-
 class ReflectionClassStore
 {
     /**
@@ -17,8 +15,6 @@ class ReflectionClassStore
 
     public static function get(string $class): \ReflectionClass
     {
-        $class = ltrim($class, '\\');
-
         if (!isset(static::$reflectionClassCache[$class])) {
             static::$reflectionClassCache[$class] = new \ReflectionClass($class);
         }

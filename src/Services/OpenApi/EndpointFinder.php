@@ -2,11 +2,10 @@
 
 namespace RestApiBundle\Services\OpenApi;
 
+use RestApiBundle;
 use Composer\Autoload\ClassLoader;
 use Doctrine\Common\Annotations\AnnotationReader;
-use RestApiBundle;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PropertyInfo;
 
@@ -16,13 +15,11 @@ use function count;
 use function explode;
 use function implode;
 use function is_array;
-use function is_string;
 use function preg_match_all;
 use function reset;
 use function spl_autoload_functions;
 use function sprintf;
 use function substr_count;
-use function token_get_all;
 
 class EndpointFinder
 {
@@ -50,7 +47,10 @@ class EndpointFinder
         $autoloadFixed = false;
 
         foreach ($finder as $fileInfo) {
-            $class = $this->getClassByFileInfo($fileInfo);
+            $class = RestApiBundle\Helper\PhpFileParserHelper::getClassByFileInfo($fileInfo);
+            if (!$class) {
+                continue;
+            }
 
             if (!$autoloadFixed) {
                 $filePathParts = explode('/', $fileInfo->getPathname());
@@ -65,32 +65,6 @@ class EndpointFinder
         }
 
         return array_merge(...$result);
-    }
-
-    private function getClassByFileInfo(SplFileInfo $fileInfo): string
-    {
-        $tokens = token_get_all($fileInfo->getContents());
-
-        $namespaceTokenOpened = false;
-        $namespace = '';
-
-        foreach ($tokens as $token) {
-            if (is_array($token) && $token[0] === \T_NAMESPACE) {
-                $namespaceTokenOpened = true;
-            } elseif ($namespaceTokenOpened && is_array($token) && $token[0] !== \T_WHITESPACE) {
-                $namespace .= $token[1];
-            } elseif ($namespaceTokenOpened && is_string($token) && $token === ';') {
-                break;
-            }
-        }
-
-        if (!$namespace) {
-            throw new \LogicException();
-        }
-
-        $fileNameWithoutExtension = $fileInfo->getBasename('.' . $fileInfo->getExtension());
-
-        return sprintf('%s\%s', $namespace, $fileNameWithoutExtension);
     }
 
     /**

@@ -4,10 +4,22 @@ namespace Tests\Benchmark;
 
 use Tests;
 use RestApiBundle;
+use PhpBench\Benchmark\Metadata\Annotations\BeforeMethods;
 use PhpBench\Benchmark\Metadata\Annotations\Revs;
 
 class MapperBench
 {
+    private RestApiBundle\Services\Mapper\CacheSchemaResolver $cacheSchemaResolver;
+
+    public function __construct()
+    {
+        $this->cacheSchemaResolver = new RestApiBundle\Services\Mapper\CacheSchemaResolver(
+            new RestApiBundle\Services\Mapper\SchemaResolver(),
+            __DIR__ . '/../../../var',
+            __DIR__ . '/../../',
+        );
+    }
+
     /**
      * @Revs(50)
      */
@@ -24,7 +36,45 @@ class MapperBench
     public function benchComplexModelMapping(): void
     {
         $model = new Tests\Fixture\Mapper\Benchmark\RootModel();
-        $data = [
+
+        $schemaResolver = new RestApiBundle\Services\Mapper\SchemaResolver();
+        $mapper = new RestApiBundle\Services\Mapper\Mapper($schemaResolver);
+        $mapper
+            ->addTransformer(new RestApiBundle\Services\Mapper\Transformer\IntegerTransformer())
+            ->addTransformer(new RestApiBundle\Services\Mapper\Transformer\StringTransformer())
+            ->addTransformer(new RestApiBundle\Services\Mapper\Transformer\FloatTransformer())
+            ->addTransformer(new RestApiBundle\Services\Mapper\Transformer\BooleanTransformer());
+
+        $mapper->map($model, $this->getData());
+    }
+
+    /**
+     * @BeforeMethods("warmUpCache")
+     * @Revs(50)
+     */
+    public function benchComplexModelMappingWithCache(): void
+    {
+        $model = new Tests\Fixture\Mapper\Benchmark\RootModel();
+
+        $mapper = new RestApiBundle\Services\Mapper\Mapper($this->cacheSchemaResolver);
+        $mapper
+            ->addTransformer(new RestApiBundle\Services\Mapper\Transformer\IntegerTransformer())
+            ->addTransformer(new RestApiBundle\Services\Mapper\Transformer\StringTransformer())
+            ->addTransformer(new RestApiBundle\Services\Mapper\Transformer\FloatTransformer())
+            ->addTransformer(new RestApiBundle\Services\Mapper\Transformer\BooleanTransformer());
+
+        $mapper->map($model, $this->getData());
+    }
+
+    public function warmUpCache(): void
+    {
+        $this->cacheSchemaResolver->clearCache();
+        $this->cacheSchemaResolver->warmUpCache();
+    }
+
+    private function getData(): array
+    {
+        return [
             'group1' => [
                 [
                     'model1' => [
@@ -3246,15 +3296,5 @@ class MapperBench
                 ],
             ],
         ];
-
-        $schemaResolver = new RestApiBundle\Services\Mapper\SchemaResolver();
-        $mapper = new RestApiBundle\Services\Mapper\Mapper($schemaResolver);
-        $mapper
-            ->addTransformer(new RestApiBundle\Services\Mapper\Transformer\IntegerTransformer())
-            ->addTransformer(new RestApiBundle\Services\Mapper\Transformer\StringTransformer())
-            ->addTransformer(new RestApiBundle\Services\Mapper\Transformer\FloatTransformer())
-            ->addTransformer(new RestApiBundle\Services\Mapper\Transformer\BooleanTransformer());
-
-        $mapper->map($model, $data);
     }
 }

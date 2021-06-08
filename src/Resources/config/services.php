@@ -10,7 +10,10 @@ return function (ContainerConfigurator $configurator) {
         ->defaults()
             ->autowire()
             ->autoconfigure()
-            ->public();
+            ->public()
+            ->bind(RestApiBundle\Services\Mapper\SchemaResolverInterface::class, service(RestApiBundle\Services\Mapper\CacheSchemaResolver::class))
+            ->bind('$cacheDir', '%kernel.cache_dir%')
+            ->bind('$projectDir', '%kernel.project_dir%');
 
     $services
         ->instanceof(RestApiBundle\Services\Mapper\Transformer\TransformerInterface::class)
@@ -18,8 +21,12 @@ return function (ContainerConfigurator $configurator) {
 
     $services
         ->instanceof(ArgumentValueResolverInterface::class)
-            ->tag('controller.argument_value_resolver', ['priority' => 25]);
+        ->tag('controller.argument_value_resolver', ['priority' => 25]);
 
     $services
-        ->load('RestApiBundle\\', '../../../src/{EventSubscriber,Services,Command}/*');
+        ->instanceof(ArgumentValueResolverInterface::class)
+        ->tag('controller.argument_value_resolver', ['priority' => 25]);
+
+    $services
+        ->load('RestApiBundle\\', '../../../src/{EventSubscriber,Services,Command,CacheWarmer}/*');
 };

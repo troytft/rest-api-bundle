@@ -1,47 +1,49 @@
 <?php
 
+use RestApiBundle\Model\Mapper\Schema;
+
 class SchemaResolverTest extends Tests\BaseTestCase
 {
     public function testGetSchemaByClassName()
     {
         $schema = $this->getSchemaResolver()->resolve(Tests\Fixture\Mapper\Movie::class);
 
-        $this->assertCount(6, $schema->getProperties());
+        $this->assertCount(6, $schema->properties);
 
-        $name = $schema->getProperties()['name'] ?? null;
+        $name = $schema->properties['name'] ?? null;
         $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $name);
-        $this->assertTrue($name->isTransformerAwareType());
+        $this->assertEquals(Schema::TRANSFORMER_AWARE_TYPE, $name->type);
 
-        $rating = $schema->getProperties()['rating'] ?? null;
+        $rating = $schema->properties['rating'] ?? null;
         $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $rating);
-        $this->assertTrue($rating->isTransformerAwareType());
+        $this->assertEquals(Schema::TRANSFORMER_AWARE_TYPE, $rating->type);
 
-        $lengthMinutes = $schema->getProperties()['lengthMinutes'] ?? null;
+        $lengthMinutes = $schema->properties['lengthMinutes'] ?? null;
         $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $lengthMinutes);
-        $this->assertTrue($lengthMinutes->isTransformerAwareType());
+        $this->assertEquals(Schema::TRANSFORMER_AWARE_TYPE, $lengthMinutes->type);
 
-        $isOnlineWatchAvailable = $schema->getProperties()['isOnlineWatchAvailable'] ?? null;
+        $isOnlineWatchAvailable = $schema->properties['isOnlineWatchAvailable'] ?? null;
         $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $isOnlineWatchAvailable);
-        $this->assertTrue($isOnlineWatchAvailable->isTransformerAwareType());
+        $this->assertEquals(Schema::TRANSFORMER_AWARE_TYPE, $isOnlineWatchAvailable->type);
 
-        $genres = $schema->getProperties()['genres'] ?? null;
+        $genres = $schema->properties['genres'] ?? null;
         $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $genres);
-        $this->assertTrue($genres->isArrayType());
+        $this->assertEquals(Schema::ARRAY_TYPE, $genres->type);
 
-        $releases = $schema->getProperties()['releases'] ?? null;
+        $releases = $schema->properties['releases'] ?? null;
         $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $releases);
-        $this->assertTrue($releases->isArrayType());
+        $this->assertEquals(Schema::ARRAY_TYPE, $releases->type);
     }
 
     public function testAutoConvertToEntitiesCollection()
     {
         $schema = $this->getSchemaResolver()->resolve(Tests\Fixture\Mapper\AutoConvertToEntitiesCollection\Model::class);
 
-        $this->assertCount(1, $schema->getProperties());
+        $this->assertCount(1, $schema->properties);
 
-        $books = $schema->getProperties()['books'] ?? null;
+        $books = $schema->properties['books'] ?? null;
         $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $books);
-        $this->assertEquals(RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::class, $books->getTransformerClass());
+        $this->assertEquals(RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::class, $books->transformerClass);
     }
 
     private function getSchemaResolver(): RestApiBundle\Services\Mapper\SchemaResolver
