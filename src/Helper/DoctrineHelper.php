@@ -10,13 +10,11 @@ use function sprintf;
 
 class DoctrineHelper extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
-    private static ?Doctrine\Common\Annotations\AnnotationReader $annotationReader = null;
-
     public static function isEntity(string $class): bool
     {
         $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
-        return (bool) static::getAnnotationReader()->getClassAnnotation($reflectionClass, Doctrine\ORM\Mapping\Entity::class);
+        return (bool) RestApiBundle\Helper\AnnotationReader::getClassAnnotation($reflectionClass, Doctrine\ORM\Mapping\Entity::class);
     }
 
     public static function extractColumnType(string $class, string $field): string
@@ -24,7 +22,7 @@ class DoctrineHelper extends RestApiBundle\Services\OpenApi\AbstractSchemaResolv
         $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
         $reflectionProperty = $reflectionClass->getProperty($field);
 
-        $columnAnnotation = static::getAnnotationReader()->getPropertyAnnotation($reflectionProperty, Doctrine\ORM\Mapping\Column::class);
+        $columnAnnotation = RestApiBundle\Helper\AnnotationReader::getPropertyAnnotation($reflectionProperty, Doctrine\ORM\Mapping\Column::class);
         if (!$columnAnnotation instanceof Doctrine\ORM\Mapping\Column) {
             throw new \InvalidArgumentException();
         }
@@ -45,14 +43,5 @@ class DoctrineHelper extends RestApiBundle\Services\OpenApi\AbstractSchemaResolv
         }
 
         return $result;
-    }
-
-    private static function getAnnotationReader(): Doctrine\Common\Annotations\AnnotationReader
-    {
-        if (!static::$annotationReader) {
-            static::$annotationReader = RestApiBundle\Helper\AnnotationReaderFactory::create(true);
-        }
-
-        return static::$annotationReader;
     }
 }
