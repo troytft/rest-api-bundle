@@ -49,7 +49,7 @@ class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolve
         $finder = new Finder();
         $finder
             ->files()
-            ->in($this->projectDir . \DIRECTORY_SEPARATOR . 'src')
+            ->in($this->projectDir)
             ->name('*.php');
 
         $classes = [];
