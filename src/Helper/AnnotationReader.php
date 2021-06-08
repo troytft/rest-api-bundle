@@ -26,7 +26,7 @@ class AnnotationReader
     {
         $result = static::getAnnotationReader()->getPropertyAnnotations($reflectionProperty);
 
-        if (\PHP_VERSION_ID >= 8000) {
+        if (\PHP_VERSION_ID >= 80000) {
             $result = array_merge($result, array_map(function (\ReflectionAttribute $reflectionAttribute) {
                 $class = $reflectionAttribute->getName();
 
@@ -52,7 +52,7 @@ class AnnotationReader
     {
         $result = static::getAnnotationReader()->getClassAnnotations($reflectionClass);
 
-        if (\PHP_VERSION_ID >= 8000) {
+        if (\PHP_VERSION_ID >= 80000) {
             $result = array_merge($result, array_map(function (\ReflectionAttribute $reflectionAttribute) {
                 $class = $reflectionAttribute->getName();
 
@@ -78,7 +78,7 @@ class AnnotationReader
     {
         $result = static::getAnnotationReader()->getMethodAnnotations($reflectionMethod);
 
-        if (\PHP_VERSION_ID >= 8000) {
+        if (\PHP_VERSION_ID >= 80000) {
             $result = array_merge($result, array_map(function (\ReflectionAttribute $reflectionAttribute) {
                 $class = $reflectionAttribute->getName();
 
