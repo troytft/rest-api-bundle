@@ -36,7 +36,7 @@ class Mapper
     private function mapObject(RestApiBundle\Model\Mapper\Schema $schema, RestApiBundle\Mapping\Mapper\ModelInterface $model, array $data, array $basePath, RestApiBundle\Model\Mapper\Context $context): void
     {
         if ($context->isClearMissing) {
-            $propertiesNotPresentedInData = array_diff(array_keys($schema->getProperties()), array_keys($data));
+            $propertiesNotPresentedInData = array_diff(array_keys($schema->properties), array_keys($data));
             foreach ($propertiesNotPresentedInData as $propertyName) {
                 $data[$propertyName] = null;
             }
@@ -46,19 +46,19 @@ class Mapper
 
         foreach ($data as $propertyName => $propertyValue) {
             try {
-                if (!isset($schema->getProperties()[$propertyName])) {
+                if (!isset($schema->properties[$propertyName])) {
                     throw new RestApiBundle\Exception\Mapper\MappingValidation\UndefinedKeyException($this->resolvePath($basePath, $propertyName));
                 }
 
-                $propertySchema = $schema->getProperties()[$propertyName];
+                $propertySchema = $schema->properties[$propertyName];
                 if (!$propertySchema instanceof RestApiBundle\Model\Mapper\Schema) {
                     throw new \LogicException();
                 }
 
                 $value = $this->mapType($propertySchema, $propertyValue, $this->resolvePath($basePath, $propertyName), $context);
 
-                if ($propertySchema->getPropertySetterName()) {
-                    call_user_func([$model, $propertySchema->getPropertySetterName()], $value);
+                if ($propertySchema->propertySetterName) {
+                    call_user_func([$model, $propertySchema->propertySetterName], $value);
                 } else {
                     $model->$propertyName = $value;
                 }
@@ -76,20 +76,20 @@ class Mapper
 
     private function mapType(RestApiBundle\Model\Mapper\Schema $schema, $rawValue, array $basePath, RestApiBundle\Model\Mapper\Context $context)
     {
-        if ($rawValue === null && $schema->getIsNullable()) {
+        if ($rawValue === null && $schema->isNullable) {
             return null;
-        } elseif ($rawValue === null && !$schema->getIsNullable()) {
+        } elseif ($rawValue === null && !$schema->isNullable) {
             throw new RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException($basePath);
         }
 
-        switch (true) {
-            case $schema->isTransformerAwareType():
+        switch ($schema->type) {
+            case RestApiBundle\Model\Mapper\Schema::TRANSFORMER_AWARE_TYPE:
                 $value = $this->mapTransformerAwareType($schema, $rawValue, $basePath);
 
                 break;
 
-            case $schema->isModelType():
-                $class = $schema->getClass();
+            case RestApiBundle\Model\Mapper\Schema::MODEL_TYPE:
+                $class = $schema->class;
                 if (!is_array($rawValue) || (count($rawValue) > 0 && array_is_list($rawValue))) {
                     throw new RestApiBundle\Exception\Mapper\MappingValidation\ObjectRequiredException($basePath);
                 }
@@ -99,7 +99,7 @@ class Mapper
 
                 break;
 
-            case $schema->isArrayType():
+            case RestApiBundle\Model\Mapper\Schema::ARRAY_TYPE:
                 $value = $this->mapCollectionType($schema, $rawValue, $basePath, $context);
 
                 break;
@@ -115,7 +115,7 @@ class Mapper
     private function mapTransformerAwareType(RestApiBundle\Model\Mapper\Schema $schema, $rawValue, array $basePath)
     {
         try {
-            return $this->transformers[$schema->getTransformerClass()]->transform($rawValue, $schema->getTransformerOptions());
+            return $this->transformers[$schema->transformerClass]->transform($rawValue, $schema->transformerOptions);
         } catch (RestApiBundle\Exception\Mapper\Transformer\TransformerExceptionInterface $transformerException) {
             throw new RestApiBundle\Exception\Mapper\Transformer\WrappedTransformerException($transformerException, $basePath);
         }
@@ -130,7 +130,7 @@ class Mapper
         $value = [];
 
         foreach ($rawValue as $i => $item) {
-            $value[] = $this->mapType($schema->getValuesType(), $item, $this->resolvePath($basePath, $i), $context);
+            $value[] = $this->mapType($schema->valuesType, $item, $this->resolvePath($basePath, $i), $context);
         }
 
         return $value;

@@ -36,7 +36,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
 
         $schema = $this->schemaResolver->resolve($class);
 
-        foreach ($schema->getProperties() as $propertyName => $propertySchema) {
+        foreach ($schema->properties as $propertyName => $propertySchema) {
             $property = $reflectedClass->getProperty($propertyName);
             $propertyConstraints = [];
 
@@ -110,16 +110,16 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
      */
     private function convert(RestApiBundle\Model\Mapper\Schema $schema, array $validationConstraints): OpenApi\Schema
     {
-        switch (true) {
-            case $schema->isModelType():
-                $result = $this->resolveByClass($schema->getClass(), $schema->getIsNullable());
+        switch ($schema->type) {
+            case RestApiBundle\Model\Mapper\Schema::MODEL_TYPE:
+                $result = $this->resolveByClass($schema->class, $schema->isNullable);
 
                 break;
-            case $schema->isTransformerAwareType():
+            case RestApiBundle\Model\Mapper\Schema::TRANSFORMER_AWARE_TYPE:
                 $result = $this->convertScalarType($schema, $validationConstraints);
 
                 break;
-            case $schema->isArrayType():
+            case RestApiBundle\Model\Mapper\Schema::ARRAY_TYPE:
                 $result = $this->convertCollectionType($schema, $validationConstraints);
 
                 break;
@@ -136,11 +136,11 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
      */
     private function convertScalarType(RestApiBundle\Model\Mapper\Schema $schema, array $validationConstraints): OpenApi\Schema
     {
-        switch ($schema->getTransformerClass()) {
+        switch ($schema->transformerClass) {
             case RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class:
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::BOOLEAN,
-                    'nullable' => $schema->getIsNullable(),
+                    'nullable' => $schema->isNullable,
                 ]);
                 $this->applyConstraints($result, $validationConstraints);
 
@@ -149,7 +149,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
             case RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class:
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::INTEGER,
-                    'nullable' => $schema->getIsNullable(),
+                    'nullable' => $schema->isNullable,
                 ]);
                 $this->applyConstraints($result, $validationConstraints);
 
@@ -158,7 +158,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
             case RestApiBundle\Services\Mapper\Transformer\StringTransformer::class:
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
-                    'nullable' => $schema->getIsNullable(),
+                    'nullable' => $schema->isNullable,
                 ]);
                 $this->applyConstraints($result, $validationConstraints);
 
@@ -168,39 +168,39 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::NUMBER,
                     'format' => 'double',
-                    'nullable' => $schema->getIsNullable(),
+                    'nullable' => $schema->isNullable,
                 ]);
                 $this->applyConstraints($result, $validationConstraints);
 
                 break;
 
             case RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class:
-                $format = $schema->getTransformerOptions()[RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
+                $format = $schema->transformerOptions[RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
 
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date-time',
                     'example' => RestApiBundle\Helper\OpenApi\ExampleHelper::getExampleDate()->format($format),
-                    'nullable' => $schema->getIsNullable(),
+                    'nullable' => $schema->isNullable,
                 ]);
                 $this->applyConstraints($result, $validationConstraints);
 
                 break;
 
             case RestApiBundle\Services\Mapper\Transformer\DateTransformer::class:
-                $format = $schema->getTransformerOptions()[RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
+                $format = $schema->transformerOptions[RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date',
                     'example' => RestApiBundle\Helper\OpenApi\ExampleHelper::getExampleDate()->format($format),
-                    'nullable' => $schema->getIsNullable(),
+                    'nullable' => $schema->isNullable,
                 ]);
 
                 break;
 
             case RestApiBundle\Services\Mapper\Transformer\EntityTransformer::class:
-                $class = $schema->getTransformerOptions()[RestApiBundle\Services\Mapper\Transformer\EntityTransformer::CLASS_OPTION];
-                $fieldName = $schema->getTransformerOptions()[RestApiBundle\Services\Mapper\Transformer\EntityTransformer::FIELD_OPTION];
+                $class = $schema->transformerOptions[RestApiBundle\Services\Mapper\Transformer\EntityTransformer::CLASS_OPTION];
+                $fieldName = $schema->transformerOptions[RestApiBundle\Services\Mapper\Transformer\EntityTransformer::FIELD_OPTION];
 
                 $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
                 if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
@@ -216,13 +216,13 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
                 }
 
                 $result->description = sprintf('Element by "%s"', $fieldName);
-                $result->nullable = $schema->getIsNullable();
+                $result->nullable = $schema->isNullable;
 
                 break;
 
             case RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::class:
-                $class = $schema->getTransformerOptions()[RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::CLASS_OPTION];
-                $fieldName = $schema->getTransformerOptions()[RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::FIELD_OPTION];
+                $class = $schema->transformerOptions[RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::CLASS_OPTION];
+                $fieldName = $schema->transformerOptions[RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::FIELD_OPTION];
 
                 $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
                 if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
@@ -243,13 +243,13 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
                     'type' => OpenApi\Type::ARRAY,
                     'items' => $arrayValueType,
                     'description' => sprintf('Array of elements by "%s"', $fieldName),
-                    'nullable' => $schema->getIsNullable(),
+                    'nullable' => $schema->isNullable,
                 ]);
 
                 break;
 
             default:
-                throw new \InvalidArgumentException(sprintf('Invalid type "%s"', $schema->getTransformerClass()));
+                throw new \InvalidArgumentException(sprintf('Invalid type "%s"', $schema->transformerClass));
         }
 
         return $result;
@@ -262,8 +262,8 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
-            'items' => $this->convert($schema->getValuesType(), $validationConstraints),
-            'nullable' => $schema->getIsNullable(),
+            'items' => $this->convert($schema->valuesType, $validationConstraints),
+            'nullable' => $schema->isNullable,
         ]);
     }
 }

@@ -4,19 +4,19 @@ namespace RestApiBundle\Model\Mapper;
 
 final class Schema
 {
-    private const ARRAY_TYPE = 'array';
-    private const MODEL_TYPE = 'model';
-    private const TRANSFORMER_AWARE_TYPE = 'transformer-aware';
+    public const ARRAY_TYPE = 'array';
+    public const MODEL_TYPE = 'model';
+    public const TRANSFORMER_AWARE_TYPE = 'transformer-aware';
 
     /** @var array<string, self> */
-    private array $properties = [];
-    private ?string $class;
-    private bool $isNullable;
-    private ?string $transformerClass;
-    private array $transformerOptions = [];
-    private string $type;
-    private ?self $valuesType = null;
-    private ?string $propertySetterName = null;
+    public array $properties = [];
+    public ?string $class = null;
+    public bool $isNullable;
+    public ?string $transformerClass = null;
+    public array $transformerOptions = [];
+    public string $type;
+    public ?self $valuesType = null;
+    public ?string $propertySetterName = null;
 
     private function __construct()
     {
@@ -84,48 +84,21 @@ final class Schema
         return $instance;
     }
 
+
     /**
-     * @return array<string, self>
+     * @return string[]
      */
-    public function getProperties(): array
+    public function __sleep()
     {
-        return $this->properties;
-    }
-
-    public function getClass(): ?string
-    {
-        return $this->class;
-    }
-
-    public function getIsNullable(): bool
-    {
-        return $this->isNullable;
-    }
-
-    public function getTransformerClass(): ?string
-    {
-        return $this->transformerClass;
-    }
-
-    public function getTransformerOptions(): array
-    {
-        return $this->transformerOptions;
-    }
-
-    public function getValuesType(): ?self
-    {
-        return $this->valuesType;
-    }
-
-    public function getPropertySetterName(): ?string
-    {
-        return $this->propertySetterName;
-    }
-
-    public function setPropertySetterName(?string $propertySetterName)
-    {
-        $this->propertySetterName = $propertySetterName;
-
-        return $this;
+        return [
+            'type',
+            'properties',
+            'class',
+            'isNullable',
+            'transformerClass',
+            'transformerOptions',
+            'valuesType',
+            'propertySetterName',
+        ];
     }
 }

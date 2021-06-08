@@ -18,11 +18,11 @@ use function ucfirst;
 
 class RequestModelValidator
 {
-    private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver;
+    private RestApiBundle\Services\Mapper\SchemaResolverInterface $schemaResolver;
     private ValidatorInterface $validator;
 
     public function __construct(
-        RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver,
+        RestApiBundle\Services\Mapper\SchemaResolverInterface $schemaResolver,
         ValidatorInterface $validator
     ) {
         $this->schemaResolver = $schemaResolver;
@@ -67,7 +67,7 @@ class RequestModelValidator
         $schema = $this->schemaResolver->resolve(get_class($requestModel));
 
         /** @var RestApiBundle\Model\Mapper\Schema $propertySchema */
-        foreach ($schema->getProperties() as $propertyName => $propertySchema) {
+        foreach ($schema->properties as $propertyName => $propertySchema) {
             if ($propertySchema->isModelType()) {
                 $propertyValue = $this->getPropertyValueFromInstance($requestModel, $propertyName);
                 if (!$propertyValue) {
@@ -79,7 +79,7 @@ class RequestModelValidator
                     $prefix = sprintf('%s.', $propertyName);
                     $result[] = $this->appendPrefixToArrayKeys($prefix, $innerErrors);
                 }
-            } elseif ($propertySchema->isArrayType() && $propertySchema->getValuesType()->isModelType()) {
+            } elseif ($propertySchema->isArrayType() && $propertySchema->valuesType->isModelType()) {
                 $propertyValue = $this->getPropertyValueFromInstance($requestModel, $propertyName);
                 if (!$propertyValue) {
                     continue;
@@ -151,6 +151,6 @@ class RequestModelValidator
     {
         $schema = $this->schemaResolver->resolve(get_class($requestModel));
 
-        return isset($schema->getProperties()[$propertyName]);
+        return isset($schema->properties[$propertyName]);
     }
 }

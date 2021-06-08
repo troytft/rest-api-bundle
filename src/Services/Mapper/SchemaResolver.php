@@ -36,7 +36,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             $propertySetterName = 'set' . ucfirst($reflectionProperty->getName());
 
             if ($reflectionClass->hasMethod($propertySetterName) && $reflectionClass->getMethod($propertySetterName)->isPublic()) {
-                $propertySchema->setPropertySetterName($propertySetterName);
+                $propertySchema->propertySetterName = $propertySetterName;
             } elseif (!$reflectionProperty->isPublic()) {
                 throw new RestApiBundle\Exception\Mapper\SetterDoesNotExistException($propertySetterName);
             }

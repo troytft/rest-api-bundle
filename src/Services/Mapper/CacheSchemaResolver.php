@@ -44,7 +44,7 @@ class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolve
     /**
      * @return string[]
      */
-    public function warmUp(): array
+    public function warmUpCache(): array
     {
         $finder = new Finder();
         $finder
@@ -72,6 +72,11 @@ class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolve
         $classes = array_merge($classes, $this->cacheAdapter->warmUp($values));
 
         return $classes;
+    }
+
+    public function clearCache(): void
+    {
+        $this->cacheAdapter->clear();
     }
 
     private function resolveCacheKey(string $class, bool $isNullable): string
