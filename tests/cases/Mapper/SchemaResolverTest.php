@@ -48,29 +48,24 @@ class SchemaResolverTest extends Tests\BaseTestCase
 
     public function testAttributesAndAnnotationsTogether()
     {
-        $schema = $this->getSchemaResolver()->resolve(Tests\Fixture\Mapper\Php8Attribute\Model::class);
-
-        if (\PHP_VERSION_ID >= 80000) {
-            $this->assertCount(3, $schema->properties);
-
-            $name = $schema->properties['name'] ?? null;
-            $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $name);
-            $this->assertEquals(Schema::TRANSFORMER_AWARE_TYPE, $name->type);
-
-            $date = $schema->properties['date'] ?? null;
-            $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $date);
-            $this->assertEquals(Schema::TRANSFORMER_AWARE_TYPE, $date->type);
-
-            $rating = $schema->properties['rating'] ?? null;
-            $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $rating);
-            $this->assertEquals(Schema::TRANSFORMER_AWARE_TYPE, $rating->type);
-        } else {
-            $this->assertCount(1, $schema->properties);
-
-            $rating = $schema->properties['rating'] ?? null;
-            $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $rating);
-            $this->assertEquals(Schema::TRANSFORMER_AWARE_TYPE, $rating->type);
+        if (\PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Test require PHP8');
         }
+
+        $schema = $this->getSchemaResolver()->resolve(Tests\Fixture\Mapper\Php8Attribute\Model::class);
+        $this->assertCount(3, $schema->properties);
+
+        $name = $schema->properties['name'] ?? null;
+        $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $name);
+        $this->assertEquals(Schema::TRANSFORMER_AWARE_TYPE, $name->type);
+
+        $date = $schema->properties['date'] ?? null;
+        $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $date);
+        $this->assertEquals(Schema::TRANSFORMER_AWARE_TYPE, $date->type);
+
+        $rating = $schema->properties['rating'] ?? null;
+        $this->assertInstanceOf(RestApiBundle\Model\Mapper\Schema::class, $rating);
+        $this->assertEquals(Schema::TRANSFORMER_AWARE_TYPE, $rating->type);
     }
 
     private function getSchemaResolver(): RestApiBundle\Services\Mapper\SchemaResolver
