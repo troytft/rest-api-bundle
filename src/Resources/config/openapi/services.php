@@ -12,5 +12,5 @@ return function (ContainerConfigurator $configurator) {
             ->autoconfigure()
             ->public();
     $services
-        ->load('RestApiBundle\\', '../../../src/{Command}/*');
+        ->load('RestApiBundle\\', '../../../../src/{Command}/*');
 };
