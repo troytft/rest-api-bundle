@@ -21,4 +21,4 @@ services:
         public: true
 
     RestApiBundle\:
-        resource: '../../../src/{Command}/*'
+        resource: '../../../../src/{Command}/*'
