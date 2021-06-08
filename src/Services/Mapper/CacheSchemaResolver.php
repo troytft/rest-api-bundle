@@ -6,6 +6,7 @@ use RestApiBundle;
 use Symfony\Component\Cache;
 use Symfony\Component\Finder\Finder;
 
+use function array_merge;
 use function ltrim;
 
 class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInterface
@@ -68,7 +69,7 @@ class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolve
             $values[$this->resolveCacheKey($class, false)] = $this->resolve($class);
         }
 
-        $this->cacheAdapter->warmUp($values);
+        $classes = array_merge($classes, $this->cacheAdapter->warmUp($values));
 
         return $classes;
     }
