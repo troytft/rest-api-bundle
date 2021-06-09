@@ -11,7 +11,7 @@ use RestApiBundle;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class DateType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
-    use NullableTrait;
+    public bool $nullable = false;
 
     public ?string $format = null;
 
@@ -31,5 +31,10 @@ class DateType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInter
         return [
             RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION => $this->format,
         ];
+    }
+
+    public function getIsNullable(): bool
+    {
+        return $this->nullable;
     }
 }

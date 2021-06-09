@@ -12,12 +12,11 @@ return function (ContainerConfigurator $configurator) {
             ->autoconfigure()
             ->public()
             ->bind(RestApiBundle\Services\Mapper\SchemaResolverInterface::class, service(RestApiBundle\Services\Mapper\CacheSchemaResolver::class))
-            ->bind('$cacheDir', '%kernel.cache_dir%')
-            ->bind('$modelsDir', '%kernel.project_dir%/src');
+            ->bind('$cacheDir', '%kernel.cache_dir%');
 
     $services
         ->instanceof(RestApiBundle\Services\Mapper\Transformer\TransformerInterface::class)
-        ->tag(RestApiBundle\Enum\DependencyInjection\ServiceTag::MAPPER_TRANSFORMER);
+        ->tag(RestApiBundle\DependencyInjection\CompilerPass\MapperTransformerCompilerPass::TAG);
 
     $services
         ->instanceof(ArgumentValueResolverInterface::class)

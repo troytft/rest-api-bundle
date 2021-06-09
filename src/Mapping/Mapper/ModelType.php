@@ -11,7 +11,7 @@ use RestApiBundle;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class ModelType implements RestApiBundle\Mapping\Mapper\TypeInterface
 {
-    use NullableTrait;
+    public bool $nullable = false;
 
     public string $class;
 
@@ -19,5 +19,10 @@ class ModelType implements RestApiBundle\Mapping\Mapper\TypeInterface
     {
         $this->class = $options['class'] ?? $class;
         $this->nullable = $options['nullable'] ?? $nullable;
+    }
+
+    public function getIsNullable(): bool
+    {
+        return $this->nullable;
     }
 }
