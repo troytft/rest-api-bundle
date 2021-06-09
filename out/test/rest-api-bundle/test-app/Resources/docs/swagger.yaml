@@ -1,0 +1,11 @@
+openapi: 3.0.0
+info:
+    title: 'Yaml Template'
+    version: 1.0.0
+tags:
+    -
+        name: books
+        description: Books
+    -
+        name: writers
+        description: Writers

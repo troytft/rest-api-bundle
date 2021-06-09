@@ -1,0 +1,15 @@
+RestApiBundle\Exception\Mapper\MappingValidation\CollectionRequiredException: Это значение должно быть коллекцией.
+RestApiBundle\Exception\Mapper\MappingValidation\ObjectRequiredException: Это значение должно быть объектом.
+RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException: Это значение не должно быть null.
+RestApiBundle\Exception\Mapper\MappingValidation\UndefinedKeyException: Ключ не найден в модели.
+RestApiBundle\Exception\Mapper\Transformer\BooleanRequiredException: Это значение должно быть булевым.
+RestApiBundle\Exception\Mapper\Transformer\FloatRequiredException: Это значение должно быть числом с плавающей запятой.
+RestApiBundle\Exception\Mapper\Transformer\StringRequiredException: Это значение должно быть строкой.
+RestApiBundle\Exception\Mapper\Transformer\IntegerRequiredException: Это значение должно быть целым числом.
+RestApiBundle\Exception\Mapper\Transformer\InvalidDateFormatException: Это значение должно быть датой в формате "{format}".
+RestApiBundle\Exception\Mapper\Transformer\InvalidDateException: Значение не является правильной датой.
+RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeFormatException: Это значение должно быть датой и временем в формате "{format}".
+RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeException: Значение даты и времени недопустимо.
+RestApiBundle\Exception\RequestModel\EntityNotFoundException: Сущность не найдена.
+RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException: Одна из сущностей коллекции не найдена.
+RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException: Значения должны быть уникальными.

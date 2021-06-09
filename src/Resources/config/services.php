@@ -13,7 +13,7 @@ return function (ContainerConfigurator $configurator) {
             ->public()
             ->bind(RestApiBundle\Services\Mapper\SchemaResolverInterface::class, service(RestApiBundle\Services\Mapper\CacheSchemaResolver::class))
             ->bind('$cacheDir', '%kernel.cache_dir%')
-            ->bind('$projectDir', '%kernel.project_dir%');
+            ->bind('$modelsDir', '%kernel.project_dir%/src');
 
     $services
         ->instanceof(RestApiBundle\Services\Mapper\Transformer\TransformerInterface::class)

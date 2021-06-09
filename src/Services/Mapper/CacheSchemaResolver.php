@@ -15,15 +15,15 @@ class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolve
 
     private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver;
     private Cache\Adapter\PhpArrayAdapter $cacheAdapter;
-    private string $projectDir;
+    private string $modelsDir;
 
     public function __construct(
         RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver,
         string $cacheDir,
-        string $projectDir
+        string $modelsDir
     ) {
         $this->schemaResolver = $schemaResolver;
-        $this->projectDir = $projectDir;
+        $this->modelsDir = $modelsDir;
         $this->cacheAdapter = new Cache\Adapter\PhpArrayAdapter(
             $cacheDir . \DIRECTORY_SEPARATOR . static::CACHE_FILENAME,
             new Cache\Adapter\NullAdapter()
@@ -49,7 +49,7 @@ class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolve
         $finder = new Finder();
         $finder
             ->files()
-            ->in($this->projectDir)
+            ->in($this->modelsDir)
             ->name('*.php');
 
         $classes = [];
