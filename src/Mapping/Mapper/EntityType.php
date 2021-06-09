@@ -11,7 +11,7 @@ use RestApiBundle;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class EntityType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
-    use NullableTrait;
+    public bool $nullable = false;
 
     public string $class;
     public string $field;
@@ -34,5 +34,10 @@ class EntityType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInt
             RestApiBundle\Services\Mapper\Transformer\EntityTransformer::CLASS_OPTION => $this->class,
             RestApiBundle\Services\Mapper\Transformer\EntityTransformer::FIELD_OPTION => $this->field,
         ];
+    }
+
+    public function getIsNullable(): bool
+    {
+        return $this->nullable;
     }
 }

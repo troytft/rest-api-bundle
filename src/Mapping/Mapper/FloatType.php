@@ -11,7 +11,7 @@ use RestApiBundle;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class FloatType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
-    use NullableTrait;
+    public bool $nullable = false;
 
     public function __construct(array $options = [], bool $nullable = false)
     {
@@ -26,5 +26,10 @@ class FloatType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInte
     public function getTransformerOptions(): array
     {
         return [];
+    }
+
+    public function getIsNullable(): bool
+    {
+        return $this->nullable;
     }
 }

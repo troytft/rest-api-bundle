@@ -16,7 +16,7 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
         $commandTester->execute([
             'input' => 'tests/test-app/Controller/CommandTest/Success',
             'output' => $fileName,
-            '--format' => RestApiBundle\Enum\OpenApi\Format::YAML,
+            '--yaml' => true,
             '--template' => 'tests/test-app/Resources/docs/swagger.yaml'
         ]);
 
@@ -35,7 +35,6 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
         $commandTester->execute([
             'input' => 'tests/test-app/Controller/CommandTest/Success',
             'output' => $fileName,
-            '--format' => RestApiBundle\Enum\OpenApi\Format::JSON,
             '--template' => 'tests/test-app/Resources/docs/swagger.json'
         ]);
 
