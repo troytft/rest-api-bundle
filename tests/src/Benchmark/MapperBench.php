@@ -15,8 +15,7 @@ class MapperBench
     {
         $this->cacheSchemaResolver = new RestApiBundle\Services\Mapper\CacheSchemaResolver(
             new RestApiBundle\Services\Mapper\SchemaResolver(),
-            __DIR__ . '/../../../var',
-            __DIR__ . '/../../',
+            __DIR__ . '/../../../var'
         );
     }
 
@@ -69,7 +68,7 @@ class MapperBench
     public function warmUpCache(): void
     {
         $this->cacheSchemaResolver->clearCache();
-        $this->cacheSchemaResolver->warmUpCache();
+        $this->cacheSchemaResolver->warmUpCache(__DIR__ . '/../../');
     }
 
     private function getData(): array
