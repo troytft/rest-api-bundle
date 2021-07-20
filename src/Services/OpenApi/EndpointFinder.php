@@ -18,6 +18,7 @@ use function preg_match_all;
 use function reset;
 use function spl_autoload_functions;
 use function sprintf;
+use function str_contains;
 use function substr_count;
 
 class EndpointFinder
@@ -27,6 +28,10 @@ class EndpointFinder
      */
     public function findInDirectory(string $directory, ?string $excludePath = null): array
     {
+        if ($excludePath && str_contains($excludePath, ',')) {
+            $excludePath = explode(',', $excludePath);
+        }
+        
         $result = [];
 
         $finder = new Finder();
