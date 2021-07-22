@@ -9,14 +9,26 @@ use RestApiBundle;
  */
 class ArrayType implements RestApiBundle\Mapping\Mapper\TypeInterface
 {
-    public bool $nullable = false;
-
     /**
      * Type hint forced to object, cause annotation reader doesn't support interfaces
      *
      * @var object
      */
     public $type;
+    public bool $nullable = false;
+
+    public function __construct(array $options = [])
+    {
+        if (isset($options['value'])) {
+            $this->type = $options['value'];
+        } elseif (isset($options['type'])) {
+            $this->type = $options['type'];
+        }
+
+        if (isset($options['nullable'])) {
+            $this->nullable = $options['nullable'];
+        }
+    }
 
     public function getValuesType(): RestApiBundle\Mapping\Mapper\TypeInterface
     {
