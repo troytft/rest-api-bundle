@@ -9,6 +9,11 @@ use RestApiBundle;
  */
 class ArrayType implements RestApiBundle\Mapping\Mapper\TypeInterface
 {
+    /**
+     * Type hint forced to object, cause annotation reader doesn't support interfaces
+     *
+     * @var object
+     */
     public $type;
     public bool $nullable = false;
 
