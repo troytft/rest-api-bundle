@@ -24,6 +24,10 @@ class ArrayType implements RestApiBundle\Mapping\Mapper\TypeInterface
         } elseif (isset($options['type'])) {
             $this->type = $options['type'];
         }
+
+        if (isset($options['nullable'])) {
+            $this->nullable = $options['nullable'];
+        }
     }
 
     public function getValuesType(): RestApiBundle\Mapping\Mapper\TypeInterface
