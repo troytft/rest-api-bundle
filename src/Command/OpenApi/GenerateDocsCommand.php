@@ -41,7 +41,7 @@ class GenerateDocsCommand extends Command
             ->addArgument(static::ARGUMENT_OUTPUT, InputArgument::REQUIRED, 'Path to output file')
             ->addOption(static::OPTION_TEMPLATE, null, InputOption::VALUE_REQUIRED, 'Path to template file')
             ->addOption(static::OPTION_YAML, null, InputOption::VALUE_NONE, 'Use yaml specification format, instead json')
-            ->addOption(static::OPTION_EXCLUDE_PATH, null, InputOption::VALUE_REQUIRED, 'Exclude files from search by string or regular expression');
+            ->addOption(static::OPTION_EXCLUDE_PATH, null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Exclude files from search by string or regular expression');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
