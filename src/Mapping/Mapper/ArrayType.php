@@ -23,8 +23,6 @@ class ArrayType implements RestApiBundle\Mapping\Mapper\TypeInterface
             $this->type = $options['value'];
         } elseif (isset($options['type'])) {
             $this->type = $options['type'];
-        } else {
-            throw new \LogicException();
         }
     }
 
