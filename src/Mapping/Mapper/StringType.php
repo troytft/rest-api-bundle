@@ -14,7 +14,7 @@ class StringType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInt
     public bool $nullable = false;
     public bool $trim = false;
 
-    public function __construct(array $options = [], bool $trim = false, bool $nullable = false)
+    public function __construct(array $options = [], ?bool $trim = false, ?bool $nullable = false)
     {
         $this->trim = $options['trim'] ?? $trim;
         $this->nullable = $options['nullable'] ?? $nullable;
