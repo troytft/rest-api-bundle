@@ -8,7 +8,7 @@ use RestApiBundle;
  * @Annotation
  * @Target({"PROPERTY", "ANNOTATION"})
  */
-#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 class TimestampType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
     public bool $nullable = false;
