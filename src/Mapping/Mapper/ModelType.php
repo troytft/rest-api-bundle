@@ -8,7 +8,7 @@ use RestApiBundle;
  * @Annotation
  * @Target({"PROPERTY", "ANNOTATION"})
  */
-#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 class ModelType implements RestApiBundle\Mapping\Mapper\TypeInterface
 {
     public bool $nullable = false;

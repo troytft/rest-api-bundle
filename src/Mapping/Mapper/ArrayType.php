@@ -7,6 +7,7 @@ use RestApiBundle;
 /**
  * @Annotation
  */
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 class ArrayType implements RestApiBundle\Mapping\Mapper\TypeInterface
 {
     /**

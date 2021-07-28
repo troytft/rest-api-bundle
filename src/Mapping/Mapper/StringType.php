@@ -8,13 +8,15 @@ use RestApiBundle;
  * @Annotation
  * @Target({"PROPERTY", "ANNOTATION"})
  */
-#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 class StringType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
     public bool $nullable = false;
+    public bool $trim = false;
 
-    public function __construct(array $options = [], bool $nullable = false)
+    public function __construct(array $options = [], ?bool $trim = false, ?bool $nullable = false)
     {
+        $this->trim = $options['trim'] ?? $trim;
         $this->nullable = $options['nullable'] ?? $nullable;
     }
 
@@ -25,7 +27,9 @@ class StringType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInt
 
     public function getTransformerOptions(): array
     {
-        return [];
+        return [
+            RestApiBundle\Services\Mapper\Transformer\StringTransformer::TRIM_OPTION => $this->trim,
+        ];
     }
 
     public function getIsNullable(): bool
