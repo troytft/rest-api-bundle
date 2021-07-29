@@ -64,7 +64,7 @@ class GenerateDocsCommand extends Command
             $filesystem->dumpFile($outputFile, $content);
         } catch (RestApiBundle\Exception\OpenApi\ContextAwareExceptionInterface $exception) {
             $output->writeln(sprintf(
-                'Error: %s; Context: %s',
+                'Schema generation error: %s; Context: %s',
                 $exception->getContext(),
                 $exception->getMessage()
             ));
