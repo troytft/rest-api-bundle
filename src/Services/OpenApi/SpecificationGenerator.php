@@ -20,6 +20,7 @@ use function ksort;
 use function pathinfo;
 use function sprintf;
 use function strtolower;
+use function var_dump;
 
 class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
@@ -193,8 +194,10 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                             'type' => OpenApi\Type::INTEGER,
                         ]);
                     } else {
+                        var_dump($pathParameter->getClassType()->getClassName(), $pathParameter->getFieldName());die();
                         throw new \InvalidArgumentException();
                     }
+
 
                     $schema->description = sprintf('Element by "%s"', $pathParameter->getFieldName());
                     $schema->nullable = $pathParameter->getClassType()->isNullable();
