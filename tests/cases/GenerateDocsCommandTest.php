@@ -56,7 +56,7 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
         ]);
 
         $this->assertSame(1, $commandTester->getStatusCode());
-        $this->assertSame('Definition error in TestApp\Controller\CommandTest\InvalidDefinition\DefaultController::testAction with message "Associated parameter for placeholder unknown_parameter not matched."', trim($commandTester->getDisplay()));
+        $this->assertSame('Error: Associated parameter for placeholder unknown_parameter not matched.; Context: Action "testAction" of controller "TestApp\Controller\CommandTest\InvalidDefinition\DefaultController"', trim($commandTester->getDisplay()));
     }
 
     private function getOutputFileName(): string

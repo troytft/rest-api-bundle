@@ -91,7 +91,7 @@ class EndpointFinder
                 } elseif ($actionRouteAnnotation->getPath()) {
                     $path = $actionRouteAnnotation->getPath();
                 } else {
-                    throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException('Route has empty path.', $class, $reflectionMethod->getName());
+                    throw new RestApiBundle\Exception\OpenApi\ActionOfControllerException('Route has empty path.', $class, $reflectionMethod->getName());
                 }
 
                 $endpointData = new RestApiBundle\Model\OpenApi\EndpointData();
@@ -107,7 +107,7 @@ class EndpointFinder
 
                 $result[] = $endpointData;
             } catch (RestApiBundle\Exception\OpenApi\InvalidDefinition\BaseInvalidDefinitionException $exception) {
-                throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException($exception->getMessage(), $class, $reflectionMethod->getName());
+                throw new RestApiBundle\Exception\OpenApi\ActionOfControllerException($exception->getMessage(), $class, $reflectionMethod->getName());
             }
         }
 
@@ -150,7 +150,7 @@ class EndpointFinder
     {
         $result = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
         if (!$result) {
-            throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException('Return type not found in docBlock and type-hint.', $reflectionMethod->class, $reflectionMethod->name);
+            throw new RestApiBundle\Exception\OpenApi\ActionOfControllerException('Return type not found in docBlock and type-hint.', $reflectionMethod->class, $reflectionMethod->name);
         }
 
         return $result;
