@@ -196,7 +196,6 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                         throw new \InvalidArgumentException();
                     }
 
-
                     $schema->description = sprintf('Element by "%s"', $pathParameter->getFieldName());
                     $schema->nullable = $pathParameter->getClassType()->isNullable();
 
