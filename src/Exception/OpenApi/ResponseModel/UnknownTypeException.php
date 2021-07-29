@@ -2,6 +2,6 @@
 
 namespace RestApiBundle\Exception\OpenApi\ResponseModel;
 
-class UnknownArrayTypeException extends \InvalidArgumentException
+class UnknownTypeException extends \InvalidArgumentException
 {
 }

@@ -93,8 +93,8 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
 
             try {
                 $propertySchema = $this->convert($this->getReturnType($reflectionMethod));
-            } catch (RestApiBundle\Exception\OpenApi\ResponseModel\UnknownArrayTypeException $exception) {
-                throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException('Unknown array type', $class, $propertyName);
+            } catch (RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException $exception) {
+                throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException('Unknown type', $class, $propertyName);
             }
 
             $properties[$propertyName] = $propertySchema;
@@ -134,7 +134,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         } elseif ($type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT) {
             $result = $this->convertClassType($type);
         } else {
-            throw new \InvalidArgumentException();
+            throw new RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException();
         }
 
         return $result;
@@ -143,7 +143,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
     private function convertArrayType(PropertyInfo\Type $arrayType): OpenApi\Schema
     {
         if (!$arrayType->getCollectionValueType()) {
-            throw new RestApiBundle\Exception\OpenApi\ResponseModel\UnknownArrayTypeException();
+            throw new RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException();
         }
 
         return new OpenApi\Schema([
