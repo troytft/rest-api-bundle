@@ -17,7 +17,6 @@ use function is_array;
 use function preg_match_all;
 use function reset;
 use function spl_autoload_functions;
-use function sprintf;
 use function substr_count;
 
 class EndpointFinder
@@ -92,7 +91,7 @@ class EndpointFinder
                 } elseif ($actionRouteAnnotation->getPath()) {
                     $path = $actionRouteAnnotation->getPath();
                 } else {
-                    throw new RestApiBundle\Exception\OpenApi\InvalidDefinition\EmptyRoutePathException();
+                    throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException('Route has empty path.', $class, $reflectionMethod->getName());
                 }
 
                 $endpointData = new RestApiBundle\Model\OpenApi\EndpointData();
@@ -108,8 +107,7 @@ class EndpointFinder
 
                 $result[] = $endpointData;
             } catch (RestApiBundle\Exception\OpenApi\InvalidDefinition\BaseInvalidDefinitionException $exception) {
-                $context = sprintf('%s::%s', $class, $reflectionMethod->getName());
-                throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException($exception, $context);
+                throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException($exception->getMessage(), $class, $reflectionMethod->getName());
             }
         }
 
@@ -152,8 +150,7 @@ class EndpointFinder
     {
         $result = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
         if (!$result) {
-            $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
-            throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException(new RestApiBundle\Exception\OpenApi\InvalidDefinition\EmptyReturnTypeException(), $context);
+            throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException('Return type not found in docBlock and type-hint.', $reflectionMethod->class, $reflectionMethod->name);
         }
 
         return $result;

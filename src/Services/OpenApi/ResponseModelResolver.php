@@ -116,7 +116,8 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
     {
         $result = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
         if (!$result) {
-            throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException(new RestApiBundle\Exception\OpenApi\InvalidDefinition\EmptyReturnTypeException(), $reflectionMethod->class, $reflectionMethod->name);
+            throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException('Return type not found in docBlock and type-hint.', $reflectionMethod->class, $reflectionMethod->name);
+
         }
 
         return $result;
