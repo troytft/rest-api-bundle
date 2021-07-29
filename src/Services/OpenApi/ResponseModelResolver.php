@@ -90,7 +90,12 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
             }
 
             $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
-            $propertySchema = $this->convert($this->getReturnType($reflectionMethod));
+
+            try {
+                $propertySchema = $this->convert($this->getReturnType($reflectionMethod));
+            } catch (RestApiBundle\Exception\OpenApi\ResponseModel\UnknownArrayTypeException $exception) {
+                throw new RestApiBundle\Exception\OpenApi\ClassPropertyException('Unknown array type', $class, $propertyName);
+            }
 
             $properties[$propertyName] = $propertySchema;
         }
@@ -112,7 +117,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         $result = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
         if (!$result) {
             $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
-            throw new RestApiBundle\Exception\OpenApi\InvalidArgumentException(new RestApiBundle\Exception\OpenApi\InvalidDefinition\EmptyReturnTypeException(), $context);
+            throw new RestApiBundle\Exception\OpenApi\ClassPropertyException(new RestApiBundle\Exception\OpenApi\InvalidDefinition\EmptyReturnTypeException(), $context);
         }
 
         return $result;
