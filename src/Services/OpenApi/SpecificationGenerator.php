@@ -194,7 +194,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                             'type' => OpenApi\Type::INTEGER,
                         ]);
                     } else {
-                        var_dump($pathParameter->getClassType()->getClassName(), $pathParameter->getFieldName());
+                        var_dump($routeData->getTitle(), $pathParameter->getClassType()->getClassName(), $pathParameter->getFieldName());
                         throw new \InvalidArgumentException();
                     }
 
