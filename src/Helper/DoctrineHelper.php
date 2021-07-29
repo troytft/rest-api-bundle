@@ -24,7 +24,7 @@ class DoctrineHelper extends RestApiBundle\Services\OpenApi\AbstractSchemaResolv
 
         $columnAnnotation = RestApiBundle\Helper\AnnotationReader::getPropertyAnnotation($reflectionProperty, Doctrine\ORM\Mapping\Column::class);
         if (!$columnAnnotation instanceof Doctrine\ORM\Mapping\Column) {
-            throw new RestApiBundle\Exception\OpenApi\ClassPropertyException('Can not load doctrine mapping for field', $class, $field);
+            throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException('Can not load doctrine mapping for field', $class, $field);
         }
 
         switch ($columnAnnotation->type) {

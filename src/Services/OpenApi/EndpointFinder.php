@@ -109,7 +109,7 @@ class EndpointFinder
                 $result[] = $endpointData;
             } catch (RestApiBundle\Exception\OpenApi\InvalidDefinition\BaseInvalidDefinitionException $exception) {
                 $context = sprintf('%s::%s', $class, $reflectionMethod->getName());
-                throw new RestApiBundle\Exception\OpenApi\ClassPropertyException($exception, $context);
+                throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException($exception, $context);
             }
         }
 
@@ -153,7 +153,7 @@ class EndpointFinder
         $result = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
         if (!$result) {
             $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
-            throw new RestApiBundle\Exception\OpenApi\ClassPropertyException(new RestApiBundle\Exception\OpenApi\InvalidDefinition\EmptyReturnTypeException(), $context);
+            throw new RestApiBundle\Exception\OpenApi\PropertyOfClassException(new RestApiBundle\Exception\OpenApi\InvalidDefinition\EmptyReturnTypeException(), $context);
         }
 
         return $result;
