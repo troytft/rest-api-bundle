@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
+use function sprintf;
 
 class GenerateDocsCommand extends Command
 {
@@ -61,11 +62,11 @@ class GenerateDocsCommand extends Command
             $filesystem = new Filesystem();
             $filesystem->dumpFile($outputFile, $content);
         } catch (RestApiBundle\Exception\OpenApi\ContextAwareExceptionInterface $exception) {
-            $output->writeln([
-                'Schema generation error:',
-                $exception->getContext(),
-                $exception->getMessage()
-            ]);
+            $output->writeln(sprintf(
+                'Error: %s; Context: %s',
+                $exception->getMessage(),
+                $exception->getContext()
+            ));
 
             return 1;
         }

@@ -145,7 +145,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         if (!$arrayType->getCollectionValueType()) {
             throw new RestApiBundle\Exception\OpenApi\ResponseModel\UnknownArrayTypeException();
         }
-        
+
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
             'items' => $this->convert($arrayType->getCollectionValueType()),
