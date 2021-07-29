@@ -112,7 +112,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         $result = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
         if (!$result) {
             $context = sprintf('%s::%s', $reflectionMethod->class, $reflectionMethod->name);
-            throw new RestApiBundle\Exception\OpenApi\InvalidDefinitionException(new RestApiBundle\Exception\OpenApi\InvalidDefinition\EmptyReturnTypeException(), $context);
+            throw new RestApiBundle\Exception\OpenApi\InvalidArgumentException(new RestApiBundle\Exception\OpenApi\InvalidDefinition\EmptyReturnTypeException(), $context);
         }
 
         return $result;
