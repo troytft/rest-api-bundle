@@ -4,6 +4,9 @@ namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
 
+use function is_array;
+use function is_object;
+
 /**
  * @Annotation
  */
@@ -16,18 +19,18 @@ class ArrayType implements RestApiBundle\Mapping\Mapper\TypeInterface
      * @var object
      */
     public $type;
-    public bool $nullable = false;
+    public ?bool $nullable = null;
 
-    public function __construct(array $options = [])
+    public function __construct($options = [], ?RestApiBundle\Mapping\Mapper\TypeInterface $type = null, ?bool $nullable = null)
     {
-        if (isset($options['value'])) {
-            $this->type = $options['value'];
-        } elseif (isset($options['type'])) {
-            $this->type = $options['type'];
-        }
-
-        if (isset($options['nullable'])) {
-            $this->nullable = $options['nullable'];
+        if (is_object($options)) {
+            $this->type = $options;
+            $this->nullable = $nullable;
+        } elseif (is_array($options)) {
+            $this->type = $options['value'] ?? $options['type'] ?? $type;
+            $this->nullable = $options['nullable'] ?? $nullable;
+        } else {
+            throw new \InvalidArgumentException();
         }
     }
 
@@ -36,8 +39,13 @@ class ArrayType implements RestApiBundle\Mapping\Mapper\TypeInterface
         return $this->type;
     }
 
-    public function getIsNullable(): bool
+    public function getIsNullable(): ?bool
     {
         return $this->nullable;
+    }
+
+    public function setIsNullable(?bool $value)
+    {
+        $this->nullable = $value;
     }
 }

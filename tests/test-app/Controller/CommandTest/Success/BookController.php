@@ -11,9 +11,9 @@ use RestApiBundle\Mapping\OpenApi as Docs;
  */
 class BookController
 {
-    #[Docs\Endpoint(title: 'Books list', tags: ['books'])]
+    #[Docs\Endpoint('Books list', tags: 'books')]
     /**
-     * @Docs\Endpoint(title="Books list", tags={"books"})
+     * @Docs\Endpoint("Books list", tags="books")
      *
      * @Route(methods="GET")
      *

@@ -2,25 +2,40 @@
 
 namespace RestApiBundle\Mapping\OpenApi;
 
+use function is_array;
+use function is_string;
+
 /**
  * @Annotation
  * @Target({"METHOD"})
  */
-#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_METHOD)]
 class Endpoint
 {
     /**
      * @Required
      */
     public string $title;
-    public ?string $description = null;
-    /** @var array<string> */
-    public array $tags = [];
+    public ?string $description;
+    /** @var string[]|string */
+    public $tags;
 
-    public function __construct(array $options = [], string $title = '', ?string $description = null, array $tags = [])
+    /**
+     * @param array|string $options
+     * @param string[]|string $tags
+     */
+    public function __construct($options = [], string $title = '', ?string $description = null, $tags = [])
     {
-        $this->title = $options['title'] ?? $title;
-        $this->description = $options['description'] ?? $description;
-        $this->tags = $options['tags'] ?? $tags;
+        if (is_string($options)) {
+            $this->title = $options;
+            $this->description = $description;
+            $this->tags = $tags;
+        } elseif (is_array($options)) {
+            $this->title = $options['title'] ?? $options['value'] ?? $title;
+            $this->description = $options['description'] ?? $description;
+            $this->tags = $options['tags'] ?? $tags;
+        } else {
+            throw new \InvalidArgumentException();
+        }
     }
 }

@@ -7,18 +7,16 @@ use RestApiBundle\Mapping\Mapper as Mapper;
 class Release implements Mapper\ModelInterface
 {
     /**
-     * @var string|null
+     * @var string
      *
      * @Mapper\StringType()
      */
     private $country;
 
     /**
-     * @var \DateTime|null
-     *
      * @Mapper\DateType()
      */
-    private $date;
+    private \DateTime $date;
 
     /**
      * @return string|null
