@@ -3,6 +3,7 @@
 namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
+
 use function is_array;
 use function is_string;
 
