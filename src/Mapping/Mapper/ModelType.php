@@ -18,7 +18,7 @@ class ModelType implements RestApiBundle\Mapping\Mapper\TypeInterface
 
     public string $class;
 
-    public function __construct(array $options = [], string $class = '', ?bool $nullable = null)
+    public function __construct($options = [], string $class = '', ?bool $nullable = null)
     {
         $this->class = $options['class'] ?? $class;
         $this->nullable = $options['nullable'] ?? $nullable;

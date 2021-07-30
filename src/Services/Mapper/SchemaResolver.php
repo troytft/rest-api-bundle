@@ -90,7 +90,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         return $originalMapping;
     }
 
-    private function resolveMappingByType(PropertyInfo\Type $type): ?RestApiBundle\Mapping\Mapper\TypeInterface
+    private function resolveMappingByType(PropertyInfo\Type $type): RestApiBundle\Mapping\Mapper\TypeInterface
     {
         switch (true) {
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING:
@@ -144,13 +144,8 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 break;
 
             case $type->isCollection():
-                $innerType = $this->resolveMappingByType($type->getCollectionValueType());
-                if (!$innerType) {
-                    throw new \LogicException();
-                }
-
                 $result = new RestApiBundle\Mapping\Mapper\ArrayType();
-                $result->type = $innerType;
+                $result->type = $this->resolveMappingByType($type->getCollectionValueType());
                 $result->nullable = $type->isNullable();
 
                 break;

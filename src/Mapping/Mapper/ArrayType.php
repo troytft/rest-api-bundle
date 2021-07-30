@@ -5,6 +5,7 @@ namespace RestApiBundle\Mapping\Mapper;
 use RestApiBundle;
 
 use function is_array;
+use function is_object;
 use function is_string;
 
 /**
@@ -21,9 +22,9 @@ class ArrayType implements RestApiBundle\Mapping\Mapper\TypeInterface
     public $type;
     public ?bool $nullable = null;
 
-    public function __construct(array $options = [], ?RestApiBundle\Mapping\Mapper\TypeInterface $type = null, ?bool $nullable = null)
+    public function __construct($options = [], ?RestApiBundle\Mapping\Mapper\TypeInterface $type = null, ?bool $nullable = null)
     {
-        if (is_string($options)) {
+        if (is_object($options)) {
             $this->type = $options;
             $this->nullable = $nullable;
         } elseif (is_array($options)) {
