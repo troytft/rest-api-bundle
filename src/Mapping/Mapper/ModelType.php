@@ -37,4 +37,9 @@ class ModelType implements RestApiBundle\Mapping\Mapper\TypeInterface
     {
         return $this->nullable;
     }
+
+    public function setIsNullable(?bool $value)
+    {
+        $this->nullable = $value;
+    }
 }

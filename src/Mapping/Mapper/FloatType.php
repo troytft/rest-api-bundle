@@ -32,4 +32,9 @@ class FloatType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInte
     {
         return $this->nullable;
     }
+
+    public function setIsNullable(?bool $value)
+    {
+        $this->nullable = $value;
+    }
 }

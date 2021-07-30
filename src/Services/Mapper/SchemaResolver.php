@@ -20,7 +20,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 continue;
             }
 
-            $mapping = $this->populateMappingByReflection($reflectionProperty, $mapping);
+            $mapping = $this->preprocessMapping($reflectionProperty, $mapping);
             $propertySchema = $this->resolveSchemaByMapping($mapping);
             $propertySetterName = 'set' . ucfirst($reflectionProperty->getName());
 
@@ -64,51 +64,34 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         return $schema;
     }
 
-    private function populateMappingByReflection(\ReflectionProperty $reflectionProperty, RestApiBundle\Mapping\Mapper\TypeInterface $originalMapping): RestApiBundle\Mapping\Mapper\TypeInterface
-    {
-        $type = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
-        if ($type && $originalMapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
-            return $this->resolveAutoTypeMapping($reflectionProperty);
-        } elseif (!$type && $originalMapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
-            throw new \LogicException();
-        } elseif (!$type) {
-            return $originalMapping;
-        }
-
-        if ($originalMapping instanceof RestApiBundle\Mapping\Mapper\ArrayType && $originalMapping->nullable)
-        return $result;
-    }
-
-    private function resolveAutoTypeMapping(\ReflectionProperty $reflectionProperty): RestApiBundle\Mapping\Mapper\TypeInterface
+    private function preprocessMapping(\ReflectionProperty $reflectionProperty, RestApiBundle\Mapping\Mapper\TypeInterface $originalMapping): RestApiBundle\Mapping\Mapper\TypeInterface
     {
         $type = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
         if (!$type) {
-            throw new \LogicException();
+            return $originalMapping;
         }
 
-        if ($type->isCollection()) {
-            $innerType = $this->resolveMappingByType($type->getCollectionValueType());
-            if (!$innerType) {
+        if ($originalMapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
+            return $this->resolveMappingByType($type);
+        }
+
+        if ($originalMapping->getIsNullable() === null) {
+            $originalMapping->setIsNullable($type->isNullable());
+        }
+
+        if ($originalMapping instanceof RestApiBundle\Mapping\Mapper\EntityType && $originalMapping->field && !$originalMapping->class) {
+            if (!$type->getClassName()) {
                 throw new \LogicException();
             }
 
-            $result = new RestApiBundle\Mapping\Mapper\ArrayType();
-            $result->type = $innerType;
-            $result->nullable = $type->isNullable();
-        } else {
-            $result = $this->resolveMappingByType($type);
-            if (!$result) {
-                throw new \LogicException();
-            }
+            $originalMapping = new RestApiBundle\Mapping\Mapper\EntityType([], $type->getClassName(), $originalMapping->field, $originalMapping->nullable ?? $type->isNullable());
         }
-
-        return $result;
+        
+        return $originalMapping;
     }
 
     private function resolveMappingByType(PropertyInfo\Type $type): ?RestApiBundle\Mapping\Mapper\TypeInterface
     {
-        $result = null;
-
         switch (true) {
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING:
                 $result = new RestApiBundle\Mapping\Mapper\StringType();
@@ -158,6 +141,21 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 $result->nullable = $type->isNullable();
 
                 break;
+
+            case $type->isCollection():
+                $innerType = $this->resolveMappingByType($type->getCollectionValueType());
+                if (!$innerType) {
+                    throw new \LogicException();
+                }
+
+                $result = new RestApiBundle\Mapping\Mapper\ArrayType();
+                $result->type = $innerType;
+                $result->nullable = $type->isNullable();
+
+                break;
+
+            default:
+                throw new \LogicException();
         }
 
         return $result;

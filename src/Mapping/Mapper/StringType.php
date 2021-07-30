@@ -36,4 +36,9 @@ class StringType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInt
     {
         return $this->nullable;
     }
+
+    public function setIsNullable(?bool $value)
+    {
+        $this->nullable = $value;
+    }
 }

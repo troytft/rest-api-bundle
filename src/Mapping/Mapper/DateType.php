@@ -45,4 +45,9 @@ class DateType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInter
     {
         return $this->nullable;
     }
+
+    public function setIsNullable(?bool $value)
+    {
+        $this->nullable = $value;
+    }
 }

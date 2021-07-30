@@ -32,4 +32,9 @@ class TimestampType implements RestApiBundle\Mapping\Mapper\TransformerAwareType
     {
         return $this->nullable;
     }
+
+    public function setIsNullable(?bool $value)
+    {
+        $this->nullable = $value;
+    }
 }

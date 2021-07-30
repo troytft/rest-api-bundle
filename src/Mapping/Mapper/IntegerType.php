@@ -32,4 +32,9 @@ class IntegerType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeIn
     {
         return $this->nullable;
     }
+
+    public function setIsNullable(?bool $value)
+    {
+        $this->nullable = $value;
+    }
 }

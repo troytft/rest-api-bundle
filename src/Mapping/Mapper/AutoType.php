@@ -15,4 +15,8 @@ class AutoType implements RestApiBundle\Mapping\Mapper\TypeInterface
     {
         return false;
     }
+
+    public function setIsNullable(?bool $value)
+    {
+    }
 }
