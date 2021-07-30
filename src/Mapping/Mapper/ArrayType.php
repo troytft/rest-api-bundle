@@ -6,7 +6,6 @@ use RestApiBundle;
 
 use function is_array;
 use function is_object;
-use function is_string;
 
 /**
  * @Annotation
