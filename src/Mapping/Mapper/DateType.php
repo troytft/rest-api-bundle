@@ -16,7 +16,7 @@ class DateType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInter
     public ?bool $nullable;
     public ?string $format;
 
-    public function __construct($options = [], string $format = '', ?bool $nullable = null)
+    public function __construct($options = [], ?string $format = null, ?bool $nullable = null)
     {
         if (is_string($options)) {
             $this->format = $options;

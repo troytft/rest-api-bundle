@@ -22,7 +22,7 @@ class DateTimeType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeI
             $this->format = $options;
             $this->nullable = $nullable;
         } elseif (is_array($options)) {
-            $this->format = $options['value'] ?? $options['format'] ?? $format ?? '';
+            $this->format = $options['value'] ?? $options['format'] ?? $format;
             $this->nullable = $options['nullable'] ?? $nullable;
         } else {
             throw new \InvalidArgumentException();

@@ -42,20 +42,20 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             $schema = RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(
                 $mapping->getTransformerClass(),
                 $mapping->getTransformerOptions(),
-                $mapping->getIsNullable()
+                $mapping->getIsNullable() ?? false
             );
         } elseif ($mapping instanceof RestApiBundle\Mapping\Mapper\ModelType) {
-            $schema = $this->resolve($mapping->class, $mapping->nullable);
+            $schema = $this->resolve($mapping->class, $mapping->nullable ?? false);
         } elseif ($mapping instanceof RestApiBundle\Mapping\Mapper\ArrayType) {
             $valuesType = $mapping->getValuesType();
             if ($valuesType instanceof RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface && $valuesType->getTransformerClass() === RestApiBundle\Services\Mapper\Transformer\EntityTransformer::class) {
                 $schema = RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(
                     RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::class,
                     $valuesType->getTransformerOptions(),
-                    $mapping->getIsNullable()
+                    $mapping->getIsNullable() ?? false
                 );
             } else {
-                $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($this->resolveSchemaByMapping($valuesType), $mapping->nullable);
+                $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($this->resolveSchemaByMapping($valuesType), $mapping->getIsNullable() ?? false);
             }
         } else {
             throw new \InvalidArgumentException();
@@ -138,6 +138,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             case $type->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($type->getClassName()):
                 $result = new RestApiBundle\Mapping\Mapper\EntityType();
                 $result->class = (string) $type->getClassName();
+                $result->field = 'id';
                 $result->nullable = $type->isNullable();
 
                 break;
