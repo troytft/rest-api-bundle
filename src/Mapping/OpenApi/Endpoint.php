@@ -17,8 +17,8 @@ class Endpoint
      */
     public string $title;
     public ?string $description;
-    /** @var array<string>|string */
-    public array $tags;
+    /** @var string[]|string */
+    public $tags;
 
     /**
      * @param array|string $options
@@ -29,22 +29,11 @@ class Endpoint
         if (is_string($options)) {
             $this->title = $options;
             $this->description = $description;
-            $this->tags = $this->normalizeTags($tags);
+            $this->tags = $tags;
         } elseif (is_array($options)) {
             $this->title = $options['title'] ?? $options['value'] ?? $title;
             $this->description = $options['description'] ?? $description;
-            $this->tags = $this->normalizeTags($options['tags'] ?? $tags);
-        } else {
-            throw new \InvalidArgumentException();
-        }
-    }
-
-    private function normalizeTags($value): array
-    {
-        if (is_string($value)) {
-            return [$value];
-        } elseif (is_array($value)) {
-            return $value;
+            $this->tags = $options['tags'] ?? $tags;
         } else {
             throw new \InvalidArgumentException();
         }

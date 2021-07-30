@@ -14,6 +14,7 @@ use function count;
 use function explode;
 use function implode;
 use function is_array;
+use function is_string;
 use function preg_match_all;
 use function reset;
 use function spl_autoload_functions;
@@ -94,11 +95,19 @@ class EndpointFinder
                     throw new RestApiBundle\Exception\OpenApi\ActionOfControllerException('Route has empty path.', $class, $reflectionMethod->getName());
                 }
 
+                if (is_string($endpointAnnotation->tags)) {
+                    $tags = [$endpointAnnotation->tags];
+                } elseif (is_array($endpointAnnotation->tags)) {
+                    $tags = $endpointAnnotation->tags;
+                } else {
+                    throw new \InvalidArgumentException();
+                }
+
                 $endpointData = new RestApiBundle\Model\OpenApi\EndpointData();
                 $endpointData
                     ->setTitle($endpointAnnotation->title)
                     ->setDescription($endpointAnnotation->description)
-                    ->setTags($endpointAnnotation->tags)
+                    ->setTags($tags)
                     ->setPath($path)
                     ->setMethods($actionRouteAnnotation->getMethods())
                     ->setResponse($this->extractResponse($reflectionMethod))
