@@ -17,7 +17,7 @@ class Endpoint
      */
     public string $title;
     public ?string $description;
-    /** @var array<string> */
+    /** @var array<string>|string */
     public array $tags;
 
     /**
