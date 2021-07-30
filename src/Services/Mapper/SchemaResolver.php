@@ -20,10 +20,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 continue;
             }
 
-            if ($mapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
-                $mapping = $this->resolveAutoTypeMapping($reflectionProperty);
-            }
-
+            $mapping = $this->populateMappingByReflection($reflectionProperty, $mapping);
             $propertySchema = $this->resolveSchemaByMapping($mapping);
             $propertySetterName = 'set' . ucfirst($reflectionProperty->getName());
 
@@ -65,6 +62,21 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         }
 
         return $schema;
+    }
+
+    private function populateMappingByReflection(\ReflectionProperty $reflectionProperty, RestApiBundle\Mapping\Mapper\TypeInterface $originalMapping): RestApiBundle\Mapping\Mapper\TypeInterface
+    {
+        $type = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
+        if ($type && $originalMapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
+            return $this->resolveAutoTypeMapping($reflectionProperty);
+        } elseif (!$type && $originalMapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
+            throw new \LogicException();
+        } elseif (!$type) {
+            return $originalMapping;
+        }
+
+        if ($originalMapping instanceof RestApiBundle\Mapping\Mapper\ArrayType && $originalMapping->nullable)
+        return $result;
     }
 
     private function resolveAutoTypeMapping(\ReflectionProperty $reflectionProperty): RestApiBundle\Mapping\Mapper\TypeInterface

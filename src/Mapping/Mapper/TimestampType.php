@@ -11,9 +11,9 @@ use RestApiBundle;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class TimestampType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
-    public bool $nullable = false;
+    public ?bool $nullable;
 
-    public function __construct(array $options = [], bool $nullable = false)
+    public function __construct(array $options = [], ?bool $nullable = null)
     {
         $this->nullable = $options['nullable'] ?? $nullable;
     }
@@ -28,7 +28,7 @@ class TimestampType implements RestApiBundle\Mapping\Mapper\TransformerAwareType
         return [];
     }
 
-    public function getIsNullable(): bool
+    public function getIsNullable(): ?bool
     {
         return $this->nullable;
     }

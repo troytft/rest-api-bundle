@@ -3,6 +3,8 @@
 namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
+use function is_array;
+use function is_string;
 
 /**
  * @Annotation
@@ -11,16 +13,24 @@ use RestApiBundle;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class EntityType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
-    public bool $nullable = false;
+    public ?bool $nullable;
 
     public string $class;
     public string $field;
 
-    public function __construct(array $options = [], string $class = '', string $field = 'id', bool $nullable = false)
+    public function __construct($options = [], string $class = '', string $field = 'id', ?bool $nullable = null)
     {
-        $this->class = $options['class'] ?? $class;
-        $this->field = $options['field'] ?? $field;
-        $this->nullable = $options['nullable'] ?? $nullable;
+        if (is_string($options)) {
+            $this->class = $options;
+            $this->field = $field;
+            $this->nullable = $nullable;
+        } elseif (is_array($options)) {
+            $this->class = $options['value'] ?? $options['class'] ?? $class;
+            $this->field = $options['field'] ?? $field;
+            $this->nullable = $options['nullable'] ?? $nullable;
+        } else {
+            throw new \InvalidArgumentException();
+        }
     }
 
     public function getTransformerClass(): string
@@ -36,7 +46,7 @@ class EntityType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInt
         ];
     }
 
-    public function getIsNullable(): bool
+    public function getIsNullable(): ?bool
     {
         return $this->nullable;
     }

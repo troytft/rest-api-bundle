@@ -11,7 +11,7 @@ use RestApiBundle;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class AutoType implements RestApiBundle\Mapping\Mapper\TypeInterface
 {
-    public function getIsNullable(): bool
+    public function getIsNullable(): ?bool
     {
         return false;
     }
