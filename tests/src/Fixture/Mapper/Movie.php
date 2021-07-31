@@ -34,14 +34,14 @@ class Movie implements Mapper\ModelInterface
     /**
      * @var string[]|null
      *
-     * @Mapper\ArrayType(type=@Mapper\StringType(), nullable=true)
+     * @Mapper\AutoType
      */
     private ?array $genres = null;
 
     /**
      * @var Tests\Fixture\Mapper\Release[]|null
      *
-     * @Mapper\ArrayType(type=@Mapper\ModelType(class="Tests\Fixture\Mapper\Release"), nullable=true)
+     * @Mapper\AutoType
      */
     private ?array $releases = null;
 

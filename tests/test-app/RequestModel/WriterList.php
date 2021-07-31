@@ -48,7 +48,7 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     /**
      * @var TestApp\Entity\Book[]|null
      *
-     * @Mapper\ArrayType(type=@Mapper\EntityType(class="TestApp\Entity\Book"), nullable=true)
+     * @Mapper\AutoType
      */
     private $genres;
 

@@ -43,9 +43,9 @@ class ModelWithAllTypes implements \RestApiBundle\Mapping\RequestModel\RequestMo
     private $model;
 
     /**
-     * @var array|null
+     * @var int[]|null
      *
-     * @Mapper\ArrayType(type=@Mapper\IntegerType(), nullable=true)
+     * @Mapper\AutoType
      */
     private $collection;
 

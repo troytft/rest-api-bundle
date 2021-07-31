@@ -48,10 +48,6 @@ class SchemaResolverTest extends Tests\BaseTestCase
 
     public function testAttributesAndAnnotationsTogether()
     {
-        if (\PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Test require PHP8');
-        }
-
         $schema = $this->getSchemaResolver()->resolve(Tests\Fixture\Mapper\Php8Attribute\Model::class);
         $this->assertCount(3, $schema->properties);
 

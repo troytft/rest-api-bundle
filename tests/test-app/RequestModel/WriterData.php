@@ -34,7 +34,7 @@ class WriterData implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     /**
      * @var TestApp\Entity\Book[]
      *
-     * @Mapper\ArrayType(type=@Mapper\EntityType(class="TestApp\Entity\Book"))
+     * @Mapper\AutoType
      */
     private $genres;
 
