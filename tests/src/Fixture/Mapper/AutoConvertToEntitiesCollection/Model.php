@@ -3,7 +3,7 @@
 namespace Tests\Fixture\Mapper\AutoConvertToEntitiesCollection;
 
 use TestApp;
-use RestApiBundle\Mapping\Mapper as Mapper;
+use RestApiBundle\Mapping\Mapper;
 
 class Model implements Mapper\ModelInterface
 {
@@ -23,7 +23,7 @@ class Model implements Mapper\ModelInterface
     }
 
     /**
-     * @param TestApp\Entity\Book|null $books
+     * @param TestApp\Entity\Book[]|null $books
      */
     public function setBooks(?array $books): static
     {

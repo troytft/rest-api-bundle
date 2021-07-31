@@ -6,8 +6,8 @@ use RestApiBundle\Mapping\Mapper as Mapper;
 
 class Model implements Mapper\ModelInterface
 {
-    #[Mapper\StringType(nullable: true)]
-    public $name;
+    #[Mapper\AutoType]
+    public ?string $name;
 
     #[Mapper\DateType(format: 'd/m/y')]
     public $date;
