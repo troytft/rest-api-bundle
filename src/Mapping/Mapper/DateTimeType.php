@@ -4,30 +4,13 @@ namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
 
-use function is_array;
-use function is_string;
-
-/**
- * @Annotation
- * @Target({"PROPERTY", "ANNOTATION"})
- */
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
-class DateTimeType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
+class DateTimeType extends RestApiBundle\Mapping\Mapper\BaseNullableType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
-    public ?bool $nullable;
-    public ?string $format;
-
-    public function __construct($options = [], ?string $format = null, ?bool $nullable = null)
-    {
-        if (is_string($options)) {
-            $this->format = $options;
-            $this->nullable = $nullable;
-        } elseif (is_array($options)) {
-            $this->format = $options['value'] ?? $options['format'] ?? $format;
-            $this->nullable = $options['nullable'] ?? $nullable;
-        } else {
-            throw new \InvalidArgumentException();
-        }
+    public function __construct(
+        private ?string $format = null,
+        ?bool $nullable = null
+    ) {
+        parent::__construct(nullable: $nullable);
     }
 
     public function getTransformerClass(): string
@@ -40,15 +23,5 @@ class DateTimeType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeI
         return [
             RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION => $this->format,
         ];
-    }
-
-    public function getIsNullable(): ?bool
-    {
-        return $this->nullable;
-    }
-
-    public function setIsNullable(?bool $value)
-    {
-        $this->nullable = $value;
     }
 }

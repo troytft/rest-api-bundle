@@ -13,7 +13,9 @@ class Model implements Mapper\ModelInterface
     public $date;
 
     /**
-     * @Mapper\FloatType(nullable=true)
+     * @var float|null
+     *
+     * @Mapper\AutoType
      */
     public $rating;
 }

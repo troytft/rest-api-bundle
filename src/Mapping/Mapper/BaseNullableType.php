@@ -4,7 +4,7 @@ namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
 
-abstract class BaseNullableType implements RestApiBundle\Mapping\Mapper\TypeInterface
+abstract class BaseNullableType implements RestApiBundle\Mapping\Mapper\NullableAwareTypeInterface
 {
     public function __construct(private ?bool $nullable = null)
     {
@@ -15,8 +15,10 @@ abstract class BaseNullableType implements RestApiBundle\Mapping\Mapper\TypeInte
         return $this->nullable;
     }
 
-    public function setIsNullable(?bool $value)
+    public function setIsNullable(?bool $value): static
     {
         $this->nullable = $value;
+
+        return $this;
     }
 }

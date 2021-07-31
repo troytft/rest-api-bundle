@@ -9,15 +9,8 @@ use RestApiBundle;
  * @Target({"PROPERTY", "ANNOTATION"})
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class TimestampType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
+class TimestampType extends RestApiBundle\Mapping\Mapper\BaseNullableType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
-    public ?bool $nullable;
-
-    public function __construct(array $options = [], ?bool $nullable = null)
-    {
-        $this->nullable = $options['nullable'] ?? $nullable;
-    }
-
     public function getTransformerClass(): string
     {
         return RestApiBundle\Services\Mapper\Transformer\TimestampTransformer::class;
@@ -26,15 +19,5 @@ class TimestampType implements RestApiBundle\Mapping\Mapper\TransformerAwareType
     public function getTransformerOptions(): array
     {
         return [];
-    }
-
-    public function getIsNullable(): ?bool
-    {
-        return $this->nullable;
-    }
-
-    public function setIsNullable(?bool $value)
-    {
-        $this->nullable = $value;
     }
 }

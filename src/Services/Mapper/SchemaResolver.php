@@ -45,7 +45,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 $mapping->getIsNullable() ?? false
             );
         } elseif ($mapping instanceof RestApiBundle\Mapping\Mapper\ModelType) {
-            $schema = $this->resolve($mapping->class, $mapping->getIsNullable() ?? false);
+            $schema = $this->resolve($mapping->getClass(), $mapping->getIsNullable() ?? false);
         } elseif ($mapping instanceof RestApiBundle\Mapping\Mapper\ArrayType) {
             $valuesType = $mapping->getValuesType();
             if ($valuesType instanceof RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface && $valuesType->getTransformerClass() === RestApiBundle\Services\Mapper\Transformer\EntityTransformer::class) {
@@ -79,12 +79,12 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             $originalMapping->setIsNullable($type->isNullable());
         }
 
-        if ($originalMapping instanceof RestApiBundle\Mapping\Mapper\EntityType && $originalMapping->field && !$originalMapping->class) {
+        if ($originalMapping instanceof RestApiBundle\Mapping\Mapper\EntityType && $originalMapping->getField() && !$originalMapping->getClass()) {
             if (!$type->getClassName()) {
                 throw new \LogicException();
             }
 
-            $originalMapping = new RestApiBundle\Mapping\Mapper\EntityType([], $type->getClassName(), $originalMapping->field, $originalMapping->nullable ?? $type->isNullable());
+            $originalMapping = new RestApiBundle\Mapping\Mapper\EntityType($type->getClassName(), $originalMapping->getField(), $originalMapping->getIsNullable() ?? $type->isNullable());
         }
         
         return $originalMapping;
@@ -94,23 +94,17 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
     {
         switch (true) {
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING:
-                $result = new RestApiBundle\Mapping\Mapper\StringType();
-                $result
-                    ->nullable = $type->isNullable();
+                $result = new RestApiBundle\Mapping\Mapper\StringType(nullable: $type->isNullable());
 
                 break;
 
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT:
-                $result = new RestApiBundle\Mapping\Mapper\IntegerType();
-                $result
-                    ->nullable = $type->isNullable();
+                $result = new RestApiBundle\Mapping\Mapper\IntegerType(nullable: $type->isNullable());
 
                 break;
 
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_FLOAT:
-                $result = new RestApiBundle\Mapping\Mapper\FloatType();
-                $result
-                    ->nullable = $type->isNullable();
+                $result = new RestApiBundle\Mapping\Mapper\FloatType(nullable: $type->isNullable());
 
                 break;
 
@@ -120,24 +114,17 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 break;
 
             case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isDateTime($type->getClassName()):
-                $result = new RestApiBundle\Mapping\Mapper\DateTimeType();
-                $result
-                    ->nullable = $type->isNullable();
+                $result = new RestApiBundle\Mapping\Mapper\DateTimeType(nullable: $type->isNullable());
 
                 break;
 
             case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($type->getClassName()):
-                $result = new RestApiBundle\Mapping\Mapper\ModelType();
-                $result->class = (string) $type->getClassName();
-                $result->nullable = $type->isNullable();
+                $result = new RestApiBundle\Mapping\Mapper\ModelType(class: (string) $type->getClassName(), nullable: $type->isNullable());
 
                 break;
 
             case $type->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($type->getClassName()):
-                $result = new RestApiBundle\Mapping\Mapper\EntityType();
-                $result->class = (string) $type->getClassName();
-                $result->field = 'id';
-                $result->nullable = $type->isNullable();
+                $result = new RestApiBundle\Mapping\Mapper\EntityType(class: (string) $type->getClassName(), nullable: $type->isNullable());
 
                 break;
 

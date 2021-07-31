@@ -2,14 +2,14 @@
 
 namespace TestApp\RequestModel;
 
-use RestApiBundle\Mapping\Mapper as Mapper;
+use RestApiBundle\Mapping\Mapper;
 
 class ModelWithEntityById implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     /**
      * @var \TestApp\Entity\Book
      *
-     * @Mapper\EntityType(class="\TestApp\Entity\Book")
+     * @Mapper\AutoType
      */
     private $book;
 

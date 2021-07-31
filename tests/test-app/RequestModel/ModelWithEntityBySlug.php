@@ -9,7 +9,7 @@ class ModelWithEntityBySlug implements \RestApiBundle\Mapping\RequestModel\Reque
     /**
      * @var \TestApp\Entity\Book
      *
-     * @Mapper\EntityType(class="\TestApp\Entity\Book", field="slug")
+     * @Mapper\EntityType(field="slug")
      */
     private $book;
 

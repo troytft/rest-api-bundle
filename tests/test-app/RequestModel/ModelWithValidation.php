@@ -11,7 +11,7 @@ class ModelWithValidation implements \RestApiBundle\Mapping\RequestModel\Request
     /**
      * @var string
      *
-     * @Mapper\StringType()
+     * @Mapper\AutoType
      *
      * @Assert\Length(min=6, max=255, allowEmptyString=false)
      * @Assert\Email()
