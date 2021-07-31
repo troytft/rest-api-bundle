@@ -6,6 +6,8 @@ framework:
         resource: '@TestAppBundle'
         type: annotation
         strict_requirements: true
+    session:
+        enabled: false
 doctrine:
     dbal:
         driver: pdo_sqlite
