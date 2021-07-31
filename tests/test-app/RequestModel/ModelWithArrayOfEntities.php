@@ -3,12 +3,12 @@
 namespace TestApp\RequestModel;
 
 use TestApp;
-use RestApiBundle\Mapping\Mapper as Mapper;
+use RestApiBundle\Mapping\Mapper;
 
 class ModelWithArrayOfEntities implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     /**
-     * @var \TestApp\Entity\Book[]
+     * @var TestApp\Entity\Book[]
      *
      * @Mapper\AutoType
      */

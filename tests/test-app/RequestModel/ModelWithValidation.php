@@ -19,9 +19,9 @@ class ModelWithValidation implements \RestApiBundle\Mapping\RequestModel\Request
     private $stringField;
 
     /**
-     * @var InnerModelWithValidation
+     * @var TestApp\RequestModel\InnerModelWithValidation
      *
-     * @Mapper\ModelType(class="TestApp\RequestModel\InnerModelWithValidation")
+     * @Mapper\AutoType
      */
     private $modelField;
 

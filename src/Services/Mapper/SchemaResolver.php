@@ -75,7 +75,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             return $this->resolveMappingByType($type);
         }
 
-        if ($originalMapping->getIsNullable() === null) {
+        if ($originalMapping instanceof RestApiBundle\Mapping\Mapper\NullableAwareTypeInterface && $originalMapping->getIsNullable() === null) {
             $originalMapping->setIsNullable($type->isNullable());
         }
 
@@ -84,7 +84,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 throw new \LogicException();
             }
 
-            $originalMapping = new RestApiBundle\Mapping\Mapper\EntityType($type->getClassName(), $originalMapping->getField(), $originalMapping->getIsNullable() ?? $type->isNullable());
+            $originalMapping = new RestApiBundle\Mapping\Mapper\EntityType(class: $type->getClassName(), field: $originalMapping->getField(), nullable: $originalMapping->getIsNullable() ?? $type->isNullable());
         }
         
         return $originalMapping;

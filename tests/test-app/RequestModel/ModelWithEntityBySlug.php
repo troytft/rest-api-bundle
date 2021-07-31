@@ -2,12 +2,13 @@
 
 namespace TestApp\RequestModel;
 
-use RestApiBundle\Mapping\Mapper as Mapper;
+use TestApp;
+use RestApiBundle\Mapping\Mapper;
 
 class ModelWithEntityBySlug implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     /**
-     * @var \TestApp\Entity\Book
+     * @var TestApp\Entity\Book
      *
      * @Mapper\EntityType(field="slug")
      */
