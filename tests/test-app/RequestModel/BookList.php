@@ -17,7 +17,7 @@ class BookList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterf
     /**
      * @var string[]|null
      *
-     * @Mapper\ArrayType(type=@Mapper\StringType(), nullable=true)
+     * @Mapper\AutoType
      * @Assert\Choice(callback="TestApp\Enum\BookStatus::getValues", multiple=true)
      */
     private $statuses;

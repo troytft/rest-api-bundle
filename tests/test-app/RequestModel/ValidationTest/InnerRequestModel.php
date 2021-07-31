@@ -10,8 +10,7 @@ class InnerRequestModel implements \RestApiBundle\Mapping\RequestModel\RequestMo
     /**
      * @var string|null
      *
-     * @Mapper\StringType(nullable=true)
-     *
+     * @Mapper\AutoType
      * @Assert\Expression(expression="false", message="Invalid value.")
      */
     private $field;

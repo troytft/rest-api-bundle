@@ -2,23 +2,30 @@
 
 namespace Tests\Fixture\Mapper\AutoConvertToEntitiesCollection;
 
-use RestApiBundle\Mapping\Mapper as Mapper;
+use TestApp;
+use RestApiBundle\Mapping\Mapper;
 
 class Model implements Mapper\ModelInterface
 {
     /**
-     * @var string[]|null
+     * @var TestApp\Entity\Book[]|null
      *
-     * @Mapper\ArrayType(type=@Mapper\EntityType(class="Tests\Fixture\Common\Entity\Book"))
+     * @Mapper\AutoType
      */
     private ?array $books = null;
 
+    /**
+     * @return TestApp\Entity\Book[]|null
+     */
     public function getBooks(): ?array
     {
         return $this->books;
     }
 
-    public function setBooks(?array $books)
+    /**
+     * @param TestApp\Entity\Book[]|null $books
+     */
+    public function setBooks(?array $books): static
     {
         $this->books = $books;
 

@@ -4,34 +4,22 @@ namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
 
-use function is_array;
-use function is_string;
-
 /**
  * @Annotation
  * @Target({"PROPERTY", "ANNOTATION"})
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class EntityType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
+class EntityType extends RestApiBundle\Mapping\Mapper\BaseNullableType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
-    public ?bool $nullable;
+    public function __construct(
+        array $options = [],
+        private string $class = '',
+        public string $field = 'id',
+        ?bool $nullable = null
+    ) {
+        $this->field = $options['field'] ?? $field;
 
-    public string $class;
-    public string $field;
-
-    public function __construct($options = [], string $class = '', string $field = 'id', ?bool $nullable = null)
-    {
-        if (is_string($options)) {
-            $this->class = $options;
-            $this->field = $field;
-            $this->nullable = $nullable;
-        } elseif (is_array($options)) {
-            $this->class = $options['value'] ?? $options['class'] ?? $class;
-            $this->field = $options['field'] ?? $field;
-            $this->nullable = $options['nullable'] ?? $nullable;
-        } else {
-            throw new \InvalidArgumentException();
-        }
+        parent::__construct(nullable: $nullable);
     }
 
     public function getTransformerClass(): string
@@ -47,13 +35,13 @@ class EntityType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInt
         ];
     }
 
-    public function getIsNullable(): ?bool
+    public function getClass(): string
     {
-        return $this->nullable;
+        return $this->class;
     }
 
-    public function setIsNullable(?bool $value)
+    public function getField(): string
     {
-        $this->nullable = $value;
+        return $this->field;
     }
 }

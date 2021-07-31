@@ -11,21 +11,21 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     /**
      * @var int
      *
-     * @Mapper\IntegerType()
+     * @Mapper\AutoType
      */
     private $offset;
 
     /**
      * @var int
      *
-     * @Mapper\IntegerType()
+     * @Mapper\AutoType
      */
     private $limit;
 
     /**
      * @var string|null
      *
-     * @Mapper\StringType(nullable=true)
+     * @Mapper\AutoType
      * @Assert\Length(min=1, max=255, allowEmptyString=false)
      */
     private $name;
@@ -33,7 +33,7 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     /**
      * @var string|null
      *
-     * @Mapper\StringType(nullable=true)
+     * @Mapper\AutoType
      * @Assert\Length(min=1, max=255, allowEmptyString=false)
      */
     private $surname;
@@ -41,14 +41,14 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     /**
      * @var \DateTime|null
      *
-     * @Mapper\DateType(nullable=true)
+     * @Mapper\DateType()
      */
     private $birthday;
 
     /**
      * @var TestApp\Entity\Book[]|null
      *
-     * @Mapper\ArrayType(type=@Mapper\EntityType(class="TestApp\Entity\Book"), nullable=true)
+     * @Mapper\AutoType
      */
     private $genres;
 

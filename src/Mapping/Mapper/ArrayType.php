@@ -4,48 +4,24 @@ namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
 
-use function is_array;
-use function is_object;
-
-/**
- * @Annotation
- */
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
-class ArrayType implements RestApiBundle\Mapping\Mapper\TypeInterface
+class ArrayType extends BaseNullableType
 {
-    /**
-     * Type hint forced to object, cause annotation reader doesn't support interfaces
-     *
-     * @var object
-     */
-    public $type;
-    public ?bool $nullable = null;
-
-    public function __construct($options = [], ?RestApiBundle\Mapping\Mapper\TypeInterface $type = null, ?bool $nullable = null)
-    {
-        if (is_object($options)) {
-            $this->type = $options;
-            $this->nullable = $nullable;
-        } elseif (is_array($options)) {
-            $this->type = $options['value'] ?? $options['type'] ?? $type;
-            $this->nullable = $options['nullable'] ?? $nullable;
-        } else {
-            throw new \InvalidArgumentException();
-        }
+    public function __construct(
+        private RestApiBundle\Mapping\Mapper\TypeInterface $valuesType,
+        ?bool $nullable = null
+    ) {
+        parent::__construct(nullable: $nullable);
     }
 
     public function getValuesType(): RestApiBundle\Mapping\Mapper\TypeInterface
     {
-        return $this->type;
+        return $this->valuesType;
     }
 
-    public function getIsNullable(): ?bool
+    public function setValuesType(RestApiBundle\Mapping\Mapper\TypeInterface $valuesType): static
     {
-        return $this->nullable;
-    }
+        $this->valuesType = $valuesType;
 
-    public function setIsNullable(?bool $value)
-    {
-        $this->nullable = $value;
+        return $this;
     }
 }

@@ -12,19 +12,20 @@ use function is_string;
  * @Target({"PROPERTY", "ANNOTATION"})
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class DateType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
+class DateType extends RestApiBundle\Mapping\Mapper\BaseNullableType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
-    public ?bool $nullable;
-    public ?string $format;
-
-    public function __construct($options = [], ?string $format = null, ?bool $nullable = null)
-    {
+    public function __construct(
+        $options = [],
+        private ?string $format = null,
+        ?bool $nullable = null
+    ) {
         if (is_string($options)) {
             $this->format = $options;
-            $this->nullable = $nullable;
+            parent::__construct(nullable: $nullable);
         } elseif (is_array($options)) {
             $this->format = $options['value'] ?? $options['format'] ?? $format;
-            $this->nullable = $options['nullable'] ?? $nullable;
+            parent::__construct(nullable: $options['nullable'] ?? $nullable);
+
         } else {
             throw new \InvalidArgumentException();
         }
@@ -40,15 +41,5 @@ class DateType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInter
         return [
             RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION => $this->format,
         ];
-    }
-
-    public function getIsNullable(): ?bool
-    {
-        return $this->nullable;
-    }
-
-    public function setIsNullable(?bool $value)
-    {
-        $this->nullable = $value;
     }
 }

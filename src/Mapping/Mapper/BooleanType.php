@@ -4,20 +4,8 @@ namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
 
-/**
- * @Annotation
- * @Target({"PROPERTY", "ANNOTATION"})
- */
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
-class BooleanType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
+class BooleanType extends BaseNullableType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
-    public ?bool $nullable;
-
-    public function __construct(array $options = [], ?bool $nullable = null)
-    {
-        $this->nullable = $options['nullable'] ?? $nullable;
-    }
-
     public function getTransformerClass(): string
     {
         return RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class;
@@ -26,15 +14,5 @@ class BooleanType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeIn
     public function getTransformerOptions(): array
     {
         return [];
-    }
-
-    public function getIsNullable(): ?bool
-    {
-        return $this->nullable;
-    }
-
-    public function setIsNullable(?bool $value)
-    {
-        $this->nullable = $value;
     }
 }

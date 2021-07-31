@@ -2,7 +2,7 @@
 
 namespace RestApiBundle\Mapping\Mapper;
 
-interface TransformerAwareTypeInterface extends TypeInterface
+interface TransformerAwareTypeInterface extends NullableAwareTypeInterface
 {
     public function getTransformerClass(): string;
     public function getTransformerOptions(): array;

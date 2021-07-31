@@ -10,20 +10,18 @@ class RequestModelForGetRequest implements \RestApiBundle\Mapping\RequestModel\R
     /**
      * @var int
      *
-     * @Mapper\IntegerType()
+     * @Mapper\AutoType
      *
      * @Assert\Range(min=0, max=PHP_INT_MAX)
-     * @Assert\NotNull()
      */
     private $offset;
 
     /**
      * @var int
      *
-     * @Mapper\IntegerType()
+     * @Mapper\AutoType
      *
      * @Assert\Range(min=0, max=20)
-     * @Assert\NotNull()
      */
     private $limit;
 

@@ -4,22 +4,8 @@ namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
 
-/**
- * @Annotation
- * @Target({"PROPERTY", "ANNOTATION"})
- */
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
-class StringType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
+class StringType extends RestApiBundle\Mapping\Mapper\BaseNullableType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
-    public ?bool $nullable;
-    public bool $trim = false;
-
-    public function __construct(array $options = [], ?bool $trim = false, ?bool $nullable = null)
-    {
-        $this->trim = $options['trim'] ?? $trim;
-        $this->nullable = $options['nullable'] ?? $nullable;
-    }
-
     public function getTransformerClass(): string
     {
         return RestApiBundle\Services\Mapper\Transformer\StringTransformer::class;
@@ -27,18 +13,6 @@ class StringType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInt
 
     public function getTransformerOptions(): array
     {
-        return [
-            RestApiBundle\Services\Mapper\Transformer\StringTransformer::TRIM_OPTION => $this->trim,
-        ];
-    }
-
-    public function getIsNullable(): ?bool
-    {
-        return $this->nullable;
-    }
-
-    public function setIsNullable(?bool $value)
-    {
-        $this->nullable = $value;
+        return [];
     }
 }

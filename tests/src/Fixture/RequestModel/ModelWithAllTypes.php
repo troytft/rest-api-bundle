@@ -10,56 +10,56 @@ class ModelWithAllTypes implements \RestApiBundle\Mapping\RequestModel\RequestMo
     /**
      * @var bool|null
      *
-     * @Mapper\BooleanType(nullable=true)
+     * @Mapper\AutoType
      */
     private $booleanType;
 
     /**
      * @var float|null
      *
-     * @Mapper\FloatType(nullable=true)
+     * @Mapper\AutoType
      */
     private $floatType;
 
     /**
      * @var int|null
      *
-     * @Mapper\IntegerType(nullable=true)
+     * @Mapper\AutoType
      */
     private $integerType;
 
     /**
      * @var string|null
      *
-     * @Mapper\StringType(nullable=true)
+     * @Mapper\AutoType
      */
     private $stringType;
 
     /**
      * @var Tests\Fixture\RequestModel\InnerModel|null
      *
-     * @Mapper\ModelType(class="Tests\Fixture\RequestModel\InnerModel", nullable=true)
+     * @Mapper\AutoType
      */
     private $model;
 
     /**
-     * @var array|null
+     * @var int[]|null
      *
-     * @Mapper\ArrayType(type=@Mapper\IntegerType(), nullable=true)
+     * @Mapper\AutoType
      */
     private $collection;
 
     /**
      * @var \DateTime|null
      *
-     * @Mapper\DateType(nullable=true)
+     * @Mapper\DateType()
      */
     private $date;
 
     /**
      * @var \DateTime|null
      *
-     * @Mapper\DateTimeType(nullable=true)
+     * @Mapper\AutoType
      */
     private $dateTime;
 
