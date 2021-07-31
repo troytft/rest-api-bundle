@@ -24,14 +24,10 @@ class AnnotationReader
 
     public static function getPropertyAnnotations(\ReflectionProperty $reflectionProperty): array
     {
-        $result = static::getAnnotationReader()->getPropertyAnnotations($reflectionProperty);
-
-        if (\PHP_VERSION_ID >= 80000) {
-            // @phpstan-ignore-next-line
-            $result = array_merge($result, static::createAnnotationsFromAttributes($reflectionProperty->getAttributes()));
-        }
-
-        return $result;
+        return array_merge(
+            static::getAnnotationReader()->getPropertyAnnotations($reflectionProperty),
+            static::createAnnotationsFromAttributes($reflectionProperty->getAttributes())
+        );
     }
 
     public static function getPropertyAnnotation(\ReflectionProperty $reflectionProperty, string $class)
@@ -47,14 +43,10 @@ class AnnotationReader
 
     public static function getClassAnnotations(\ReflectionClass $reflectionClass): array
     {
-        $result = static::getAnnotationReader()->getClassAnnotations($reflectionClass);
-
-        if (\PHP_VERSION_ID >= 80000) {
-            // @phpstan-ignore-next-line
-            $result = array_merge($result, static::createAnnotationsFromAttributes($reflectionClass->getAttributes()));
-        }
-
-        return $result;
+        return array_merge(
+            static::getAnnotationReader()->getClassAnnotations($reflectionClass),
+            static::createAnnotationsFromAttributes($reflectionClass->getAttributes())
+        );
     }
 
     public static function getClassAnnotation(\ReflectionClass $reflectionClass, string $class)
@@ -70,14 +62,10 @@ class AnnotationReader
 
     public static function getMethodAnnotations(\ReflectionMethod $reflectionMethod): array
     {
-        $result = static::getAnnotationReader()->getMethodAnnotations($reflectionMethod);
-
-        if (\PHP_VERSION_ID >= 80000) {
-            // @phpstan-ignore-next-line
-            $result = array_merge($result, static::createAnnotationsFromAttributes($reflectionMethod->getAttributes()));
-        }
-
-        return $result;
+        return array_merge(
+            static::getAnnotationReader()->getMethodAnnotations($reflectionMethod),
+            static::createAnnotationsFromAttributes($reflectionMethod->getAttributes())
+        );
     }
 
 
@@ -94,12 +82,8 @@ class AnnotationReader
 
     private static function createAnnotationsFromAttributes(array $attributes): array
     {
-        // @phpstan-ignore-next-line
         return array_map(function (\ReflectionAttribute $reflectionAttribute) {
-            // @phpstan-ignore-next-line
             $class = $reflectionAttribute->getName();
-
-            // @phpstan-ignore-next-line
             return new $class(...$reflectionAttribute->getArguments());
         }, $attributes);
     }
