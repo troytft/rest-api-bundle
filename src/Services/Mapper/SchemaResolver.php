@@ -45,7 +45,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 $mapping->getIsNullable() ?? false
             );
         } elseif ($mapping instanceof RestApiBundle\Mapping\Mapper\ModelType) {
-            $schema = $this->resolve($mapping->class, $mapping->nullable ?? false);
+            $schema = $this->resolve($mapping->class, $mapping->getIsNullable() ?? false);
         } elseif ($mapping instanceof RestApiBundle\Mapping\Mapper\ArrayType) {
             $valuesType = $mapping->getValuesType();
             if ($valuesType instanceof RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface && $valuesType->getTransformerClass() === RestApiBundle\Services\Mapper\Transformer\EntityTransformer::class) {
@@ -115,9 +115,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 break;
 
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_BOOL:
-                $result = new RestApiBundle\Mapping\Mapper\BooleanType();
-                $result
-                    ->nullable = $type->isNullable();
+                $result = new RestApiBundle\Mapping\Mapper\BooleanType(nullable: $type->isNullable());
 
                 break;
 

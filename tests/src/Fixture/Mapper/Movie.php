@@ -8,26 +8,26 @@ use RestApiBundle\Mapping\Mapper as Mapper;
 class Movie implements Mapper\ModelInterface
 {
     /**
-     * @Mapper\StringType()
+     * @Mapper\AutoType
      */
     public string $name = 'Taxi 2';
 
     /**
-     * @Mapper\FloatType()
+     * @Mapper\AutoType
      */
     public float $rating = 4.7;
 
     /**
      * @var int|null
      *
-     * @Mapper\IntegerType(nullable=true)
+     * @Mapper\AutoType
      */
     private ?int $lengthMinutes = null;
 
     /**
      * @var bool|null
      *
-     * @Mapper\BooleanType(nullable=true)
+     * @Mapper\AutoType
      */
     private ?bool $isOnlineWatchAvailable = null;
 
