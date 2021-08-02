@@ -33,7 +33,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                     throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException(sprintf('Setter with name "%s" does not exist.', $propertySetterName));
                 }
             } catch (RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException $exception) {
-                throw new RestApiBundle\Exception\OpenApi\PropertyOfModelException($exception->getMessage(), class: $class, propertyName: $reflectionProperty->getName(), previous: $exception);
+                throw new RestApiBundle\Exception\ContextAware\PropertyOfClassException($exception->getMessage(), class: $class, propertyName: $reflectionProperty->getName(), previous: $exception);
             }
 
             $properties[$reflectionProperty->getName()] = $propertySchema;

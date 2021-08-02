@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Exception\OpenApi;
+namespace RestApiBundle\Exception\ContextAware;
 
 interface ContextAwareExceptionInterface extends \Throwable
 {

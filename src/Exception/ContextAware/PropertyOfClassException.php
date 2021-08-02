@@ -1,10 +1,12 @@
 <?php
 
-namespace RestApiBundle\Exception\OpenApi;
+namespace RestApiBundle\Exception\ContextAware;
+
+use RestApiBundle;
 
 use function sprintf;
 
-class PropertyOfModelException extends \Exception implements ContextAwareExceptionInterface
+class PropertyOfClassException extends \Exception implements RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface
 {
     private string $context;
 

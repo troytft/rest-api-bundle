@@ -60,7 +60,7 @@ class GenerateDocsCommand extends Command
 
             $filesystem = new Filesystem();
             $filesystem->dumpFile($outputFile, $content);
-        } catch (RestApiBundle\Exception\OpenApi\ContextAwareExceptionInterface $exception) {
+        } catch (RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface $exception) {
             $output->writeln([
                 'Error occurred while generating schema:',
                 $exception->getMessage(),

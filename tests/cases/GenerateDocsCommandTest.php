@@ -55,8 +55,9 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
             'output' => $fileName,
         ]);
 
+        var_dump($commandTester->getDisplay());
         $this->assertSame(1, $commandTester->getStatusCode());
-        $this->assertSame("Error occurred while generating schema:\nAssociated parameter for placeholder unknown_parameter not matched.\nAction \"testAction\" of controller \"TestApp\Controller\CommandTest\InvalidDefinition\DefaultController\"", trim($commandTester->getDisplay()));
+        $this->assertSame("Error occurred while generating schema:\nAssociated parameter for placeholder unknown_parameter not matched.\nTestApp\Controller\CommandTest\InvalidDefinition\DefaultController->testAction()", trim($commandTester->getDisplay()));
     }
 
     private function getOutputFileName(): string
