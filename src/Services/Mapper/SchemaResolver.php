@@ -5,6 +5,7 @@ namespace RestApiBundle\Services\Mapper;
 use RestApiBundle;
 use Symfony\Component\PropertyInfo;
 
+use function sprintf;
 use function ucfirst;
 
 class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInterface
@@ -20,14 +21,19 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 continue;
             }
 
-            $mapping = $this->preprocessMapping($reflectionProperty, $mapping);
-            $propertySchema = $this->resolveSchemaByMapping($mapping);
-            $propertySetterName = 'set' . ucfirst($reflectionProperty->getName());
+            try {
+                $mapping = $this->preprocessMapping($reflectionProperty, $mapping);
+                $propertySchema = $this->resolveSchemaByMapping($mapping);
 
-            if ($reflectionClass->hasMethod($propertySetterName) && $reflectionClass->getMethod($propertySetterName)->isPublic()) {
-                $propertySchema->propertySetterName = $propertySetterName;
-            } elseif (!$reflectionProperty->isPublic()) {
-                throw new RestApiBundle\Exception\Mapper\SetterDoesNotExistException($propertySetterName);
+                $propertySetterName = 'set' . ucfirst($reflectionProperty->getName());
+
+                if ($reflectionClass->hasMethod($propertySetterName) && $reflectionClass->getMethod($propertySetterName)->isPublic()) {
+                    $propertySchema->propertySetterName = $propertySetterName;
+                } elseif (!$reflectionProperty->isPublic()) {
+                    throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException(sprintf('Setter with name "%s" does not exist.', $propertySetterName));
+                }
+            } catch (RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException $exception) {
+                throw new RestApiBundle\Exception\ContextAware\PropertyOfClassException($exception->getMessage(), class: $class, propertyName: $reflectionProperty->getName(), previous: $exception);
             }
 
             $properties[$reflectionProperty->getName()] = $propertySchema;
@@ -58,7 +64,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($this->resolveSchemaByMapping($valuesType), $mapping->getIsNullable() ?? false);
             }
         } else {
-            throw new \InvalidArgumentException();
+            throw new \LogicException();
         }
 
         return $schema;
@@ -67,12 +73,13 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
     private function preprocessMapping(\ReflectionProperty $reflectionProperty, RestApiBundle\Mapping\Mapper\TypeInterface $originalMapping): RestApiBundle\Mapping\Mapper\TypeInterface
     {
         $type = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
-        if (!$type) {
-            return $originalMapping;
-        }
 
-        if ($originalMapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
+        if (!$type && $originalMapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
+            throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('AutoType are not allowed with empty property type.');
+        } elseif ($type && $originalMapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
             return $this->resolveMappingByType($type);
+        } elseif (!$type) {
+            return $originalMapping;
         }
 
         if ($originalMapping instanceof RestApiBundle\Mapping\Mapper\NullableAwareTypeInterface && $originalMapping->getIsNullable() === null) {
