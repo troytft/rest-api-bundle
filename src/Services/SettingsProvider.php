@@ -30,7 +30,7 @@ class SettingsProvider
         return $this->settings[RestApiBundle\Enum\SettingsKey::IS_FORCE_REQUEST_DATETIME_TO_LOCAL_TIMEZONE];
     }
 
-    public function getDefaultRequestDatetimeFormat(): string
+    public function getDefaultRequestDateTimeFormat(): string
     {
         return $this->settings[RestApiBundle\Enum\SettingsKey::DEFAULT_REQUEST_DATETIME_FORMAT];
     }

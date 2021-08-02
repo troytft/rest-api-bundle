@@ -172,7 +172,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
                 break;
 
             case RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class:
-                $format = $schema->transformerOptions[RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
+                $format = $schema->transformerOptions[RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateTimeFormat();
 
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,

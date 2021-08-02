@@ -22,7 +22,7 @@ class DateTimeTransformer implements TransformerInterface
 
     public function transform($value, array $options = [])
     {
-        $format = $options[static::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDatetimeFormat();
+        $format = $options[static::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateTimeFormat();
         $forceLocalTimezone = $options[static::FORCE_LOCAL_TIMEZONE_OPTION] ?? $this->settingsProvider->isForceRequestDatetimeToLocalTimezone();
 
         $result = \DateTime::createFromFormat($format, $value);
