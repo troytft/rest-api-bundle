@@ -20,7 +20,7 @@ class BookList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterf
      * @Mapper\AutoType
      * @Assert\Choice(callback="TestApp\Enum\BookStatus::getValues", multiple=true)
      */
-    private $statuses;
+    private array $statuses;
 
     /** @Mapper\AutoType */
     public ?TestApp\Entity\Author $author;

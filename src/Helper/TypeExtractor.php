@@ -41,7 +41,7 @@ class TypeExtractor
         }
 
         if (count($result) > 1) {
-            throw new \InvalidArgumentException('Union types not supported yet');
+            throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('Union types are not supported.');
         }
 
         return $result[0] ?? null;
@@ -52,7 +52,7 @@ class TypeExtractor
         $result = static::getPhpDocTypeHelper()->getTypes($phpDocType);
 
         if (count($result) > 1) {
-            throw new \InvalidArgumentException('Union types not supported yet');
+            throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('Union types are not supported.');
         }
 
         return $result[0] ?? null;
