@@ -16,13 +16,24 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            $mapping = RestApiBundle\Helper\AnnotationReader::getPropertyAnnotation($reflectionProperty, RestApiBundle\Mapping\Mapper\TypeInterface::class);
-            if (!$mapping instanceof RestApiBundle\Mapping\Mapper\TypeInterface) {
+            $isExposed = false;
+            $typeOptions = [];
+            $propertyAnnotations = RestApiBundle\Helper\AnnotationReader::getPropertyAnnotations($reflectionProperty);
+
+            foreach ($propertyAnnotations as $propertyAnnotation) {
+                if ($propertyAnnotation instanceof RestApiBundle\Mapping\Mapper\Expose) {
+                    $isExposed = true;
+                } elseif ($propertyAnnotation instanceof RestApiBundle\Mapping\Mapper\FindByField) {
+                    $typeOptions[] = $propertyAnnotation;
+                }
+            }
+
+            if (!$isExposed) {
                 continue;
             }
 
             try {
-                $mapping = $this->preprocessMapping($reflectionProperty, $mapping);
+                $mapping = $this->preprocessMapping($reflectionProperty, $typeOptions);
                 $propertySchema = $this->resolveSchemaByMapping($mapping);
 
                 $propertySetterName = 'set' . ucfirst($reflectionProperty->getName());
@@ -70,34 +81,18 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         return $schema;
     }
 
-    private function preprocessMapping(\ReflectionProperty $reflectionProperty, RestApiBundle\Mapping\Mapper\TypeInterface $originalMapping): RestApiBundle\Mapping\Mapper\TypeInterface
+    private function preprocessMapping(\ReflectionProperty $reflectionProperty, array $typeOptions = []): RestApiBundle\Mapping\Mapper\TypeInterface
     {
         $type = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
 
-        if (!$type && $originalMapping instanceof RestApiBundle\Mapping\Mapper\Field) {
-            throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('Field are not allowed with empty property type.');
-        } elseif ($type && $originalMapping instanceof RestApiBundle\Mapping\Mapper\Field) {
-            return $this->resolveMappingByType($type);
-        } elseif (!$type) {
-            return $originalMapping;
+        if (!$type) {
+            throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('Expose are not allowed with empty property type.');
         }
 
-        if ($originalMapping instanceof RestApiBundle\Mapping\Mapper\NullableAwareTypeInterface && $originalMapping->getIsNullable() === null) {
-            $originalMapping->setIsNullable($type->isNullable());
-        }
-
-        if ($originalMapping instanceof RestApiBundle\Mapping\Mapper\EntityType && $originalMapping->getField() && !$originalMapping->getClass()) {
-            if (!$type->getClassName()) {
-                throw new \LogicException();
-            }
-
-            $originalMapping = new RestApiBundle\Mapping\Mapper\EntityType(class: $type->getClassName(), field: $originalMapping->getField(), nullable: $originalMapping->getIsNullable() ?? $type->isNullable());
-        }
-        
-        return $originalMapping;
+        return $this->resolveMappingByType($type, $typeOptions);
     }
 
-    private function resolveMappingByType(PropertyInfo\Type $type): RestApiBundle\Mapping\Mapper\TypeInterface
+    private function resolveMappingByType(PropertyInfo\Type $type, array $typeOptions = []): RestApiBundle\Mapping\Mapper\TypeInterface
     {
         switch (true) {
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING:
@@ -131,12 +126,19 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 break;
 
             case $type->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($type->getClassName()):
-                $result = new RestApiBundle\Mapping\Mapper\EntityType(class: (string) $type->getClassName(), nullable: $type->isNullable());
+                $field = 'id';
+                foreach ($typeOptions as $typeOption) {
+                    if ($typeOption instanceof RestApiBundle\Mapping\Mapper\FindByField) {
+                        $field = $typeOption->getField();
+                    }
+                }
+
+                $result = new RestApiBundle\Mapping\Mapper\EntityType(class: (string) $type->getClassName(), field: $field, nullable: $type->isNullable());
 
                 break;
 
             case $type->isCollection():
-                $result = new RestApiBundle\Mapping\Mapper\ArrayType($this->resolveMappingByType($type->getCollectionValueType()), nullable: $type->isNullable());
+                $result = new RestApiBundle\Mapping\Mapper\ArrayType($this->resolveMappingByType($type->getCollectionValueType(), $typeOptions), nullable: $type->isNullable());
 
                 break;
 

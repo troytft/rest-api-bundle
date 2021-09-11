@@ -9,7 +9,7 @@ use RestApiBundle;
  * @Target({"PROPERTY", "ANNOTATION"})
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class Field implements RestApiBundle\Mapping\Mapper\TypeInterface
+class Expose implements RestApiBundle\Mapping\Mapper\TypeInterface
 {
     public function getIsNullable(): ?bool
     {

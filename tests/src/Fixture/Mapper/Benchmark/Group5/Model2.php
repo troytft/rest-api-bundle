@@ -6,33 +6,33 @@ use RestApiBundle\Mapping\Mapper;
 
 class Model2 implements Mapper\ModelInterface
 {
-    /** @Mapper\Field */
+    /** @Mapper\Expose */
     public ?string $field1;
 
-    /** @Mapper\Field */
+    /** @Mapper\Expose */
     public ?string $field2;
 
-    /** @Mapper\Field */
+    /** @Mapper\Expose */
     public ?string $field3;
 
-    /** @Mapper\Field */
+    /** @Mapper\Expose */
     public ?string $field4;
 
-    /** @Mapper\Field */
+    /** @Mapper\Expose */
     public ?string $field5;
 
-    /** @Mapper\Field */
+    /** @Mapper\Expose */
     public ?string $field6;
 
-    /** @Mapper\Field */
+    /** @Mapper\Expose */
     public ?string $field7;
 
-    /** @Mapper\Field */
+    /** @Mapper\Expose */
     public ?string $field8;
 
-    /** @Mapper\Field */
+    /** @Mapper\Expose */
     public ?string $field9;
 
-    /** @Mapper\Field */
+    /** @Mapper\Expose */
     public ?string $field10;
 }

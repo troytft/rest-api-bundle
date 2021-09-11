@@ -11,7 +11,7 @@ class WriterData implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     /**
      * @var string
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      * @Assert\Length(min=1, max=255, allowEmptyString=false)
      */
     private $name;
@@ -19,7 +19,7 @@ class WriterData implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     /**
      * @var string
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      * @Assert\Length(min=1, max=255, allowEmptyString=false)
      */
     private $surname;
@@ -34,7 +34,7 @@ class WriterData implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     /**
      * @var TestApp\Entity\Book[]
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $genres;
 

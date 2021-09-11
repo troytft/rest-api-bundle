@@ -10,42 +10,42 @@ class ModelWithAllTypes implements \RestApiBundle\Mapping\RequestModel\RequestMo
     /**
      * @var bool|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $booleanType;
 
     /**
      * @var float|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $floatType;
 
     /**
      * @var int|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $integerType;
 
     /**
      * @var string|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $stringType;
 
     /**
      * @var Tests\Fixture\RequestModel\InnerModel|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $model;
 
     /**
      * @var int[]|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $collection;
 
@@ -59,7 +59,7 @@ class ModelWithAllTypes implements \RestApiBundle\Mapping\RequestModel\RequestMo
     /**
      * @var \DateTime|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $dateTime;
 

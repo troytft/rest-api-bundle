@@ -7,12 +7,9 @@ use RestApiBundle\Mapping\Mapper;
 
 class ModelWithEntityBySlug implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
-    /**
-     * @var TestApp\Entity\Book
-     *
-     * @Mapper\EntityType(field="slug")
-     */
-    private $book;
+    #[Mapper\Expose]
+    #[Mapper\FindByField('slug')]
+    private TestApp\Entity\Book $book;
 
     public function getBook(): \TestApp\Entity\Book
     {

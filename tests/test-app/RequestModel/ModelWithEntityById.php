@@ -9,7 +9,7 @@ class ModelWithEntityById implements \RestApiBundle\Mapping\RequestModel\Request
     /**
      * @var \TestApp\Entity\Book
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $book;
 
