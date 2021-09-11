@@ -98,12 +98,12 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
         return $this;
     }
 
-    public function getBirthday(): ?\DateTime
+    public function getBirthday(): ?Mapper\DateInterface
     {
         return $this->birthday;
     }
 
-    public function setBirthday(?\DateTime $birthday)
+    public function setBirthday(?Mapper\DateInterface $birthday): static
     {
         $this->birthday = $birthday;
 

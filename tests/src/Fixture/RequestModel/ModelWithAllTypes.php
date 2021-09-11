@@ -133,12 +133,12 @@ class ModelWithAllTypes implements \RestApiBundle\Mapping\RequestModel\RequestMo
         return $this;
     }
 
-    public function getDate(): ?\DateTime
+    public function getDate(): ?Mapper\DateInterface
     {
         return $this->date;
     }
 
-    public function setDate(?\DateTime $date)
+    public function setDate(?Mapper\DateInterface $date): static
     {
         $this->date = $date;
 

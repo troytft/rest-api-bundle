@@ -4,54 +4,30 @@ namespace Tests\Fixture\Mapper;
 
 use RestApiBundle\Mapping\Mapper;
 
+#[Mapper\ExposeAll]
 class Release implements Mapper\ModelInterface
 {
-    /**
-     * @var string
-     *
-     * @Mapper\Expose
-     */
-    private $country;
+    private ?string $country;
+    private ?Mapper\DateInterface $date;
 
-    /**
-     * @Mapper\Expose
-     */
-    private Mapper\DateInterface $date;
-
-    /**
-     * @return string|null
-     */
     public function getCountry(): ?string
     {
         return $this->country;
     }
 
-    /**
-     * @param string|null $country
-     *
-     * @return $this
-     */
-    public function setCountry(?string $country)
+    public function setCountry(?string $country): static
     {
         $this->country = $country;
 
         return $this;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getDate(): ?\DateTime
+    public function getDate(): ?Mapper\DateInterface
     {
         return $this->date;
     }
 
-    /**
-     * @param \DateTime|null $date
-     *
-     * @return $this
-     */
-    public function setDate(?\DateTime $date)
+    public function setDate(?Mapper\DateInterface $date): static
     {
         $this->date = $date;
 
