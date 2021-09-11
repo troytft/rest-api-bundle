@@ -48,8 +48,9 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
             }
 
             $typename = RestApiBundle\Helper\ResponseModel\TypenameResolver::resolve($class);
-            if (isset($this->typenameCache[$typename])) {
-                throw new \InvalidArgumentException(sprintf('Typename %s for class %s already used by another class %s', $typename, $class, $this->typenameCache[$typename]));
+            $classInCache = array_search($typename, $this->typenameCache, true);
+            if ($classInCache !== false && $classInCache !== $class) {
+                throw new \InvalidArgumentException(sprintf('Typename %s for class %s already used by another class %s', $typename, $class, $classInCache));
             }
 
             $this->typenameCache[$class] = $typename;
