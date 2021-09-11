@@ -6,6 +6,7 @@ use RestApiBundle;
 
 use function array_key_exists;
 use function class_exists;
+use function var_dump;
 
 class ClassInstanceHelper
 {
@@ -20,6 +21,11 @@ class ClassInstanceHelper
     private static array $dateTimeCache = [
         \DateTime::class => true,
     ];
+
+    /**
+     * @var array<string, bool>
+     */
+    private static array $dateCache = [];
 
     /**
      * @var array<string, bool>
@@ -66,6 +72,26 @@ class ClassInstanceHelper
         }
 
         return static::$dateTimeCache[$class];
+    }
+
+    public static function isDate(string $class): bool
+    {
+        if ($class === RestApiBundle\Mapping\Mapper\DateInterface::class) {
+            return true;
+        }
+
+        if (!class_exists($class)) {
+            return false;
+        }
+
+        if (!array_key_exists($class, static::$dateCache)) {
+            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+
+            static::$dateCache[$class] = $reflectionClass->isInstantiable()
+                && $reflectionClass->implementsInterface(RestApiBundle\Mapping\Mapper\DateInterface::class);
+        }
+
+        return static::$dateCache[$class];
     }
 
     public static function isSerializableEnum(string $class): bool

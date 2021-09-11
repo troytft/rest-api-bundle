@@ -25,11 +25,9 @@ class WriterData implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     private $surname;
 
     /**
-     * @var \DateTime|null
-     *
-     * @Mapper\DateType()
+     * @Mapper\Expose
      */
-    private $birthday;
+    private ?Mapper\DateInterface $birthday;
 
     /**
      * @var TestApp\Entity\Book[]

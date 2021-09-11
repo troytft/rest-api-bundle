@@ -2,7 +2,7 @@
 
 namespace Tests\Fixture\Mapper;
 
-use RestApiBundle\Mapping\Mapper as Mapper;
+use RestApiBundle\Mapping\Mapper;
 
 class Release implements Mapper\ModelInterface
 {
@@ -14,9 +14,9 @@ class Release implements Mapper\ModelInterface
     private $country;
 
     /**
-     * @Mapper\DateType()
+     * @Mapper\Expose
      */
-    private \DateTime $date;
+    private Mapper\DateInterface $date;
 
     /**
      * @return string|null

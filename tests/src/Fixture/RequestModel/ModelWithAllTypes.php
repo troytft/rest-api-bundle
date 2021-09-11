@@ -50,11 +50,9 @@ class ModelWithAllTypes implements \RestApiBundle\Mapping\RequestModel\RequestMo
     private $collection;
 
     /**
-     * @var \DateTime|null
-     *
-     * @Mapper\DateType()
+     * @Mapper\Expose
      */
-    private $date;
+    private ?Mapper\DateInterface $date;
 
     /**
      * @var \DateTime|null
