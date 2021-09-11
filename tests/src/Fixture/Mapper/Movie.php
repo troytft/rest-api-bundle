@@ -8,40 +8,40 @@ use RestApiBundle\Mapping\Mapper as Mapper;
 class Movie implements Mapper\ModelInterface
 {
     /**
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public string $name = 'Taxi 2';
 
     /**
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public float $rating = 4.7;
 
     /**
      * @var int|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     private ?int $lengthMinutes = null;
 
     /**
      * @var bool|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     private ?bool $isOnlineWatchAvailable = null;
 
     /**
      * @var string[]|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     private ?array $genres = null;
 
     /**
      * @var Tests\Fixture\Mapper\Release[]|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     private ?array $releases = null;
 

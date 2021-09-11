@@ -6,7 +6,7 @@ use RestApiBundle\Mapping\Mapper as Mapper;
 
 class Model implements Mapper\ModelInterface
 {
-    #[Mapper\AutoType]
+    #[Mapper\Field]
     public ?string $name;
 
     #[Mapper\DateType(format: 'd/m/y')]
@@ -15,7 +15,7 @@ class Model implements Mapper\ModelInterface
     /**
      * @var float|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $rating;
 }

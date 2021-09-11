@@ -10,7 +10,7 @@ class RequestModelWithNestedRequestModel implements \RestApiBundle\Mapping\Reque
     /**
      * @var TestApp\RequestModel\ValidationTest\InnerRequestModel
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     private $nestedRequestModel;
 

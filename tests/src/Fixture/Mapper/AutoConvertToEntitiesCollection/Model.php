@@ -10,7 +10,7 @@ class Model implements Mapper\ModelInterface
     /**
      * @var TestApp\Entity\Book[]|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     private ?array $books = null;
 

@@ -7,24 +7,24 @@ use RestApiBundle\Mapping\Mapper as Mapper;
 
 class AllTypesByTypeHints implements Mapper\ModelInterface
 {
-    /** @Mapper\AutoType */
+    /** @Mapper\Field */
     public ?string $string;
 
-    /** @Mapper\AutoType */
+    /** @Mapper\Field */
     public ?int $int;
 
-    /** @Mapper\AutoType */
+    /** @Mapper\Field */
     public ?float $float;
 
-    /** @Mapper\AutoType */
+    /** @Mapper\Field */
     public ?bool $bool;
 
-    /** @Mapper\AutoType */
+    /** @Mapper\Field */
     public ?\DateTime $dateTime;
 
-    /** @Mapper\AutoType */
+    /** @Mapper\Field */
     public ?Tests\Fixture\Mapper\AutoType\NestedModel $nestedModel;
 
-    /** @Mapper\AutoType */
+    /** @Mapper\Field */
     public ?Tests\Fixture\Common\Entity\Author $entity;
 }

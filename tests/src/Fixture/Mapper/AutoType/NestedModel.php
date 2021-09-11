@@ -6,6 +6,6 @@ use RestApiBundle\Mapping\Mapper as Mapper;
 
 class NestedModel implements Mapper\ModelInterface
 {
-    /** @Mapper\AutoType */
+    /** @Mapper\Field */
     public string $string;
 }
