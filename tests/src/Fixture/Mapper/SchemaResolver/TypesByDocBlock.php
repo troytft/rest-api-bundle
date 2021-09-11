@@ -120,4 +120,14 @@ class TypesByDocBlock implements Mapper\ModelInterface
      * @Mapper\FindByField("slug")
      */
     public $entitiesByField;
+
+    /**
+     * @Mapper\Expose
+     */
+    public ?Mapper\DateInterface $date;
+
+    /**
+     * @Mapper\Expose
+     */
+    public ?Mapper\TimestampInterface $timestamp;
 }

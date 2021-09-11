@@ -126,6 +126,11 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
 
                 break;
 
+            case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isTimestamp($type->getClassName()):
+                $result = new RestApiBundle\Mapping\Mapper\TimestampType(nullable: $type->isNullable());
+
+                break;
+
             case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($type->getClassName()):
                 $result = new RestApiBundle\Mapping\Mapper\ModelType(class: (string) $type->getClassName(), nullable: $type->isNullable());
 

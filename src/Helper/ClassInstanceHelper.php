@@ -95,7 +95,7 @@ class ClassInstanceHelper
 
     public static function isTimestamp(string $class): bool
     {
-        if (!array_key_exists($class, static::$timeastampCache)) {
+        if (!array_key_exists($class, static::$timestampCache)) {
             $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
             static::$timestampCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Mapping\Mapper\TypeInterface::class);

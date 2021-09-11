@@ -31,4 +31,10 @@ class TypesByTypeHint implements Mapper\ModelInterface
     #[Mapper\Expose]
     #[Mapper\FindByField('slug')]
     public ?Tests\Fixture\Common\Entity\Book $entityByField;
+
+    #[Mapper\Expose]
+    public ?Mapper\DateInterface $date;
+
+    #[Mapper\Expose]
+    public ?Mapper\TimestampInterface $timestamp;
 }
