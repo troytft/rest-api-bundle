@@ -71,6 +71,14 @@ class TypesByDocBlock implements Mapper\ModelInterface
     public $dateTime;
 
     /**
+     * @var \DateTime|null
+     *
+     * @Mapper\Expose
+     * @Mapper\DateFormat("d/m/y H:i:s")
+     */
+    public $dateTimeWithFormat;
+
+    /**
      * @var \DateTime[]|null
      *
      * @Mapper\Expose
@@ -125,6 +133,12 @@ class TypesByDocBlock implements Mapper\ModelInterface
      * @Mapper\Expose
      */
     public ?Mapper\DateInterface $date;
+
+    /**
+     * @Mapper\Expose
+     * @Mapper\DateFormat("d/m/y")
+     */
+    public ?Mapper\DateInterface $dateWithFormat;
 
     /**
      * @Mapper\Expose

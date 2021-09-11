@@ -26,6 +26,8 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                     $isExposed = true;
                 } elseif ($propertyAnnotation instanceof RestApiBundle\Mapping\Mapper\FindByField) {
                     $typeOptions[] = $propertyAnnotation;
+                } elseif ($propertyAnnotation instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
+                    $typeOptions[] = $propertyAnnotation;
                 }
             }
 
@@ -119,10 +121,22 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isDateTime($type->getClassName()):
                 $result = new RestApiBundle\Mapping\Mapper\DateTimeType(nullable: $type->isNullable());
 
+                foreach ($typeOptions as $typeOption) {
+                    if ($typeOption instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
+                        $result->format = $typeOption->getFormat();
+                    }
+                }
+
                 break;
 
             case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isDate($type->getClassName()):
                 $result = new RestApiBundle\Mapping\Mapper\DateType(nullable: $type->isNullable());
+
+                foreach ($typeOptions as $typeOption) {
+                    if ($typeOption instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
+                        $result->format = $typeOption->getFormat();
+                    }
+                }
 
                 break;
 

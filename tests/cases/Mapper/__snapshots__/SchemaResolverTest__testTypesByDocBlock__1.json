@@ -128,6 +128,18 @@
             "valuesType": null,
             "propertySetterName": null
         },
+        "dateTimeWithFormat": {
+            "properties": [],
+            "class": null,
+            "isNullable": true,
+            "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\DateTimeTransformer",
+            "transformerOptions": {
+                "format": "d\/m\/y H:i:s"
+            },
+            "type": "transformer-aware",
+            "valuesType": null,
+            "propertySetterName": null
+        },
         "dateTimes": {
             "properties": [],
             "class": null,
@@ -259,6 +271,18 @@
             "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\DateTransformer",
             "transformerOptions": {
                 "format": null
+            },
+            "type": "transformer-aware",
+            "valuesType": null,
+            "propertySetterName": null
+        },
+        "dateWithFormat": {
+            "properties": [],
+            "class": null,
+            "isNullable": true,
+            "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\DateTransformer",
+            "transformerOptions": {
+                "format": "d\/m\/y"
             },
             "type": "transformer-aware",
             "valuesType": null,

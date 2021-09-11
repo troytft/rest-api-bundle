@@ -16,7 +16,7 @@ class DateType extends RestApiBundle\Mapping\Mapper\BaseNullableType implements 
 {
     public function __construct(
         $options = [],
-        private ?string $format = null,
+        public ?string $format = null,
         ?bool $nullable = null
     ) {
         if (is_string($options)) {
