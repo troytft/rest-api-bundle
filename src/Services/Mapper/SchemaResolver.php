@@ -74,9 +74,9 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
     {
         $type = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
 
-        if (!$type && $originalMapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
-            throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('AutoType are not allowed with empty property type.');
-        } elseif ($type && $originalMapping instanceof RestApiBundle\Mapping\Mapper\AutoType) {
+        if (!$type && $originalMapping instanceof RestApiBundle\Mapping\Mapper\Field) {
+            throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('Field are not allowed with empty property type.');
+        } elseif ($type && $originalMapping instanceof RestApiBundle\Mapping\Mapper\Field) {
             return $this->resolveMappingByType($type);
         } elseif (!$type) {
             return $originalMapping;

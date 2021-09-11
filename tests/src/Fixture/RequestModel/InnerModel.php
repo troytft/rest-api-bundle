@@ -9,7 +9,7 @@ class InnerModel implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     /**
      * @var string
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     private $field;
 

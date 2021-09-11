@@ -9,7 +9,7 @@ class Release implements Mapper\ModelInterface
     /**
      * @var string
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     private $country;
 

@@ -10,7 +10,7 @@ class ModelWithArrayOfEntities implements \RestApiBundle\Mapping\RequestModel\Re
     /**
      * @var TestApp\Entity\Book[]
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     private $books;
 

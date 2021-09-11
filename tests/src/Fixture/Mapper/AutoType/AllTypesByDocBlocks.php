@@ -10,98 +10,98 @@ class AllTypesByDocBlocks implements Mapper\ModelInterface
     /**
      * @var string|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $string;
 
     /**
      * @var int|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $int;
 
     /**
      * @var float|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $float;
 
     /**
      * @var bool|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $bool;
 
     /**
      * @var string[]|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $strings;
 
     /**
      * @var int[]|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $ints;
 
     /**
      * @var float[]|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $floats;
 
     /**
      * @var bool[]|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $bools;
 
     /**
      * @var \DateTime|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $dateTime;
 
     /**
      * @var \DateTime[]|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $dateTimes;
 
     /**
      * @var Tests\Fixture\Mapper\AutoType\NestedModel|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $nestedModel;
 
     /**
      * @var Tests\Fixture\Mapper\AutoType\NestedModel[]|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $nestedModels;
 
     /**
      * @var Tests\Fixture\Common\Entity\Author|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $entity;
 
     /**
      * @var Tests\Fixture\Common\Entity\Author[]|null
      *
-     * @Mapper\AutoType
+     * @Mapper\Field
      */
     public $entities;
 }
