@@ -7,7 +7,6 @@ use Symfony\Component\PropertyInfo;
 
 use function sprintf;
 use function ucfirst;
-use function var_dump;
 
 class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInterface
 {
@@ -168,7 +167,6 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 break;
 
             default:
-                var_dump($type, RestApiBundle\Helper\ClassInstanceHelper::isDate($type->getClassName()));
                 throw new \LogicException();
         }
 
