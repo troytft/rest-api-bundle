@@ -6,7 +6,6 @@ use RestApiBundle;
 
 use function array_key_exists;
 use function class_exists;
-use function var_dump;
 
 class ClassInstanceHelper
 {
@@ -25,7 +24,16 @@ class ClassInstanceHelper
     /**
      * @var array<string, bool>
      */
-    private static array $dateCache = [];
+    private static array $dateCache = [
+        RestApiBundle\Mapping\Mapper\DateInterface::class => true,
+    ];
+
+    /**
+     * @var array<string, bool>
+     */
+    private static array $timestampCache = [
+        RestApiBundle\Mapping\Mapper\TimestampInterface::class => true,
+    ];
 
     /**
      * @var array<string, bool>
@@ -76,22 +84,24 @@ class ClassInstanceHelper
 
     public static function isDate(string $class): bool
     {
-        if ($class === RestApiBundle\Mapping\Mapper\DateInterface::class) {
-            return true;
-        }
-
-        if (!class_exists($class)) {
-            return false;
-        }
-
         if (!array_key_exists($class, static::$dateCache)) {
             $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
-            static::$dateCache[$class] = $reflectionClass->isInstantiable()
-                && $reflectionClass->implementsInterface(RestApiBundle\Mapping\Mapper\DateInterface::class);
+            static::$dateCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Mapping\Mapper\DateInterface::class);
         }
 
         return static::$dateCache[$class];
+    }
+
+    public static function isTimestamp(string $class): bool
+    {
+        if (!array_key_exists($class, static::$timeastampCache)) {
+            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+
+            static::$timestampCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Mapping\Mapper\TypeInterface::class);
+        }
+
+        return static::$timestampCache[$class];
     }
 
     public static function isSerializableEnum(string $class): bool

@@ -4,21 +4,13 @@ namespace RestApiBundle\Mapping\Mapper;
 
 use RestApiBundle;
 
-/**
- * @Annotation
- * @Target({"PROPERTY", "ANNOTATION"})
- */
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
 class EntityType extends RestApiBundle\Mapping\Mapper\BaseNullableType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
     public function __construct(
-        array $options = [],
         private string $class = '',
         public string $field = 'id',
         ?bool $nullable = null
     ) {
-        $this->field = $options['field'] ?? $field;
-
         parent::__construct(nullable: $nullable);
     }
 

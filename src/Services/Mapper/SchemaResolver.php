@@ -132,14 +132,13 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 break;
 
             case $type->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($type->getClassName()):
-                $field = 'id';
+                $result = new RestApiBundle\Mapping\Mapper\EntityType(class: (string) $type->getClassName(), nullable: $type->isNullable());
+
                 foreach ($typeOptions as $typeOption) {
                     if ($typeOption instanceof RestApiBundle\Mapping\Mapper\FindByField) {
-                        $field = $typeOption->getField();
+                        $result->field = $typeOption->getField();
                     }
                 }
-
-                $result = new RestApiBundle\Mapping\Mapper\EntityType(class: (string) $type->getClassName(), field: $field, nullable: $type->isNullable());
 
                 break;
 
