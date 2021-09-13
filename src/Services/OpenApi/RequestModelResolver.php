@@ -7,6 +7,7 @@ use RestApiBundle;
 use Symfony\Component\PropertyInfo;
 use cebe\openapi\spec as OpenApi;
 
+use function array_is_list;
 use function sprintf;
 
 class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
@@ -82,6 +83,10 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
                     $callback = $constraint->callback;
                     $choices = $callback();
                 } else {
+                    throw new \InvalidArgumentException();
+                }
+
+                if (!array_is_list($choices)) {
                     throw new \InvalidArgumentException();
                 }
 
