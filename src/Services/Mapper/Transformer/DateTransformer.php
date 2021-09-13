@@ -23,12 +23,12 @@ class DateTransformer implements TransformerInterface
     {
         $format = $options[static::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
 
-        $result = \DateTime::createFromFormat($format, $value);
+        $result = RestApiBundle\Mapping\Mapper\Date::createFromFormat($format, $value);
         if ($result === false) {
             throw new RestApiBundle\Exception\Mapper\Transformer\InvalidDateFormatException($format);
         }
 
-        $lastErrors = \DateTime::getLastErrors();
+        $lastErrors = RestApiBundle\Mapping\Mapper\Date::getLastErrors();
         if ($lastErrors['warning_count'] || $lastErrors['error_count']) {
             $errorMessage = implode(', ', array_merge(array_values($lastErrors['warnings']), array_values($lastErrors['errors'])));
 
