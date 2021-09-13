@@ -11,7 +11,7 @@ class ModelWithValidation implements \RestApiBundle\Mapping\RequestModel\Request
     /**
      * @var string
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      *
      * @Assert\Length(min=6, max=255, allowEmptyString=false)
      * @Assert\Email()
@@ -21,21 +21,21 @@ class ModelWithValidation implements \RestApiBundle\Mapping\RequestModel\Request
     /**
      * @var TestApp\RequestModel\InnerModelWithValidation
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $modelField;
 
     /**
      * @var TestApp\RequestModel\InnerModelWithValidation[]
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $collectionField;
 
     /**
      * @var int[]
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      *
      * @Assert\All(constraints={
      *     @Assert\Range(min=10)

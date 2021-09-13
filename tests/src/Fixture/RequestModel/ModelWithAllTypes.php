@@ -10,56 +10,54 @@ class ModelWithAllTypes implements \RestApiBundle\Mapping\RequestModel\RequestMo
     /**
      * @var bool|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $booleanType;
 
     /**
      * @var float|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $floatType;
 
     /**
      * @var int|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $integerType;
 
     /**
      * @var string|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $stringType;
 
     /**
      * @var Tests\Fixture\RequestModel\InnerModel|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $model;
 
     /**
      * @var int[]|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $collection;
 
     /**
-     * @var \DateTime|null
-     *
-     * @Mapper\DateType()
+     * @Mapper\Expose
      */
-    private $date;
+    private ?Mapper\DateInterface $date;
 
     /**
      * @var \DateTime|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $dateTime;
 
@@ -135,12 +133,12 @@ class ModelWithAllTypes implements \RestApiBundle\Mapping\RequestModel\RequestMo
         return $this;
     }
 
-    public function getDate(): ?\DateTime
+    public function getDate(): ?Mapper\DateInterface
     {
         return $this->date;
     }
 
-    public function setDate(?\DateTime $date)
+    public function setDate(?Mapper\DateInterface $date): static
     {
         $this->date = $date;
 

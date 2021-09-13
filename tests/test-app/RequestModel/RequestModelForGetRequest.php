@@ -10,7 +10,7 @@ class RequestModelForGetRequest implements \RestApiBundle\Mapping\RequestModel\R
     /**
      * @var int
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      *
      * @Assert\Range(min=0, max=PHP_INT_MAX)
      */
@@ -19,7 +19,7 @@ class RequestModelForGetRequest implements \RestApiBundle\Mapping\RequestModel\R
     /**
      * @var int
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      *
      * @Assert\Range(min=0, max=20)
      */

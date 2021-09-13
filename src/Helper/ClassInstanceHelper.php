@@ -24,6 +24,20 @@ class ClassInstanceHelper
     /**
      * @var array<string, bool>
      */
+    private static array $dateCache = [
+        RestApiBundle\Mapping\Mapper\DateInterface::class => true,
+    ];
+
+    /**
+     * @var array<string, bool>
+     */
+    private static array $timestampCache = [
+        RestApiBundle\Mapping\Mapper\TimestampInterface::class => true,
+    ];
+
+    /**
+     * @var array<string, bool>
+     */
     private static array $serializableEnumCache = [];
 
     /**
@@ -66,6 +80,28 @@ class ClassInstanceHelper
         }
 
         return static::$dateTimeCache[$class];
+    }
+
+    public static function isDate(string $class): bool
+    {
+        if (!array_key_exists($class, static::$dateCache)) {
+            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+
+            static::$dateCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Mapping\Mapper\DateInterface::class);
+        }
+
+        return static::$dateCache[$class];
+    }
+
+    public static function isTimestamp(string $class): bool
+    {
+        if (!array_key_exists($class, static::$timestampCache)) {
+            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+
+            static::$timestampCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Mapping\Mapper\TypeInterface::class);
+        }
+
+        return static::$timestampCache[$class];
     }
 
     public static function isSerializableEnum(string $class): bool

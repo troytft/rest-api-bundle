@@ -8,21 +8,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class BookList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
-    /** @Mapper\Field */
+    /** @Mapper\Expose */
     public ?int $offset;
 
-    /** @Mapper\Field */
+    /** @Mapper\Expose */
     public ?int $limit;
 
     /**
      * @var string[]|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      * @Assert\Choice(callback="TestApp\Enum\BookStatus::getValues", multiple=true)
      */
     private ?array $statuses;
 
-    /** @Mapper\Field */
+    /** @Mapper\Expose */
     public ?TestApp\Entity\Author $author;
 
     /**

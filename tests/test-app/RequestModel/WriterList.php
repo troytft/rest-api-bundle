@@ -11,21 +11,21 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     /**
      * @var int
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $offset;
 
     /**
      * @var int
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $limit;
 
     /**
      * @var string|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      * @Assert\Length(min=1, max=255, allowEmptyString=false)
      */
     private $name;
@@ -33,22 +33,20 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     /**
      * @var string|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      * @Assert\Length(min=1, max=255, allowEmptyString=false)
      */
     private $surname;
 
     /**
-     * @var \DateTime|null
-     *
-     * @Mapper\DateType()
+     * @Mapper\Expose
      */
-    private $birthday;
+    private ?Mapper\DateInterface $birthday;
 
     /**
      * @var TestApp\Entity\Book[]|null
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $genres;
 
@@ -100,12 +98,12 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
         return $this;
     }
 
-    public function getBirthday(): ?\DateTime
+    public function getBirthday(): ?Mapper\DateInterface
     {
         return $this->birthday;
     }
 
-    public function setBirthday(?\DateTime $birthday)
+    public function setBirthday(?Mapper\DateInterface $birthday): static
     {
         $this->birthday = $birthday;
 

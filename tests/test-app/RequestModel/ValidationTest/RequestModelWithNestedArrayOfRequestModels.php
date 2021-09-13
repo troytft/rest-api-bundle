@@ -10,7 +10,7 @@ class RequestModelWithNestedArrayOfRequestModels implements \RestApiBundle\Mappi
     /**
      * @var TestApp\RequestModel\ValidationTest\InnerRequestModel[]
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      */
     private $nestedRequestModels;
 

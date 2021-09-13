@@ -1,0 +1,45 @@
+{
+    "properties": {
+        "field1": {
+            "properties": [],
+            "class": null,
+            "isNullable": false,
+            "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\StringTransformer",
+            "transformerOptions": [],
+            "type": "transformer-aware",
+            "valuesType": null,
+            "propertySetterName": "setField1"
+        },
+        "field2": {
+            "properties": [],
+            "class": null,
+            "isNullable": false,
+            "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\DateTimeTransformer",
+            "transformerOptions": {
+                "format": null
+            },
+            "type": "transformer-aware",
+            "valuesType": null,
+            "propertySetterName": "setField2"
+        },
+        "field3": {
+            "properties": [],
+            "class": null,
+            "isNullable": false,
+            "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\DateTransformer",
+            "transformerOptions": {
+                "format": "d\/m\/Y"
+            },
+            "type": "transformer-aware",
+            "valuesType": null,
+            "propertySetterName": "setField3"
+        }
+    },
+    "class": "Tests\\Fixture\\Mapper\\SchemaResolver\\ExposeAll",
+    "isNullable": false,
+    "transformerClass": null,
+    "transformerOptions": [],
+    "type": "model",
+    "valuesType": null,
+    "propertySetterName": null
+}

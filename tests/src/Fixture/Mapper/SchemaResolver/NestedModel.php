@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Fixture\Mapper\AutoType;
+namespace Tests\Fixture\Mapper\SchemaResolver;
 
 use RestApiBundle\Mapping\Mapper as Mapper;
 
 class NestedModel implements Mapper\ModelInterface
 {
-    /** @Mapper\Field */
+    /** @Mapper\Expose */
     public string $string;
 }

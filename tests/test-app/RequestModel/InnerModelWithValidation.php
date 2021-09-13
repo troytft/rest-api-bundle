@@ -10,7 +10,7 @@ class InnerModelWithValidation implements \RestApiBundle\Mapping\RequestModel\Re
     /**
      * @var string
      *
-     * @Mapper\Field
+     * @Mapper\Expose
      * @Assert\Length(min=3, max=255, allowEmptyString=false)
      */
     private $stringField;

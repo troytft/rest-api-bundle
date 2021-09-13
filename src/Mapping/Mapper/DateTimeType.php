@@ -7,7 +7,7 @@ use RestApiBundle;
 class DateTimeType extends RestApiBundle\Mapping\Mapper\BaseNullableType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
 {
     public function __construct(
-        private ?string $format = null,
+        public ?string $format = null,
         ?bool $nullable = null
     ) {
         parent::__construct(nullable: $nullable);
