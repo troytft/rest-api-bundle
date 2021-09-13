@@ -82,27 +82,31 @@ class EndpointFinder
                 continue;
             }
 
+            if ($controllerRouteAnnotation instanceof Route && $controllerRouteAnnotation->getPath()) {
+                $path = $controllerRouteAnnotation->getPath();
+
+                if ($actionRouteAnnotation->getPath()) {
+                    $path .= $actionRouteAnnotation->getPath();
+                }
+            } elseif ($actionRouteAnnotation->getPath()) {
+                $path = $actionRouteAnnotation->getPath();
+            } else {
+                throw new RestApiBundle\Exception\ContextAware\FunctionOfClass('Route has empty path.', $class, $reflectionMethod->getName());
+            }
+
+            if (!$actionRouteAnnotation->getMethods()) {
+                throw new RestApiBundle\Exception\ContextAware\FunctionOfClass('Route has empty methods.', $class, $reflectionMethod->getName());
+            }
+
+            if (is_string($endpointAnnotation->tags)) {
+                $tags = [$endpointAnnotation->tags];
+            } elseif (is_array($endpointAnnotation->tags)) {
+                $tags = $endpointAnnotation->tags;
+            } else {
+                throw new \InvalidArgumentException();
+            }
+
             try {
-                if ($controllerRouteAnnotation instanceof Route && $controllerRouteAnnotation->getPath()) {
-                    $path = $controllerRouteAnnotation->getPath();
-
-                    if ($actionRouteAnnotation->getPath()) {
-                        $path .= $actionRouteAnnotation->getPath();
-                    }
-                } elseif ($actionRouteAnnotation->getPath()) {
-                    $path = $actionRouteAnnotation->getPath();
-                } else {
-                    throw new RestApiBundle\Exception\ContextAware\FunctionOfClass('Route has empty path.', $class, $reflectionMethod->getName());
-                }
-
-                if (is_string($endpointAnnotation->tags)) {
-                    $tags = [$endpointAnnotation->tags];
-                } elseif (is_array($endpointAnnotation->tags)) {
-                    $tags = $endpointAnnotation->tags;
-                } else {
-                    throw new \InvalidArgumentException();
-                }
-
                 $endpointData = new RestApiBundle\Model\OpenApi\EndpointData();
                 $endpointData
                     ->setTitle($endpointAnnotation->title)
