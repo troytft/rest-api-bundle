@@ -12,7 +12,7 @@ class ExposeAll implements Mapper\ModelInterface
     private \DateTime $field2;
 
     #[Mapper\DateFormat('d/m/Y')]
-    private Mapper\DateInterface $field3;
+    private Mapper\Date $field3;
 
     public function getField1(): string
     {
@@ -38,12 +38,12 @@ class ExposeAll implements Mapper\ModelInterface
         return $this;
     }
 
-    public function getField3(): Mapper\DateInterface
+    public function getField3(): Mapper\Date
     {
         return $this->field3;
     }
 
-    public function setField3(Mapper\DateInterface $field3): static
+    public function setField3(Mapper\Date $field3): static
     {
         $this->field3 = $field3;
 

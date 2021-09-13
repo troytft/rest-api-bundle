@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Mapping\Mapper;
+namespace RestApiBundle\Model\Mapper\Types;
 
 interface TransformerAwareTypeInterface extends NullableAwareTypeInterface
 {

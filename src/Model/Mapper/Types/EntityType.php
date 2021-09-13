@@ -1,10 +1,10 @@
 <?php
 
-namespace RestApiBundle\Mapping\Mapper;
+namespace RestApiBundle\Model\Mapper\Types;
 
 use RestApiBundle;
 
-class EntityType extends RestApiBundle\Mapping\Mapper\BaseNullableType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
+class EntityType extends RestApiBundle\Model\Mapper\Types\BaseNullableType implements RestApiBundle\Model\Mapper\Types\TransformerAwareTypeInterface
 {
     public function __construct(
         private string $class = '',

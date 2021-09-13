@@ -132,16 +132,16 @@ class TypesByDocBlock implements Mapper\ModelInterface
     /**
      * @Mapper\Expose
      */
-    public ?Mapper\DateInterface $date;
+    public ?Mapper\Date $date;
 
     /**
      * @Mapper\Expose
      * @Mapper\DateFormat("d/m/y")
      */
-    public ?Mapper\DateInterface $dateWithFormat;
+    public ?Mapper\Date $dateWithFormat;
 
     /**
      * @Mapper\Expose
      */
-    public ?Mapper\TimestampInterface $timestamp;
+    public ?Mapper\Timestamp $timestamp;
 }

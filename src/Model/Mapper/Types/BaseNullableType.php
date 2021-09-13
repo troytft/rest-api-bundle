@@ -1,10 +1,10 @@
 <?php
 
-namespace RestApiBundle\Mapping\Mapper;
+namespace RestApiBundle\Model\Mapper\Types;
 
 use RestApiBundle;
 
-abstract class BaseNullableType implements RestApiBundle\Mapping\Mapper\NullableAwareTypeInterface
+abstract class BaseNullableType implements RestApiBundle\Model\Mapper\Types\NullableAwareTypeInterface
 {
     public function __construct(private ?bool $nullable = null)
     {
