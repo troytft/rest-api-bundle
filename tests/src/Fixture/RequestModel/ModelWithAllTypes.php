@@ -52,7 +52,7 @@ class ModelWithAllTypes implements \RestApiBundle\Mapping\RequestModel\RequestMo
     /**
      * @Mapper\Expose
      */
-    private ?Mapper\DateInterface $date;
+    private ?Mapper\Date $date;
 
     /**
      * @var \DateTime|null
@@ -133,12 +133,12 @@ class ModelWithAllTypes implements \RestApiBundle\Mapping\RequestModel\RequestMo
         return $this;
     }
 
-    public function getDate(): ?Mapper\DateInterface
+    public function getDate(): ?Mapper\Date
     {
         return $this->date;
     }
 
-    public function setDate(?Mapper\DateInterface $date): static
+    public function setDate(?Mapper\Date $date): static
     {
         $this->date = $date;
 

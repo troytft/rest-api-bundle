@@ -56,19 +56,19 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         return RestApiBundle\Model\Mapper\Schema::createModelType($class, $properties, $isNullable);
     }
 
-    private function resolveSchemaByMapping(RestApiBundle\Mapping\Mapper\TypeInterface $mapping): RestApiBundle\Model\Mapper\Schema
+    private function resolveSchemaByMapping(RestApiBundle\Model\Mapper\Types\TypeInterface $mapping): RestApiBundle\Model\Mapper\Schema
     {
-        if ($mapping instanceof RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface) {
+        if ($mapping instanceof RestApiBundle\Model\Mapper\Types\TransformerAwareTypeInterface) {
             $schema = RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(
                 $mapping->getTransformerClass(),
                 $mapping->getTransformerOptions(),
                 $mapping->getIsNullable() ?? false
             );
-        } elseif ($mapping instanceof RestApiBundle\Mapping\Mapper\ModelType) {
+        } elseif ($mapping instanceof RestApiBundle\Model\Mapper\Types\ModelType) {
             $schema = $this->resolve($mapping->getClass(), $mapping->getIsNullable() ?? false);
-        } elseif ($mapping instanceof RestApiBundle\Mapping\Mapper\ArrayType) {
+        } elseif ($mapping instanceof RestApiBundle\Model\Mapper\Types\ArrayType) {
             $valuesType = $mapping->getValuesType();
-            if ($valuesType instanceof RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface && $valuesType->getTransformerClass() === RestApiBundle\Services\Mapper\Transformer\EntityTransformer::class) {
+            if ($valuesType instanceof RestApiBundle\Model\Mapper\Types\TransformerAwareTypeInterface && $valuesType->getTransformerClass() === RestApiBundle\Services\Mapper\Transformer\EntityTransformer::class) {
                 $schema = RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(
                     RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::class,
                     $valuesType->getTransformerOptions(),
@@ -84,7 +84,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         return $schema;
     }
 
-    private function preprocessMapping(\ReflectionProperty $reflectionProperty, array $typeOptions = []): RestApiBundle\Mapping\Mapper\TypeInterface
+    private function preprocessMapping(\ReflectionProperty $reflectionProperty, array $typeOptions = []): RestApiBundle\Model\Mapper\Types\TypeInterface
     {
         $type = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
 
@@ -95,63 +95,63 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         return $this->resolveMappingByType($type, $typeOptions);
     }
 
-    private function resolveMappingByType(PropertyInfo\Type $type, array $typeOptions = []): RestApiBundle\Mapping\Mapper\TypeInterface
+    private function resolveMappingByType(PropertyInfo\Type $type, array $typeOptions = []): RestApiBundle\Model\Mapper\Types\TypeInterface
     {
         switch (true) {
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING:
-                $result = new RestApiBundle\Mapping\Mapper\StringType(nullable: $type->isNullable());
+                $result = new RestApiBundle\Model\Mapper\Types\StringType(nullable: $type->isNullable());
 
                 break;
 
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT:
-                $result = new RestApiBundle\Mapping\Mapper\IntegerType(nullable: $type->isNullable());
+                $result = new RestApiBundle\Model\Mapper\Types\IntegerType(nullable: $type->isNullable());
 
                 break;
 
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_FLOAT:
-                $result = new RestApiBundle\Mapping\Mapper\FloatType(nullable: $type->isNullable());
+                $result = new RestApiBundle\Model\Mapper\Types\FloatType(nullable: $type->isNullable());
 
                 break;
 
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_BOOL:
-                $result = new RestApiBundle\Mapping\Mapper\BooleanType(nullable: $type->isNullable());
+                $result = new RestApiBundle\Model\Mapper\Types\BooleanType(nullable: $type->isNullable());
+
+                break;
+
+            case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isDateMapperType($type->getClassName()):
+                $result = new RestApiBundle\Model\Mapper\Types\DateType(nullable: $type->isNullable());
+
+                foreach ($typeOptions as $typeOption) {
+                    if ($typeOption instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
+                        $result->format = $typeOption->getFormat();
+                    }
+                }
+
+                break;
+
+            case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isTimestampMapperType($type->getClassName()):
+                $result = new RestApiBundle\Model\Mapper\Types\TimestampType(nullable: $type->isNullable());
 
                 break;
 
             case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isDateTime($type->getClassName()):
-                $result = new RestApiBundle\Mapping\Mapper\DateTimeType(nullable: $type->isNullable());
+                $result = new RestApiBundle\Model\Mapper\Types\DateTimeType(nullable: $type->isNullable());
 
                 foreach ($typeOptions as $typeOption) {
                     if ($typeOption instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
                         $result->format = $typeOption->getFormat();
                     }
                 }
-
-                break;
-
-            case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isDate($type->getClassName()):
-                $result = new RestApiBundle\Mapping\Mapper\DateType(nullable: $type->isNullable());
-
-                foreach ($typeOptions as $typeOption) {
-                    if ($typeOption instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
-                        $result->format = $typeOption->getFormat();
-                    }
-                }
-
-                break;
-
-            case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isTimestamp($type->getClassName()):
-                $result = new RestApiBundle\Mapping\Mapper\TimestampType(nullable: $type->isNullable());
 
                 break;
 
             case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($type->getClassName()):
-                $result = new RestApiBundle\Mapping\Mapper\ModelType(class: (string) $type->getClassName(), nullable: $type->isNullable());
+                $result = new RestApiBundle\Model\Mapper\Types\ModelType(class: (string) $type->getClassName(), nullable: $type->isNullable());
 
                 break;
 
             case $type->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($type->getClassName()):
-                $result = new RestApiBundle\Mapping\Mapper\EntityType(class: (string) $type->getClassName(), nullable: $type->isNullable());
+                $result = new RestApiBundle\Model\Mapper\Types\EntityType(class: (string) $type->getClassName(), nullable: $type->isNullable());
 
                 foreach ($typeOptions as $typeOption) {
                     if ($typeOption instanceof RestApiBundle\Mapping\Mapper\FindByField) {
@@ -162,7 +162,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 break;
 
             case $type->isCollection():
-                $result = new RestApiBundle\Mapping\Mapper\ArrayType($this->resolveMappingByType($type->getCollectionValueType(), $typeOptions), nullable: $type->isNullable());
+                $result = new RestApiBundle\Model\Mapper\Types\ArrayType($this->resolveMappingByType($type->getCollectionValueType(), $typeOptions), nullable: $type->isNullable());
 
                 break;
 

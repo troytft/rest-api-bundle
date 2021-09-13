@@ -1,10 +1,10 @@
 <?php
 
-namespace RestApiBundle\Mapping\Mapper;
+namespace RestApiBundle\Model\Mapper\Types;
 
 use RestApiBundle;
 
-class DateType extends RestApiBundle\Mapping\Mapper\BaseNullableType implements RestApiBundle\Mapping\Mapper\TransformerAwareTypeInterface
+class DateType extends RestApiBundle\Model\Mapper\Types\BaseNullableType implements RestApiBundle\Model\Mapper\Types\TransformerAwareTypeInterface
 {
     public function __construct(
         public ?string $format = null,

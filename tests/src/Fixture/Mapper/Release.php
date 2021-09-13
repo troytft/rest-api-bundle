@@ -8,7 +8,7 @@ use RestApiBundle\Mapping\Mapper;
 class Release implements Mapper\ModelInterface
 {
     private string $country;
-    private Mapper\DateInterface $date;
+    private Mapper\Date $date;
 
     public function getCountry(): string
     {
@@ -22,12 +22,12 @@ class Release implements Mapper\ModelInterface
         return $this;
     }
 
-    public function getDate(): Mapper\DateInterface
+    public function getDate(): Mapper\Date
     {
         return $this->date;
     }
 
-    public function setDate(Mapper\DateInterface $date): static
+    public function setDate(Mapper\Date $date): static
     {
         $this->date = $date;
 

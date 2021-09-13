@@ -2,6 +2,6 @@
 
 namespace RestApiBundle\Mapping\Mapper;
 
-interface TimestampInterface extends \DateTimeInterface
+interface TimestampInterface
 {
 }

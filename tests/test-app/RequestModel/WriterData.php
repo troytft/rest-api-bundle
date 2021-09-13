@@ -27,7 +27,7 @@ class WriterData implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     /**
      * @Mapper\Expose
      */
-    private ?Mapper\DateInterface $birthday;
+    private ?Mapper\Date $birthday;
 
     /**
      * @var TestApp\Entity\Book[]
@@ -60,12 +60,12 @@ class WriterData implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
         return $this;
     }
 
-    public function getBirthday(): ?Mapper\DateInterface
+    public function getBirthday(): ?Mapper\Date
     {
         return $this->birthday;
     }
 
-    public function setBirthday(?Mapper\DateInterface $birthday): static
+    public function setBirthday(?Mapper\Date $birthday): static
     {
         $this->birthday = $birthday;
 
