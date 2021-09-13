@@ -14,7 +14,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
     {
         $properties = [];
         $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
-        $isExposedAll = RestApiBundle\Helper\AnnotationReader::getClassAnnotation($reflectionClass, RestApiBundle\Mapping\Mapper\ExposeAll::class) ?: false;
+        $isExposedAll = RestApiBundle\Helper\AnnotationReader::getClassAnnotation($reflectionClass, RestApiBundle\Mapping\Mapper\ExposeAll::class) instanceof RestApiBundle\Mapping\Mapper\ExposeAll;
 
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             $isExposed = false;
