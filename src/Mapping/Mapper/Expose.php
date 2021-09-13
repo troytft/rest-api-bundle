@@ -2,8 +2,6 @@
 
 namespace RestApiBundle\Mapping\Mapper;
 
-use RestApiBundle;
-
 /**
  * @Annotation
  * @Target({"PROPERTY", "ANNOTATION"})
