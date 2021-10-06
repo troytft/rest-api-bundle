@@ -6,7 +6,6 @@ use RestApiBundle;
 use Doctrine;
 use Symfony\Component\PropertyInfo;
 
-use function get_class;
 use function in_array;
 
 class DoctrineHelper extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
@@ -31,7 +30,7 @@ class DoctrineHelper extends RestApiBundle\Services\OpenApi\AbstractSchemaResolv
 
         $type = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
         if (!$type) {
-            throw new RestApiBundle\Exception\ContextAware\PropertyOfClassException('Property has empty type.', get_class($reflectionProperty->getDeclaringClass()), $reflectionProperty->getName());
+            throw new RestApiBundle\Exception\ContextAware\PropertyOfClassException('Property has empty type.', $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName());
         }
 
         $allowedTypes = [
