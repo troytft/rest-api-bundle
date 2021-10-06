@@ -9,6 +9,7 @@ use Symfony\Component\PropertyInfo;
 use phpDocumentor\Reflection as PhpDoc;
 
 use function in_array;
+use function var_dump;
 
 class TypeExtractor
 {
@@ -86,6 +87,7 @@ class TypeExtractor
         $result = null;
         $varTag = static::resolveVarTag($reflectionProperty);
 
+        var_dump($reflectionProperty->getName(), $reflectionProperty->getType());
         if ($varTag) {
             $result = RestApiBundle\Helper\TypeExtractor::extractByPhpDocType($varTag->getType());
         } elseif ($reflectionProperty->getType()) {
