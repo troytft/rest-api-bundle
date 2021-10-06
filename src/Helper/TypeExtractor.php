@@ -9,7 +9,6 @@ use Symfony\Component\PropertyInfo;
 use phpDocumentor\Reflection as PhpDoc;
 
 use function in_array;
-use function var_dump;
 
 class TypeExtractor
 {
