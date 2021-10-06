@@ -87,7 +87,7 @@ class TypeExtractor
         $result = null;
         $varTag = static::resolveVarTag($reflectionProperty);
 
-        var_dump($reflectionProperty->getName(), $reflectionProperty->getType());
+        var_dump($reflectionProperty->getName(), $reflectionProperty->getType(), $reflectionProperty->);
         if ($varTag) {
             $result = RestApiBundle\Helper\TypeExtractor::extractByPhpDocType($varTag->getType());
         } elseif ($reflectionProperty->getType()) {

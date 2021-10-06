@@ -7,6 +7,7 @@ use Doctrine;
 use Symfony\Component\PropertyInfo;
 
 use function in_array;
+use function var_dump;
 
 class DoctrineHelper extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
@@ -28,6 +29,7 @@ class DoctrineHelper extends RestApiBundle\Services\OpenApi\AbstractSchemaResolv
             throw new \InvalidArgumentException();
         }
 
+        var_dump($class);
         $type = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
         if (!$type) {
             throw new \InvalidArgumentException();
