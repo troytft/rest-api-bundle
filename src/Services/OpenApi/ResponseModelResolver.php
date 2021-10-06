@@ -144,13 +144,13 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
 
     private function convertArrayType(PropertyInfo\Type $arrayType): OpenApi\Schema
     {
-        if (!$arrayType->getCollectionValueType()) {
+        if (!$arrayType->getCollectionValueTypes()) {
             throw new RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException();
         }
 
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
-            'items' => $this->convert($arrayType->getCollectionValueType()),
+            'items' => $this->convert(RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($arrayType)),
             'nullable' => $arrayType->isNullable(),
         ]);
     }

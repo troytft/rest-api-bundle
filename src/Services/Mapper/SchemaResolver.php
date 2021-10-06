@@ -162,7 +162,8 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 break;
 
             case $type->isCollection():
-                $result = new RestApiBundle\Model\Mapper\Types\ArrayType($this->resolveMappingByType($type->getCollectionValueType(), $typeOptions), nullable: $type->isNullable());
+                $valueType = $this->resolveMappingByType(RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($type), $typeOptions);
+                $result = new RestApiBundle\Model\Mapper\Types\ArrayType($valueType, nullable: $type->isNullable());
 
                 break;
 

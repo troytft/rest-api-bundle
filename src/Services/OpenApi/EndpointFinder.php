@@ -142,8 +142,8 @@ class EndpointFinder
 
                 break;
 
-            case $returnType->isCollection() && $returnType->getCollectionValueType() && $returnType->getCollectionValueType()->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
-                $collectionValueType = $returnType->getCollectionValueType();
+            case $returnType->isCollection() && $returnType->getCollectionValueTypes() && RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType)->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
+                $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType);
                 if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
                     throw new \InvalidArgumentException('Invalid response type');
                 }

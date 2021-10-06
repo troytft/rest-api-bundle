@@ -4,9 +4,8 @@ namespace RestApiBundle\Services\Mapper\Transformer;
 
 use RestApiBundle;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\PropertyInfo;
 use Doctrine\ORM\EntityManagerInterface;
-
-use function sprintf;
 
 class EntityTransformer implements TransformerInterface
 {
@@ -25,18 +24,16 @@ class EntityTransformer implements TransformerInterface
         $class = $options[static::CLASS_OPTION];
         $field = $options[static::FIELD_OPTION];
 
-        $fieldType = $this->entityManager->getClassMetadata($class)->getTypeOfField($field);
+        $fieldType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $field);
 
-        if ($fieldType === null) {
-            throw new \InvalidArgumentException(sprintf('Class "%s" has not a field with name "%s"', $class, $field));
-        } elseif ($fieldType === \Doctrine\DBAL\Types\Type::INTEGER) {
+        if ($fieldType === PropertyInfo\Type::BUILTIN_TYPE_INT) {
             $transformer = new IntegerTransformer();
             $value = $transformer->transform($value);
-        } elseif ($fieldType === \Doctrine\DBAL\Types\Type::STRING) {
+        } elseif ($fieldType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
             $transformer = new StringTransformer();
             $value = $transformer->transform($value);
         } else {
-            throw new \InvalidArgumentException(sprintf('Unsupported field type "%s"', $fieldType));
+            throw new \InvalidArgumentException();
         }
 
         /** @var EntityRepository $repository */
