@@ -7,8 +7,6 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\PropertyInfo;
 use Doctrine\ORM\EntityManagerInterface;
 
-use function sprintf;
-
 class EntityTransformer implements TransformerInterface
 {
     public const CLASS_OPTION = 'class';
@@ -28,16 +26,14 @@ class EntityTransformer implements TransformerInterface
 
         $fieldType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $field);
 
-        if ($fieldType === null) {
-            throw new \InvalidArgumentException(sprintf('Class "%s" has not a field with name "%s"', $class, $field));
-        } elseif ($fieldType === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+        if ($fieldType === PropertyInfo\Type::BUILTIN_TYPE_INT) {
             $transformer = new IntegerTransformer();
             $value = $transformer->transform($value);
         } elseif ($fieldType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
             $transformer = new StringTransformer();
             $value = $transformer->transform($value);
         } else {
-            throw new \InvalidArgumentException(sprintf('Unsupported field type "%s"', $fieldType));
+            throw new \InvalidArgumentException();
         }
 
         /** @var EntityRepository $repository */
