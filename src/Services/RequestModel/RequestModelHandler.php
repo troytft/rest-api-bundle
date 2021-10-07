@@ -33,6 +33,8 @@ class RequestModelHandler
             $this->mapper->map($requestModel, $data, $context);
         } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
             throw $this->convertStackedMappingException($exception);
+        } catch (RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface $exception) {
+            throw new RestApiBundle\Exception\RequestModel\ContextAwareException(sprintf('An error occurred while handling request model: %s – %s', $exception->getContext(), $exception->getMessage()), $exception);
         }
 
         $validationErrors = $this->requestModelValidator->validate($requestModel);

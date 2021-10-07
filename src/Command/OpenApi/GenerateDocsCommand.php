@@ -63,7 +63,7 @@ class GenerateDocsCommand extends Command
             $filesystem = new Filesystem();
             $filesystem->dumpFile($outputFile, $content);
         } catch (RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface $exception) {
-            $output->writeln(sprintf('An error occurred: %s – %s', $exception->getContext(), $exception->getMessage()));
+            $output->writeln(sprintf('An error occurred while generating OpenAPI schema: %s – %s', $exception->getContext(), $exception->getMessage()));
 
             return 1;
         }
