@@ -17,14 +17,14 @@ class Endpoint
      */
     public string $title;
     public ?string $description;
-    /** @var string[]|string */
-    public $tags;
+    /** @var string[]|string|null */
+    public mixed $tags;
 
     /**
      * @param array|string $options
      * @param string[]|string $tags
      */
-    public function __construct($options = [], string $title = '', ?string $description = null, $tags = [])
+    public function __construct($options = [], string $title = '', ?string $description = null, mixed $tags = null)
     {
         if (is_string($options)) {
             $this->title = $options;
