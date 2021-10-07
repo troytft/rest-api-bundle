@@ -5,6 +5,8 @@ namespace RestApiBundle\CacheWarmer\Mapper;
 use RestApiBundle;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
+use function sprintf;
+
 class SchemaCacheWarmer implements CacheWarmerInterface
 {
     private RestApiBundle\Services\Mapper\CacheSchemaResolver $cacheSchemaResolver;
@@ -20,7 +22,11 @@ class SchemaCacheWarmer implements CacheWarmerInterface
 
     public function warmUp($cacheDir)
     {
-        return $this->cacheSchemaResolver->warmUpCache($this->settingsProvider->getSourceCodeDirectory());
+        try {
+            return $this->cacheSchemaResolver->warmUpCache($this->settingsProvider->getSourceCodeDirectory());
+        } catch (RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface $exception) {
+            throw new \RuntimeException(sprintf('An error occurred: %s – %s', $exception->getMessageWithContext(), $exception->getMessage()));
+        }
     }
 
     public function isOptional()

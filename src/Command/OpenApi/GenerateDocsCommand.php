@@ -62,9 +62,8 @@ class GenerateDocsCommand extends Command
             $filesystem->dumpFile($outputFile, $content);
         } catch (RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface $exception) {
             $output->writeln([
-                'Error occurred while generating schema:',
-                $exception->getMessage(),
-                $exception->getContext()
+                'An error occurred:',
+                $exception->getMessageWithContext(),
             ]);
 
             return 1;
