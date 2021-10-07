@@ -89,7 +89,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         $type = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
 
         if (!$type) {
-            throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('Property has empty type.');
+            throw new RestApiBundle\Exception\ContextAware\PropertyOfClassException('Property has empty type', $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName());
         }
 
         return $this->resolveMappingByType($type, $typeOptions);
