@@ -14,7 +14,7 @@ class PropertyOfClassException extends \Exception implements RestApiBundle\Excep
     {
         parent::__construct($message, previous: $previous);
 
-        $this->context = sprintf('%s->%s', $class, $propertyName);
+        $this->context = sprintf('%s::$%s', $class, $propertyName);
     }
 
     public function getContext(): string
