@@ -10,8 +10,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
-use function sprintf;
-
 class GenerateDocsCommand extends Command
 {
     private const ARGUMENT_INPUT = 'input';
