@@ -7,7 +7,6 @@ use Symfony\Component\PropertyInfo;
 
 use function sprintf;
 use function ucfirst;
-use function var_dump;
 
 class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInterface
 {
@@ -48,7 +47,6 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                     throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException(sprintf('Setter with name "%s" does not exist.', $propertySetterName));
                 }
             } catch (RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException $exception) {
-                var_dump($exception->getTraceAsString());
                 throw new RestApiBundle\Exception\ContextAware\PropertyOfClassException($exception->getMessage(), class: $class, propertyName: $reflectionProperty->getName(), previous: $exception);
             }
 
