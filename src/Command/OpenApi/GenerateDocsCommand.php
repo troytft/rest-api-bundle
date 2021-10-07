@@ -63,7 +63,7 @@ class GenerateDocsCommand extends Command
         } catch (RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface $exception) {
             $output->writeln([
                 'An error occurred:',
-                $exception->getMessageWithContext(),
+                $exception->getMessage(),
             ]);
 
             return 1;
