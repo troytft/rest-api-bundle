@@ -98,9 +98,7 @@ class EndpointFinder
                 throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Route has empty methods', $class, $reflectionMethod->getName());
             }
 
-            if ($endpointAnnotation->tags === null) {
-                $tags = null;
-            } elseif (is_string($endpointAnnotation->tags)) {
+            if (is_string($endpointAnnotation->tags)) {
                 $tags = [$endpointAnnotation->tags];
             } elseif (is_array($endpointAnnotation->tags)) {
                 $tags = $endpointAnnotation->tags;

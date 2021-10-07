@@ -12,7 +12,7 @@ class EndpointData
     /**
      * @var string[]
      */
-    private ?array $tags;
+    private array $tags;
     private string $path;
 
     /**
@@ -51,12 +51,12 @@ class EndpointData
         return $this;
     }
 
-    public function getTags(): ?array
+    public function getTags(): array
     {
         return $this->tags;
     }
 
-    public function setTags(?array $tags)
+    public function setTags(array $tags)
     {
         $this->tags = $tags;
 
