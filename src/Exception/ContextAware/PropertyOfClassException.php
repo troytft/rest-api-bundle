@@ -8,17 +8,17 @@ use function sprintf;
 
 class PropertyOfClassException extends \Exception implements RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface
 {
-    private string $context;
+    private string $messageWithContext;
 
     public function __construct(string $message, string $class, string $propertyName, ?\Throwable $previous = null)
     {
         parent::__construct($message, previous: $previous);
 
-        $this->context = sprintf('%s::$%s', $class, $propertyName);
+        $this->messageWithContext = sprintf('%s %s::$%s', $message, $class, $propertyName);
     }
 
-    public function getContext(): string
+    public function getMessageWithContext(): string
     {
-        return $this->context;
+        return $this->messageWithContext;
     }
 }

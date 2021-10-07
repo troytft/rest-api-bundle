@@ -25,7 +25,7 @@ class SchemaCacheWarmer implements CacheWarmerInterface
         try {
             return $this->cacheSchemaResolver->warmUpCache($this->settingsProvider->getSourceCodeDirectory());
         } catch (RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface $exception) {
-            throw new \RuntimeException(sprintf('An error occurred: %s – %s', $exception->getContext(), $exception->getMessage()));
+            throw new \RuntimeException(sprintf('An error occurred: %s – %s', $exception->getMessageWithContext(), $exception->getMessage()));
         }
     }
 
