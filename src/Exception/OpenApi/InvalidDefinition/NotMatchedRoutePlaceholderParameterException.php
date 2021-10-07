@@ -10,6 +10,6 @@ class NotMatchedRoutePlaceholderParameterException extends RestApiBundle\Excepti
 {
     public function __construct(string $placeholder)
     {
-        parent::__construct(sprintf('Associated parameter for placeholder %s not matched.', $placeholder));
+        parent::__construct(sprintf('Associated parameter for placeholder %s not matched', $placeholder));
     }
 }
