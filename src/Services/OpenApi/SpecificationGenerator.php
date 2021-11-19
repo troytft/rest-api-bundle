@@ -422,6 +422,30 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
                 break;
 
+            case $returnType->isCollection() && $returnType->getCollectionValueTypes() && RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType)->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
+                $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType);
+                if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
+                    throw new \InvalidArgumentException('Invalid response type');
+                }
+
+                if ($returnType->isNullable()) {
+                    $responses->addResponse('204', $this->createEmptyResponse());
+                }
+
+                $responses->addResponse('200', new OpenApi\Response([
+                    'description' => 'Success response with json body',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => new OpenApi\Schema([
+                                'type' => OpenApi\Type::ARRAY,
+                                'items' => $this->responseModelResolver->resolveReferenceByClass($collectionValueType->getClassName()),
+                            ])
+                        ]
+                    ]
+                ]));
+
+                break;
+
             case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\RedirectResponse::class:
                 $responses->addResponse('302', new OpenApi\Response([
                     'description' => 'Success response with redirect',
@@ -448,30 +472,6 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                                 'example' => 'application/octet-stream'
                             ]),
                             'description' => 'File mime type',
-                        ]
-                    ]
-                ]));
-
-                break;
-
-            case $returnType->isCollection() && $returnType->getCollectionValueTypes() && RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType)->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
-                $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType);
-                if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
-                    throw new \InvalidArgumentException('Invalid response type');
-                }
-
-                if ($returnType->isNullable()) {
-                    $responses->addResponse('204', $this->createEmptyResponse());
-                }
-
-                $responses->addResponse('200', new OpenApi\Response([
-                    'description' => 'Success response with json body',
-                    'content' => [
-                        'application/json' => [
-                            'schema' => new OpenApi\Schema([
-                                'type' => OpenApi\Type::ARRAY,
-                                'items' => $collectionValueType->getClassName(),
-                            ])
                         ]
                     ]
                 ]));
