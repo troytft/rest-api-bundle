@@ -19,7 +19,7 @@ use function is_string;
 use function preg_match_all;
 use function reset;
 use function spl_autoload_functions;
-use function substr_count;use function Symfony\Component\String\u;
+use function substr_count;
 
 class EndpointFinder
 {
