@@ -4,8 +4,6 @@ namespace RestApiBundle\Helper;
 
 use RestApiBundle;
 
-use Symfony\Component\HttpFoundation;
-
 use function array_key_exists;
 use function class_exists;
 
