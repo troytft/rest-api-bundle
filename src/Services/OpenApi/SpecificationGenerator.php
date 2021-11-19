@@ -180,7 +180,11 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                     'description' => 'Success response with redirect',
                     'headers' => [
                         'Location' => [
-                            'type' => OpenApi\Type::STRING,
+                            'schema' => new OpenApi\Schema([
+                                'type' => OpenApi\Type::STRING,
+                                'example' => 'https://example.com'
+                            ]),
+                            'description' => 'Redirect URL',
                         ]
                     ]
                 ]));
