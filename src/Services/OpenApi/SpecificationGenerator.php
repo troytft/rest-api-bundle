@@ -138,7 +138,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             }
 
             if (!$routeData->endpointMapping->title) {
-                throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Endpoint has empty title', $routeData->reflectionMethod->class, $routeData->reflectionMethod->name);
+                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Endpoint has empty title', $routeData->reflectionMethod);
             }
 
             if ($routeData->controllerRouteMapping instanceof Route && $routeData->controllerRouteMapping->getPath()) {
@@ -150,15 +150,15 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             } elseif ($routeData->actionRouteMapping->getPath()) {
                 $routePath = $routeData->actionRouteMapping->getPath();
             } else {
-                throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Route has empty path', $routeData->reflectionMethod->class, $routeData->reflectionMethod->name);
+                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Route has empty path', $routeData->reflectionMethod);
             }
 
             if (!$routeData->actionRouteMapping->getMethods()) {
-                throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Route has empty methods', $routeData->reflectionMethod->class, $routeData->reflectionMethod->name);
+                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Route has empty methods', $routeData->reflectionMethod);
             }
 
             if (!$endpointTags) {
-                throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Endpoint has empty tags', $routeData->reflectionMethod->class, $routeData->reflectionMethod->name);
+                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Endpoint has empty tags', $routeData->reflectionMethod);
             }
 
             foreach ($endpointTags as $tagName) {
@@ -339,7 +339,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     {
         $returnType = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
         if (!$returnType) {
-            throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Return type not found in docBlock and type-hint', $reflectionMethod->class, $reflectionMethod->name);
+            throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Return type not found in docBlock and type-hint', $reflectionMethod);
         }
 
         switch (true) {
@@ -433,7 +433,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             } else {
                 $entityType = reset($entityTypes);
                 if (!$entityType instanceof PropertyInfo\Type) {
-                    throw new RestApiBundle\Exception\OpenApi\InvalidDefinition\NotMatchedRoutePlaceholderParameterException($placeholder);
+                    throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod(sprintf('Associated parameter for placeholder %s not matched', $placeholder), $reflectionMethod);
                 }
                 $result[] = new RestApiBundle\Model\OpenApi\PathParameter\EntityTypeParameter($placeholder, $entityType, $placeholder);
             }
