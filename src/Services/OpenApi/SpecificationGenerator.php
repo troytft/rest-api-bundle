@@ -415,7 +415,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                     'in' => 'path',
                     'name' => $placeholder,
                     'required' => true,
-                    'schema' => $this->resolveSchemaForEntityPathParameter($entityTypes[$placeholder], $placeholder),
+                    'schema' => $this->resolveSchemaForEntityPathParameter($entityType, $placeholder),
                 ]);
             }
         }
