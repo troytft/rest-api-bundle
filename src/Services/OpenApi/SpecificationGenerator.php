@@ -4,7 +4,9 @@ namespace RestApiBundle\Services\OpenApi;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\HttpFoundation;
 use Symfony\Component\PropertyInfo;
 
 use function array_merge;
@@ -23,15 +25,10 @@ use function strtolower;
 
 class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
-    private RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver;
-    private RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver;
-
     public function __construct(
-        RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver,
-        RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver
+        private RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver,
+        private RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver
     ) {
-        $this->requestModelResolver = $requestModelResolver;
-        $this->responseModelResolver = $responseModelResolver;
     }
 
     /**
@@ -95,9 +92,9 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     }
 
     /**
-     * @param RestApiBundle\Model\OpenApi\EndpointData[] $endpointDataItems
+     * @param RestApiBundle\Model\OpenApi\EndpointData[] $endpoints
      */
-    private function generateSpecification(array $endpointDataItems, ?string $template = null): OpenApi\OpenApi
+    private function generateSpecification(array $endpoints, ?string $template = null): OpenApi\OpenApi
     {
         $root = $this->createRootElement($template);
 
@@ -126,8 +123,40 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             $schemas[$typename] = $schema;
         }
 
-        foreach ($endpointDataItems as $routeData) {
-            foreach ($routeData->getTags() as $tagName) {
+        foreach ($endpoints as $endpointData) {
+            if (is_string($endpointData->endpointMapping->tags)) {
+                $endpointTags = [$endpointData->endpointMapping->tags];
+            } elseif (is_array($endpointData->endpointMapping->tags)) {
+                $endpointTags = $endpointData->endpointMapping->tags;
+            } else {
+                throw new \InvalidArgumentException();
+            }
+
+            if (!$endpointData->endpointMapping->title) {
+                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Endpoint has empty title', $endpointData->reflectionMethod);
+            }
+
+            if ($endpointData->controllerRouteMapping instanceof Route && $endpointData->controllerRouteMapping->getPath()) {
+                $routePath = $endpointData->controllerRouteMapping->getPath();
+
+                if ($endpointData->actionRouteMapping->getPath()) {
+                    $routePath .= $endpointData->actionRouteMapping->getPath();
+                }
+            } elseif ($endpointData->actionRouteMapping->getPath()) {
+                $routePath = $endpointData->actionRouteMapping->getPath();
+            } else {
+                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Route has empty path', $endpointData->reflectionMethod);
+            }
+
+            if (!$endpointData->actionRouteMapping->getMethods()) {
+                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Route has empty methods', $endpointData->reflectionMethod);
+            }
+
+            if (!$endpointTags) {
+                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Endpoint has empty tags', $endpointData->reflectionMethod);
+            }
+
+            foreach ($endpointTags as $tagName) {
                 if (isset($tags[$tagName])) {
                     continue;
                 }
@@ -137,146 +166,45 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 ]);
             }
 
-            $response = $routeData->getResponse();
+            $pathResponses = $this->resolveResponses($endpointData->reflectionMethod);
+            $pathParameters = $this->resolveParameters($routePath, $endpointData->reflectionMethod);
 
-            $responses = new OpenApi\Responses([]);
-
-            if ($response->getNullable()) {
-                $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
-            }
-
-            if ($response instanceof RestApiBundle\Model\OpenApi\Response\ResponseModel) {
-                $responseModelSchema = $this->responseModelResolver->resolveReferenceByClass($response->getClass());
-                $responseModelSchema
-                    ->nullable = $response->getNullable();
-
-                $responses->addResponse('200', new OpenApi\Response([
-                    'description' => 'Success response with json body',
-                    'content' => [
-                        'application/json' => [
-                            'schema' => $responseModelSchema
-                        ]
-                    ]
-                ]));
-            } elseif ($response instanceof RestApiBundle\Model\OpenApi\Response\ArrayOfResponseModels) {
-                $responseModelSchema = $this->responseModelResolver->resolveReferenceByClass($response->getClass());
-                $responseModelSchema
-                    ->nullable = $response->getNullable();
-
-                $responses->addResponse('200', new OpenApi\Response([
-                    'description' => 'Success response with json body',
-                    'content' => [
-                        'application/json' => [
-                            'schema' => new OpenApi\Schema([
-                                'type' => OpenApi\Type::ARRAY,
-                                'items' => $responseModelSchema,
-                                'nullable' => $response->getNullable(),
-                            ])
-                        ]
-                    ]
-                ]));
-            } elseif ($response instanceof RestApiBundle\Model\OpenApi\Response\RedirectResponse) {
-                $responses->addResponse((string) $response->getStatusCode(), new OpenApi\Response([
-                    'description' => 'Success response with redirect',
-                    'headers' => [
-                        'Location' => [
-                            'schema' => new OpenApi\Schema([
-                                'type' => OpenApi\Type::STRING,
-                                'example' => 'https://example.com'
-                            ]),
-                            'description' => 'Redirect URL',
-                        ]
-                    ]
-                ]));
-            } elseif ($response instanceof RestApiBundle\Model\OpenApi\Response\BinaryFileResponse) {
-                $responses->addResponse('200', new OpenApi\Response([
-                    'description' => 'Success binary file response',
-                    'headers' => [
-                        'Content-Type' => [
-                            'schema' => new OpenApi\Schema([
-                                'type' => OpenApi\Type::STRING,
-                                'example' => 'application/octet-stream'
-                            ]),
-                            'description' => 'File mime type',
-                        ]
-                    ]
-                ]));
-            }
-
-            $pathParameters = [];
-
-            foreach ($routeData->getPathParameters() as $pathParameter) {
-                if ($pathParameter instanceof RestApiBundle\Model\OpenApi\PathParameter\ScalarParameter) {
-                    $schema = $this->resolveScalarType(($pathParameter->getType()));
-                } elseif ($pathParameter instanceof RestApiBundle\Model\OpenApi\PathParameter\EntityTypeParameter) {
-                    $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($pathParameter->getClassType()->getClassName(), $pathParameter->getFieldName());
-                    if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
-                        $schema = new OpenApi\Schema([
-                            'type' => OpenApi\Type::STRING,
-                        ]);
-                    } elseif ($columnType === PropertyInfo\Type::BUILTIN_TYPE_INT) {
-                        $schema = new OpenApi\Schema([
-                            'type' => OpenApi\Type::INTEGER,
-                        ]);
-                    } else {
-                        throw new \InvalidArgumentException();
-                    }
-
-
-                    $schema->description = sprintf('Element by "%s"', $pathParameter->getFieldName());
-                    $schema->nullable = $pathParameter->getClassType()->isNullable();
-
-                } else {
-                    throw new \InvalidArgumentException();
-                }
-
-                $pathParameters[] = new OpenApi\Parameter([
-                    'in' => 'path',
-                    'name' => $pathParameter->getName(),
-                    'required' => true,
-                    'schema' => $schema,
-                ]);
-            }
-
-            $pathItem = $paths[$routeData->getPath()] ?? null;
+            $pathItem = $paths[$routePath] ?? null;
             if (!$pathItem) {
                 $pathItem = new OpenApi\PathItem([]);
-                $paths[$routeData->getPath()] = $pathItem;
+                $paths[$routePath] = $pathItem;
             }
 
-            foreach ($routeData->getMethods() as $httpMethod) {
+            foreach ($endpointData->actionRouteMapping->getMethods() as $httpMethod) {
                 $httpMethod = strtolower($httpMethod);
-                $isHttpGetMethod = $httpMethod === 'get';
+                $isGetHttpMethod = $httpMethod === 'get';
 
                 if (isset($pathItem->getOperations()[$httpMethod])) {
-                    throw new \InvalidArgumentException(sprintf('Route already defined %s %s', $httpMethod, $routeData->getPath()));
+                    throw new \InvalidArgumentException(sprintf('Route already defined %s %s', $httpMethod, $routePath));
                 }
 
                 $operation = new OpenApi\Operation([
-                    'summary' => $routeData->getTitle(),
-                    'responses' => $responses,
+                    'summary' => $endpointData->endpointMapping->title,
+                    'responses' => $pathResponses,
+                    'tags' => $endpointTags,
                 ]);
 
-                if ($routeData->getDescription()) {
-                    $operation->description = $routeData->getDescription();
+                if ($endpointData->endpointMapping->description) {
+                    $operation->description = $endpointData->endpointMapping->description;
                 }
 
                 $queryParameters = [];
-                $request = $routeData->getRequest();
-                if ($request instanceof RestApiBundle\Model\OpenApi\Request\RequestModel && $isHttpGetMethod) {
+                $request = $this->extractRequest($endpointData->reflectionMethod);
+                if ($request && $isGetHttpMethod) {
                     $queryParameters = $this->convertRequestModelToParameters($request);
                 }
 
-                if ($request instanceof RestApiBundle\Model\OpenApi\Request\RequestModel && !$isHttpGetMethod) {
+                if ($request && !$isGetHttpMethod) {
                     $operation->requestBody = $this->convertRequestModelToRequestBody($request);
                 }
 
                 if ($pathParameters || $queryParameters) {
                     $operation->parameters = array_merge($pathParameters, $queryParameters);
-                }
-
-                if ($routeData->getTags()) {
-                    $operation->tags = $routeData->getTags();
                 }
 
                 $pathItem->{$httpMethod} = $operation;
@@ -303,15 +231,125 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         return $root;
     }
 
-    private function convertRequestModelToRequestBody(RestApiBundle\Model\OpenApi\Request\RequestModel $requestModel): OpenApi\RequestBody
+    private function extractRequest(\ReflectionMethod $reflectionMethod): ?PropertyInfo\Type
     {
-        $schema = $this->requestModelResolver->resolveByClass($requestModel->getClass());
+        $result = null;
+
+        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+            if (!$reflectionParameter->getType()) {
+                continue;
+            }
+
+            $parameterType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionParameter->getType());
+            if ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($parameterType->getClassName())) {
+                $result = $parameterType;
+
+                break;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return OpenApi\Parameter[]
+     */
+    private function resolveParameters(string $path, \ReflectionMethod $reflectionMethod): array
+    {
+        $scalarTypes = [];
+        $entityTypes = [];
+
+        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+            if (!$reflectionParameter->getType()) {
+                continue;
+            }
+
+            $parameterType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionParameter->getType());
+            if (RestApiBundle\Helper\TypeExtractor::isScalar($parameterType)) {
+                $scalarTypes[$reflectionParameter->getName()] = $parameterType;
+            } elseif ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\DoctrineHelper::isEntity($parameterType->getClassName())) {
+                $entityTypes[$reflectionParameter->getName()] = $parameterType;
+            }
+        }
+
+        $result = [];
+        $placeholders = $this->getPathPlaceholders($path);
+
+        foreach ($placeholders as $placeholder) {
+            if (isset($scalarTypes[$placeholder])) {
+                $result[] = new OpenApi\Parameter([
+                    'in' => 'path',
+                    'name' => $placeholder,
+                    'required' => true,
+                    'schema' => $this->resolveScalarType($scalarTypes[$placeholder]),
+                ]);
+            } elseif (isset($entityTypes[$placeholder])) {
+                $result[] = new OpenApi\Parameter([
+                    'in' => 'path',
+                    'name' => $placeholder,
+                    'required' => true,
+                    'schema' => $this->resolveSchemaForEntityPathParameter($entityTypes[$placeholder], 'id'),
+                ]);
+                unset($entityTypes[$placeholder]);
+            } else {
+                $entityType = reset($entityTypes);
+                if (!$entityType instanceof PropertyInfo\Type) {
+                    throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod(sprintf('Associated parameter for placeholder %s not matched', $placeholder), $reflectionMethod);
+                }
+                $result[] = new OpenApi\Parameter([
+                    'in' => 'path',
+                    'name' => $placeholder,
+                    'required' => true,
+                    'schema' => $this->resolveSchemaForEntityPathParameter($entityType, $placeholder),
+                ]);
+            }
+        }
+
+        return $result;
+    }
+
+    private function resolveSchemaForEntityPathParameter(PropertyInfo\Type $type, string $fieldName): OpenApi\Schema
+    {
+        $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($type->getClassName(), $fieldName);
+        if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
+            $schema = new OpenApi\Schema([
+                'type' => OpenApi\Type::STRING,
+            ]);
+        } elseif ($columnType === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+            $schema = new OpenApi\Schema([
+                'type' => OpenApi\Type::INTEGER,
+            ]);
+        } else {
+            throw new \InvalidArgumentException();
+        }
+
+        $schema->description = sprintf('Element by "%s"', $fieldName);
+        $schema->nullable = $type->isNullable();
+
+        return $schema;
+    }
+
+    private function getPathPlaceholders(string $path): array
+    {
+        $matches = null;
+        $parameters = [];
+
+        if (preg_match_all('/{([^}]+)}/', $path, $matches)) {
+            $parameters = $matches[1];
+        }
+
+        return $parameters;
+    }
+
+    private function convertRequestModelToRequestBody(PropertyInfo\Type $requestModel): OpenApi\RequestBody
+    {
+        $schema = $this->requestModelResolver->resolveByClass($requestModel->getClassName());
         $schema
-            ->nullable = $requestModel->getNullable();
+            ->nullable = $requestModel->isNullable();
 
         return new OpenApi\RequestBody([
             'description' => 'Request body',
-            'required' => !$requestModel->getNullable(),
+            'required' => !$requestModel->isNullable(),
             'content' => [
                 'application/json' => [
                     'schema' => $schema,
@@ -323,10 +361,10 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     /**
      * @return OpenApi\Parameter[]
      */
-    private function convertRequestModelToParameters(RestApiBundle\Model\OpenApi\Request\RequestModel $requestModel): array
+    private function convertRequestModelToParameters(PropertyInfo\Type $requestModel): array
     {
         $result = [];
-        $schema = $this->requestModelResolver->resolveByClass($requestModel->getClass());
+        $schema = $this->requestModelResolver->resolveByClass($requestModel->getClassName());
 
         foreach ($schema->properties as $propertyName => $propertySchema) {
             $parameter = new OpenApi\Parameter([
@@ -346,5 +384,109 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         }
 
         return $result;
+    }
+
+    private function createEmptyResponse(): OpenApi\Response
+    {
+        return new OpenApi\Response(['description' => 'Success response with empty body']);
+    }
+
+    private function resolveResponses(\ReflectionMethod $reflectionMethod): OpenApi\Responses
+    {
+        $responses = new OpenApi\Responses([]);
+
+        $returnType = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
+        if (!$returnType) {
+            throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Return type not found in docBlock and type-hint', $reflectionMethod);
+        }
+
+        switch (true) {
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL:
+                $responses->addResponse('204', $this->createEmptyResponse());
+
+                break;
+
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($returnType->getClassName()):
+                if ($returnType->isNullable()) {
+                    $responses->addResponse('204', $this->createEmptyResponse());
+                }
+
+                $responseModelSchema = $this->responseModelResolver->resolveReferenceByClass($returnType->getClassName());
+                $responseModelSchema
+                    ->nullable = $returnType->isNullable();
+
+                $responses->addResponse('200', new OpenApi\Response([
+                    'description' => 'Success response with json body',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => $responseModelSchema,
+                        ]
+                    ]
+                ]));
+
+                break;
+
+            case $returnType->isCollection() && $returnType->getCollectionValueTypes() && RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType)->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
+                $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType);
+                if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
+                    throw new \InvalidArgumentException('Invalid response type');
+                }
+
+                if ($returnType->isNullable()) {
+                    $responses->addResponse('204', $this->createEmptyResponse());
+                }
+
+                $responses->addResponse('200', new OpenApi\Response([
+                    'description' => 'Success response with json body',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => new OpenApi\Schema([
+                                'type' => OpenApi\Type::ARRAY,
+                                'items' => $this->responseModelResolver->resolveReferenceByClass($collectionValueType->getClassName()),
+                                'nullable' => $returnType->isNullable(),
+                            ])
+                        ]
+                    ]
+                ]));
+
+                break;
+
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\RedirectResponse::class:
+                $responses->addResponse('302', new OpenApi\Response([
+                    'description' => 'Success response with redirect',
+                    'headers' => [
+                        'Location' => [
+                            'schema' => new OpenApi\Schema([
+                                'type' => OpenApi\Type::STRING,
+                                'example' => 'https://example.com'
+                            ]),
+                            'description' => 'Redirect URL',
+                        ]
+                    ]
+                ]));
+
+                break;
+
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\BinaryFileResponse::class:
+                $responses->addResponse('200', new OpenApi\Response([
+                    'description' => 'Success binary file response',
+                    'headers' => [
+                        'Content-Type' => [
+                            'schema' => new OpenApi\Schema([
+                                'type' => OpenApi\Type::STRING,
+                                'example' => 'application/octet-stream'
+                            ]),
+                            'description' => 'File mime type',
+                        ]
+                    ]
+                ]));
+
+                break;
+
+            default:
+                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Invalid response type', $reflectionMethod);
+        }
+
+        return $responses;
     }
 }
