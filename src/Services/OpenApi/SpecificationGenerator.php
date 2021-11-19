@@ -297,11 +297,9 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
                 $queryParameters = [];
                 $request = $this->extractRequest($routeData->reflectionMethod);
-                if ($request instanceof RestApiBundle\Model\OpenApi\Request\RequestModel && $isHttpGetMethod) {
+                if ($request && $isHttpGetMethod) {
                     $queryParameters = $this->convertRequestModelToParameters($request);
-                }
-
-                if ($request instanceof RestApiBundle\Model\OpenApi\Request\RequestModel && !$isHttpGetMethod) {
+                } elseif ($request && !$isHttpGetMethod) {
                     $operation->requestBody = $this->convertRequestModelToRequestBody($request);
                 }
 
@@ -382,7 +380,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         return $result;
     }
 
-    private function extractRequest(\ReflectionMethod $reflectionMethod): ?RestApiBundle\Model\OpenApi\Request\RequestInterface
+    private function extractRequest(\ReflectionMethod $reflectionMethod): ?PropertyInfo\Type
     {
         $result = null;
 
@@ -393,7 +391,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
             $parameterType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionParameter->getType());
             if ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($parameterType->getClassName())) {
-                $result = new RestApiBundle\Model\OpenApi\Request\RequestModel($parameterType->getClassName(), $parameterType->isNullable());
+                $result = $parameterType;
 
                 break;
             }
@@ -456,15 +454,15 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         return $parameters;
     }
 
-    private function convertRequestModelToRequestBody(RestApiBundle\Model\OpenApi\Request\RequestModel $requestModel): OpenApi\RequestBody
+    private function convertRequestModelToRequestBody(PropertyInfo\Type $requestModel): OpenApi\RequestBody
     {
-        $schema = $this->requestModelResolver->resolveByClass($requestModel->getClass());
+        $schema = $this->requestModelResolver->resolveByClass($requestModel->getClassName());
         $schema
-            ->nullable = $requestModel->getNullable();
+            ->nullable = $requestModel->isNullable();
 
         return new OpenApi\RequestBody([
             'description' => 'Request body',
-            'required' => !$requestModel->getNullable(),
+            'required' => !$requestModel->isNullable(),
             'content' => [
                 'application/json' => [
                     'schema' => $schema,
@@ -476,10 +474,10 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     /**
      * @return OpenApi\Parameter[]
      */
-    private function convertRequestModelToParameters(RestApiBundle\Model\OpenApi\Request\RequestModel $requestModel): array
+    private function convertRequestModelToParameters(PropertyInfo\Type $requestModel): array
     {
         $result = [];
-        $schema = $this->requestModelResolver->resolveByClass($requestModel->getClass());
+        $schema = $this->requestModelResolver->resolveByClass($requestModel->getClassName());
 
         foreach ($schema->properties as $propertyName => $propertySchema) {
             $parameter = new OpenApi\Parameter([

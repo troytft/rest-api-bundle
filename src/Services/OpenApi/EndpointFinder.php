@@ -81,7 +81,7 @@ class EndpointFinder
 
         return $endpoints;
     }
-    
+
     private function getClassLoader(): ClassLoader
     {
         $result = null;
