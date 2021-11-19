@@ -6,7 +6,7 @@ use RestApiBundle;
 
 use function sprintf;
 
-class FunctionOfClassException extends \Exception implements RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface
+final class FunctionOfClassException extends \Exception implements RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface
 {
     public function __construct(string $message, string $class, string $functionName)
     {

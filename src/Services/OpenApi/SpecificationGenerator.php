@@ -299,7 +299,9 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 $request = $this->extractRequest($routeData->reflectionMethod);
                 if ($request && $isHttpGetMethod) {
                     $queryParameters = $this->convertRequestModelToParameters($request);
-                } elseif ($request && !$isHttpGetMethod) {
+                }
+
+                if ($request && !$isHttpGetMethod) {
                     $operation->requestBody = $this->convertRequestModelToRequestBody($request);
                 }
 
