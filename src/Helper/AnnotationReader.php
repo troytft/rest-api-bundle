@@ -5,7 +5,7 @@ namespace RestApiBundle\Helper;
 use function array_map;
 use function array_merge;
 
-class AnnotationReader
+final class AnnotationReader
 {
     private static ?\Doctrine\Common\Annotations\AnnotationReader $annotationReader = null;
 

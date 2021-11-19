@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
-class GenerateDocsCommand extends Command
+final class GenerateDocsCommand extends Command
 {
     private const ARGUMENT_INPUT = 'input';
     private const ARGUMENT_OUTPUT = 'output';
