@@ -289,6 +289,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 $operation = new OpenApi\Operation([
                     'summary' => $routeData->endpointMapping->title,
                     'responses' => $responses,
+                    'tags' => $endpointTags,
                 ]);
 
                 if ($routeData->endpointMapping->description) {
@@ -307,10 +308,6 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
                 if ($pathParameters || $queryParameters) {
                     $operation->parameters = array_merge($pathParameters, $queryParameters);
-                }
-
-                if ($endpointTags) { // @todo: fix
-                    $operation->tags = $endpointTags;
                 }
 
                 $pathItem->{$httpMethod} = $operation;
