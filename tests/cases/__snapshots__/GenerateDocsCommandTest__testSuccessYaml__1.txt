@@ -5,6 +5,8 @@ info:
 paths:
     /books:
         get:
+            tags:
+                - books
             summary: 'Books list'
             responses:
                 '200':
@@ -53,10 +55,10 @@ paths:
                         type: integer
                         nullable: true
                     description: 'Element by "id"'
-            tags:
-                - books
     /books/test-binary-file:
         get:
+            tags:
+                - books
             summary: 'Response with binary file response'
             responses:
                 '200':
@@ -67,10 +69,10 @@ paths:
                             schema:
                                 type: string
                                 example: application/octet-stream
-            tags:
-                - books
     /books/test-redirect:
         get:
+            tags:
+                - books
             summary: 'Response with redirect'
             responses:
                 '302':
@@ -81,10 +83,10 @@ paths:
                             schema:
                                 type: string
                                 example: 'https://example.com'
-            tags:
-                - books
     /writers:
         post:
+            tags:
+                - writers
             summary: 'Create writer'
             responses:
                 '200':
@@ -124,9 +126,9 @@ paths:
                                     nullable: false
                             nullable: false
                 required: true
+        get:
             tags:
                 - writers
-        get:
             summary: 'Writers list with filters'
             responses:
                 '200':
@@ -191,10 +193,10 @@ paths:
                             nullable: false
                         nullable: true
                     description: 'Array of elements by "id"'
-            tags:
-                - writers
     '/writers/{id}':
         delete:
+            tags:
+                - writers
             summary: 'Remove writer'
             responses:
                 '204':
@@ -208,8 +210,6 @@ paths:
                         type: integer
                         description: 'Element by "id"'
                         nullable: false
-            tags:
-                - writers
 components:
     schemas:
         Author:
