@@ -25,15 +25,10 @@ use function strtolower;
 
 class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
-    private RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver;
-    private RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver;
-
     public function __construct(
-        RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver,
-        RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver
+        private RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver,
+        private RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver
     ) {
-        $this->requestModelResolver = $requestModelResolver;
-        $this->responseModelResolver = $responseModelResolver;
     }
 
     /**
@@ -97,9 +92,9 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     }
 
     /**
-     * @param RestApiBundle\Model\OpenApi\EndpointData[] $endpointDataItems
+     * @param RestApiBundle\Model\OpenApi\EndpointData[] $endpoints
      */
-    private function generateSpecification(array $endpointDataItems, ?string $template = null): OpenApi\OpenApi
+    private function generateSpecification(array $endpoints, ?string $template = null): OpenApi\OpenApi
     {
         $root = $this->createRootElement($template);
 
@@ -128,37 +123,37 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             $schemas[$typename] = $schema;
         }
 
-        foreach ($endpointDataItems as $routeData) {
-            if (is_string($routeData->endpointMapping->tags)) {
-                $endpointTags = [$routeData->endpointMapping->tags];
-            } elseif (is_array($routeData->endpointMapping->tags)) {
-                $endpointTags = $routeData->endpointMapping->tags;
+        foreach ($endpoints as $endpointData) {
+            if (is_string($endpointData->endpointMapping->tags)) {
+                $endpointTags = [$endpointData->endpointMapping->tags];
+            } elseif (is_array($endpointData->endpointMapping->tags)) {
+                $endpointTags = $endpointData->endpointMapping->tags;
             } else {
                 throw new \InvalidArgumentException();
             }
 
-            if (!$routeData->endpointMapping->title) {
-                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Endpoint has empty title', $routeData->reflectionMethod);
+            if (!$endpointData->endpointMapping->title) {
+                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Endpoint has empty title', $endpointData->reflectionMethod);
             }
 
-            if ($routeData->controllerRouteMapping instanceof Route && $routeData->controllerRouteMapping->getPath()) {
-                $routePath = $routeData->controllerRouteMapping->getPath();
+            if ($endpointData->controllerRouteMapping instanceof Route && $endpointData->controllerRouteMapping->getPath()) {
+                $routePath = $endpointData->controllerRouteMapping->getPath();
 
-                if ($routeData->actionRouteMapping->getPath()) {
-                    $routePath .= $routeData->actionRouteMapping->getPath();
+                if ($endpointData->actionRouteMapping->getPath()) {
+                    $routePath .= $endpointData->actionRouteMapping->getPath();
                 }
-            } elseif ($routeData->actionRouteMapping->getPath()) {
-                $routePath = $routeData->actionRouteMapping->getPath();
+            } elseif ($endpointData->actionRouteMapping->getPath()) {
+                $routePath = $endpointData->actionRouteMapping->getPath();
             } else {
-                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Route has empty path', $routeData->reflectionMethod);
+                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Route has empty path', $endpointData->reflectionMethod);
             }
 
-            if (!$routeData->actionRouteMapping->getMethods()) {
-                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Route has empty methods', $routeData->reflectionMethod);
+            if (!$endpointData->actionRouteMapping->getMethods()) {
+                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Route has empty methods', $endpointData->reflectionMethod);
             }
 
             if (!$endpointTags) {
-                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Endpoint has empty tags', $routeData->reflectionMethod);
+                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Endpoint has empty tags', $endpointData->reflectionMethod);
             }
 
             foreach ($endpointTags as $tagName) {
@@ -171,73 +166,8 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 ]);
             }
 
-            $response = $this->extractResponse($routeData->reflectionMethod);
-
-            $responses = new OpenApi\Responses([]);
-
-            if ($response->getNullable()) {
-                $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
-            }
-
-            if ($response instanceof RestApiBundle\Model\OpenApi\Response\ResponseModel) {
-                $responseModelSchema = $this->responseModelResolver->resolveReferenceByClass($response->getClass());
-                $responseModelSchema
-                    ->nullable = $response->getNullable();
-
-                $responses->addResponse('200', new OpenApi\Response([
-                    'description' => 'Success response with json body',
-                    'content' => [
-                        'application/json' => [
-                            'schema' => $responseModelSchema
-                        ]
-                    ]
-                ]));
-            } elseif ($response instanceof RestApiBundle\Model\OpenApi\Response\ArrayOfResponseModels) {
-                $responseModelSchema = $this->responseModelResolver->resolveReferenceByClass($response->getClass());
-                $responseModelSchema
-                    ->nullable = $response->getNullable();
-
-                $responses->addResponse('200', new OpenApi\Response([
-                    'description' => 'Success response with json body',
-                    'content' => [
-                        'application/json' => [
-                            'schema' => new OpenApi\Schema([
-                                'type' => OpenApi\Type::ARRAY,
-                                'items' => $responseModelSchema,
-                                'nullable' => $response->getNullable(),
-                            ])
-                        ]
-                    ]
-                ]));
-            } elseif ($response instanceof RestApiBundle\Model\OpenApi\Response\RedirectResponse) {
-                $responses->addResponse((string) $response->getStatusCode(), new OpenApi\Response([
-                    'description' => 'Success response with redirect',
-                    'headers' => [
-                        'Location' => [
-                            'schema' => new OpenApi\Schema([
-                                'type' => OpenApi\Type::STRING,
-                                'example' => 'https://example.com'
-                            ]),
-                            'description' => 'Redirect URL',
-                        ]
-                    ]
-                ]));
-            } elseif ($response instanceof RestApiBundle\Model\OpenApi\Response\BinaryFileResponse) {
-                $responses->addResponse('200', new OpenApi\Response([
-                    'description' => 'Success binary file response',
-                    'headers' => [
-                        'Content-Type' => [
-                            'schema' => new OpenApi\Schema([
-                                'type' => OpenApi\Type::STRING,
-                                'example' => 'application/octet-stream'
-                            ]),
-                            'description' => 'File mime type',
-                        ]
-                    ]
-                ]));
-            }
-
-            $pathParameters = $this->extractPathParameters($routePath, $routeData->reflectionMethod);
+            $pathResponses = $this->resolveResponses($endpointData->reflectionMethod);
+            $pathParameters = $this->resolveParameters($routePath, $endpointData->reflectionMethod);
 
             $pathItem = $paths[$routePath] ?? null;
             if (!$pathItem) {
@@ -245,7 +175,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 $paths[$routePath] = $pathItem;
             }
 
-            foreach ($routeData->actionRouteMapping->getMethods() as $httpMethod) {
+            foreach ($endpointData->actionRouteMapping->getMethods() as $httpMethod) {
                 $httpMethod = strtolower($httpMethod);
                 $isGetHttpMethod = $httpMethod === 'get';
 
@@ -254,17 +184,17 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 }
 
                 $operation = new OpenApi\Operation([
-                    'summary' => $routeData->endpointMapping->title,
-                    'responses' => $responses,
+                    'summary' => $endpointData->endpointMapping->title,
+                    'responses' => $pathResponses,
                     'tags' => $endpointTags,
                 ]);
 
-                if ($routeData->endpointMapping->description) {
-                    $operation->description = $routeData->endpointMapping->description;
+                if ($endpointData->endpointMapping->description) {
+                    $operation->description = $endpointData->endpointMapping->description;
                 }
 
                 $queryParameters = [];
-                $request = $this->extractRequest($routeData->reflectionMethod);
+                $request = $this->extractRequest($endpointData->reflectionMethod);
                 if ($request && $isGetHttpMethod) {
                     $queryParameters = $this->convertRequestModelToParameters($request);
                 }
@@ -301,51 +231,6 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         return $root;
     }
 
-    private function extractResponse(\ReflectionMethod $reflectionMethod): RestApiBundle\Model\OpenApi\Response\ResponseInterface
-    {
-        $returnType = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
-        if (!$returnType) {
-            throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Return type not found in docBlock and type-hint', $reflectionMethod);
-        }
-
-        switch (true) {
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL:
-                $result = new RestApiBundle\Model\OpenApi\Response\EmptyResponse();
-
-                break;
-
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($returnType->getClassName()):
-                $result = new RestApiBundle\Model\OpenApi\Response\ResponseModel($returnType->getClassName(), $returnType->isNullable());
-
-                break;
-
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\RedirectResponse::class:
-                $result = new RestApiBundle\Model\OpenApi\Response\RedirectResponse();
-
-                break;
-
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\BinaryFileResponse::class:
-                $result = new RestApiBundle\Model\OpenApi\Response\BinaryFileResponse();
-
-                break;
-
-            case $returnType->isCollection() && $returnType->getCollectionValueTypes() && RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType)->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
-                $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType);
-                if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
-                    throw new \InvalidArgumentException('Invalid response type');
-                }
-
-                $result = new RestApiBundle\Model\OpenApi\Response\ArrayOfResponseModels($collectionValueType->getClassName(), $returnType->isNullable());
-
-                break;
-
-            default:
-                throw new \InvalidArgumentException('Invalid response type');
-        }
-
-        return $result;
-    }
-
     private function extractRequest(\ReflectionMethod $reflectionMethod): ?PropertyInfo\Type
     {
         $result = null;
@@ -369,7 +254,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     /**
      * @return OpenApi\Parameter[]
      */
-    private function extractPathParameters(string $path, \ReflectionMethod $reflectionMethod): array
+    private function resolveParameters(string $path, \ReflectionMethod $reflectionMethod): array
     {
         $scalarTypes = [];
         $entityTypes = [];
@@ -499,5 +384,104 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         }
 
         return $result;
+    }
+
+    private function createEmptyResponse(): OpenApi\Response
+    {
+        return new OpenApi\Response(['description' => 'Success response with empty body']);
+    }
+
+    private function resolveResponses(\ReflectionMethod $reflectionMethod): OpenApi\Responses
+    {
+        $responses = new OpenApi\Responses([]);
+
+        $returnType = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
+        if (!$returnType) {
+            throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Return type not found in docBlock and type-hint', $reflectionMethod);
+        }
+
+        switch (true) {
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL:
+                $responses->addResponse('204', $this->createEmptyResponse());
+
+                break;
+
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($returnType->getClassName()):
+                if ($returnType->isNullable()) {
+                    $responses->addResponse('204', $this->createEmptyResponse());
+                }
+
+                $responses->addResponse('200', new OpenApi\Response([
+                    'description' => 'Success response with json body',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => $this->responseModelResolver->resolveReferenceByClass($returnType->getClassName()),
+                        ]
+                    ]
+                ]));
+
+                break;
+
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\RedirectResponse::class:
+                $responses->addResponse('302', new OpenApi\Response([
+                    'description' => 'Success response with redirect',
+                    'headers' => [
+                        'Location' => [
+                            'schema' => new OpenApi\Schema([
+                                'type' => OpenApi\Type::STRING,
+                                'example' => 'https://example.com'
+                            ]),
+                            'description' => 'Redirect URL',
+                        ]
+                    ]
+                ]));
+
+                break;
+
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\BinaryFileResponse::class:
+                $responses->addResponse('200', new OpenApi\Response([
+                    'description' => 'Success binary file response',
+                    'headers' => [
+                        'Content-Type' => [
+                            'schema' => new OpenApi\Schema([
+                                'type' => OpenApi\Type::STRING,
+                                'example' => 'application/octet-stream'
+                            ]),
+                            'description' => 'File mime type',
+                        ]
+                    ]
+                ]));
+
+                break;
+
+            case $returnType->isCollection() && $returnType->getCollectionValueTypes() && RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType)->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
+                $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType);
+                if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
+                    throw new \InvalidArgumentException('Invalid response type');
+                }
+
+                if ($returnType->isNullable()) {
+                    $responses->addResponse('204', $this->createEmptyResponse());
+                }
+
+                $responses->addResponse('200', new OpenApi\Response([
+                    'description' => 'Success response with json body',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => new OpenApi\Schema([
+                                'type' => OpenApi\Type::ARRAY,
+                                'items' => $collectionValueType->getClassName(),
+                            ])
+                        ]
+                    ]
+                ]));
+
+                break;
+
+            default:
+                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Invalid response type', $reflectionMethod);
+        }
+
+        return $responses;
     }
 }
