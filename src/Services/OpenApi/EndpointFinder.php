@@ -7,6 +7,7 @@ use Composer\Autoload\ClassLoader;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PropertyInfo;
+use Symfony\Component\HttpFoundation;
 
 use function array_merge;
 use function array_slice;
@@ -147,6 +148,16 @@ class EndpointFinder
 
             case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($returnType->getClassName()):
                 $result = new RestApiBundle\Model\OpenApi\Response\ResponseModel($returnType->getClassName(), $returnType->isNullable());
+
+                break;
+
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\RedirectResponse::class:
+                $result = new RestApiBundle\Model\OpenApi\Response\RedirectResponse();
+
+                break;
+
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\BinaryFileResponse::class:
+                $result = new RestApiBundle\Model\OpenApi\Response\BinaryFileResponse();
 
                 break;
 

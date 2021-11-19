@@ -8,7 +8,7 @@ paths:
             summary: 'Books list'
             responses:
                 '200':
-                    description: 'Success response with body'
+                    description: 'Success response with json body'
                     content:
                         application/json:
                             schema:
@@ -55,12 +55,40 @@ paths:
                     description: 'Element by "id"'
             tags:
                 - books
+    /books/test-binary-file:
+        get:
+            summary: 'Response with binary file response'
+            responses:
+                '200':
+                    description: 'Success binary file response'
+                    headers:
+                        Content-Type:
+                            description: 'File mime type'
+                            schema:
+                                type: string
+                                example: application/octet-stream
+            tags:
+                - books
+    /books/test-redirect:
+        get:
+            summary: 'Response with redirect'
+            responses:
+                '302':
+                    description: 'Success response with redirect'
+                    headers:
+                        Location:
+                            description: 'Redirect URL'
+                            schema:
+                                type: string
+                                example: 'https://example.com'
+            tags:
+                - books
     /writers:
         post:
             summary: 'Create writer'
             responses:
                 '200':
-                    description: 'Success response with body'
+                    description: 'Success response with json body'
                     content:
                         application/json:
                             schema:
@@ -102,7 +130,7 @@ paths:
             summary: 'Writers list with filters'
             responses:
                 '200':
-                    description: 'Success response with body'
+                    description: 'Success response with json body'
                     content:
                         application/json:
                             schema:

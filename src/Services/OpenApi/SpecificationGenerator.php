@@ -151,7 +151,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                     ->nullable = $response->getNullable();
 
                 $responses->addResponse('200', new OpenApi\Response([
-                    'description' => 'Success response with body',
+                    'description' => 'Success response with json body',
                     'content' => [
                         'application/json' => [
                             'schema' => $responseModelSchema
@@ -164,7 +164,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                     ->nullable = $response->getNullable();
 
                 $responses->addResponse('200', new OpenApi\Response([
-                    'description' => 'Success response with body',
+                    'description' => 'Success response with json body',
                     'content' => [
                         'application/json' => [
                             'schema' => new OpenApi\Schema([
@@ -172,6 +172,32 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                                 'items' => $responseModelSchema,
                                 'nullable' => $response->getNullable(),
                             ])
+                        ]
+                    ]
+                ]));
+            } elseif ($response instanceof RestApiBundle\Model\OpenApi\Response\RedirectResponse) {
+                $responses->addResponse((string) $response->getStatusCode(), new OpenApi\Response([
+                    'description' => 'Success response with redirect',
+                    'headers' => [
+                        'Location' => [
+                            'schema' => new OpenApi\Schema([
+                                'type' => OpenApi\Type::STRING,
+                                'example' => 'https://example.com'
+                            ]),
+                            'description' => 'Redirect URL',
+                        ]
+                    ]
+                ]));
+            } elseif ($response instanceof RestApiBundle\Model\OpenApi\Response\BinaryFileResponse) {
+                $responses->addResponse('200', new OpenApi\Response([
+                    'description' => 'Success binary file response',
+                    'headers' => [
+                        'Content-Type' => [
+                            'schema' => new OpenApi\Schema([
+                                'type' => OpenApi\Type::STRING,
+                                'example' => 'application/octet-stream'
+                            ]),
+                            'description' => 'File mime type',
                         ]
                     ]
                 ]));
