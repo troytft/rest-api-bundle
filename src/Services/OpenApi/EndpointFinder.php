@@ -6,7 +6,6 @@ use RestApiBundle;
 use Composer\Autoload\ClassLoader;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\PropertyInfo;
 
 use function array_merge;
 use function array_slice;
@@ -14,8 +13,6 @@ use function count;
 use function explode;
 use function implode;
 use function is_array;
-use function preg_match_all;
-use function reset;
 use function spl_autoload_functions;
 use function substr_count;
 
@@ -28,7 +25,7 @@ class EndpointFinder
      */
     public function findInDirectory(string $directory, array $excludePaths = []): array
     {
-        $result = [];
+        $endpoints = [];
 
         $finder = new Finder();
         $finder
@@ -53,51 +50,38 @@ class EndpointFinder
                 $autoloadFixed = true;
             }
 
-            $result[] = $this->extractFromController($class);
-
+            $endpoints[] = $this->extractEndpointsByReflectionClass(RestApiBundle\Helper\ReflectionClassStore::get($class));
         }
 
-        return array_merge(...$result);
+        return array_merge(...$endpoints);
     }
 
     /**
      * @return RestApiBundle\Model\OpenApi\EndpointData[]
      */
-    private function extractFromController(string $class): array
+    private function extractEndpointsByReflectionClass(\ReflectionClass $reflectionClass): array
     {
-        $result = [];
+        $classRouteMapping = RestApiBundle\Helper\AnnotationReader::getClassAnnotation($reflectionClass, Route::class);
 
-        $reflectionController = RestApiBundle\Helper\ReflectionClassStore::get($class);
-        $controllerRoute = RestApiBundle\Helper\AnnotationReader::getClassAnnotation($reflectionController, Route::class);
+        $endpoints = [];
 
-        foreach ($reflectionController->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-            $actionRoute = RestApiBundle\Helper\AnnotationReader::getMethodAnnotation($reflectionMethod, Route::class);
-            if (!$actionRoute instanceof Route) {
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
+            $methodRouteMapping = RestApiBundle\Helper\AnnotationReader::getMethodAnnotation($reflectionMethod, Route::class);
+            if (!$methodRouteMapping instanceof Route) {
                 continue;
             }
 
-            $endpointAnnotation = RestApiBundle\Helper\AnnotationReader::getMethodAnnotation($reflectionMethod, RestApiBundle\Mapping\OpenApi\Endpoint::class);
-            if (!$endpointAnnotation instanceof RestApiBundle\Mapping\OpenApi\Endpoint) {
+            $endpointMapping = RestApiBundle\Helper\AnnotationReader::getMethodAnnotation($reflectionMethod, RestApiBundle\Mapping\OpenApi\Endpoint::class);
+            if (!$endpointMapping instanceof RestApiBundle\Mapping\OpenApi\Endpoint) {
                 continue;
             }
 
-            try {
-                $endpointData = new RestApiBundle\Model\OpenApi\EndpointData();
-                $endpointData->controllerRouteMapping = $controllerRoute;
-                $endpointData->actionRouteMapping = $actionRoute;
-                $endpointData->reflectionMethod = $reflectionMethod;
-                $endpointData->endpointMapping = $endpointAnnotation;
-
-                $result[] = $endpointData;
-            } catch (RestApiBundle\Exception\OpenApi\InvalidDefinition\BaseInvalidDefinitionException $exception) {
-                throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException($exception->getMessage(), $class, $reflectionMethod->getName());
-            }
+            $endpoints[] = new RestApiBundle\Model\OpenApi\EndpointData($reflectionMethod, $endpointMapping, $methodRouteMapping, $classRouteMapping);
         }
 
-        return $result;
+        return $endpoints;
     }
-
-
+    
     private function getClassLoader(): ClassLoader
     {
         $result = null;

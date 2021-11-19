@@ -7,8 +7,11 @@ use Symfony\Component\Routing;
 
 class EndpointData
 {
-    public ?Routing\Annotation\Route $controllerRouteMapping = null;
-    public Routing\Annotation\Route $actionRouteMapping;
-    public RestApiBundle\Mapping\OpenApi\Endpoint $endpointMapping;
-    public \ReflectionMethod $reflectionMethod;
+    public function __construct(
+        public \ReflectionMethod $reflectionMethod,
+        public RestApiBundle\Mapping\OpenApi\Endpoint $endpointMapping,
+        public Routing\Annotation\Route $actionRouteMapping,
+        public ?Routing\Annotation\Route $controllerRouteMapping = null,
+    ) {
+    }
 }
