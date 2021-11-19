@@ -106,6 +106,14 @@ class EndpointFinder
                 throw new \InvalidArgumentException();
             }
 
+            if (!$endpointAnnotation->title) {
+                throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Endpoint has empty title', $class, $reflectionMethod->getName());
+            }
+
+            if (!$tags) {
+                throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Endpoint has empty tags', $class, $reflectionMethod->getName());
+            }
+
             try {
                 $endpointData = new RestApiBundle\Model\OpenApi\EndpointData();
                 $endpointData
