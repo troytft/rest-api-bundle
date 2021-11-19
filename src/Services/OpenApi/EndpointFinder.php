@@ -70,11 +70,11 @@ class EndpointFinder
         $result = [];
 
         $reflectionController = RestApiBundle\Helper\ReflectionClassStore::get($class);
-        $controllerRouteAnnotation = RestApiBundle\Helper\AnnotationReader::getClassAnnotation($reflectionController, Route::class);
+        $controllerRoute = RestApiBundle\Helper\AnnotationReader::getClassAnnotation($reflectionController, Route::class);
 
         foreach ($reflectionController->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-            $actionRouteAnnotation = RestApiBundle\Helper\AnnotationReader::getMethodAnnotation($reflectionMethod, Route::class);
-            if (!$actionRouteAnnotation instanceof Route) {
+            $actionRoute = RestApiBundle\Helper\AnnotationReader::getMethodAnnotation($reflectionMethod, Route::class);
+            if (!$actionRoute instanceof Route) {
                 continue;
             }
 
@@ -83,19 +83,19 @@ class EndpointFinder
                 continue;
             }
 
-            if ($controllerRouteAnnotation instanceof Route && $controllerRouteAnnotation->getPath()) {
-                $path = $controllerRouteAnnotation->getPath();
+            if ($controllerRoute instanceof Route && $controllerRoute->getPath()) {
+                $path = $controllerRoute->getPath();
 
-                if ($actionRouteAnnotation->getPath()) {
-                    $path .= $actionRouteAnnotation->getPath();
+                if ($actionRoute->getPath()) {
+                    $path .= $actionRoute->getPath();
                 }
-            } elseif ($actionRouteAnnotation->getPath()) {
-                $path = $actionRouteAnnotation->getPath();
+            } elseif ($actionRoute->getPath()) {
+                $path = $actionRoute->getPath();
             } else {
                 throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Route has empty path', $class, $reflectionMethod->getName());
             }
 
-            if (!$actionRouteAnnotation->getMethods()) {
+            if (!$actionRoute->getMethods()) {
                 throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Route has empty methods', $class, $reflectionMethod->getName());
             }
 
@@ -118,11 +118,15 @@ class EndpointFinder
             try {
                 $endpointData = new RestApiBundle\Model\OpenApi\EndpointData();
                 $endpointData
+                    ->setControllerRoute($controllerRoute)
+                    ->setActionRoute($actionRoute)
+                    ->setReflectionMethod($reflectionMethod)
+                    ->setEndpoint($endpointAnnotation)
                     ->setTitle($endpointAnnotation->title)
                     ->setDescription($endpointAnnotation->description)
                     ->setTags($tags)
                     ->setPath($path)
-                    ->setMethods($actionRouteAnnotation->getMethods())
+                    ->setMethods($actionRoute->getMethods())
                     ->setResponse($this->extractResponse($reflectionMethod))
                     ->setPathParameters($this->extractPathParameters($path, $reflectionMethod))
                     ->setRequest($this->extractRequest($reflectionMethod));

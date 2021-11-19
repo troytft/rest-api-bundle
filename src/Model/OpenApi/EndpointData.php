@@ -3,9 +3,15 @@
 namespace RestApiBundle\Model\OpenApi;
 
 use RestApiBundle;
+use Symfony\Component\Routing;
 
 class EndpointData
 {
+    private ?Routing\Annotation\Route $controllerRoute = null;
+    private Routing\Annotation\Route $actionRoute;
+    private RestApiBundle\Mapping\OpenApi\Endpoint $endpoint;
+    private \ReflectionMethod $reflectionMethod;
+
     private string $title;
     private ?string $description = null;
 
@@ -134,6 +140,54 @@ class EndpointData
     public function setPathParameters(array $pathParameters)
     {
         $this->pathParameters = $pathParameters;
+
+        return $this;
+    }
+
+    public function getControllerRoute(): ?Routing\Annotation\Route
+    {
+        return $this->controllerRoute;
+    }
+
+    public function setControllerRoute(?Routing\Annotation\Route $controllerRoute): static
+    {
+        $this->controllerRoute = $controllerRoute;
+
+        return $this;
+    }
+
+    public function getActionRoute(): Routing\Annotation\Route
+    {
+        return $this->actionRoute;
+    }
+
+    public function setActionRoute(Routing\Annotation\Route $actionRoute): static
+    {
+        $this->actionRoute = $actionRoute;
+
+        return $this;
+    }
+
+    public function getEndpoint(): RestApiBundle\Mapping\OpenApi\Endpoint
+    {
+        return $this->endpoint;
+    }
+
+    public function setEndpoint(RestApiBundle\Mapping\OpenApi\Endpoint $endpoint): static
+    {
+        $this->endpoint = $endpoint;
+
+        return $this;
+    }
+
+    public function getReflectionMethod(): \ReflectionMethod
+    {
+        return $this->reflectionMethod;
+    }
+
+    public function setReflectionMethod(\ReflectionMethod $reflectionMethod): static
+    {
+        $this->reflectionMethod = $reflectionMethod;
 
         return $this;
     }
