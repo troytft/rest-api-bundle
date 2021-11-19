@@ -7,7 +7,6 @@ use Composer\Autoload\ClassLoader;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PropertyInfo;
-use Symfony\Component\HttpFoundation;
 
 use function array_merge;
 use function array_slice;
@@ -15,7 +14,6 @@ use function count;
 use function explode;
 use function implode;
 use function is_array;
-use function is_string;
 use function preg_match_all;
 use function reset;
 use function spl_autoload_functions;
@@ -99,22 +97,6 @@ class EndpointFinder
                 throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Route has empty methods', $class, $reflectionMethod->getName());
             }
 
-            if (is_string($endpointAnnotation->tags)) {
-                $tags = [$endpointAnnotation->tags];
-            } elseif (is_array($endpointAnnotation->tags)) {
-                $tags = $endpointAnnotation->tags;
-            } else {
-                throw new \InvalidArgumentException();
-            }
-
-            if (!$endpointAnnotation->title) {
-                throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Endpoint has empty title', $class, $reflectionMethod->getName());
-            }
-
-            if (!$tags) {
-                throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Endpoint has empty tags', $class, $reflectionMethod->getName());
-            }
-
             try {
                 $endpointData = new RestApiBundle\Model\OpenApi\EndpointData();
                 $endpointData
@@ -122,12 +104,8 @@ class EndpointFinder
                     ->setActionRoute($actionRoute)
                     ->setReflectionMethod($reflectionMethod)
                     ->setEndpoint($endpointAnnotation)
-                    ->setTitle($endpointAnnotation->title)
-                    ->setDescription($endpointAnnotation->description)
-                    ->setTags($tags)
                     ->setPath($path)
                     ->setMethods($actionRoute->getMethods())
-                    ->setResponse($this->extractResponse($reflectionMethod))
                     ->setPathParameters($this->extractPathParameters($path, $reflectionMethod))
                     ->setRequest($this->extractRequest($reflectionMethod));
 
@@ -135,58 +113,6 @@ class EndpointFinder
             } catch (RestApiBundle\Exception\OpenApi\InvalidDefinition\BaseInvalidDefinitionException $exception) {
                 throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException($exception->getMessage(), $class, $reflectionMethod->getName());
             }
-        }
-
-        return $result;
-    }
-
-    private function extractResponse(\ReflectionMethod $reflectionMethod): RestApiBundle\Model\OpenApi\Response\ResponseInterface
-    {
-        $returnType = $this->getReturnType($reflectionMethod);
-
-        switch (true) {
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL:
-                $result = new RestApiBundle\Model\OpenApi\Response\EmptyResponse();
-
-                break;
-
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($returnType->getClassName()):
-                $result = new RestApiBundle\Model\OpenApi\Response\ResponseModel($returnType->getClassName(), $returnType->isNullable());
-
-                break;
-
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\RedirectResponse::class:
-                $result = new RestApiBundle\Model\OpenApi\Response\RedirectResponse();
-
-                break;
-
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\BinaryFileResponse::class:
-                $result = new RestApiBundle\Model\OpenApi\Response\BinaryFileResponse();
-
-                break;
-
-            case $returnType->isCollection() && $returnType->getCollectionValueTypes() && RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType)->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
-                $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType);
-                if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
-                    throw new \InvalidArgumentException('Invalid response type');
-                }
-
-                $result = new RestApiBundle\Model\OpenApi\Response\ArrayOfResponseModels($collectionValueType->getClassName(), $returnType->isNullable());
-
-                break;
-
-            default:
-                throw new \InvalidArgumentException('Invalid response type');
-        }
-
-        return $result;
-    }
-
-    private function getReturnType(\ReflectionMethod $reflectionMethod): PropertyInfo\Type
-    {
-        $result = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
-        if (!$result) {
-            throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Return type not found in docBlock and type-hint', $reflectionMethod->class, $reflectionMethod->name);
         }
 
         return $result;
