@@ -81,33 +81,12 @@ class EndpointFinder
                 continue;
             }
 
-            if ($controllerRoute instanceof Route && $controllerRoute->getPath()) {
-                $path = $controllerRoute->getPath();
-
-                if ($actionRoute->getPath()) {
-                    $path .= $actionRoute->getPath();
-                }
-            } elseif ($actionRoute->getPath()) {
-                $path = $actionRoute->getPath();
-            } else {
-                throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Route has empty path', $class, $reflectionMethod->getName());
-            }
-
-            if (!$actionRoute->getMethods()) {
-                throw new RestApiBundle\Exception\ContextAware\FunctionOfClassException('Route has empty methods', $class, $reflectionMethod->getName());
-            }
-
             try {
                 $endpointData = new RestApiBundle\Model\OpenApi\EndpointData();
-                $endpointData
-                    ->setControllerRoute($controllerRoute)
-                    ->setActionRoute($actionRoute)
-                    ->setReflectionMethod($reflectionMethod)
-                    ->setEndpoint($endpointAnnotation)
-                    ->setPath($path)
-                    ->setMethods($actionRoute->getMethods())
-                    ->setPathParameters($this->extractPathParameters($path, $reflectionMethod))
-                    ->setRequest($this->extractRequest($reflectionMethod));
+                $endpointData->controllerRouteMapping = $controllerRoute;
+                $endpointData->actionRouteMapping = $actionRoute;
+                $endpointData->reflectionMethod = $reflectionMethod;
+                $endpointData->endpointMapping = $endpointAnnotation;
 
                 $result[] = $endpointData;
             } catch (RestApiBundle\Exception\OpenApi\InvalidDefinition\BaseInvalidDefinitionException $exception) {
@@ -118,79 +97,6 @@ class EndpointFinder
         return $result;
     }
 
-    /**
-     * @return RestApiBundle\Model\OpenApi\PathParameter\PathParameterInterface[]
-     */
-    private function extractPathParameters(string $path, \ReflectionMethod $reflectionMethod): array
-    {
-        $scalarTypes = [];
-        $entityTypes = [];
-
-        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-            if (!$reflectionParameter->getType()) {
-                continue;
-            }
-
-            $parameterType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionParameter->getType());
-            if (RestApiBundle\Helper\TypeExtractor::isScalar($parameterType)) {
-                $scalarTypes[$reflectionParameter->getName()] = $parameterType;
-            } elseif ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\DoctrineHelper::isEntity($parameterType->getClassName())) {
-                $entityTypes[$reflectionParameter->getName()] = $parameterType;
-            }
-        }
-
-        $result = [];
-        $placeholders = $this->getPathPlaceholders($path);
-
-        foreach ($placeholders as $placeholder) {
-            if (isset($scalarTypes[$placeholder])) {
-                $result[] = new RestApiBundle\Model\OpenApi\PathParameter\ScalarParameter($placeholder, $scalarTypes[$placeholder]);
-            } elseif (isset($entityTypes[$placeholder])) {
-                $result[] = new RestApiBundle\Model\OpenApi\PathParameter\EntityTypeParameter($placeholder, $entityTypes[$placeholder], 'id');
-                unset($entityTypes[$placeholder]);
-            } else {
-                $entityType = reset($entityTypes);
-                if (!$entityType instanceof PropertyInfo\Type) {
-                    throw new RestApiBundle\Exception\OpenApi\InvalidDefinition\NotMatchedRoutePlaceholderParameterException($placeholder);
-                }
-                $result[] = new RestApiBundle\Model\OpenApi\PathParameter\EntityTypeParameter($placeholder, $entityType, $placeholder);
-            }
-        }
-
-        return $result;
-    }
-
-    private function getPathPlaceholders(string $path): array
-    {
-        $matches = null;
-        $parameters = [];
-
-        if (preg_match_all('/{([^}]+)}/', $path, $matches)) {
-            $parameters = $matches[1];
-        }
-
-        return $parameters;
-    }
-
-    private function extractRequest(\ReflectionMethod $reflectionMethod): ?RestApiBundle\Model\OpenApi\Request\RequestInterface
-    {
-        $result = null;
-
-        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-            if (!$reflectionParameter->getType()) {
-                continue;
-            }
-
-            $parameterType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionParameter->getType());
-            if ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($parameterType->getClassName())) {
-                $result = new RestApiBundle\Model\OpenApi\Request\RequestModel($parameterType->getClassName(), $parameterType->isNullable());
-
-                break;
-            }
-        }
-
-        return $result;
-    }
 
     private function getClassLoader(): ClassLoader
     {
