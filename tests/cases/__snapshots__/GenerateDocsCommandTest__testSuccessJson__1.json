@@ -77,6 +77,24 @@
                 ]
             }
         },
+        "\/books\/test-redirect": {
+            "get": {
+                "summary": "Response with redirect",
+                "responses": {
+                    "302": {
+                        "description": "Success response with redirect",
+                        "headers": {
+                            "Location": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "books"
+                ]
+            }
+        },
         "\/writers": {
             "post": {
                 "summary": "Create writer",

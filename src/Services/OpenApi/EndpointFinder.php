@@ -150,6 +150,11 @@ class EndpointFinder
 
                 break;
 
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isRedirectResponse($returnType->getClassName()):
+                $result = new RestApiBundle\Model\OpenApi\Response\RedirectResponse();
+
+                break;
+
             case $returnType->isCollection() && $returnType->getCollectionValueTypes() && RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType)->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
                 $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType);
                 if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {

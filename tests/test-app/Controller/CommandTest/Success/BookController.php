@@ -2,6 +2,7 @@
 
 namespace TestApp\Controller\CommandTest\Success;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use TestApp;
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Mapping\OpenApi as Docs;
@@ -22,5 +23,12 @@ class BookController
     public function listAction(TestApp\RequestModel\BookList $requestModel)
     {
         return [];
+    }
+
+    #[Docs\Endpoint('Response with redirect', tags: 'books')]
+    #[Route('/test-redirect', methods: 'GET')]
+    public function testRedirectAction(): RedirectResponse
+    {
+        return new RedirectResponse('');
     }
 }

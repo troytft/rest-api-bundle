@@ -175,6 +175,15 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                         ]
                     ]
                 ]));
+            } elseif ($response instanceof RestApiBundle\Model\OpenApi\Response\RedirectResponse) {
+                $responses->addResponse('302', new OpenApi\Response([
+                    'description' => 'Success response with redirect',
+                    'headers' => [
+                        'Location' => [
+                            'type' => OpenApi\Type::STRING,
+                        ]
+                    ]
+                ]));
             }
 
             $pathParameters = [];
