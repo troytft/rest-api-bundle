@@ -7,7 +7,7 @@ use RestApiBundle;
 use function array_key_exists;
 use function class_exists;
 
-class ClassInstanceHelper
+final class ClassInstanceHelper
 {
     /**
      * @var array<string, bool>

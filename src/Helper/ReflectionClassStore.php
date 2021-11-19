@@ -2,7 +2,7 @@
 
 namespace RestApiBundle\Helper;
 
-class ReflectionClassStore
+final class ReflectionClassStore
 {
     /**
      * @var array<string,\ReflectionClass>

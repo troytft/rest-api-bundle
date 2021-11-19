@@ -81,7 +81,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 throw new \InvalidArgumentException(sprintf('File %s does not exist', $template));
             }
 
-            $extension = pathinfo($template, \PATHINFO_EXTENSION) ?? null;
+            $extension = pathinfo($template, \PATHINFO_EXTENSION);
             if (in_array($extension, ['yaml', 'yml'], true)) {
                 $defaultData = array_merge($defaultData, Yaml::parseFile($template));
             } elseif ($extension === 'json') {

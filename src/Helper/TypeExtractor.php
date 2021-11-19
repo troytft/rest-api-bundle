@@ -10,7 +10,7 @@ use phpDocumentor\Reflection as PhpDoc;
 
 use function in_array;
 
-class TypeExtractor
+final class TypeExtractor
 {
     private static ?PropertyInfo\Util\PhpDocTypeHelper $phpDocTypeHelper = null;
     private static ?DocBlockFactory $docBlockFactory = null;

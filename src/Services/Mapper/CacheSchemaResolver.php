@@ -9,7 +9,7 @@ use Symfony\Component\Finder\Finder;
 use function array_merge;
 use function ltrim;
 
-class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInterface
+final class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInterface
 {
     private const CACHE_FILENAME = 'mapper_schema.php.cache';
 
