@@ -411,11 +411,15 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                     $responses->addResponse('204', $this->createEmptyResponse());
                 }
 
+                $responseModelSchema = $this->responseModelResolver->resolveReferenceByClass($returnType->getClassName());
+                $responseModelSchema
+                    ->nullable = $returnType->isNullable();
+
                 $responses->addResponse('200', new OpenApi\Response([
                     'description' => 'Success response with json body',
                     'content' => [
                         'application/json' => [
-                            'schema' => $this->responseModelResolver->resolveReferenceByClass($returnType->getClassName()),
+                            'schema' => $responseModelSchema,
                         ]
                     ]
                 ]));
@@ -439,6 +443,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                             'schema' => new OpenApi\Schema([
                                 'type' => OpenApi\Type::ARRAY,
                                 'items' => $this->responseModelResolver->resolveReferenceByClass($collectionValueType->getClassName()),
+                                'nullable' => $returnType->isNullable(),
                             ])
                         ]
                     ]
