@@ -8,7 +8,7 @@ paths:
             summary: 'Books list'
             responses:
                 '200':
-                    description: 'Success response with body'
+                    description: 'Success response with json body'
                     content:
                         application/json:
                             schema:
@@ -55,6 +55,20 @@ paths:
                     description: 'Element by "id"'
             tags:
                 - books
+    /books/test-binary-file:
+        get:
+            summary: 'Response with binary file response'
+            responses:
+                '200':
+                    description: 'Success binary file response'
+                    headers:
+                        Content-Type:
+                            description: 'File mime type'
+                            schema:
+                                type: string
+                                example: application/octet-stream
+            tags:
+                - books
     /books/test-redirect:
         get:
             summary: 'Response with redirect'
@@ -74,7 +88,7 @@ paths:
             summary: 'Create writer'
             responses:
                 '200':
-                    description: 'Success response with body'
+                    description: 'Success response with json body'
                     content:
                         application/json:
                             schema:
@@ -116,7 +130,7 @@ paths:
             summary: 'Writers list with filters'
             responses:
                 '200':
-                    description: 'Success response with body'
+                    description: 'Success response with json body'
                     content:
                         application/json:
                             schema:

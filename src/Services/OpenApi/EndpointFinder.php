@@ -7,6 +7,7 @@ use Composer\Autoload\ClassLoader;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PropertyInfo;
+use Symfony\Component\HttpFoundation;
 
 use function array_merge;
 use function array_slice;
@@ -18,7 +19,7 @@ use function is_string;
 use function preg_match_all;
 use function reset;
 use function spl_autoload_functions;
-use function substr_count;
+use function substr_count;use function Symfony\Component\String\u;
 
 class EndpointFinder
 {
@@ -150,8 +151,13 @@ class EndpointFinder
 
                 break;
 
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isRedirectResponse($returnType->getClassName()):
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\RedirectResponse::class:
                 $result = new RestApiBundle\Model\OpenApi\Response\RedirectResponse();
+
+                break;
+
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\BinaryFileResponse::class:
+                $result = new RestApiBundle\Model\OpenApi\Response\BinaryFileResponse();
 
                 break;
 

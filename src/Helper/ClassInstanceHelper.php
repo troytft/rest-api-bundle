@@ -52,13 +52,6 @@ final class ClassInstanceHelper
      */
     private static array $mapperModelCache = [];
 
-    /**
-     * @var array<string, bool>
-     */
-    private static array $redirectResponseCache = [
-        HttpFoundation\RedirectResponse::class => true,
-    ];
-
     public static function isResponseModel(string $class): bool
     {
         if (!class_exists($class)) {
@@ -157,21 +150,5 @@ final class ClassInstanceHelper
         }
 
         return static::$mapperModelCache[$class];
-    }
-
-    public static function isRedirectResponse(string $class): bool
-    {
-        if (!class_exists($class)) {
-            return false;
-        }
-
-        if (!array_key_exists($class, static::$redirectResponseCache)) {
-            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
-
-            static::$redirectResponseCache[$class] = $reflectionClass->isInstantiable()
-                && $reflectionClass->implementsInterface(HttpFoundation\RedirectResponse::class);
-        }
-
-        return static::$redirectResponseCache[$class];
     }
 }
