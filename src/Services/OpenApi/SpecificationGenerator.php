@@ -237,40 +237,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 ]));
             }
 
-            $pathParameters = [];
-
-            foreach ($this->extractPathParameters($routePath, $routeData->reflectionMethod) as $pathParameter) {
-                if ($pathParameter instanceof RestApiBundle\Model\OpenApi\PathParameter\ScalarParameter) {
-                    $schema = $this->resolveScalarType(($pathParameter->getType()));
-                } elseif ($pathParameter instanceof RestApiBundle\Model\OpenApi\PathParameter\EntityTypeParameter) {
-                    $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($pathParameter->getClassType()->getClassName(), $pathParameter->getFieldName());
-                    if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
-                        $schema = new OpenApi\Schema([
-                            'type' => OpenApi\Type::STRING,
-                        ]);
-                    } elseif ($columnType === PropertyInfo\Type::BUILTIN_TYPE_INT) {
-                        $schema = new OpenApi\Schema([
-                            'type' => OpenApi\Type::INTEGER,
-                        ]);
-                    } else {
-                        throw new \InvalidArgumentException();
-                    }
-
-
-                    $schema->description = sprintf('Element by "%s"', $pathParameter->getFieldName());
-                    $schema->nullable = $pathParameter->getClassType()->isNullable();
-
-                } else {
-                    throw new \InvalidArgumentException();
-                }
-
-                $pathParameters[] = new OpenApi\Parameter([
-                    'in' => 'path',
-                    'name' => $pathParameter->getName(),
-                    'required' => true,
-                    'schema' => $schema,
-                ]);
-            }
+            $pathParameters = $this->extractPathParameters($routePath, $routeData->reflectionMethod);
 
             $pathItem = $paths[$routePath] ?? null;
             if (!$pathItem) {
@@ -280,7 +247,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
             foreach ($routeData->actionRouteMapping->getMethods() as $httpMethod) {
                 $httpMethod = strtolower($httpMethod);
-                $isHttpGetMethod = $httpMethod === 'get';
+                $isGetHttpMethod = $httpMethod === 'get';
 
                 if (isset($pathItem->getOperations()[$httpMethod])) {
                     throw new \InvalidArgumentException(sprintf('Route already defined %s %s', $httpMethod, $routePath));
@@ -298,11 +265,11 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
                 $queryParameters = [];
                 $request = $this->extractRequest($routeData->reflectionMethod);
-                if ($request && $isHttpGetMethod) {
+                if ($request && $isGetHttpMethod) {
                     $queryParameters = $this->convertRequestModelToParameters($request);
                 }
 
-                if ($request && !$isHttpGetMethod) {
+                if ($request && !$isGetHttpMethod) {
                     $operation->requestBody = $this->convertRequestModelToRequestBody($request);
                 }
 
@@ -400,7 +367,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     }
 
     /**
-     * @return RestApiBundle\Model\OpenApi\PathParameter\PathParameterInterface[]
+     * @return OpenApi\Parameter[]
      */
     private function extractPathParameters(string $path, \ReflectionMethod $reflectionMethod): array
     {
@@ -425,20 +392,56 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
         foreach ($placeholders as $placeholder) {
             if (isset($scalarTypes[$placeholder])) {
-                $result[] = new RestApiBundle\Model\OpenApi\PathParameter\ScalarParameter($placeholder, $scalarTypes[$placeholder]);
+                $result[] = new OpenApi\Parameter([
+                    'in' => 'path',
+                    'name' => $placeholder,
+                    'required' => true,
+                    'schema' => $this->resolveScalarType($scalarTypes[$placeholder]),
+                ]);
             } elseif (isset($entityTypes[$placeholder])) {
-                $result[] = new RestApiBundle\Model\OpenApi\PathParameter\EntityTypeParameter($placeholder, $entityTypes[$placeholder], 'id');
+                $result[] = new OpenApi\Parameter([
+                    'in' => 'path',
+                    'name' => $placeholder,
+                    'required' => true,
+                    'schema' => $this->resolveSchemaForEntityPathParameter($entityTypes[$placeholder], 'id'),
+                ]);
                 unset($entityTypes[$placeholder]);
             } else {
                 $entityType = reset($entityTypes);
                 if (!$entityType instanceof PropertyInfo\Type) {
                     throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod(sprintf('Associated parameter for placeholder %s not matched', $placeholder), $reflectionMethod);
                 }
-                $result[] = new RestApiBundle\Model\OpenApi\PathParameter\EntityTypeParameter($placeholder, $entityType, $placeholder);
+                $result[] = new OpenApi\Parameter([
+                    'in' => 'path',
+                    'name' => $placeholder,
+                    'required' => true,
+                    'schema' => $this->resolveSchemaForEntityPathParameter($entityTypes[$placeholder], $placeholder),
+                ]);
             }
         }
 
         return $result;
+    }
+
+    private function resolveSchemaForEntityPathParameter(PropertyInfo\Type $type, string $fieldName): OpenApi\Schema
+    {
+        $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($type->getClassName(), $fieldName);
+        if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
+            $schema = new OpenApi\Schema([
+                'type' => OpenApi\Type::STRING,
+            ]);
+        } elseif ($columnType === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+            $schema = new OpenApi\Schema([
+                'type' => OpenApi\Type::INTEGER,
+            ]);
+        } else {
+            throw new \InvalidArgumentException();
+        }
+
+        $schema->description = sprintf('Element by "%s"', $fieldName);
+        $schema->nullable = $type->isNullable();
+
+        return $schema;
     }
 
     private function getPathPlaceholders(string $path): array
