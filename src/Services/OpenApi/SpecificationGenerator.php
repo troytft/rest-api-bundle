@@ -150,10 +150,10 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Endpoint has empty tags', $endpointData->reflectionMethod);
         }
 
+        $parameters = $this->resolveParameters($routePath, $endpointData->reflectionMethod);
         $operation = new OpenApi\Operation([
             'summary' => $endpointData->endpointMapping->title,
             'responses' => $this->resolveResponses($endpointData->reflectionMethod),
-            'parameters' => $this->resolveParameters($routePath, $endpointData->reflectionMethod),
             'tags' => $tags,
         ]);
 
@@ -163,13 +163,17 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
         $requestModel = $this->findMapperModel($endpointData->reflectionMethod);
         if ($requestModel && $httpMethod === HttpFoundation\Request::METHOD_GET) {
-            $operation->parameters = array_merge($operation->parameters, $this->convertRequestModelToParameters($requestModel));
+            $parameters = array_merge($parameters, $this->convertRequestModelToParameters($requestModel));
         }
 
         if ($requestModel && $httpMethod !== HttpFoundation\Request::METHOD_GET) {
             $operation->requestBody = $this->convertRequestModelToRequestBody($requestModel);
         }
 
+        if ($parameters) {
+            $operation->parameters = $parameters;
+        }
+        
         return $operation;
     }
 
