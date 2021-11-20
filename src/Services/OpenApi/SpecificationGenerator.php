@@ -193,7 +193,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         return $operation;
     }
 
-    private function findMapperModel(\ReflectionMethod $reflectionMethod): ?PropertyInfo\Type
+    private function findMapperModel(\ReflectionMethod $reflectionMethod): ?OpenApi\Schema
     {
         $result = null;
 
@@ -204,7 +204,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
             $parameterType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionParameter->getType());
             if ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($parameterType->getClassName())) {
-                $result = $parameterType;
+                $result = $this->requestModelResolver->resolveByClass($parameterType->getClassName());
 
                 break;
             }
@@ -306,15 +306,11 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         return $parameters;
     }
 
-    private function convertRequestModelToRequestBody(PropertyInfo\Type $requestModel): OpenApi\RequestBody
+    private function convertRequestModelToRequestBody(OpenApi\Schema $schema): OpenApi\RequestBody
     {
-        $schema = $this->requestModelResolver->resolveByClass($requestModel->getClassName());
-        $schema
-            ->nullable = $requestModel->isNullable();
-
         return new OpenApi\RequestBody([
             'description' => 'Request body',
-            'required' => !$requestModel->isNullable(),
+            'required' => true,
             'content' => [
                 'application/json' => [
                     'schema' => $schema,
@@ -326,10 +322,9 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     /**
      * @return OpenApi\Parameter[]
      */
-    private function convertRequestModelToParameters(PropertyInfo\Type $requestModel): array
+    private function convertRequestModelToParameters(OpenApi\Schema $schema): array
     {
         $result = [];
-        $schema = $this->requestModelResolver->resolveByClass($requestModel->getClassName());
 
         foreach ($schema->properties as $propertyName => $propertySchema) {
             $parameter = new OpenApi\Parameter([
