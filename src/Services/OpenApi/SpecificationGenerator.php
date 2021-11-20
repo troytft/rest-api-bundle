@@ -27,35 +27,26 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
      */
     public function generate(array $endpoints, ?OpenApi\OpenApi $template = null): OpenApi\OpenApi
     {
-        $specificationPaths = [];
-        $specificationTags = [];
-        $specificationSchemas = [];
+        $paths = [];
+        $tags = [];
+        $schemas = [];
 
         if ($template) {
-            $specificationRoot = $template;
-            foreach ($specificationRoot->paths as $path => $pathItem) {
-                $specificationPaths[$path] = $pathItem;
+            $root = $template;
+
+            foreach ($root->paths as $path => $pathItem) {
+                $paths[$path] = $pathItem;
             }
-
-            foreach ($specificationRoot->tags as $tag) {
-                if (!$tag instanceof OpenApi\Tag) {
-                    throw new \InvalidArgumentException();
-                }
-
-                if (!isset($specificationTags[$tag->name])) {
-                    $specificationTags[$tag->name] = $tag;
+            foreach ($root->tags as $tag) {
+                if (!isset($tags[$tag->name])) {
+                    $tags[$tag->name] = $tag;
                 }
             }
-
-            foreach ($specificationRoot->components->schemas as $typename => $schema) {
-                if (!$schema instanceof OpenApi\Schema) {
-                    throw new \InvalidArgumentException();
-                }
-
-                $specificationSchemas[$typename] = $schema;
+            foreach ($root->components->schemas as $typename => $schema) {
+                $schemas[$typename] = $schema;
             }
         } else {
-            $specificationRoot = new OpenApi\OpenApi([
+            $root = new OpenApi\OpenApi([
                 'openapi' => '3.0.0',
                 'info' => [
                     'title' => 'Open API Specification',
@@ -69,52 +60,49 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
         foreach ($endpoints as $endpointData) {
             $routePath = $this->resolveRoutePath($endpointData);
-            $pathItem = $specificationPaths[$routePath] ?? null;
-            if (!$pathItem) {
-                $pathItem = new OpenApi\PathItem([]);
-                $specificationPaths[$routePath] = $pathItem;
+            if (!isset($paths[$routePath])) {
+                $paths[$routePath] = new OpenApi\PathItem([]);
             }
+
+            $pathItem = $paths[$routePath];
 
             foreach ($endpointData->actionRouteMapping->getMethods() as $httpMethod) {
                 $operation = $this->createOperation($endpointData, $httpMethod, $routePath);
-
                 foreach ($operation->tags as $tagName) {
-                    if (isset($specificationTags[$tagName])) {
-                        continue;
+                    if (!isset($tags[$tagName])) {
+                        $tags[$tagName] = new OpenApi\Tag([
+                            'name' => $tagName,
+                        ]);
                     }
-
-                    $specificationTags[$tagName] = new OpenApi\Tag([
-                        'name' => $tagName,
-                    ]);
                 }
 
-                $httpMethod = strtolower($httpMethod);
-                if (isset($pathItem->getOperations()[$httpMethod])) {
+                $key = strtolower($httpMethod);
+                if (isset($pathItem->getOperations()[$key])) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Operation with same url and http method already defined in specification', $endpointData->reflectionMethod);
                 }
 
-                $pathItem->{$httpMethod} = $operation;
+                $pathItem->{$key} = $operation;
             }
         }
 
-        ksort($specificationPaths);
-        $specificationRoot->paths = new OpenApi\Paths($specificationPaths);
+        ksort($paths);
+        $root->paths = new OpenApi\Paths($paths);
 
-        ksort($specificationTags);
-        $specificationRoot->tags = array_values($specificationTags);
+        ksort($tags);
+        $root->tags = array_values($tags);
 
         foreach ($this->responseModelResolver->dumpSchemas() as $typename => $schema) {
-            if (isset($specificationSchemas[$typename])) {
+            if (isset($schemas[$typename])) {
                 throw new \InvalidArgumentException(sprintf('Schema with typename %s already defined', $typename));
             }
 
-            $specificationSchemas[$typename] = $schema;
+            $schemas[$typename] = $schema;
         }
 
-        ksort($specificationSchemas);
-        $specificationRoot->components->schemas = $specificationSchemas;
+        ksort($schemas);
+        $root->components->schemas = $schemas;
 
-        return $specificationRoot;
+        return $root;
     }
 
     private function resolveRoutePath(RestApiBundle\Model\OpenApi\EndpointData $endpointData): string
