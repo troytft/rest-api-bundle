@@ -5,21 +5,12 @@ namespace RestApiBundle\Services\OpenApi;
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\PropertyInfo;
 
 use function array_merge;
 use function array_values;
-use function file_exists;
-use function file_get_contents;
-use function in_array;
-use function json_decode;
-use function json_encode;
-use function json_last_error;
-use function json_last_error_msg;
 use function ksort;
-use function pathinfo;
 use function sprintf;
 use function strtolower;
 
@@ -34,69 +25,9 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     /**
      * @param RestApiBundle\Model\OpenApi\EndpointData[] $endpoints
      */
-    public function generateYaml(array $endpoints, ?string $template = null): string
+    public function generate(array $endpoints, ?OpenApi\OpenApi $template = null): OpenApi\OpenApi
     {
-        $data = $this
-            ->generateSpecification($endpoints, $template)
-            ->getSerializableData();
-
-        return Yaml::dump($data, 256, 4, Yaml::DUMP_OBJECT_AS_MAP);
-    }
-
-    /**
-     * @param RestApiBundle\Model\OpenApi\EndpointData[] $endpoints
-     */
-    public function generateJson(array $endpoints, ?string $template = null): string
-    {
-        $data = $this
-            ->generateSpecification($endpoints, $template)
-            ->getSerializableData();
-
-        $result = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \InvalidArgumentException(json_last_error_msg());
-        }
-
-        return $result;
-    }
-
-    private function createRootElement(?string $template = null): OpenApi\OpenApi
-    {
-        $defaultData = [
-            'openapi' => '3.0.0',
-            'info' => [
-                'title' => 'Open API Specification',
-                'version' => '1.0.0',
-            ],
-            'paths' => [],
-            'tags' => [],
-            'components' => [],
-        ];
-
-        if ($template) {
-            if (!file_exists($template)) {
-                throw new \InvalidArgumentException(sprintf('File %s does not exist', $template));
-            }
-
-            $extension = pathinfo($template, \PATHINFO_EXTENSION);
-            if (in_array($extension, ['yaml', 'yml'], true)) {
-                $defaultData = array_merge($defaultData, Yaml::parseFile($template));
-            } elseif ($extension === 'json') {
-                $defaultData = array_merge($defaultData, json_decode(file_get_contents($template), true));
-            } else {
-                throw new \InvalidArgumentException(sprintf('Invalid template file extension'));
-            }
-        }
-
-        return new OpenApi\OpenApi($defaultData);
-    }
-
-    /**
-     * @param RestApiBundle\Model\OpenApi\EndpointData[] $endpoints
-     */
-    private function generateSpecification(array $endpoints, ?string $template = null): OpenApi\OpenApi
-    {
-        $root = $this->createRootElement($template);
+        $root = $template ?: $this->createRootElement();
 
         $paths = [];
         foreach ($root->paths as $path => $pathItem) {
@@ -229,6 +160,20 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         $root->components->schemas = $schemas;
 
         return $root;
+    }
+
+    private function createRootElement(): OpenApi\OpenApi
+    {
+        return new OpenApi\OpenApi([
+            'openapi' => '3.0.0',
+            'info' => [
+                'title' => 'Open API Specification',
+                'version' => '1.0.0',
+            ],
+            'paths' => [],
+            'tags' => [],
+            'components' => [],
+        ]);
     }
 
     private function extractRequest(\ReflectionMethod $reflectionMethod): ?PropertyInfo\Type
