@@ -18,15 +18,10 @@ use function ucfirst;
 
 class RequestModelValidator
 {
-    private RestApiBundle\Services\Mapper\SchemaResolverInterface $schemaResolver;
-    private ValidatorInterface $validator;
-
     public function __construct(
-        RestApiBundle\Services\Mapper\SchemaResolverInterface $schemaResolver,
-        ValidatorInterface $validator
+        private RestApiBundle\Services\Mapper\SchemaResolverInterface $schemaResolver,
+        private ValidatorInterface $validator
     ) {
-        $this->schemaResolver = $schemaResolver;
-        $this->validator = $validator;
     }
 
     /**

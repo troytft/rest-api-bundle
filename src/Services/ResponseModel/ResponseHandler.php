@@ -14,15 +14,10 @@ use function range;
 
 class ResponseHandler
 {
-    private RestApiBundle\Services\SettingsProvider $settingsProvider;
-    private Serializer $serializer;
-
     public function __construct(
-        RestApiBundle\Services\SettingsProvider $settingsProvider,
-        RestApiBundle\Services\ResponseModel\Serializer $serializer
+        private RestApiBundle\Services\SettingsProvider $settingsProvider,
+        private RestApiBundle\Services\ResponseModel\Serializer $serializer
     ) {
-        $this->settingsProvider = $settingsProvider;
-        $this->serializer = $serializer;
     }
 
     public function handleControllerResultEvent(ViewEvent $event)

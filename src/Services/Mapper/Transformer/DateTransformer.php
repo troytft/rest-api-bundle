@@ -12,11 +12,8 @@ class DateTransformer implements TransformerInterface
 {
     public const FORMAT_OPTION = 'format';
 
-    private RestApiBundle\Services\SettingsProvider $settingsProvider;
-
-    public function __construct(RestApiBundle\Services\SettingsProvider $settingsProvider)
+    public function __construct(private RestApiBundle\Services\SettingsProvider $settingsProvider)
     {
-        $this->settingsProvider = $settingsProvider;
     }
 
     public function transform($value, array $options = [])

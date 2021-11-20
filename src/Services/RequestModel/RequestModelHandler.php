@@ -10,18 +10,11 @@ use function sprintf;
 
 class RequestModelHandler
 {
-    private TranslatorInterface $translator;
-    private RestApiBundle\Services\Mapper\Mapper $mapper;
-    private RestApiBundle\Services\RequestModel\RequestModelValidator $requestModelValidator;
-
     public function __construct(
-        TranslatorInterface $translator,
-        RestApiBundle\Services\Mapper\Mapper $mapper,
-        RestApiBundle\Services\RequestModel\RequestModelValidator $requestModelValidator
+        private TranslatorInterface $translator,
+        private RestApiBundle\Services\Mapper\Mapper $mapper,
+        private RestApiBundle\Services\RequestModel\RequestModelValidator $requestModelValidator
     ) {
-        $this->translator = $translator;
-        $this->mapper = $mapper;
-        $this->requestModelValidator = $requestModelValidator;
     }
 
     /**

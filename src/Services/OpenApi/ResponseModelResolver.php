@@ -13,7 +13,6 @@ use function is_string;
 use function ksort;
 use function lcfirst;
 use function sprintf;
-use function strpos;
 use function substr;
 
 class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
@@ -28,11 +27,8 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
      */
     private array $typenameCache = [];
 
-    private RestApiBundle\Services\SettingsProvider $settingsProvider;
-
-    public function __construct(RestApiBundle\Services\SettingsProvider $settingsProvider)
+    public function __construct(private RestApiBundle\Services\SettingsProvider $settingsProvider)
     {
-        $this->settingsProvider = $settingsProvider;
     }
 
     /**

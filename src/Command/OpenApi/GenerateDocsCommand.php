@@ -20,15 +20,10 @@ final class GenerateDocsCommand extends Command
 
     protected static $defaultName = 'rest-api:generate-docs';
 
-    private RestApiBundle\Services\OpenApi\EndpointFinder $endpointFinder;
-    private RestApiBundle\Services\OpenApi\SpecificationGenerator $specificationGenerator;
-
     public function __construct(
-        RestApiBundle\Services\OpenApi\SpecificationGenerator $specificationGenerator
+        private RestApiBundle\Services\OpenApi\SpecificationGenerator $specificationGenerator,
+        private RestApiBundle\Services\OpenApi\EndpointFinder $endpointFinder,
     ) {
-        $this->endpointFinder = new RestApiBundle\Services\OpenApi\EndpointFinder();
-        $this->specificationGenerator = $specificationGenerator;
-
         parent::__construct();
     }
 
@@ -49,17 +44,14 @@ final class GenerateDocsCommand extends Command
         $templateFile = $input->getOption(static::OPTION_TEMPLATE);
         $excludePath = $input->getOption(static::OPTION_EXCLUDE_PATH);
 
-        try {
-            $endpoints = $this->endpointFinder->findInDirectory($inputDirectory, $excludePath);
+        $endpoints = $this->endpointFinder->findInDirectory($inputDirectory, $excludePath);
 
+        try {
             if ($input->getOption(static::OPTION_YAML)) {
                 $content = $this->specificationGenerator->generateYaml($endpoints, $templateFile);
             } else {
                 $content = $this->specificationGenerator->generateJson($endpoints, $templateFile);
             }
-
-            $filesystem = new Filesystem();
-            $filesystem->dumpFile($outputFile, $content);
         } catch (RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface $exception) {
             $output->writeln([
                 'An error occurred:',
@@ -68,6 +60,9 @@ final class GenerateDocsCommand extends Command
 
             return 1;
         }
+
+        $filesystem = new Filesystem();
+        $filesystem->dumpFile($outputFile, $content);
 
         return 0;
     }

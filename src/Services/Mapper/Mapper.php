@@ -15,16 +15,13 @@ use function call_user_func;
 
 class Mapper
 {
-    private RestApiBundle\Services\Mapper\SchemaResolverInterface $schemaResolver;
-
     /**
      * @var RestApiBundle\Services\Mapper\Transformer\TransformerInterface[]
      */
     private array $transformers = [];
 
-    public function __construct(RestApiBundle\Services\Mapper\SchemaResolverInterface $schemaResolver)
+    public function __construct(private RestApiBundle\Services\Mapper\SchemaResolverInterface $schemaResolver)
     {
-        $this->schemaResolver = $schemaResolver;
     }
 
     public function map(RestApiBundle\Mapping\Mapper\ModelInterface $requestModel, array $data, ?RestApiBundle\Model\Mapper\Context $context = null): void
