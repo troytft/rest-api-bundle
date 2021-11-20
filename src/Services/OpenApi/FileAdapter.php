@@ -6,7 +6,7 @@ use Symfony\Component\Filesystem;
 use Symfony\Component\Yaml;
 use cebe\openapi\spec as OpenApi;
 
-class FileAdapter
+final class FileAdapter
 {
     private const YAML_TYPE = 'yaml';
     private const JSON_TYPE = 'json';
