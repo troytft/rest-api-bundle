@@ -302,17 +302,17 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type is not specified', $reflectionMethod);
         }
 
+        if ($returnType->isNullable()) {
+            $responses->addResponse('204', $this->createEmptyResponse());
+        }
+
         switch (true) {
             case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL:
-                $responses->addResponse('204', $this->createEmptyBodyResponse());
+                $responses->addResponse('204', $this->createEmptyResponse());
 
                 break;
 
             case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($returnType->getClassName()):
-                if ($returnType->isNullable()) {
-                    $responses->addResponse('204', $this->createEmptyBodyResponse());
-                }
-
                 $responses->addResponse('200', $this->createSingleResponseModelResponse($returnType));
 
                 break;
@@ -321,10 +321,6 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType);
                 if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Invalid response type, only collection of response models allowed', $reflectionMethod);
-                }
-
-                if ($returnType->isNullable()) {
-                    $responses->addResponse('204', $this->createEmptyBodyResponse());
                 }
 
                 $responses->addResponse('200', $this->createResponseModelCollectionResponse($returnType));
@@ -348,7 +344,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         return $responses;
     }
 
-    private function createEmptyBodyResponse(): OpenApi\Response
+    private function createEmptyResponse(): OpenApi\Response
     {
         return new OpenApi\Response(['description' => 'Success response with empty body']);
     }
@@ -385,11 +381,11 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         ]);
     }
 
-    private function createSingleResponseModelResponse(PropertyInfo\Type $type): OpenApi\Response
+    private function createSingleResponseModelResponse(PropertyInfo\Type $returnType): OpenApi\Response
     {
-        $schema = $this->responseModelResolver->resolveReferenceByClass($type->getClassName());
+        $schema = $this->responseModelResolver->resolveReferenceByClass($returnType->getClassName());
         $schema
-            ->nullable = $type->isNullable();
+            ->nullable = $returnType->isNullable();
 
         return new OpenApi\Response([
             'description' => 'Success response with json body',
@@ -401,7 +397,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         ]);
     }
 
-    private function createResponseModelCollectionResponse(PropertyInfo\Type $type): OpenApi\Response
+    private function createResponseModelCollectionResponse(PropertyInfo\Type $returnType): OpenApi\Response
     {
         return new OpenApi\Response([
             'description' => 'Success response with json body',
@@ -409,8 +405,8 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 'application/json' => [
                     'schema' => new OpenApi\Schema([
                         'type' => OpenApi\Type::ARRAY,
-                        'items' => $this->responseModelResolver->resolveReferenceByClass($type->getCollectionValueTypes()[0]->getClassName()),
-                        'nullable' => $type->isNullable(),
+                        'items' => $this->responseModelResolver->resolveReferenceByClass($returnType->getCollectionValueTypes()[0]->getClassName()),
+                        'nullable' => $returnType->isNullable(),
                     ])
                 ]
             ]
