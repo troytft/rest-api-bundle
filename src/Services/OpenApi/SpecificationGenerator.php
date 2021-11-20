@@ -68,22 +68,11 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Route has empty methods', $endpointData->reflectionMethod);
             }
 
-            if (array_diff($endpointData->actionRouteMapping->getMethods(), static::getSupportedHttpMethods())) {
+            if (array_diff($endpointData->actionRouteMapping->getMethods(), self::getSupportedHttpMethods())) {
                 throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Route has invalid methods', $endpointData->reflectionMethod);
             }
 
-            if ($endpointData->controllerRouteMapping instanceof Route && $endpointData->controllerRouteMapping->getPath()) {
-                $routePath = $endpointData->controllerRouteMapping->getPath();
-
-                if ($endpointData->actionRouteMapping->getPath()) {
-                    $routePath .= $endpointData->actionRouteMapping->getPath();
-                }
-            } elseif ($endpointData->actionRouteMapping->getPath()) {
-                $routePath = $endpointData->actionRouteMapping->getPath();
-            } else {
-                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Route has empty path', $endpointData->reflectionMethod);
-            }
-
+            $routePath = $this->resolveRoutePath($endpointData);
             $pathItem = $paths[$routePath] ?? null;
             if (!$pathItem) {
                 $pathItem = new OpenApi\PathItem([]);
@@ -105,7 +94,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
                 $key = strtolower($key);
                 if (isset($pathItem->getOperations()[$key])) {
-                    throw new \InvalidArgumentException(sprintf('Route already defined %s %s', $key, $routePath));
+                    throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Operation with same url and http method already defined in specification', $endpointData->reflectionMethod);
                 }
 
                 $pathItem->{$key} = $operation;
@@ -130,6 +119,22 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         $root->components->schemas = $schemas;
 
         return $root;
+    }
+
+    private function resolveRoutePath(RestApiBundle\Model\OpenApi\EndpointData $endpointData): string
+    {
+        if ($endpointData->controllerRouteMapping instanceof Route && $endpointData->controllerRouteMapping->getPath()) {
+            $result = $endpointData->controllerRouteMapping->getPath();
+            if ($endpointData->actionRouteMapping->getPath()) {
+                $result .= $endpointData->actionRouteMapping->getPath();
+            }
+        } elseif ($endpointData->actionRouteMapping->getPath()) {
+            $result = $endpointData->actionRouteMapping->getPath();
+        } else {
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Route has empty path', $endpointData->reflectionMethod);
+        }
+
+        return $result;
     }
 
     private function createOperation(RestApiBundle\Model\OpenApi\EndpointData $endpointData, string $httpMethod, string $routePath): OpenApi\Operation
@@ -173,7 +178,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         if ($parameters) {
             $operation->parameters = $parameters;
         }
-        
+
         return $operation;
     }
 
