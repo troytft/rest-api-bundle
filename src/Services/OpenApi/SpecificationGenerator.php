@@ -8,7 +8,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\PropertyInfo;
 
-use function array_merge;
 use function array_values;
 use function ksort;
 use function sprintf;
@@ -140,7 +139,9 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     {
         $operation = new OpenApi\Operation([
             'summary' => $endpointData->endpointMapping->title,
+            'description' => $endpointData->endpointMapping->description,
             'responses' => $this->resolveResponses($endpointData->reflectionMethod),
+            'parameters' => [],
             'tags' => match (true) {
                 is_string($endpointData->endpointMapping->tags) => [$endpointData->endpointMapping->tags],
                 is_array($endpointData->endpointMapping->tags) => $endpointData->endpointMapping->tags,
@@ -156,93 +157,51 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Tags can not be empty', $endpointData->reflectionMethod);
         }
 
-        if ($endpointData->endpointMapping->description) {
-            $operation->description = $endpointData->endpointMapping->description;
-        }
+        $scalarParameters = [];
+        $doctrineEntityParameters = [];
+        $requestModelSchema = null;
 
-        $parameters = $this->resolveParameters($routePath, $endpointData->reflectionMethod);
-        $requestModel = $this->findMapperModel($endpointData->reflectionMethod);
-        if ($requestModel && $httpMethod === HttpFoundation\Request::METHOD_GET) {
-            $parameters = array_merge($parameters, $this->convertRequestModelToParameters($requestModel));
-        }
-
-        if ($requestModel && $httpMethod !== HttpFoundation\Request::METHOD_GET) {
-            $operation->requestBody = $this->convertRequestModelToRequestBody($requestModel);
-        }
-
-        if ($parameters) {
-            $operation->parameters = $parameters;
-        }
-
-        return $operation;
-    }
-
-    private function findMapperModel(\ReflectionMethod $reflectionMethod): ?OpenApi\Schema
-    {
-        $result = null;
-
-        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-            if (!$reflectionParameter->getType()) {
-                continue;
-            }
-
-            $parameterType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionParameter->getType());
-            if ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($parameterType->getClassName())) {
-                $result = $this->requestModelResolver->resolveByClass($parameterType->getClassName());
-
-                break;
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return OpenApi\Parameter[]
-     */
-    private function resolveParameters(string $path, \ReflectionMethod $reflectionMethod): array
-    {
-        $scalarTypes = [];
-        $entityTypes = [];
-
-        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+        foreach ($endpointData->reflectionMethod->getParameters() as $reflectionParameter) {
             if (!$reflectionParameter->getType()) {
                 continue;
             }
 
             $parameterType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionParameter->getType());
             if (RestApiBundle\Helper\TypeExtractor::isScalar($parameterType)) {
-                $scalarTypes[$reflectionParameter->getName()] = $parameterType;
+                $scalarParameters[$reflectionParameter->getName()] = $parameterType;
             } elseif ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\DoctrineHelper::isEntity($parameterType->getClassName())) {
-                $entityTypes[$reflectionParameter->getName()] = $parameterType;
+                $doctrineEntityParameters[$reflectionParameter->getName()] = $parameterType;
+            } elseif ($parameterType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($parameterType->getClassName())) {
+                if ($requestModelSchema) {
+                    throw new \LogicException();
+                }
+
+                $requestModelSchema = $this->requestModelResolver->resolveByClass($parameterType->getClassName());
             }
         }
 
-        $result = [];
-        $placeholders = $this->extractPathPlaceholders($path);
-
-        foreach ($placeholders as $placeholder) {
-            if (isset($scalarTypes[$placeholder])) {
-                $result[] = new OpenApi\Parameter([
+        foreach ($this->extractPathPlaceholders($routePath) as $placeholder) {
+            if (isset($scalarParameters[$placeholder])) {
+                $operation->parameters[] = new OpenApi\Parameter([
                     'in' => 'path',
                     'name' => $placeholder,
                     'required' => true,
-                    'schema' => $this->resolveScalarType($scalarTypes[$placeholder]),
+                    'schema' => $this->resolveScalarType($scalarParameters[$placeholder]),
                 ]);
-            } elseif (isset($entityTypes[$placeholder])) {
-                $result[] = new OpenApi\Parameter([
+            } elseif (isset($doctrineEntityParameters[$placeholder])) {
+                $operation->parameters[] = new OpenApi\Parameter([
                     'in' => 'path',
                     'name' => $placeholder,
                     'required' => true,
-                    'schema' => $this->resolveSchemaForEntityPathParameter($entityTypes[$placeholder], 'id'),
+                    'schema' => $this->resolveSchemaForEntityPathParameter($doctrineEntityParameters[$placeholder], 'id'),
                 ]);
-                unset($entityTypes[$placeholder]);
+                unset($doctrineEntityParameters[$placeholder]);
             } else {
-                $entityType = reset($entityTypes);
+                $entityType = reset($doctrineEntityParameters);
                 if (!$entityType instanceof PropertyInfo\Type) {
-                    throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException(sprintf('Associated parameter for placeholder %s not matched', $placeholder), $reflectionMethod);
+                    throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException(sprintf('Associated parameter for placeholder %s not matched', $placeholder), $endpointData->reflectionMethod);
                 }
-                $result[] = new OpenApi\Parameter([
+                $operation->parameters[] = new OpenApi\Parameter([
                     'in' => 'path',
                     'name' => $placeholder,
                     'required' => true,
@@ -251,9 +210,46 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             }
         }
 
-        return $result;
-    }
+        if ($requestModelSchema && $httpMethod === HttpFoundation\Request::METHOD_GET) {
+            foreach ($requestModelSchema->properties as $propertyName => $propertySchema) {
+                $parameter = new OpenApi\Parameter([
+                    'in' => 'query',
+                    'name' => $propertyName,
+                    'required' => !$propertySchema->nullable,
+                    'schema' => $propertySchema,
+                ]);
 
+                // Swagger UI does not show schema description in parameters
+                if ($propertySchema->description) {
+                    $parameter->description = $propertySchema->description;
+                    unset($propertySchema->description);
+                }
+
+                $operation->parameters[] = $parameter;
+            }
+        } elseif ($requestModelSchema) {
+            $operation->requestBody = new OpenApi\RequestBody([
+                'description' => 'JSON request body',
+                'required' => true,
+                'content' => [
+                    'application/json' => [
+                        'schema' => $requestModelSchema,
+                    ]
+                ]
+            ]);
+        }
+
+        if (!$operation->description) {
+            unset($operation->description);
+        }
+
+        if (!$operation->parameters) {
+            unset($operation->parameters);
+        }
+
+        return $operation;
+    }
+    
     private function resolveSchemaForEntityPathParameter(PropertyInfo\Type $type, string $fieldName): OpenApi\Schema
     {
         $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($type->getClassName(), $fieldName);
@@ -281,53 +277,13 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     private function extractPathPlaceholders(string $path): array
     {
         $matches = null;
-        $parameters = [];
+        $placeholders = [];
 
         if (preg_match_all('/{([^}]+)}/', $path, $matches)) {
-            $parameters = $matches[1];
+            $placeholders = $matches[1];
         }
 
-        return $parameters;
-    }
-
-    private function convertRequestModelToRequestBody(OpenApi\Schema $schema): OpenApi\RequestBody
-    {
-        return new OpenApi\RequestBody([
-            'description' => 'Request body',
-            'required' => true,
-            'content' => [
-                'application/json' => [
-                    'schema' => $schema,
-                ]
-            ]
-        ]);
-    }
-
-    /**
-     * @return OpenApi\Parameter[]
-     */
-    private function convertRequestModelToParameters(OpenApi\Schema $schema): array
-    {
-        $result = [];
-
-        foreach ($schema->properties as $propertyName => $propertySchema) {
-            $parameter = new OpenApi\Parameter([
-                'in' => 'query',
-                'name' => $propertyName,
-                'required' => !$propertySchema->nullable,
-                'schema' => $propertySchema,
-            ]);
-
-            // Swagger UI does not show schema description in parameters
-            if ($propertySchema->description) {
-                $parameter->description = $propertySchema->description;
-                unset($propertySchema->description);
-            }
-
-            $result[] = $parameter;
-        }
-
-        return $result;
+        return $placeholders;
     }
 
     private function createEmptyResponse(): OpenApi\Response
