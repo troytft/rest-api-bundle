@@ -12,8 +12,8 @@ class ActionArgumentValueResolver implements ArgumentValueResolverInterface
 {
     public function __construct(
         private RequestStack $requestStack,
-        private RestApiBundle\Services\RequestModel\RequestModelHandler $requestHandler)
-    {
+        private RestApiBundle\Services\RequestModel\RequestModelHandler $requestHandler
+    ) {
     }
 
     public function supports(Request $request, ArgumentMetadata $argument): bool
