@@ -233,7 +233,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             }
         } elseif ($requestModelSchema) {
             $operation->requestBody = new OpenApi\RequestBody([
-                'description' => 'JSON request body',
+                'description' => 'Request body',
                 'required' => true,
                 'content' => [
                     'application/json' => [
