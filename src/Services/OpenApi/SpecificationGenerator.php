@@ -138,33 +138,29 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
     private function createOperation(RestApiBundle\Model\OpenApi\EndpointData $endpointData, string $httpMethod, string $routePath): OpenApi\Operation
     {
-        if (!$endpointData->endpointMapping->title) {
-            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Endpoint has empty title', $endpointData->reflectionMethod);
-        }
-
-        if (is_string($endpointData->endpointMapping->tags)) {
-            $tags = [$endpointData->endpointMapping->tags];
-        } elseif (is_array($endpointData->endpointMapping->tags)) {
-            $tags = $endpointData->endpointMapping->tags;
-        } else {
-            throw new \InvalidArgumentException();
-        }
-
-        if (!$tags) {
-            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Endpoint has empty tags', $endpointData->reflectionMethod);
-        }
-
-        $parameters = $this->resolveParameters($routePath, $endpointData->reflectionMethod);
         $operation = new OpenApi\Operation([
             'summary' => $endpointData->endpointMapping->title,
             'responses' => $this->resolveResponses($endpointData->reflectionMethod),
-            'tags' => $tags,
+            'tags' => match (true) {
+                is_string($endpointData->endpointMapping->tags) => [$endpointData->endpointMapping->tags],
+                is_array($endpointData->endpointMapping->tags) => $endpointData->endpointMapping->tags,
+                default => throw new \InvalidArgumentException(),
+            },
         ]);
+
+        if (!$operation->summary) {
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Title can not be empty', $endpointData->reflectionMethod);
+        }
+
+        if (!$operation->tags) {
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Tags can not be empty', $endpointData->reflectionMethod);
+        }
 
         if ($endpointData->endpointMapping->description) {
             $operation->description = $endpointData->endpointMapping->description;
         }
 
+        $parameters = $this->resolveParameters($routePath, $endpointData->reflectionMethod);
         $requestModel = $this->findMapperModel($endpointData->reflectionMethod);
         if ($requestModel && $httpMethod === HttpFoundation\Request::METHOD_GET) {
             $parameters = array_merge($parameters, $this->convertRequestModelToParameters($requestModel));
