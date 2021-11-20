@@ -205,10 +205,10 @@ paths:
                 -
                     name: id
                     in: path
+                    description: 'Element by "id"'
                     required: true
                     schema:
                         type: integer
-                        description: 'Element by "id"'
                         nullable: false
 components:
     schemas:

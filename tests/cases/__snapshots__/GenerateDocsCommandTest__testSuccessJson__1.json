@@ -7,6 +7,9 @@
     "paths": {
         "\/books": {
             "get": {
+                "tags": [
+                    "books"
+                ],
                 "summary": "Books list",
                 "responses": {
                     "200": {
@@ -71,14 +74,14 @@
                         },
                         "description": "Element by \"id\""
                     }
-                ],
-                "tags": [
-                    "books"
                 ]
             }
         },
         "\/books\/test-binary-file": {
             "get": {
+                "tags": [
+                    "books"
+                ],
                 "summary": "Response with binary file response",
                 "responses": {
                     "200": {
@@ -93,14 +96,14 @@
                             }
                         }
                     }
-                },
-                "tags": [
-                    "books"
-                ]
+                }
             }
         },
         "\/books\/test-redirect": {
             "get": {
+                "tags": [
+                    "books"
+                ],
                 "summary": "Response with redirect",
                 "responses": {
                     "302": {
@@ -115,14 +118,14 @@
                             }
                         }
                     }
-                },
-                "tags": [
-                    "books"
-                ]
+                }
             }
         },
         "\/writers": {
             "post": {
+                "tags": [
+                    "writers"
+                ],
                 "summary": "Create writer",
                 "responses": {
                     "200": {
@@ -176,12 +179,12 @@
                         }
                     },
                     "required": true
-                },
-                "tags": [
-                    "writers"
-                ]
+                }
             },
             "get": {
+                "tags": [
+                    "writers"
+                ],
                 "summary": "Writers list with filters",
                 "responses": {
                     "200": {
@@ -265,14 +268,14 @@
                         },
                         "description": "Array of elements by \"id\""
                     }
-                ],
-                "tags": [
-                    "writers"
                 ]
             }
         },
         "\/writers\/{id}": {
             "delete": {
+                "tags": [
+                    "writers"
+                ],
                 "summary": "Remove writer",
                 "responses": {
                     "204": {
@@ -283,16 +286,13 @@
                     {
                         "name": "id",
                         "in": "path",
+                        "description": "Element by \"id\"",
                         "required": true,
                         "schema": {
                             "type": "integer",
-                            "description": "Element by \"id\"",
                             "nullable": false
                         }
                     }
-                ],
-                "tags": [
-                    "writers"
                 ]
             }
         }
