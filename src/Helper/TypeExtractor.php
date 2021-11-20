@@ -109,7 +109,7 @@ final class TypeExtractor
         }
 
         if ($count > 1) {
-            throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('DocBlock contains two or more return tags.', $reflectionMethod);
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('DocBlock contains two or more return tags.', $reflectionMethod);
         }
 
         $returnTag = $docBlock->getTagsByName('return')[0];

@@ -12,15 +12,10 @@ use function sprintf;
 
 class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
 {
-    private RestApiBundle\Services\SettingsProvider $settingsProvider;
-    private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver;
-
     public function __construct(
-        RestApiBundle\Services\SettingsProvider $settingsProvider,
-        RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver
+        private RestApiBundle\Services\SettingsProvider $settingsProvider,
+        private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver
     ) {
-        $this->settingsProvider = $settingsProvider;
-        $this->schemaResolver = $schemaResolver;
     }
 
     public function resolveByClass(string $class, bool $nullable = false): OpenApi\Schema

@@ -12,11 +12,8 @@ class EntityTransformer implements TransformerInterface
     public const CLASS_OPTION = 'class';
     public const FIELD_OPTION = 'field';
 
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entityManager;
     }
 
     public function transform($value, array $options)

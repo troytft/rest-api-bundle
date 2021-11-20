@@ -133,7 +133,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             }
 
             if (!$endpointData->endpointMapping->title) {
-                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Endpoint has empty title', $endpointData->reflectionMethod);
+                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Endpoint has empty title', $endpointData->reflectionMethod);
             }
 
             if ($endpointData->controllerRouteMapping instanceof Route && $endpointData->controllerRouteMapping->getPath()) {
@@ -145,15 +145,15 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             } elseif ($endpointData->actionRouteMapping->getPath()) {
                 $routePath = $endpointData->actionRouteMapping->getPath();
             } else {
-                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Route has empty path', $endpointData->reflectionMethod);
+                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Route has empty path', $endpointData->reflectionMethod);
             }
 
             if (!$endpointData->actionRouteMapping->getMethods()) {
-                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Route has empty methods', $endpointData->reflectionMethod);
+                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Route has empty methods', $endpointData->reflectionMethod);
             }
 
             if (!$endpointTags) {
-                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Endpoint has empty tags', $endpointData->reflectionMethod);
+                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Endpoint has empty tags', $endpointData->reflectionMethod);
             }
 
             foreach ($endpointTags as $tagName) {
@@ -194,13 +194,13 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 }
 
                 $queryParameters = [];
-                $request = $this->extractRequest($endpointData->reflectionMethod);
-                if ($request && $isGetHttpMethod) {
-                    $queryParameters = $this->convertRequestModelToParameters($request);
+                $requestModel = $this->extractRequest($endpointData->reflectionMethod);
+                if ($requestModel && $isGetHttpMethod) {
+                    $queryParameters = $this->convertRequestModelToParameters($requestModel);
                 }
 
-                if ($request && !$isGetHttpMethod) {
-                    $operation->requestBody = $this->convertRequestModelToRequestBody($request);
+                if ($requestModel && !$isGetHttpMethod) {
+                    $operation->requestBody = $this->convertRequestModelToRequestBody($requestModel);
                 }
 
                 if ($pathParameters || $queryParameters) {
@@ -294,7 +294,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             } else {
                 $entityType = reset($entityTypes);
                 if (!$entityType instanceof PropertyInfo\Type) {
-                    throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod(sprintf('Associated parameter for placeholder %s not matched', $placeholder), $reflectionMethod);
+                    throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException(sprintf('Associated parameter for placeholder %s not matched', $placeholder), $reflectionMethod);
                 }
                 $result[] = new OpenApi\Parameter([
                     'in' => 'path',
@@ -397,7 +397,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
         $returnType = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
         if (!$returnType) {
-            throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Return type not found in docBlock and type-hint', $reflectionMethod);
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type not found in docBlock and type-hint', $reflectionMethod);
         }
 
         switch (true) {
@@ -484,7 +484,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 break;
 
             default:
-                throw RestApiBundle\Exception\ContextAware\FunctionOfClassException::fromMessageAndReflectionMethod('Invalid response type', $reflectionMethod);
+                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Invalid response type', $reflectionMethod);
         }
 
         return $responses;

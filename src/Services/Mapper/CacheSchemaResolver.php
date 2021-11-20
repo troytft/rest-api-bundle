@@ -13,14 +13,12 @@ final class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaR
 {
     private const CACHE_FILENAME = 'mapper_schema.php.cache';
 
-    private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver;
     private Cache\Adapter\PhpArrayAdapter $cacheAdapter;
 
     public function __construct(
-        RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver,
+        private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver,
         string $cacheDir
     ) {
-        $this->schemaResolver = $schemaResolver;
         $this->cacheAdapter = new Cache\Adapter\PhpArrayAdapter(
             $cacheDir . \DIRECTORY_SEPARATOR . static::CACHE_FILENAME,
             new Cache\Adapter\NullAdapter()
