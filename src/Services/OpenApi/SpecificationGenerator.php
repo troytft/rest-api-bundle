@@ -32,21 +32,21 @@ class SpecificationGenerator
         $schemas = [];
 
         if ($template) {
-            $root = $template;
+            $rootElement = $template;
 
-            foreach ($root->paths as $path => $pathItem) {
+            foreach ($rootElement->paths as $path => $pathItem) {
                 $paths[$path] = $pathItem;
             }
-            foreach ($root->tags as $tag) {
+            foreach ($rootElement->tags as $tag) {
                 if (!isset($tags[$tag->name])) {
                     $tags[$tag->name] = $tag;
                 }
             }
-            foreach ($root->components->schemas as $typename => $schema) {
+            foreach ($rootElement->components->schemas as $typename => $schema) {
                 $schemas[$typename] = $schema;
             }
         } else {
-            $root = new OpenApi\OpenApi([
+            $rootElement = new OpenApi\OpenApi([
                 'openapi' => '3.0.0',
                 'info' => [
                     'title' => 'Open API Specification',
@@ -87,10 +87,10 @@ class SpecificationGenerator
         }
 
         ksort($paths);
-        $root->paths = new OpenApi\Paths($paths);
+        $rootElement->paths = new OpenApi\Paths($paths);
 
         ksort($tags);
-        $root->tags = array_values($tags);
+        $rootElement->tags = array_values($tags);
 
         foreach ($this->responseModelConverter->dumpSchemas() as $typename => $schema) {
             if (isset($schemas[$typename])) {
@@ -101,9 +101,9 @@ class SpecificationGenerator
         }
 
         ksort($schemas);
-        $root->components->schemas = $schemas;
+        $rootElement->components->schemas = $schemas;
 
-        return $root;
+        return $rootElement;
     }
 
     private function resolveEndpointPath(RestApiBundle\Model\OpenApi\EndpointData $endpointData): string
