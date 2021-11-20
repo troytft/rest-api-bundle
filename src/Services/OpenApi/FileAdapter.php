@@ -20,6 +20,7 @@ final class FileAdapter
         $content = match ($this->resolveTypeByFileExtension($filename)) {
             static::YAML_TYPE => $this->toYaml($specification),
             static::JSON_TYPE => $this->toJson($specification),
+            default => throw new \LogicException(),
         };
 
         $this->filesystem->dumpFile($filename, $content);
@@ -32,6 +33,7 @@ final class FileAdapter
         return match ($this->resolveTypeByFileExtension($filename)) {
             static::YAML_TYPE => $this->fromYaml($content),
             static::JSON_TYPE => $this->fromJson($content),
+            default => throw new \LogicException(),
         };
     }
 
@@ -74,7 +76,7 @@ final class FileAdapter
         return match (pathinfo($filename, \PATHINFO_EXTENSION)) {
             'yml', 'yaml' => static::YAML_TYPE,
             'json' => static::JSON_TYPE,
-            default => throw new \InvalidArgumentException('Invalid file extension')
+            default => throw new \InvalidArgumentException('Invalid file extension'),
         };
     }
 }
