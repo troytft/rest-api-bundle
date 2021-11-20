@@ -128,7 +128,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         if ($type->isCollection()) {
             $result = $this->convertArrayType($type);
         } elseif (RestApiBundle\Helper\TypeExtractor::isScalar($type)) {
-            $result = $this->resolveScalarType($type);
+            $result = $this->resolveScalarType($type->getBuiltinType(), $type->isNullable());
         } elseif ($type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT) {
             $result = $this->convertClassType($type);
         } else {
