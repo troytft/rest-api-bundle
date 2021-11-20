@@ -162,7 +162,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
         $scalarTypes = [];
         $doctrineEntityTypes = [];
-        $requestModelType = null;
+        $requestModelSchema = null;
 
         foreach ($endpointData->reflectionMethod->getParameters() as $reflectionMethodParameter) {
             if (!$reflectionMethodParameter->getType()) {
@@ -175,11 +175,11 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             } elseif ($reflectionMethodType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\DoctrineHelper::isEntity($reflectionMethodType->getClassName())) {
                 $doctrineEntityTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
             } elseif ($reflectionMethodType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($reflectionMethodType->getClassName())) {
-                if ($requestModelType) {
+                if ($requestModelSchema) {
                     throw new \LogicException();
                 }
 
-                $requestModelType = $reflectionMethodType;
+                $requestModelSchema = $this->requestModelResolver->resolveByClass($reflectionMethodType->getClassName());
             }
         }
 
@@ -201,10 +201,10 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             }
         }
 
-        if ($requestModelType && $httpMethod === HttpFoundation\Request::METHOD_GET) {
-            $operationParameters = array_merge($operationParameters, $this->createQueryParametersFromRequestModel($requestModelType));
-        } elseif ($requestModelType) {
-            $operation->requestBody = $this->createRequestBody($requestModelType);
+        if ($requestModelSchema && $httpMethod === HttpFoundation\Request::METHOD_GET) {
+            $operationParameters = array_merge($operationParameters, $this->createQueryParametersFromRequestModel($requestModelSchema));
+        } elseif ($requestModelSchema) {
+            $operation->requestBody = $this->createRequestBody($requestModelSchema);
         }
 
         if ($operationParameters) {
@@ -240,10 +240,9 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     /**
      * @return OpenApi\Parameter[]
      */
-    private function createQueryParametersFromRequestModel(PropertyInfo\Type $type): array
+    private function createQueryParametersFromRequestModel(OpenApi\OpenApi $requestModelSchema): array
     {
         $result = [];
-        $requestModelSchema = $this->requestModelResolver->resolveByClass($type->getClassName());
 
         foreach ($requestModelSchema->properties as $propertyName => $propertySchema) {
             $parameter = new OpenApi\Parameter([
@@ -265,14 +264,14 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         return $result;
     }
 
-    private function createRequestBody(PropertyInfo\Type $type): OpenApi\RequestBody
+    private function createRequestBody(OpenApi\Schema $schema): OpenApi\RequestBody
     {
         return new OpenApi\RequestBody([
             'description' => 'Request body',
             'required' => true,
             'content' => [
                 'application/json' => [
-                    'schema' => $this->requestModelResolver->resolveByClass($type->getClassName()),
+                    'schema' => $schema,
                 ]
             ]
         ]);
