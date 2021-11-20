@@ -13,11 +13,12 @@ use function ksort;
 use function sprintf;
 use function strtolower;
 
-class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
+class SpecificationGenerator
 {
     public function __construct(
-        private RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver,
-        private RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver
+        private RestApiBundle\Services\OpenApi\Schema\RequestModelConverter $requestModelConverter,
+        private RestApiBundle\Services\OpenApi\Schema\ResponseModelConverter $responseModelConverter,
+        private RestApiBundle\Services\OpenApi\Schema\ScalarConverter $scalarConverter,
     ) {
     }
 
@@ -91,7 +92,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         ksort($tags);
         $root->tags = array_values($tags);
 
-        foreach ($this->responseModelResolver->dumpSchemas() as $typename => $schema) {
+        foreach ($this->responseModelConverter->dumpSchemas() as $typename => $schema) {
             if (isset($schemas[$typename])) {
                 throw new \InvalidArgumentException(sprintf('Schema with typename %s already defined', $typename));
             }
@@ -162,7 +163,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
         $scalarTypes = [];
         $doctrineEntityTypes = [];
-        $requestModelSchema = null;
+        $requestModelType = null;
 
         foreach ($endpointData->reflectionMethod->getParameters() as $reflectionMethodParameter) {
             if (!$reflectionMethodParameter->getType()) {
@@ -175,11 +176,11 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             } elseif ($reflectionMethodType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\DoctrineHelper::isEntity($reflectionMethodType->getClassName())) {
                 $doctrineEntityTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
             } elseif ($reflectionMethodType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($reflectionMethodType->getClassName())) {
-                if ($requestModelSchema) {
+                if ($requestModelType) {
                     throw new \LogicException();
                 }
 
-                $requestModelSchema = $this->requestModelResolver->resolveByClass($reflectionMethodType->getClassName());
+                $requestModelType = $reflectionMethodType;
             }
         }
 
@@ -201,10 +202,10 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             }
         }
 
-        if ($requestModelSchema && $httpMethod === HttpFoundation\Request::METHOD_GET) {
-            $operationParameters = array_merge($operationParameters, $this->createQueryParametersFromRequestModel($requestModelSchema));
-        } elseif ($requestModelSchema) {
-            $operation->requestBody = $this->createRequestBody($requestModelSchema);
+        if ($requestModelType && $httpMethod === HttpFoundation\Request::METHOD_GET) {
+            $operationParameters = array_merge($operationParameters, $this->requestModelConverter->toQueryParameters($requestModelType->getClassName()));
+        } elseif ($requestModelType) {
+            $operation->requestBody = $this->requestModelConverter->toRequestBody($requestModelType->getClassName());
         }
 
         if ($operationParameters) {
@@ -220,7 +221,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             'in' => 'path',
             'name' => $name,
             'required' => true,
-            'schema' => $this->resolveScalarType($type->getBuiltinType(), $type->isNullable()),
+            'schema' => $this->scalarConverter->toSchema($type->getBuiltinType(), $type->isNullable()),
         ]);
     }
 
@@ -232,48 +233,8 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             'in' => 'path',
             'name' => $name,
             'required' => !$type->isNullable(),
-            'schema' => $this->resolveScalarType($entityColumnType, $type->isNullable()),
+            'schema' => $this->scalarConverter->toSchema($entityColumnType, $type->isNullable()),
             'description' => sprintf('Element by "%s"', $entityFieldName),
-        ]);
-    }
-
-    /**
-     * @return OpenApi\Parameter[]
-     */
-    private function createQueryParametersFromRequestModel(OpenApi\OpenApi $requestModelSchema): array
-    {
-        $result = [];
-
-        foreach ($requestModelSchema->properties as $propertyName => $propertySchema) {
-            $parameter = new OpenApi\Parameter([
-                'in' => 'query',
-                'name' => $propertyName,
-                'required' => !$propertySchema->nullable,
-                'schema' => $propertySchema,
-            ]);
-
-            // Swagger UI shows description only from parameters
-            if ($propertySchema->description) {
-                $parameter->description = $propertySchema->description;
-                unset($propertySchema->description);
-            }
-
-            $result[] = $parameter;
-        }
-
-        return $result;
-    }
-
-    private function createRequestBody(OpenApi\Schema $schema): OpenApi\RequestBody
-    {
-        return new OpenApi\RequestBody([
-            'description' => 'Request body',
-            'required' => true,
-            'content' => [
-                'application/json' => [
-                    'schema' => $schema,
-                ]
-            ]
         ]);
     }
 
@@ -322,7 +283,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Invalid response type, only collection of response models allowed', $reflectionMethod);
                 }
 
-                $responses->addResponse('200', $this->createResponseModelCollectionResponse($returnType));
+                $responses->addResponse('200', $this->createCollectionOfResponseModelsResponse($returnType));
 
                 break;
 
@@ -382,7 +343,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
     private function createSingleResponseModelResponse(PropertyInfo\Type $returnType): OpenApi\Response
     {
-        $schema = $this->responseModelResolver->resolveReferenceByClass($returnType->getClassName());
+        $schema = $this->responseModelConverter->resolveReferenceByClass($returnType->getClassName());
         $schema
             ->nullable = $returnType->isNullable();
 
@@ -396,7 +357,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         ]);
     }
 
-    private function createResponseModelCollectionResponse(PropertyInfo\Type $returnType): OpenApi\Response
+    private function createCollectionOfResponseModelsResponse(PropertyInfo\Type $returnType): OpenApi\Response
     {
         return new OpenApi\Response([
             'description' => 'Success response with json body',
@@ -404,7 +365,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 'application/json' => [
                     'schema' => new OpenApi\Schema([
                         'type' => OpenApi\Type::ARRAY,
-                        'items' => $this->responseModelResolver->resolveReferenceByClass($returnType->getCollectionValueTypes()[0]->getClassName()),
+                        'items' => $this->responseModelConverter->resolveReferenceByClass($returnType->getCollectionValueTypes()[0]->getClassName()),
                         'nullable' => $returnType->isNullable(),
                     ])
                 ]
