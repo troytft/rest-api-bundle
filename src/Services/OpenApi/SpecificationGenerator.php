@@ -27,102 +27,113 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
      */
     public function generate(array $endpoints, ?OpenApi\OpenApi $template = null): OpenApi\OpenApi
     {
-        $root = $template ?: new OpenApi\OpenApi([
-            'openapi' => '3.0.0',
-            'info' => [
-                'title' => 'Open API Specification',
-                'version' => '1.0.0',
-            ],
-            'paths' => [],
-            'tags' => [],
-            'components' => [],
-        ]);
+        $specificationPaths = [];
+        $specificationTags = [];
+        $specificationSchemas = [];
 
-        $paths = [];
-        foreach ($root->paths as $path => $pathItem) {
-            $paths[$path] = $pathItem;
-        }
-
-        $tags = [];
-        foreach ($root->tags as $tag) {
-            if (!$tag instanceof OpenApi\Tag) {
-                throw new \InvalidArgumentException();
+        if ($template) {
+            $specificationRoot = $template;
+            foreach ($specificationRoot->paths as $path => $pathItem) {
+                $specificationPaths[$path] = $pathItem;
             }
 
-            if (!isset($tags[$tag->name])) {
-                $tags[$tag->name] = $tag;
-            }
-        }
+            foreach ($specificationRoot->tags as $tag) {
+                if (!$tag instanceof OpenApi\Tag) {
+                    throw new \InvalidArgumentException();
+                }
 
-        $schemas = [];
-        foreach ($root->components->schemas as $typename => $schema) {
-            if (!$schema instanceof OpenApi\Schema) {
-                throw new \InvalidArgumentException();
+                if (!isset($specificationTags[$tag->name])) {
+                    $specificationTags[$tag->name] = $tag;
+                }
             }
 
-            $schemas[$typename] = $schema;
+            foreach ($specificationRoot->components->schemas as $typename => $schema) {
+                if (!$schema instanceof OpenApi\Schema) {
+                    throw new \InvalidArgumentException();
+                }
+
+                $specificationSchemas[$typename] = $schema;
+            }
+        } else {
+            $specificationRoot = new OpenApi\OpenApi([
+                'openapi' => '3.0.0',
+                'info' => [
+                    'title' => 'Open API Specification',
+                    'version' => '1.0.0',
+                ],
+                'paths' => [],
+                'tags' => [],
+                'components' => [],
+            ]);
         }
 
         foreach ($endpoints as $endpointData) {
-            if (!$endpointData->actionRouteMapping->getMethods()) {
-                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Route has empty methods', $endpointData->reflectionMethod);
-            }
-
-            if (array_diff($endpointData->actionRouteMapping->getMethods(), self::getSupportedHttpMethods())) {
-                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Route has invalid methods', $endpointData->reflectionMethod);
-            }
-
             $routePath = $this->resolveRoutePath($endpointData);
-            $pathItem = $paths[$routePath] ?? null;
+            $pathItem = $specificationPaths[$routePath] ?? null;
             if (!$pathItem) {
                 $pathItem = new OpenApi\PathItem([]);
-                $paths[$routePath] = $pathItem;
+                $specificationPaths[$routePath] = $pathItem;
             }
 
-            foreach ($endpointData->actionRouteMapping->getMethods() as $key) {
-                $operation = $this->createOperation($endpointData, $key, $routePath);
+            foreach ($endpointData->actionRouteMapping->getMethods() as $httpMethod) {
+                $operation = $this->createOperation($endpointData, $httpMethod, $routePath);
 
                 foreach ($operation->tags as $tagName) {
-                    if (isset($tags[$tagName])) {
+                    if (isset($specificationTags[$tagName])) {
                         continue;
                     }
 
-                    $tags[$tagName] = new OpenApi\Tag([
+                    $specificationTags[$tagName] = new OpenApi\Tag([
                         'name' => $tagName,
                     ]);
                 }
 
-                $key = strtolower($key);
-                if (isset($pathItem->getOperations()[$key])) {
+                $httpMethod = strtolower($httpMethod);
+                if (isset($pathItem->getOperations()[$httpMethod])) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Operation with same url and http method already defined in specification', $endpointData->reflectionMethod);
                 }
 
-                $pathItem->{$key} = $operation;
+                $pathItem->{$httpMethod} = $operation;
             }
         }
 
-        ksort($paths);
-        $root->paths = new OpenApi\Paths($paths);
+        ksort($specificationPaths);
+        $specificationRoot->paths = new OpenApi\Paths($specificationPaths);
 
-        ksort($tags);
-        $root->tags = array_values($tags);
+        ksort($specificationTags);
+        $specificationRoot->tags = array_values($specificationTags);
 
         foreach ($this->responseModelResolver->dumpSchemas() as $typename => $schema) {
-            if (isset($schemas[$typename])) {
+            if (isset($specificationSchemas[$typename])) {
                 throw new \InvalidArgumentException(sprintf('Schema with typename %s already defined', $typename));
             }
 
-            $schemas[$typename] = $schema;
+            $specificationSchemas[$typename] = $schema;
         }
 
-        ksort($schemas);
-        $root->components->schemas = $schemas;
+        ksort($specificationSchemas);
+        $specificationRoot->components->schemas = $specificationSchemas;
 
-        return $root;
+        return $specificationRoot;
     }
 
     private function resolveRoutePath(RestApiBundle\Model\OpenApi\EndpointData $endpointData): string
     {
+        if (!$endpointData->actionRouteMapping->getMethods()) {
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Route has empty methods', $endpointData->reflectionMethod);
+        }
+
+        $allowed = [
+            HttpFoundation\Request::METHOD_GET,
+            HttpFoundation\Request::METHOD_PUT,
+            HttpFoundation\Request::METHOD_POST,
+            HttpFoundation\Request::METHOD_DELETE,
+            HttpFoundation\Request::METHOD_PATCH,
+        ];
+        if (array_diff($endpointData->actionRouteMapping->getMethods(), $allowed)) {
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Route has invalid methods', $endpointData->reflectionMethod);
+        }
+
         if ($endpointData->controllerRouteMapping instanceof Route && $endpointData->controllerRouteMapping->getPath()) {
             $result = $endpointData->controllerRouteMapping->getPath();
             if ($endpointData->actionRouteMapping->getPath()) {
@@ -442,16 +453,5 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
         }
 
         return $responses;
-    }
-
-    private static function getSupportedHttpMethods(): array
-    {
-        return [
-            HttpFoundation\Request::METHOD_GET,
-            HttpFoundation\Request::METHOD_PUT,
-            HttpFoundation\Request::METHOD_POST,
-            HttpFoundation\Request::METHOD_DELETE,
-            HttpFoundation\Request::METHOD_PATCH,
-        ];
     }
 }
