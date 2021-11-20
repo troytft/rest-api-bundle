@@ -52,12 +52,21 @@ class FileAdapter
 
     private function fromYaml(string $content): OpenApi\OpenApi
     {
-        return new OpenApi\OpenApi(Yaml\Yaml::parse($content));
+        return $this->fromArray(Yaml\Yaml::parse($content));
     }
 
     private function fromJson(string $content): OpenApi\OpenApi
     {
-        return new OpenApi\OpenApi(json_decode($content, true));
+        return $this->fromArray(json_decode($content, true));
+    }
+
+    private function fromArray(array $data): OpenApi\OpenApi
+    {
+        return new OpenApi\OpenApi(array_merge([
+            'paths' => [],
+            'tags' => [],
+            'components' => [],
+        ], $data));
     }
 
     private function resolveTypeByFileExtension(string $filename): string

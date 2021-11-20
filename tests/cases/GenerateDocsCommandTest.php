@@ -7,7 +7,7 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
 {
     public function testSuccessYaml()
     {
-        $fileName = $this->getOutputFileName();
+        $fileName = $this->getOutputFileName() . '.yaml';
 
         $application = new Application($this->getKernel());
         $command = $application->find('rest-api:generate-docs');
@@ -16,7 +16,6 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
         $commandTester->execute([
             'input' => 'tests/test-app/Controller/CommandTest/Success',
             'output' => $fileName,
-            '--yaml' => true,
             '--template' => 'tests/test-app/Resources/docs/swagger.yaml'
         ]);
 
@@ -26,7 +25,7 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
 
     public function testSuccessJson()
     {
-        $fileName = $this->getOutputFileName();
+        $fileName = $this->getOutputFileName() . '.json';
 
         $application = new Application($this->getKernel());
         $command = $application->find('rest-api:generate-docs');
@@ -44,7 +43,7 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
 
     public function testInvalidDefinition()
     {
-        $fileName = $this->getOutputFileName();
+        $fileName = $this->getOutputFileName() . '.json';
 
         $application = new Application($this->getKernel());
         $command = $application->find('rest-api:generate-docs');
