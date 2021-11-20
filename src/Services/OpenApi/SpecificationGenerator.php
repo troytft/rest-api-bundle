@@ -139,9 +139,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
     {
         $operation = new OpenApi\Operation([
             'summary' => $endpointData->endpointMapping->title,
-            'description' => $endpointData->endpointMapping->description,
             'responses' => $this->resolveResponses($endpointData->reflectionMethod),
-            'parameters' => [],
             'tags' => match (true) {
                 is_string($endpointData->endpointMapping->tags) => [$endpointData->endpointMapping->tags],
                 is_array($endpointData->endpointMapping->tags) => $endpointData->endpointMapping->tags,
@@ -155,6 +153,10 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
 
         if (!$operation->tags) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Tags can not be empty', $endpointData->reflectionMethod);
+        }
+
+        if ($endpointData->endpointMapping->description) {
+            $operation->description = $endpointData->endpointMapping->description;
         }
 
         $scalarParameters = [];
@@ -180,20 +182,22 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             }
         }
 
+        $parameters = [];
+
         foreach ($this->extractPathPlaceholders($routePath) as $placeholder) {
             if (isset($scalarParameters[$placeholder])) {
-                $operation->parameters[] = new OpenApi\Parameter([
+                $parameters[] = new OpenApi\Parameter([
                     'in' => 'path',
                     'name' => $placeholder,
                     'required' => true,
                     'schema' => $this->resolveScalarType($scalarParameters[$placeholder]),
                 ]);
             } elseif (isset($doctrineEntityParameters[$placeholder])) {
-                $operation->parameters[] = new OpenApi\Parameter([
+                $parameters[] = new OpenApi\Parameter([
                     'in' => 'path',
                     'name' => $placeholder,
                     'required' => true,
-                    'schema' => $this->resolveSchemaForEntityPathParameter($doctrineEntityParameters[$placeholder], 'id'),
+                    'schema' => $this->resolveEntityPathParameterSchema($doctrineEntityParameters[$placeholder], 'id'),
                 ]);
                 unset($doctrineEntityParameters[$placeholder]);
             } else {
@@ -201,11 +205,11 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                 if (!$entityType instanceof PropertyInfo\Type) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException(sprintf('Associated parameter for placeholder %s not matched', $placeholder), $endpointData->reflectionMethod);
                 }
-                $operation->parameters[] = new OpenApi\Parameter([
+                $parameters[] = new OpenApi\Parameter([
                     'in' => 'path',
                     'name' => $placeholder,
                     'required' => true,
-                    'schema' => $this->resolveSchemaForEntityPathParameter($entityType, $placeholder),
+                    'schema' => $this->resolveEntityPathParameterSchema($entityType, $placeholder),
                 ]);
             }
         }
@@ -225,7 +229,7 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
                     unset($propertySchema->description);
                 }
 
-                $operation->parameters[] = $parameter;
+                $parameters[] = $parameter;
             }
         } elseif ($requestModelSchema) {
             $operation->requestBody = new OpenApi\RequestBody([
@@ -239,18 +243,14 @@ class SpecificationGenerator extends RestApiBundle\Services\OpenApi\AbstractSche
             ]);
         }
 
-        if (!$operation->description) {
-            unset($operation->description);
-        }
-
-        if (!$operation->parameters) {
-            unset($operation->parameters);
+        if ($parameters) {
+            $operation->parameters = $parameters;
         }
 
         return $operation;
     }
     
-    private function resolveSchemaForEntityPathParameter(PropertyInfo\Type $type, string $fieldName): OpenApi\Schema
+    private function resolveEntityPathParameterSchema(PropertyInfo\Type $type, string $fieldName): OpenApi\Schema
     {
         $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($type->getClassName(), $fieldName);
         if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
