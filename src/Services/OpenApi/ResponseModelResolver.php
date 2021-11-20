@@ -86,7 +86,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         $reflectedMethods = $reflectedClass->getMethods(\ReflectionMethod::IS_PUBLIC);
 
         foreach ($reflectedMethods as $reflectionMethod) {
-            if (strpos($reflectionMethod->getName(), 'get') !== 0) {
+            if (!str_starts_with($reflectionMethod->getName(), 'get')) {
                 continue;
             }
 
@@ -95,7 +95,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
             try {
                 $propertySchema = $this->convert($this->getReturnType($reflectionMethod));
             } catch (RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException $exception) {
-                throw new RestApiBundle\Exception\ContextAware\PropertyOfClassException('Unknown type', $class, $propertyName);
+                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Unknown type', $reflectionMethod);
             }
 
             $properties[$propertyName] = $propertySchema;
@@ -117,7 +117,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
     {
         $result = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
         if (!$result) {
-            throw new RestApiBundle\Exception\ContextAware\PropertyOfClassException('Return type not found in docBlock and type-hint', $reflectionMethod->class, $reflectionMethod->name);
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type not found in docBlock and type-hint', $reflectionMethod);
 
         }
 

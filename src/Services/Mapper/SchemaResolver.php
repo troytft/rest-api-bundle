@@ -47,7 +47,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                     throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException(sprintf('Setter with name "%s" does not exist.', $propertySetterName));
                 }
             } catch (RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException $exception) {
-                throw new RestApiBundle\Exception\ContextAware\PropertyOfClassException($exception->getMessage(), class: $class, propertyName: $reflectionProperty->getName(), previous: $exception);
+                throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException($exception->getMessage(), $reflectionProperty, $exception);
             }
 
             $properties[$reflectionProperty->getName()] = $propertySchema;
@@ -89,7 +89,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         $type = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
 
         if (!$type) {
-            throw new RestApiBundle\Exception\ContextAware\PropertyOfClassException('Property has empty type', $reflectionProperty->getDeclaringClass()->getName(), $reflectionProperty->getName());
+            throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException('Property has empty type', $reflectionProperty);
         }
 
         return $this->resolveMappingByType($type, $typeOptions);
