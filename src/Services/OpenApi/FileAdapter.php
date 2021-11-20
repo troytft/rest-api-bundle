@@ -2,9 +2,9 @@
 
 namespace RestApiBundle\Services\OpenApi;
 
+use cebe\openapi\spec as OpenApi;
 use Symfony\Component\Filesystem;
 use Symfony\Component\Yaml;
-use cebe\openapi\spec as OpenApi;
 
 final class FileAdapter
 {

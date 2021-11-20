@@ -8,7 +8,7 @@ use Symfony\Component\PropertyInfo;
 
 use function in_array;
 
-class DoctrineHelper extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
+class DoctrineHelper
 {
     public static function isEntity(string $class): bool
     {

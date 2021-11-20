@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi;
+namespace RestApiBundle\Services\OpenApi\Schema;
 
 use Symfony\Component\Validator as Validator;
 use RestApiBundle;
@@ -10,15 +10,59 @@ use cebe\openapi\spec as OpenApi;
 use function array_is_list;
 use function sprintf;
 
-class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
+class RequestModelConverter
 {
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
-        private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver
+        private RestApiBundle\Services\Mapper\SchemaResolver $mapperSchemaResolver,
     ) {
     }
 
-    public function resolveByClass(string $class, bool $nullable = false): OpenApi\Schema
+    public function toRequestBody(string $class): OpenApi\RequestBody
+    {
+        return new OpenApi\RequestBody([
+            'description' => 'Request body',
+            'required' => true,
+            'content' => [
+                'application/json' => [
+                    'schema' => $this->toSchema($class),
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @return OpenApi\Parameter[]
+     */
+    public function toQueryParameters(string $class): array
+    {
+        $queryParameters = [];
+        $requestModelSchema = $this->toSchema($class);
+
+        foreach ($requestModelSchema->properties as $propertyName => $propertySchema) {
+            $parameter = new OpenApi\Parameter([
+                'in' => 'query',
+                'name' => $propertyName,
+                'required' => !$propertySchema->nullable,
+                'schema' => $propertySchema,
+            ]);
+
+            // Swagger UI shows description only from parameters
+            if ($propertySchema->description) {
+                $parameter->description = $propertySchema->description;
+                unset($propertySchema->description);
+            }
+
+            $queryParameters[] = $parameter;
+        }
+
+        return $queryParameters;
+    }
+
+    /**
+     * @todo: migrate tests and make private
+     */
+    public function toSchema(string $class, bool $nullable = false): OpenApi\Schema
     {
         if (!RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($class)) {
             throw new \InvalidArgumentException(sprintf('Class %s is not a request model.', $class));
@@ -27,7 +71,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
         $properties = [];
         $reflectedClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
-        $schema = $this->schemaResolver->resolve($class);
+        $schema = $this->mapperSchemaResolver->resolve($class);
 
         foreach ($schema->properties as $propertyName => $propertySchema) {
             $reflectionProperty = $reflectedClass->getProperty($propertyName);
@@ -109,7 +153,7 @@ class RequestModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchema
     {
         switch ($schema->type) {
             case RestApiBundle\Model\Mapper\Schema::MODEL_TYPE:
-                $result = $this->resolveByClass($schema->class, $schema->isNullable);
+                $result = $this->toSchema($schema->class, $schema->isNullable);
 
                 break;
             case RestApiBundle\Model\Mapper\Schema::TRANSFORMER_AWARE_TYPE:

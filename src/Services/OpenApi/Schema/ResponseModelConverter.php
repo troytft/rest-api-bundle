@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi;
+namespace RestApiBundle\Services\OpenApi\Schema;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
@@ -15,7 +15,7 @@ use function lcfirst;
 use function sprintf;
 use function substr;
 
-class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchemaResolver
+class ResponseModelConverter
 {
     /**
      * @var array<string, OpenApi\Schema>
@@ -27,8 +27,10 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
      */
     private array $typenameCache = [];
 
-    public function __construct(private RestApiBundle\Services\SettingsProvider $settingsProvider)
-    {
+    public function __construct(
+        private RestApiBundle\Services\SettingsProvider $settingsProvider,
+        private RestApiBundle\Services\OpenApi\Schema\ScalarConverter $scalarConverter,
+    ) {
     }
 
     /**
@@ -114,7 +116,6 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         $result = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
         if (!$result) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type not found in docBlock and type-hint', $reflectionMethod);
-
         }
 
         return $result;
@@ -128,7 +129,7 @@ class ResponseModelResolver extends RestApiBundle\Services\OpenApi\AbstractSchem
         if ($type->isCollection()) {
             $result = $this->convertArrayType($type);
         } elseif (RestApiBundle\Helper\TypeExtractor::isScalar($type)) {
-            $result = $this->resolveScalarType($type);
+            $result = $this->scalarConverter->toSchema($type->getBuiltinType(), $type->isNullable());
         } elseif ($type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT) {
             $result = $this->convertClassType($type);
         } else {
