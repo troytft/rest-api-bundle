@@ -6,7 +6,7 @@ use RestApiBundle;
 
 use function sprintf;
 
- class ReflectionMethodAwareException extends \Exception implements RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface
+class ReflectionMethodAwareException extends \Exception implements RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface
 {
     public function __construct(string $message, \ReflectionMethod $reflectionMethod)
     {
