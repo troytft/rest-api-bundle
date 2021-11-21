@@ -46,7 +46,7 @@ class ResponseModelResolver
             }
 
             $this->typenameCache[$class] = $typename;
-            $this->schemaCache[$class] = $this->resolveSchema($class, $typename);
+            $this->schemaCache[$class] = $this->resolveResponseModel($class, $typename);
         }
 
         return new OpenApi\Reference([
@@ -70,7 +70,7 @@ class ResponseModelResolver
         return $result;
     }
 
-    private function resolveSchema(string $class, string $typename): OpenApi\Schema
+    private function resolveResponseModel(string $class, string $typename): OpenApi\Schema
     {
         $properties = [];
 
@@ -85,7 +85,12 @@ class ResponseModelResolver
             $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
 
             try {
-                $propertySchema = $this->convert($this->getReturnType($reflectionMethod));
+                $returnType = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
+                if (!$returnType) {
+                    throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type is not specified', $reflectionMethod);
+                }
+
+                $propertySchema = $this->resolveByType($returnType);
             } catch (RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException $exception) {
                 throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Unknown type', $reflectionMethod);
             }
@@ -105,56 +110,25 @@ class ResponseModelResolver
         ]);
     }
 
-    private function getReturnType(\ReflectionMethod $reflectionMethod): PropertyInfo\Type
-    {
-        $result = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
-        if (!$result) {
-            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type not found in docBlock and type-hint', $reflectionMethod);
-        }
-
-        return $result;
-    }
-
     /**
      * @return OpenApi\Schema|OpenApi\Reference
      */
-    private function convert(PropertyInfo\Type $type)
-    {
-        if ($type->isCollection()) {
-            $result = $this->convertArrayType($type);
-        } elseif (RestApiBundle\Helper\TypeExtractor::isScalar($type)) {
-            $result = RestApiBundle\Helper\OpenApiHelper::createScalarFromType($type);
-        } elseif ($type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT) {
-            $result = $this->convertClassType($type);
-        } else {
-            throw new RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException();
-        }
-
-        return $result;
-    }
-
-    private function convertArrayType(PropertyInfo\Type $arrayType): OpenApi\Schema
-    {
-        if (!$arrayType->getCollectionValueTypes()) {
-            throw new RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException();
-        }
-
-        return new OpenApi\Schema([
-            'type' => OpenApi\Type::ARRAY,
-            'items' => $this->convert(RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($arrayType)),
-            'nullable' => $arrayType->isNullable(),
-        ]);
-    }
-
-    /**
-     * @return OpenApi\Schema|OpenApi\Reference
-     */
-    private function convertClassType(PropertyInfo\Type $classType)
+    private function resolveByType(PropertyInfo\Type $type)
     {
         switch (true) {
-            case RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($classType->getClassName()):
-                $result = $this->resolveReference($classType->getClassName());
-                if ($classType->isNullable()) {
+            case $type->isCollection():
+                $result = $this->resolveCollection($type);
+
+                break;
+
+            case RestApiBundle\Helper\TypeExtractor::isScalar($type):
+                $result = RestApiBundle\Helper\OpenApiHelper::createScalarFromType($type);
+
+                break;
+
+            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($type->getClassName()):
+                $result = $this->resolveReference($type->getClassName());
+                if ($type->isNullable()) {
                     $result = new OpenApi\Schema([
                         'anyOf' => [$result,],
                         'nullable' => true,
@@ -163,44 +137,52 @@ class ResponseModelResolver
 
                 break;
 
-            case RestApiBundle\Helper\ClassInstanceHelper::isDateTime($classType->getClassName()):
-                $result = new OpenApi\Schema([
-                    'type' => OpenApi\Type::STRING,
-                    'format' => 'date-time',
-                    'example' => RestApiBundle\Helper\OpenApiHelper::getExampleDate()->format($this->settingsProvider->getResponseModelDateTimeFormat()),
-                    'nullable' => $classType->isNullable(),
-                ]);
+            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isDateTime($type->getClassName()):
+                $format = $this->settingsProvider->getResponseModelDateTimeFormat();
+                $result = RestApiBundle\Helper\OpenApiHelper::createDateTime($format, $type->isNullable());
 
                 break;
 
-            case RestApiBundle\Helper\ClassInstanceHelper::isSerializableEnum($classType->getClassName()):
-                $result = $this->convertSerializableEnum($classType);
+            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isSerializableEnum($type->getClassName()):
+                $result = $this->resolveEnum($type);
 
                 break;
 
-            case RestApiBundle\Helper\ClassInstanceHelper::isSerializableDate($classType->getClassName()):
-                $result = $this->convertSerializableDate($classType);
+            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isSerializableDate($type->getClassName()):
+                $format = $this->settingsProvider->getResponseModelDateFormat();
+                $result = RestApiBundle\Helper\OpenApiHelper::createDate($format, $type->isNullable());
 
                 break;
 
             default:
-                throw new \InvalidArgumentException(sprintf('Unsupported class type %s', $classType->getClassName()));
+                throw new RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException();
         }
 
         return $result;
     }
 
-    private function convertSerializableEnum(PropertyInfo\Type $classType): OpenApi\Schema
+    private function resolveCollection(PropertyInfo\Type $type): OpenApi\Schema
     {
-        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($classType->getClassName());
+        if (!$type->getCollectionValueTypes()) {
+            throw new RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException();
+        }
+
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::ARRAY,
+            'items' => $this->resolveByType(RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($type)),
+            'nullable' => $type->isNullable(),
+        ]);
+    }
+
+    private function resolveEnum(PropertyInfo\Type $type): OpenApi\Schema
+    {
+        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($type->getClassName());
 
         $values = [];
-        foreach ($reflectionClass->getReflectionConstants() as $constant) {
-            if (!$constant->isPublic() || !is_scalar($constant->getValue())) {
-                continue;
+        foreach ($reflectionClass->getReflectionConstants() as $reflectionClassConstant) {
+            if ($reflectionClassConstant->isPublic() && is_scalar($reflectionClassConstant->getValue())) {
+                $values[] = $reflectionClassConstant->getValue();
             }
-
-            $values[] = $constant->getValue();
         }
 
         if (!$values) {
@@ -211,19 +193,19 @@ class ResponseModelResolver
             $result = new OpenApi\Schema([
                 'type' => OpenApi\Type::NUMBER,
                 'format' => 'double',
-                'nullable' => $classType->isNullable(),
+                'nullable' => $type->isNullable(),
                 'enum' => $values,
             ]);
         } elseif (is_int($values[0])) {
             $result = new OpenApi\Schema([
                 'type' => OpenApi\Type::INTEGER,
-                'nullable' => $classType->isNullable(),
+                'nullable' => $type->isNullable(),
                 'enum' => $values,
             ]);
         } elseif (is_string($values[0])) {
             $result = new OpenApi\Schema([
                 'type' => OpenApi\Type::STRING,
-                'nullable' => $classType->isNullable(),
+                'nullable' => $type->isNullable(),
                 'enum' => $values,
             ]);
         } else {
@@ -231,15 +213,5 @@ class ResponseModelResolver
         }
 
         return $result;
-    }
-
-    private function convertSerializableDate(PropertyInfo\Type $classType): OpenApi\Schema
-    {
-        return new OpenApi\Schema([
-            'type' => OpenApi\Type::STRING,
-            'format' => 'date',
-            'example' => RestApiBundle\Helper\OpenApiHelper::getExampleDate()->format($this->settingsProvider->getResponseModelDateFormat()),
-            'nullable' => $classType->isNullable(),
-        ]);
     }
 }

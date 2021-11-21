@@ -7,7 +7,7 @@ use Symfony\Component\PropertyInfo;
 
 final class OpenApiHelper
 {
-    public static function getExampleDate(): \DateTime
+    private static function createExampleDateTime(): \DateTime
     {
         $result = new \DateTime();
         $result
@@ -51,7 +51,7 @@ final class OpenApiHelper
         return new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
             'format' => 'date',
-            'example' => static::getExampleDate()->format($format),
+            'example' => static::createExampleDateTime()->format($format),
             'nullable' => $nullable,
         ]);
     }
@@ -61,7 +61,7 @@ final class OpenApiHelper
         return new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
             'format' => 'date-time',
-            'example' => static::getExampleDate()->format($format),
+            'example' => static::createExampleDateTime()->format($format),
             'nullable' => $nullable,
         ]);
     }
