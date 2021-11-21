@@ -60,6 +60,9 @@ class RequestModelResolver
         }
     }
 
+    /**
+     * @todo: refactor to more clear solution
+     */
     private function applyConstraint(OpenApi\Schema $schema, Validator\Constraint $constraint): void
     {
         switch (true) {
