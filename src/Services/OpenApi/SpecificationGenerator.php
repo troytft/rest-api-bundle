@@ -16,9 +16,9 @@ use function strtolower;
 class SpecificationGenerator
 {
     public function __construct(
-        private RestApiBundle\Services\OpenApi\Specification\RequestModelResolver $requestModelResolver,
-        private RestApiBundle\Services\OpenApi\Specification\ResponseModelConverter $responseModelConverter,
-        private RestApiBundle\Services\OpenApi\Specification\ScalarResolver $scalarConverter,
+        private RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver,
+        private RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver,
+        private RestApiBundle\Services\OpenApi\ScalarResolver $scalarResolver,
     ) {
     }
 
@@ -92,7 +92,7 @@ class SpecificationGenerator
         ksort($tags);
         $rootElement->tags = array_values($tags);
 
-        foreach ($this->responseModelConverter->dumpSchemas() as $typename => $schema) {
+        foreach ($this->responseModelResolver->dumpSchemas() as $typename => $schema) {
             if (isset($schemas[$typename])) {
                 throw new \InvalidArgumentException(sprintf('Schema with typename %s already defined', $typename));
             }
@@ -221,7 +221,7 @@ class SpecificationGenerator
             'in' => 'path',
             'name' => $name,
             'required' => true,
-            'schema' => $this->scalarConverter->resolve($type->getBuiltinType(), $type->isNullable()),
+            'schema' => $this->scalarResolver->resolve($type->getBuiltinType(), $type->isNullable()),
         ]);
     }
 
@@ -233,7 +233,7 @@ class SpecificationGenerator
             'in' => 'path',
             'name' => $name,
             'required' => !$type->isNullable(),
-            'schema' => $this->scalarConverter->resolve($entityColumnType, $type->isNullable()),
+            'schema' => $this->scalarResolver->resolve($entityColumnType, $type->isNullable()),
             'description' => sprintf('Element by "%s"', $entityFieldName),
         ]);
     }
@@ -343,7 +343,7 @@ class SpecificationGenerator
 
     private function createSingleResponseModelResponse(PropertyInfo\Type $returnType): OpenApi\Response
     {
-        $schema = $this->responseModelConverter->resolveReferenceByClass($returnType->getClassName());
+        $schema = $this->responseModelResolver->resolveReferenceByClass($returnType->getClassName());
         $schema
             ->nullable = $returnType->isNullable();
 
@@ -365,7 +365,7 @@ class SpecificationGenerator
                 'application/json' => [
                     'schema' => new OpenApi\Schema([
                         'type' => OpenApi\Type::ARRAY,
-                        'items' => $this->responseModelConverter->resolveReferenceByClass($returnType->getCollectionValueTypes()[0]->getClassName()),
+                        'items' => $this->responseModelResolver->resolveReferenceByClass($returnType->getCollectionValueTypes()[0]->getClassName()),
                         'nullable' => $returnType->isNullable(),
                     ])
                 ]

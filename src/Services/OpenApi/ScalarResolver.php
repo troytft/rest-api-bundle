@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi\Specification;
+namespace RestApiBundle\Services\OpenApi;
 
 use Symfony\Component\PropertyInfo;
 use cebe\openapi\spec as OpenApi;
