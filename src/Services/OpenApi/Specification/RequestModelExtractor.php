@@ -10,7 +10,7 @@ use cebe\openapi\spec as OpenApi;
 use function array_is_list;
 use function sprintf;
 
-class RequestModelResolver
+class RequestModelExtractor
 {
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
@@ -25,7 +25,7 @@ class RequestModelResolver
             'required' => true,
             'content' => [
                 'application/json' => [
-                    'schema' => $this->toSchema($class),
+                    'schema' => $this->resolveByClass($class),
                 ]
             ]
         ]);
@@ -37,7 +37,7 @@ class RequestModelResolver
     public function resolveAsQueryParameters(string $class): array
     {
         $queryParameters = [];
-        $requestModelSchema = $this->toSchema($class);
+        $requestModelSchema = $this->resolveByClass($class);
 
         foreach ($requestModelSchema->properties as $propertyName => $propertySchema) {
             $parameter = new OpenApi\Parameter([
@@ -59,10 +59,7 @@ class RequestModelResolver
         return $queryParameters;
     }
 
-    /**
-     * @todo: migrate tests and make private
-     */
-    public function toSchema(string $class, bool $nullable = false): OpenApi\Schema
+    public function resolveByClass(string $class, bool $nullable = false): OpenApi\Schema
     {
         if (!RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($class)) {
             throw new \InvalidArgumentException(sprintf('Class %s is not a request model.', $class));
@@ -153,7 +150,7 @@ class RequestModelResolver
     {
         switch ($schema->type) {
             case RestApiBundle\Model\Mapper\Schema::MODEL_TYPE:
-                $result = $this->toSchema($schema->class, $schema->isNullable);
+                $result = $this->resolveByClass($schema->class, $schema->isNullable);
 
                 break;
             case RestApiBundle\Model\Mapper\Schema::TRANSFORMER_AWARE_TYPE:

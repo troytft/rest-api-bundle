@@ -16,8 +16,8 @@ use function strtolower;
 class SpecificationGenerator
 {
     public function __construct(
-        private RestApiBundle\Services\OpenApi\Specification\RequestModelResolver $requestModelResolver,
-        private RestApiBundle\Services\OpenApi\Specification\ResponseModelResolver $responseModelResolver,
+        private RestApiBundle\Services\OpenApi\Specification\RequestModelExtractor $requestModelResolver,
+        private RestApiBundle\Services\OpenApi\Specification\ResponseModelExtractor $responseModelResolver,
     ) {
     }
 

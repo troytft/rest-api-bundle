@@ -15,7 +15,7 @@ use function lcfirst;
 use function sprintf;
 use function substr;
 
-class ResponseModelResolver
+class ResponseModelExtractor
 {
     /**
      * @var array<string, OpenApi\Schema>
@@ -27,19 +27,14 @@ class ResponseModelResolver
      */
     private array $typenameCache = [];
 
-    public function __construct(
-        private RestApiBundle\Services\SettingsProvider $settingsProvider,
-    ) {
+    public function __construct(private RestApiBundle\Services\SettingsProvider $settingsProvider)
+    {
     }
 
-    /**
-     * @return OpenApi\Schema|OpenApi\Reference
-     */
-    public function resolveReferenceByClass(string $class)
+    public function resolveReferenceByClass(string $class): OpenApi\Reference
     {
-        if (isset($this->typenameCache[$class])) {
-            $typename = $this->typenameCache[$class];
-        } else {
+        $typename = $this->typenameCache[$class] ?? null;
+        if (!$typename) {
             if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($class)) {
                 throw new \InvalidArgumentException(sprintf('Class %s is not a response model.', $class));
             }
