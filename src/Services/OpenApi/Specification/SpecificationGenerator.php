@@ -16,8 +16,8 @@ use function strtolower;
 class SpecificationGenerator
 {
     public function __construct(
-        private RestApiBundle\Services\OpenApi\Specification\RequestModelExtractor $requestModelResolver,
-        private RestApiBundle\Services\OpenApi\Specification\ResponseModelExtractor $responseModelResolver,
+        private RestApiBundle\Services\OpenApi\Specification\RequestModelResolver $requestModelResolver,
+        private RestApiBundle\Services\OpenApi\Specification\ResponseModelResolver $responseModelResolver,
     ) {
     }
 
@@ -342,7 +342,7 @@ class SpecificationGenerator
 
     private function createSingleResponseModelResponse(PropertyInfo\Type $returnType): OpenApi\Response
     {
-        $schema = $this->responseModelResolver->resolveReferenceByClass($returnType->getClassName());
+        $schema = $this->responseModelResolver->resolveReference($returnType->getClassName());
         $schema
             ->nullable = $returnType->isNullable();
 
@@ -364,7 +364,7 @@ class SpecificationGenerator
                 'application/json' => [
                     'schema' => new OpenApi\Schema([
                         'type' => OpenApi\Type::ARRAY,
-                        'items' => $this->responseModelResolver->resolveReferenceByClass($returnType->getCollectionValueTypes()[0]->getClassName()),
+                        'items' => $this->responseModelResolver->resolveReference($returnType->getCollectionValueTypes()[0]->getClassName()),
                         'nullable' => $returnType->isNullable(),
                     ])
                 ]

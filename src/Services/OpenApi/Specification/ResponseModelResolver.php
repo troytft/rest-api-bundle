@@ -15,7 +15,7 @@ use function lcfirst;
 use function sprintf;
 use function substr;
 
-class ResponseModelExtractor
+class ResponseModelResolver
 {
     /**
      * @var array<string, OpenApi\Schema>
@@ -31,7 +31,7 @@ class ResponseModelExtractor
     {
     }
 
-    public function resolveReferenceByClass(string $class): OpenApi\Reference
+    public function resolveReference(string $class): OpenApi\Reference
     {
         $typename = $this->typenameCache[$class] ?? null;
         if (!$typename) {
@@ -153,7 +153,7 @@ class ResponseModelExtractor
     {
         switch (true) {
             case RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($classType->getClassName()):
-                $result = $this->resolveReferenceByClass($classType->getClassName());
+                $result = $this->resolveReference($classType->getClassName());
                 if ($classType->isNullable()) {
                     $result = new OpenApi\Schema([
                         'anyOf' => [$result,],

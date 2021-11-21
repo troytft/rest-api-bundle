@@ -10,7 +10,7 @@ use cebe\openapi\spec as OpenApi;
 use function array_is_list;
 use function sprintf;
 
-class RequestModelExtractor
+class RequestModelResolver
 {
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
