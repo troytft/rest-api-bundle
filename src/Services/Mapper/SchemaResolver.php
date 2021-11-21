@@ -86,7 +86,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
 
     private function preprocessMapping(\ReflectionProperty $reflectionProperty, array $typeOptions = []): RestApiBundle\Model\Mapper\Types\TypeInterface
     {
-        $type = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
+        $type = RestApiBundle\Helper\PropertyInfoTypeHelper::extractPropertyType($reflectionProperty);
 
         if (!$type) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException('Property has empty type', $reflectionProperty);
@@ -162,7 +162,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 break;
 
             case $type->isCollection():
-                $valueType = $this->resolveMappingByType(RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($type), $typeOptions);
+                $valueType = $this->resolveMappingByType(RestApiBundle\Helper\PropertyInfoTypeHelper::getFirstCollectionValueType($type), $typeOptions);
                 $result = new RestApiBundle\Model\Mapper\Types\ArrayType($valueType, nullable: $type->isNullable());
 
                 break;

@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi;
+namespace RestApiBundle\Services\OpenApi\Specification;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
@@ -16,9 +16,8 @@ use function strtolower;
 class SpecificationGenerator
 {
     public function __construct(
-        private RestApiBundle\Services\OpenApi\Schema\RequestModelConverter $requestModelConverter,
-        private RestApiBundle\Services\OpenApi\Schema\ResponseModelConverter $responseModelConverter,
-        private RestApiBundle\Services\OpenApi\Schema\ScalarConverter $scalarConverter,
+        private RestApiBundle\Services\OpenApi\Specification\RequestModelResolver $requestModelResolver,
+        private RestApiBundle\Services\OpenApi\Specification\ResponseModelResolver $responseModelResolver,
     ) {
     }
 
@@ -32,21 +31,21 @@ class SpecificationGenerator
         $schemas = [];
 
         if ($template) {
-            $root = $template;
+            $rootElement = $template;
 
-            foreach ($root->paths as $path => $pathItem) {
+            foreach ($rootElement->paths as $path => $pathItem) {
                 $paths[$path] = $pathItem;
             }
-            foreach ($root->tags as $tag) {
+            foreach ($rootElement->tags as $tag) {
                 if (!isset($tags[$tag->name])) {
                     $tags[$tag->name] = $tag;
                 }
             }
-            foreach ($root->components->schemas as $typename => $schema) {
+            foreach ($rootElement->components->schemas as $typename => $schema) {
                 $schemas[$typename] = $schema;
             }
         } else {
-            $root = new OpenApi\OpenApi([
+            $rootElement = new OpenApi\OpenApi([
                 'openapi' => '3.0.0',
                 'info' => [
                     'title' => 'Open API Specification',
@@ -87,12 +86,12 @@ class SpecificationGenerator
         }
 
         ksort($paths);
-        $root->paths = new OpenApi\Paths($paths);
+        $rootElement->paths = new OpenApi\Paths($paths);
 
         ksort($tags);
-        $root->tags = array_values($tags);
+        $rootElement->tags = array_values($tags);
 
-        foreach ($this->responseModelConverter->dumpSchemas() as $typename => $schema) {
+        foreach ($this->responseModelResolver->dumpSchemas() as $typename => $schema) {
             if (isset($schemas[$typename])) {
                 throw new \InvalidArgumentException(sprintf('Schema with typename %s already defined', $typename));
             }
@@ -101,9 +100,9 @@ class SpecificationGenerator
         }
 
         ksort($schemas);
-        $root->components->schemas = $schemas;
+        $rootElement->components->schemas = $schemas;
 
-        return $root;
+        return $rootElement;
     }
 
     private function resolveEndpointPath(RestApiBundle\Model\OpenApi\EndpointData $endpointData): string
@@ -170,8 +169,8 @@ class SpecificationGenerator
                 continue;
             }
 
-            $reflectionMethodType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionMethodParameter->getType());
-            if (RestApiBundle\Helper\TypeExtractor::isScalar($reflectionMethodType)) {
+            $reflectionMethodType = RestApiBundle\Helper\PropertyInfoTypeHelper::extractByReflectionType($reflectionMethodParameter->getType());
+            if (RestApiBundle\Helper\PropertyInfoTypeHelper::isScalar($reflectionMethodType)) {
                 $scalarTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
             } elseif ($reflectionMethodType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\DoctrineHelper::isEntity($reflectionMethodType->getClassName())) {
                 $doctrineEntityTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
@@ -203,9 +202,9 @@ class SpecificationGenerator
         }
 
         if ($requestModelType && $httpMethod === HttpFoundation\Request::METHOD_GET) {
-            $operationParameters = array_merge($operationParameters, $this->requestModelConverter->toQueryParameters($requestModelType->getClassName()));
+            $operationParameters = array_merge($operationParameters, $this->createQueryParametersFromRequestModel($requestModelType->getClassName()));
         } elseif ($requestModelType) {
-            $operation->requestBody = $this->requestModelConverter->toRequestBody($requestModelType->getClassName());
+            $operation->requestBody = $this->createRequestBodyFromRequestModel($requestModelType->getClassName());
         }
 
         if ($operationParameters) {
@@ -221,7 +220,7 @@ class SpecificationGenerator
             'in' => 'path',
             'name' => $name,
             'required' => true,
-            'schema' => $this->scalarConverter->toSchema($type->getBuiltinType(), $type->isNullable()),
+            'schema' => RestApiBundle\Helper\OpenApiHelper::createScalarFromPropertyInfoType($type),
         ]);
     }
 
@@ -233,7 +232,7 @@ class SpecificationGenerator
             'in' => 'path',
             'name' => $name,
             'required' => !$type->isNullable(),
-            'schema' => $this->scalarConverter->toSchema($entityColumnType, $type->isNullable()),
+            'schema' => RestApiBundle\Helper\OpenApiHelper::createScalarFromString($entityColumnType, $type->isNullable()),
             'description' => sprintf('Element by "%s"', $entityFieldName),
         ]);
     }
@@ -257,43 +256,39 @@ class SpecificationGenerator
     {
         $responses = new OpenApi\Responses([]);
 
-        $returnType = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
+        $returnType = RestApiBundle\Helper\PropertyInfoTypeHelper::extractReturnType($reflectionMethod);
         if (!$returnType) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type is not specified', $reflectionMethod);
         }
 
-        if ($returnType->isNullable()) {
-            $responses->addResponse('204', $this->createEmptyResponse());
-        }
-
         switch (true) {
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL:
-                $responses->addResponse('204', $this->createEmptyResponse());
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL || $returnType->isNullable():
+                $this->addEmptyResponse($responses);
 
                 break;
 
             case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($returnType->getClassName()):
-                $responses->addResponse('200', $this->createSingleResponseModelResponse($returnType));
+                $this->addSingleResponseModelResponse($responses, $returnType);
 
                 break;
 
-            case $returnType->isCollection() && $returnType->getCollectionValueTypes() && RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType)->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
-                $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType);
+            case $returnType->isCollection() && $returnType->getCollectionValueTypes() && RestApiBundle\Helper\PropertyInfoTypeHelper::getFirstCollectionValueType($returnType)->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
+                $collectionValueType = RestApiBundle\Helper\PropertyInfoTypeHelper::getFirstCollectionValueType($returnType);
                 if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Invalid response type, only collection of response models allowed', $reflectionMethod);
                 }
 
-                $responses->addResponse('200', $this->createCollectionOfResponseModelsResponse($returnType));
+                $this->addCollectionOfResponseModelsResponse($responses, $returnType);
 
                 break;
 
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\RedirectResponse::class:
-                $responses->addResponse('302', $this->createRedirectResponse());
+            case $returnType->getClassName() === HttpFoundation\RedirectResponse::class:
+                $this->addRedirectResponse($responses);
 
                 break;
 
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\BinaryFileResponse::class:
-                $responses->addResponse('200', $this->createBinaryFileResponse());
+            case $returnType->getClassName() === HttpFoundation\BinaryFileResponse::class:
+                $this->addBinaryFileResponse($responses);
 
                 break;
 
@@ -304,14 +299,14 @@ class SpecificationGenerator
         return $responses;
     }
 
-    private function createEmptyResponse(): OpenApi\Response
+    private function addEmptyResponse(OpenApi\Responses $responses): void
     {
-        return new OpenApi\Response(['description' => 'Success response with empty body']);
+        $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
     }
 
-    private function createBinaryFileResponse(): OpenApi\Response
+    private function addBinaryFileResponse(OpenApi\Responses $responses): void
     {
-        return new OpenApi\Response([
+        $responses->addResponse('200', new OpenApi\Response([
             'description' => 'Success binary file response',
             'headers' => [
                 'Content-Type' => [
@@ -322,12 +317,12 @@ class SpecificationGenerator
                     'description' => 'File mime type',
                 ]
             ]
-        ]);
+        ]));
     }
 
-    private function createRedirectResponse(): OpenApi\Response
+    private function addRedirectResponse(OpenApi\Responses $responses): void
     {
-        return new OpenApi\Response([
+        $responses->addResponse('302', new OpenApi\Response([
             'description' => 'Success response with redirect',
             'headers' => [
                 'Location' => [
@@ -338,38 +333,75 @@ class SpecificationGenerator
                     'description' => 'Redirect URL',
                 ]
             ]
-        ]);
+        ]));
     }
 
-    private function createSingleResponseModelResponse(PropertyInfo\Type $returnType): OpenApi\Response
+    private function addSingleResponseModelResponse(OpenApi\Responses $responses, PropertyInfo\Type $returnType): void
     {
-        $schema = $this->responseModelConverter->resolveReferenceByClass($returnType->getClassName());
-        $schema
-            ->nullable = $returnType->isNullable();
-
-        return new OpenApi\Response([
+        $responses->addResponse('200', new OpenApi\Response([
             'description' => 'Success response with json body',
             'content' => [
                 'application/json' => [
-                    'schema' => $schema,
+                    'schema' => $this->responseModelResolver->resolveReference($returnType->getClassName()),
                 ]
             ]
-        ]);
+        ]));
     }
 
-    private function createCollectionOfResponseModelsResponse(PropertyInfo\Type $returnType): OpenApi\Response
+    private function addCollectionOfResponseModelsResponse(OpenApi\Responses $responses, PropertyInfo\Type $returnType): void
     {
-        return new OpenApi\Response([
+        $responses->addResponse('200', new OpenApi\Response([
             'description' => 'Success response with json body',
             'content' => [
                 'application/json' => [
                     'schema' => new OpenApi\Schema([
                         'type' => OpenApi\Type::ARRAY,
-                        'items' => $this->responseModelConverter->resolveReferenceByClass($returnType->getCollectionValueTypes()[0]->getClassName()),
+                        'items' => $this->responseModelResolver->resolveReference($returnType->getCollectionValueTypes()[0]->getClassName()),
                         'nullable' => $returnType->isNullable(),
                     ])
                 ]
             ]
+        ]));
+    }
+
+    private function createRequestBodyFromRequestModel(string $class): OpenApi\RequestBody
+    {
+        return new OpenApi\RequestBody([
+            'description' => 'Request body',
+            'required' => true,
+            'content' => [
+                'application/json' => [
+                    'schema' => $this->requestModelResolver->resolve($class),
+                ]
+            ]
         ]);
+    }
+
+    /**
+     * @return OpenApi\Parameter[]
+     */
+    private function createQueryParametersFromRequestModel(string $class): array
+    {
+        $queryParameters = [];
+        $requestModelSchema = $this->requestModelResolver->resolve($class);
+
+        foreach ($requestModelSchema->properties as $propertyName => $propertySchema) {
+            $parameter = new OpenApi\Parameter([
+                'in' => 'query',
+                'name' => $propertyName,
+                'required' => !$propertySchema->nullable,
+                'schema' => $propertySchema,
+            ]);
+
+            // Swagger UI shows description only from parameters
+            if ($propertySchema->description) {
+                $parameter->description = $propertySchema->description;
+                unset($propertySchema->description);
+            }
+
+            $queryParameters[] = $parameter;
+        }
+
+        return $queryParameters;
     }
 }

@@ -21,7 +21,7 @@ final class GenerateDocsCommand extends Command
     public function __construct(
         private RestApiBundle\Services\OpenApi\EndpointFinder $endpointFinder,
         private RestApiBundle\Services\OpenApi\FileAdapter $fileAdapter,
-        private RestApiBundle\Services\OpenApi\SpecificationGenerator $specificationGenerator,
+        private RestApiBundle\Services\OpenApi\Specification\SpecificationGenerator $specificationGenerator,
     ) {
         parent::__construct();
     }
