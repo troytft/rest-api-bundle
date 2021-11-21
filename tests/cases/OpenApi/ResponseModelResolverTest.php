@@ -4,7 +4,7 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
 {
     public function testSchemaFromTypeHints()
     {
-        $reference = $this->getResponseModelResolver()->resolveReferenceByClass(TestApp\ResponseModel\ModelWithTypeHint::class);
+        $reference = $this->getResponseModelResolver()->resolveReference(TestApp\ResponseModel\ModelWithTypeHint::class);
         $this->assertJsonStringEqualsJsonString('{"$ref":"#\/components\/schemas\/ModelWithTypeHint"}', json_encode($reference->getSerializableData()));
 
         $schemas = $this->getResponseModelResolver()->dumpSchemas();
@@ -19,7 +19,7 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
 
     public function testSchemaFromDocBlocks()
     {
-        $reference = $this->getResponseModelResolver()->resolveReferenceByClass(TestApp\ResponseModel\ModelWithDocBlock::class);
+        $reference = $this->getResponseModelResolver()->resolveReference(TestApp\ResponseModel\ModelWithDocBlock::class);
         $this->assertJsonStringEqualsJsonString('{"$ref":"#\/components\/schemas\/ModelWithDocBlock"}', json_encode($reference->getSerializableData()));
 
         $schemas = $this->getResponseModelResolver()->dumpSchemas();
@@ -32,8 +32,8 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
         $this->assertMatchesJsonSnapshot(json_encode($schemas['CombinedModel']->getSerializableData()));
     }
 
-    private function getResponseModelResolver(): RestApiBundle\Services\OpenApi\Specification\ResponseModelConverter
+    private function getResponseModelResolver(): RestApiBundle\Services\OpenApi\Specification\ResponseModelResolver
     {
-        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\Specification\ResponseModelConverter::class);
+        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\Specification\ResponseModelResolver::class);
     }
 }

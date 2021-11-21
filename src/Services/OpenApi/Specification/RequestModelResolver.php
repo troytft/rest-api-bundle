@@ -135,28 +135,38 @@ class RequestModelResolver
      */
     private function resolveTransformerAwareType(RestApiBundle\Model\Mapper\Schema $schema, array $validationConstraints): OpenApi\Schema
     {
-        $schema = match ($schema->transformerClass) {
-            RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class => RestApiBundle\Helper\OpenApiHelper::createScalarFromString(PropertyInfo\Type::BUILTIN_TYPE_INT, $schema->isNullable),
-            RestApiBundle\Services\Mapper\Transformer\StringTransformer::class => RestApiBundle\Helper\OpenApiHelper::createScalarFromString(PropertyInfo\Type::BUILTIN_TYPE_STRING, $schema->isNullable),
-            RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class => RestApiBundle\Helper\OpenApiHelper::createScalarFromString(PropertyInfo\Type::BUILTIN_TYPE_BOOL, $schema->isNullable),
-            RestApiBundle\Services\Mapper\Transformer\FloatTransformer::class => RestApiBundle\Helper\OpenApiHelper::createScalarFromString(PropertyInfo\Type::BUILTIN_TYPE_FLOAT, $schema->isNullable),
-            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class => $this->resolveDateTimeTransformer($schema->transformerOptions, $schema->isNullable),
+        return match ($schema->transformerClass) {
+            RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class => $this->resolveScalarTransformer(PropertyInfo\Type::BUILTIN_TYPE_INT, $schema->isNullable, $validationConstraints),
+            RestApiBundle\Services\Mapper\Transformer\StringTransformer::class => $this->resolveScalarTransformer(PropertyInfo\Type::BUILTIN_TYPE_STRING, $schema->isNullable, $validationConstraints),
+            RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class => $this->resolveScalarTransformer(PropertyInfo\Type::BUILTIN_TYPE_BOOL, $schema->isNullable, $validationConstraints),
+            RestApiBundle\Services\Mapper\Transformer\FloatTransformer::class => $this->resolveScalarTransformer(PropertyInfo\Type::BUILTIN_TYPE_FLOAT, $schema->isNullable, $validationConstraints),
+            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class => $this->resolveDateTimeTransformer($schema->transformerOptions, $schema->isNullable, $validationConstraints),
             RestApiBundle\Services\Mapper\Transformer\DateTransformer::class => $this->resolveDateTransformer($schema->transformerOptions, $schema->isNullable),
             RestApiBundle\Services\Mapper\Transformer\EntityTransformer::class => $this->resolveEntityTransformer($schema->transformerOptions, $schema->isNullable),
             RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::class => $this->resolveEntitiesCollectionTransformer($schema->transformerOptions, $schema->isNullable),
             default => throw new \InvalidArgumentException(),
         };
-
-        $this->applyConstraints($schema, $validationConstraints);
-
-        return $schema;
     }
 
-    private function resolveDateTimeTransformer(array $options, bool $nullable): OpenApi\Schema
+    private function resolveScalarTransformer(string $type, bool $nullable, array $validationConstraints): OpenApi\Schema
+    {
+        $result = RestApiBundle\Helper\OpenApiHelper::createScalarFromString($type, $nullable);
+        $this->applyConstraints($result, $validationConstraints);
+
+        return $result;
+    }
+
+    /**
+     * @param Validator\Constraint[] $validationConstraints
+     */
+    private function resolveDateTimeTransformer(array $options, bool $nullable, array $validationConstraints): OpenApi\Schema
     {
         $format = $options[RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateTimeFormat();
+        $result = RestApiBundle\Helper\OpenApiHelper::createDateTime($format, $nullable);
 
-        return RestApiBundle\Helper\OpenApiHelper::createDateTime($format, $nullable);
+        $this->applyConstraints($result, $validationConstraints);
+
+        return $result;
     }
 
     private function resolveDateTransformer(array $options, bool $nullable): OpenApi\Schema
