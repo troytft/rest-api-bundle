@@ -221,7 +221,7 @@ class RequestModelResolver
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date-time',
-                    'example' => RestApiBundle\Helper\OpenApi\ExampleHelper::getExampleDate()->format($format),
+                    'example' => RestApiBundle\Helper\OpenApiHelper::getExampleDate()->format($format),
                     'nullable' => $schema->isNullable,
                 ]);
                 $this->applyConstraints($result, $validationConstraints);
@@ -233,7 +233,7 @@ class RequestModelResolver
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date',
-                    'example' => RestApiBundle\Helper\OpenApi\ExampleHelper::getExampleDate()->format($format),
+                    'example' => RestApiBundle\Helper\OpenApiHelper::getExampleDate()->format($format),
                     'nullable' => $schema->isNullable,
                 ]);
 

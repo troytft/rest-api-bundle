@@ -18,7 +18,6 @@ class SpecificationGenerator
     public function __construct(
         private RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver,
         private RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver,
-        private RestApiBundle\Services\OpenApi\ScalarResolver $scalarResolver,
     ) {
     }
 
@@ -221,7 +220,7 @@ class SpecificationGenerator
             'in' => 'path',
             'name' => $name,
             'required' => true,
-            'schema' => $this->scalarResolver->resolve($type->getBuiltinType(), $type->isNullable()),
+            'schema' => RestApiBundle\Helper\OpenApiHelper::createScalarFromType($type),
         ]);
     }
 
@@ -233,7 +232,7 @@ class SpecificationGenerator
             'in' => 'path',
             'name' => $name,
             'required' => !$type->isNullable(),
-            'schema' => $this->scalarResolver->resolve($entityColumnType, $type->isNullable()),
+            'schema' => RestApiBundle\Helper\OpenApiHelper::createScalarFromString($entityColumnType, $type->isNullable()),
             'description' => sprintf('Element by "%s"', $entityFieldName),
         ]);
     }

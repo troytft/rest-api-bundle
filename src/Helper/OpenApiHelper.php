@@ -1,13 +1,28 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi;
+namespace RestApiBundle\Helper;
 
-use Symfony\Component\PropertyInfo;
 use cebe\openapi\spec as OpenApi;
+use Symfony\Component\PropertyInfo;
 
-class ScalarResolver
+class OpenApiHelper
 {
-    public function resolve(string $type, bool $nullable): OpenApi\Schema
+    public static function getExampleDate(): \DateTime
+    {
+        $result = new \DateTime();
+        $result
+            ->setTimestamp(1617885866)
+            ->setTimezone(new \DateTimeZone('Europe/Prague'));
+
+        return $result;
+    }
+
+    public static function createScalarFromType(PropertyInfo\Type $type): OpenApi\Schema
+    {
+        return self::createScalarFromString($type->getBuiltinType(), $type->isNullable());
+    }
+
+    public static function createScalarFromString(string $type, bool $nullable): OpenApi\Schema
     {
         return match ($type) {
             PropertyInfo\Type::BUILTIN_TYPE_STRING => new OpenApi\Schema([

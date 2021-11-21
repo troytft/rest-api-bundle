@@ -29,7 +29,6 @@ class ResponseModelResolver
 
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
-        private RestApiBundle\Services\OpenApi\ScalarResolver $scalarResolver,
     ) {
     }
 
@@ -129,7 +128,7 @@ class ResponseModelResolver
         if ($type->isCollection()) {
             $result = $this->convertArrayType($type);
         } elseif (RestApiBundle\Helper\TypeExtractor::isScalar($type)) {
-            $result = $this->scalarResolver->resolve($type->getBuiltinType(), $type->isNullable());
+            $result = RestApiBundle\Helper\OpenApiHelper::createScalarFromType($type);
         } elseif ($type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT) {
             $result = $this->convertClassType($type);
         } else {
@@ -173,7 +172,7 @@ class ResponseModelResolver
                 $result = new OpenApi\Schema([
                     'type' => OpenApi\Type::STRING,
                     'format' => 'date-time',
-                    'example' => RestApiBundle\Helper\OpenApi\ExampleHelper::getExampleDate()->format($this->settingsProvider->getResponseModelDateTimeFormat()),
+                    'example' => RestApiBundle\Helper\OpenApiHelper::getExampleDate()->format($this->settingsProvider->getResponseModelDateTimeFormat()),
                     'nullable' => $classType->isNullable(),
                 ]);
 
@@ -244,7 +243,7 @@ class ResponseModelResolver
         return new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
             'format' => 'date',
-            'example' => RestApiBundle\Helper\OpenApi\ExampleHelper::getExampleDate()->format($this->settingsProvider->getResponseModelDateFormat()),
+            'example' => RestApiBundle\Helper\OpenApiHelper::getExampleDate()->format($this->settingsProvider->getResponseModelDateFormat()),
             'nullable' => $classType->isNullable(),
         ]);
     }
