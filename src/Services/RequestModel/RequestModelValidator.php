@@ -13,7 +13,6 @@ use function implode;
 use function is_numeric;
 use function sprintf;
 use function str_replace;
-use function strpos;
 use function ucfirst;
 
 class RequestModelValidator
@@ -124,7 +123,7 @@ class RequestModelValidator
     private function normalizeConstraintViolationPath(ConstraintViolationInterface $constraintViolation): string
     {
         $path = $constraintViolation->getPropertyPath();
-        if (strpos($path, '[') !== false) {
+        if (str_contains($path, '[')) {
             $path = str_replace(['[', ']'], ['.', ''], $path);
         }
 

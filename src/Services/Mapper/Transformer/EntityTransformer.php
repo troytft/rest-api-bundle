@@ -3,7 +3,6 @@
 namespace RestApiBundle\Services\Mapper\Transformer;
 
 use RestApiBundle;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Component\PropertyInfo;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -12,8 +11,11 @@ class EntityTransformer implements TransformerInterface
     public const CLASS_OPTION = 'class';
     public const FIELD_OPTION = 'field';
 
-    public function __construct(private EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private RestApiBundle\Services\Mapper\Transformer\StringTransformer $stringTransformer,
+        private RestApiBundle\Services\Mapper\Transformer\IntegerTransformer $integerTransformer,
+    ) {
     }
 
     public function transform($value, array $options)
@@ -21,22 +23,14 @@ class EntityTransformer implements TransformerInterface
         $class = $options[static::CLASS_OPTION];
         $field = $options[static::FIELD_OPTION];
 
-        $fieldType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $field);
+        $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $field);
+        $value = match ($columnType) {
+            PropertyInfo\Type::BUILTIN_TYPE_INT => $this->integerTransformer->transform($value),
+            PropertyInfo\Type::BUILTIN_TYPE_STRING => $this->stringTransformer->transform($value),
+            default => throw new \InvalidArgumentException(),
+        };
 
-        if ($fieldType === PropertyInfo\Type::BUILTIN_TYPE_INT) {
-            $transformer = new IntegerTransformer();
-            $value = $transformer->transform($value);
-        } elseif ($fieldType === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
-            $transformer = new StringTransformer();
-            $value = $transformer->transform($value);
-        } else {
-            throw new \InvalidArgumentException();
-        }
-
-        /** @var EntityRepository $repository */
-        $repository = $this->entityManager->getRepository($options[static::CLASS_OPTION]);
-        $entity = $repository->findOneBy([$options[static::FIELD_OPTION] => $value]);
-
+        $entity = $this->entityManager->getRepository($class)->findOneBy([$field => $value]);
         if (!$entity) {
             throw new RestApiBundle\Exception\RequestModel\EntityNotFoundException();
         }

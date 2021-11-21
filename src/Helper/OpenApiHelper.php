@@ -17,7 +17,7 @@ final class OpenApiHelper
         return $result;
     }
 
-    public static function createScalarFromType(PropertyInfo\Type $type): OpenApi\Schema
+    public static function createScalarFromPropertyInfoType(PropertyInfo\Type $type): OpenApi\Schema
     {
         return static::createScalarFromString($type->getBuiltinType(), $type->isNullable());
     }

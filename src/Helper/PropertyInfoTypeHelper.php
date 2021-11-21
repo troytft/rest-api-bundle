@@ -10,7 +10,7 @@ use phpDocumentor\Reflection as PhpDoc;
 
 use function in_array;
 
-final class TypeExtractor
+final class PropertyInfoTypeHelper
 {
     private static ?PropertyInfo\Util\PhpDocTypeHelper $phpDocTypeHelper = null;
     private static ?DocBlockFactory $docBlockFactory = null;
@@ -73,7 +73,7 @@ final class TypeExtractor
         $returnTag = static::resolveReturnTag($reflectionMethod);
 
         if ($returnTag) {
-            $result = RestApiBundle\Helper\TypeExtractor::extractByPhpDocType($returnTag->getType());
+            $result = RestApiBundle\Helper\PropertyInfoTypeHelper::extractByPhpDocType($returnTag->getType());
         } elseif ($reflectionMethod->getReturnType()) {
             $result = static::extractByReflectionType($reflectionMethod->getReturnType());
         }
@@ -87,7 +87,7 @@ final class TypeExtractor
         $varTag = static::resolveVarTag($reflectionProperty);
 
         if ($varTag) {
-            $result = RestApiBundle\Helper\TypeExtractor::extractByPhpDocType($varTag->getType());
+            $result = RestApiBundle\Helper\PropertyInfoTypeHelper::extractByPhpDocType($varTag->getType());
         } elseif ($reflectionProperty->getType()) {
             $result = static::extractByReflectionType($reflectionProperty->getType());
         }
@@ -166,7 +166,7 @@ final class TypeExtractor
         return in_array($type->getBuiltinType(), $types, true);
     }
 
-    public static function extractCollectionValueType(PropertyInfo\Type $type): ?PropertyInfo\Type
+    public static function getFirstCollectionValueType(PropertyInfo\Type $type): ?PropertyInfo\Type
     {
         if (count($type->getCollectionValueTypes()) > 1) {
             throw new \InvalidArgumentException();

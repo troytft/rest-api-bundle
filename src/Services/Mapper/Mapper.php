@@ -141,7 +141,7 @@ class Mapper
         return $path;
     }
 
-    public function addTransformer(RestApiBundle\Services\Mapper\Transformer\TransformerInterface $transformer)
+    public function addTransformer(RestApiBundle\Services\Mapper\Transformer\TransformerInterface $transformer): static
     {
         $this->transformers[get_class($transformer)] = $transformer;
 

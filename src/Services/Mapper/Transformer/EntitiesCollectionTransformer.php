@@ -4,7 +4,6 @@ namespace RestApiBundle\Services\Mapper\Transformer;
 
 use RestApiBundle;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 
 use function count;
 use function ucfirst;
@@ -27,10 +26,7 @@ class EntitiesCollectionTransformer implements TransformerInterface
             throw new RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException();
         }
 
-        /** @var EntityRepository $repository */
-        $repository = $this->entityManager->getRepository($class);
-        $results = $repository->findBy([$field => $value]);
-
+        $results = $this->entityManager->getRepository($class)->findBy([$field => $value]);
         if (count($results) !== count($value)) {
             throw new RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException();
         }

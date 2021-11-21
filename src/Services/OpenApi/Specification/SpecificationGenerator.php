@@ -169,8 +169,8 @@ class SpecificationGenerator
                 continue;
             }
 
-            $reflectionMethodType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionMethodParameter->getType());
-            if (RestApiBundle\Helper\TypeExtractor::isScalar($reflectionMethodType)) {
+            $reflectionMethodType = RestApiBundle\Helper\PropertyInfoTypeHelper::extractByReflectionType($reflectionMethodParameter->getType());
+            if (RestApiBundle\Helper\PropertyInfoTypeHelper::isScalar($reflectionMethodType)) {
                 $scalarTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
             } elseif ($reflectionMethodType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\DoctrineHelper::isEntity($reflectionMethodType->getClassName())) {
                 $doctrineEntityTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
@@ -220,7 +220,7 @@ class SpecificationGenerator
             'in' => 'path',
             'name' => $name,
             'required' => true,
-            'schema' => RestApiBundle\Helper\OpenApiHelper::createScalarFromType($type),
+            'schema' => RestApiBundle\Helper\OpenApiHelper::createScalarFromPropertyInfoType($type),
         ]);
     }
 
@@ -256,7 +256,7 @@ class SpecificationGenerator
     {
         $responses = new OpenApi\Responses([]);
 
-        $returnType = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
+        $returnType = RestApiBundle\Helper\PropertyInfoTypeHelper::extractReturnType($reflectionMethod);
         if (!$returnType) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type is not specified', $reflectionMethod);
         }
@@ -272,8 +272,8 @@ class SpecificationGenerator
 
                 break;
 
-            case $returnType->isCollection() && $returnType->getCollectionValueTypes() && RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType)->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
-                $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType);
+            case $returnType->isCollection() && $returnType->getCollectionValueTypes() && RestApiBundle\Helper\PropertyInfoTypeHelper::getFirstCollectionValueType($returnType)->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
+                $collectionValueType = RestApiBundle\Helper\PropertyInfoTypeHelper::getFirstCollectionValueType($returnType);
                 if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Invalid response type, only collection of response models allowed', $reflectionMethod);
                 }
@@ -282,12 +282,12 @@ class SpecificationGenerator
 
                 break;
 
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\RedirectResponse::class:
+            case $returnType->getClassName() === HttpFoundation\RedirectResponse::class:
                 $this->addRedirectResponse($responses);
 
                 break;
 
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\BinaryFileResponse::class:
+            case $returnType->getClassName() === HttpFoundation\BinaryFileResponse::class:
                 $this->addBinaryFileResponse($responses);
 
                 break;
