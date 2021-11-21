@@ -32,8 +32,8 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
         $this->assertMatchesJsonSnapshot(json_encode($schemas['CombinedModel']->getSerializableData()));
     }
 
-    private function getResponseModelResolver(): RestApiBundle\Services\OpenApi\Schema\ResponseModelConverter
+    private function getResponseModelResolver(): RestApiBundle\Services\OpenApi\Specification\ResponseModelConverter
     {
-        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\Schema\ResponseModelConverter::class);
+        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\Specification\ResponseModelConverter::class);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi\Schema;
+namespace RestApiBundle\Services\OpenApi\Specification;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
@@ -29,7 +29,7 @@ class ResponseModelConverter
 
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
-        private RestApiBundle\Services\OpenApi\Schema\ScalarConverter $scalarConverter,
+        private RestApiBundle\Services\OpenApi\Specification\ScalarResolver $scalarConverter,
     ) {
     }
 
@@ -129,7 +129,7 @@ class ResponseModelConverter
         if ($type->isCollection()) {
             $result = $this->convertArrayType($type);
         } elseif (RestApiBundle\Helper\TypeExtractor::isScalar($type)) {
-            $result = $this->scalarConverter->toSchema($type->getBuiltinType(), $type->isNullable());
+            $result = $this->scalarConverter->resolve($type->getBuiltinType(), $type->isNullable());
         } elseif ($type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT) {
             $result = $this->convertClassType($type);
         } else {

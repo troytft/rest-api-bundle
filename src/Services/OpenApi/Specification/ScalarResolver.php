@@ -1,13 +1,13 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi\Schema;
+namespace RestApiBundle\Services\OpenApi\Specification;
 
 use Symfony\Component\PropertyInfo;
 use cebe\openapi\spec as OpenApi;
 
-class ScalarConverter
+class ScalarResolver
 {
-    public function toSchema(string $type, bool $nullable): OpenApi\Schema
+    public function resolve(string $type, bool $nullable): OpenApi\Schema
     {
         return match ($type) {
             PropertyInfo\Type::BUILTIN_TYPE_STRING => new OpenApi\Schema([

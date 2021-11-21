@@ -16,9 +16,9 @@ use function strtolower;
 class SpecificationGenerator
 {
     public function __construct(
-        private RestApiBundle\Services\OpenApi\Schema\RequestModelConverter $requestModelConverter,
-        private RestApiBundle\Services\OpenApi\Schema\ResponseModelConverter $responseModelConverter,
-        private RestApiBundle\Services\OpenApi\Schema\ScalarConverter $scalarConverter,
+        private RestApiBundle\Services\OpenApi\Specification\RequestModelResolver $requestModelResolver,
+        private RestApiBundle\Services\OpenApi\Specification\ResponseModelConverter $responseModelConverter,
+        private RestApiBundle\Services\OpenApi\Specification\ScalarResolver $scalarConverter,
     ) {
     }
 
@@ -203,9 +203,9 @@ class SpecificationGenerator
         }
 
         if ($requestModelType && $httpMethod === HttpFoundation\Request::METHOD_GET) {
-            $operationParameters = array_merge($operationParameters, $this->requestModelConverter->toQueryParameters($requestModelType->getClassName()));
+            $operationParameters = array_merge($operationParameters, $this->requestModelResolver->resolveAsQueryParameters($requestModelType->getClassName()));
         } elseif ($requestModelType) {
-            $operation->requestBody = $this->requestModelConverter->toRequestBody($requestModelType->getClassName());
+            $operation->requestBody = $this->requestModelResolver->resolveAsRequestBody($requestModelType->getClassName());
         }
 
         if ($operationParameters) {
@@ -221,7 +221,7 @@ class SpecificationGenerator
             'in' => 'path',
             'name' => $name,
             'required' => true,
-            'schema' => $this->scalarConverter->toSchema($type->getBuiltinType(), $type->isNullable()),
+            'schema' => $this->scalarConverter->resolve($type->getBuiltinType(), $type->isNullable()),
         ]);
     }
 
@@ -233,7 +233,7 @@ class SpecificationGenerator
             'in' => 'path',
             'name' => $name,
             'required' => !$type->isNullable(),
-            'schema' => $this->scalarConverter->toSchema($entityColumnType, $type->isNullable()),
+            'schema' => $this->scalarConverter->resolve($entityColumnType, $type->isNullable()),
             'description' => sprintf('Element by "%s"', $entityFieldName),
         ]);
     }

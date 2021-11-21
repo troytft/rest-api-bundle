@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi\Schema;
+namespace RestApiBundle\Services\OpenApi\Specification;
 
 use Symfony\Component\Validator as Validator;
 use RestApiBundle;
@@ -10,7 +10,7 @@ use cebe\openapi\spec as OpenApi;
 use function array_is_list;
 use function sprintf;
 
-class RequestModelConverter
+class RequestModelResolver
 {
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
@@ -18,7 +18,7 @@ class RequestModelConverter
     ) {
     }
 
-    public function toRequestBody(string $class): OpenApi\RequestBody
+    public function resolveAsRequestBody(string $class): OpenApi\RequestBody
     {
         return new OpenApi\RequestBody([
             'description' => 'Request body',
@@ -34,7 +34,7 @@ class RequestModelConverter
     /**
      * @return OpenApi\Parameter[]
      */
-    public function toQueryParameters(string $class): array
+    public function resolveAsQueryParameters(string $class): array
     {
         $queryParameters = [];
         $requestModelSchema = $this->toSchema($class);
