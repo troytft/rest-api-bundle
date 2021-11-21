@@ -18,7 +18,7 @@ class RequestModelResolver
     ) {
     }
 
-    public function resolveModelType(string $class, bool $nullable = false): OpenApi\Schema
+    public function resolve(string $class, bool $nullable = false): OpenApi\Schema
     {
         if (!RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($class)) {
             throw new \InvalidArgumentException(sprintf('Class %s is not a request model.', $class));
@@ -111,7 +111,7 @@ class RequestModelResolver
     private function resolveByMapperSchema(RestApiBundle\Model\Mapper\Schema $schema, array $validationConstraints): OpenApi\Schema
     {
         return match ($schema->type) {
-            RestApiBundle\Model\Mapper\Schema::MODEL_TYPE => $this->resolveModelType($schema->class, $schema->isNullable),
+            RestApiBundle\Model\Mapper\Schema::MODEL_TYPE => $this->resolve($schema->class, $schema->isNullable),
             RestApiBundle\Model\Mapper\Schema::ARRAY_TYPE => $this->resolveArrayType($schema, $validationConstraints),
             RestApiBundle\Model\Mapper\Schema::TRANSFORMER_AWARE_TYPE => $this->resolveTransformerAwareType($schema, $validationConstraints),
             default => throw new \InvalidArgumentException(),
@@ -151,7 +151,7 @@ class RequestModelResolver
 
         return $schema;
     }
-    
+
     private function resolveDateTimeTransformer(array $options, bool $nullable): OpenApi\Schema
     {
         $format = $options[RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateTimeFormat();

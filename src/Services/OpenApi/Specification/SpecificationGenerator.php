@@ -371,7 +371,7 @@ class SpecificationGenerator
             'required' => true,
             'content' => [
                 'application/json' => [
-                    'schema' => $this->requestModelResolver->resolveModelType($class),
+                    'schema' => $this->requestModelResolver->resolve($class),
                 ]
             ]
         ]);
@@ -383,7 +383,7 @@ class SpecificationGenerator
     private function createQueryParametersFromRequestModel(string $class): array
     {
         $queryParameters = [];
-        $requestModelSchema = $this->requestModelResolver->resolveModelType($class);
+        $requestModelSchema = $this->requestModelResolver->resolve($class);
 
         foreach ($requestModelSchema->properties as $propertyName => $propertySchema) {
             $parameter = new OpenApi\Parameter([

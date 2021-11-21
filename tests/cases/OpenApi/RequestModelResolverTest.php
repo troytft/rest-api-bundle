@@ -4,19 +4,19 @@ class RequestModelResolverTest extends Tests\BaseTestCase
 {
     public function testNestedModelWithConstraints()
     {
-        $schema = $this->getRequestModelResolver()->resolveModelType(TestApp\RequestModel\ModelWithValidation::class);
+        $schema = $this->getRequestModelResolver()->resolve(TestApp\RequestModel\ModelWithValidation::class);
         $this->assertMatchesJsonSnapshot(json_encode($schema->getSerializableData()));
     }
 
     public function testModelWithEntityType()
     {
-        $schema = $this->getRequestModelResolver()->resolveModelType(TestApp\RequestModel\ModelWithEntityBySlug::class);
+        $schema = $this->getRequestModelResolver()->resolve(TestApp\RequestModel\ModelWithEntityBySlug::class);
         $this->assertMatchesJsonSnapshot(json_encode($schema->getSerializableData()));
     }
 
     public function testModelWithArrayOfEntitiesType()
     {
-        $schema = $this->getRequestModelResolver()->resolveModelType(TestApp\RequestModel\ModelWithArrayOfEntities::class);
+        $schema = $this->getRequestModelResolver()->resolve(TestApp\RequestModel\ModelWithArrayOfEntities::class);
         $this->assertMatchesJsonSnapshot(json_encode($schema->getSerializableData()));
     }
 
