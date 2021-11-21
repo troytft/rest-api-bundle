@@ -202,9 +202,9 @@ class SpecificationGenerator
         }
 
         if ($requestModelType && $httpMethod === HttpFoundation\Request::METHOD_GET) {
-            $operationParameters = array_merge($operationParameters, $this->requestModelResolver->resolveAsQueryParameters($requestModelType->getClassName()));
+            $operationParameters = array_merge($operationParameters, $this->createQueryParametersFromRequestModel($requestModelType->getClassName()));
         } elseif ($requestModelType) {
-            $operation->requestBody = $this->requestModelResolver->resolveAsRequestBody($requestModelType->getClassName());
+            $operation->requestBody = $this->createRequestBodyFromRequestModel($requestModelType->getClassName());
         }
 
         if ($operationParameters) {
@@ -261,18 +261,14 @@ class SpecificationGenerator
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type is not specified', $reflectionMethod);
         }
 
-        if ($returnType->isNullable()) {
-            $responses->addResponse('204', $this->createEmptyResponse());
-        }
-
         switch (true) {
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL:
-                $responses->addResponse('204', $this->createEmptyResponse());
+            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL || $returnType->isNullable():
+                $this->addEmptyResponse($responses);
 
                 break;
 
             case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($returnType->getClassName()):
-                $responses->addResponse('200', $this->createSingleResponseModelResponse($returnType));
+                $this->addSingleResponseModelResponse($responses, $returnType);
 
                 break;
 
@@ -282,17 +278,17 @@ class SpecificationGenerator
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Invalid response type, only collection of response models allowed', $reflectionMethod);
                 }
 
-                $responses->addResponse('200', $this->createCollectionOfResponseModelsResponse($returnType));
+                $this->addCollectionOfResponseModelsResponse($responses, $returnType);
 
                 break;
 
             case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\RedirectResponse::class:
-                $responses->addResponse('302', $this->createRedirectResponse());
+                $this->addRedirectResponse($responses);
 
                 break;
 
             case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && $returnType->getClassName() === HttpFoundation\BinaryFileResponse::class:
-                $responses->addResponse('200', $this->createBinaryFileResponse());
+                $this->addBinaryFileResponse($responses);
 
                 break;
 
@@ -303,14 +299,14 @@ class SpecificationGenerator
         return $responses;
     }
 
-    private function createEmptyResponse(): OpenApi\Response
+    private function addEmptyResponse(OpenApi\Responses $responses): void
     {
-        return new OpenApi\Response(['description' => 'Success response with empty body']);
+        $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
     }
 
-    private function createBinaryFileResponse(): OpenApi\Response
+    private function addBinaryFileResponse(OpenApi\Responses $responses): void
     {
-        return new OpenApi\Response([
+        $responses->addResponse('200', new OpenApi\Response([
             'description' => 'Success binary file response',
             'headers' => [
                 'Content-Type' => [
@@ -321,12 +317,12 @@ class SpecificationGenerator
                     'description' => 'File mime type',
                 ]
             ]
-        ]);
+        ]));
     }
 
-    private function createRedirectResponse(): OpenApi\Response
+    private function addRedirectResponse(OpenApi\Responses $responses): void
     {
-        return new OpenApi\Response([
+        $responses->addResponse('302', new OpenApi\Response([
             'description' => 'Success response with redirect',
             'headers' => [
                 'Location' => [
@@ -337,28 +333,24 @@ class SpecificationGenerator
                     'description' => 'Redirect URL',
                 ]
             ]
-        ]);
+        ]));
     }
 
-    private function createSingleResponseModelResponse(PropertyInfo\Type $returnType): OpenApi\Response
+    private function addSingleResponseModelResponse(OpenApi\Responses $responses, PropertyInfo\Type $returnType): void
     {
-        $schema = $this->responseModelResolver->resolveReference($returnType->getClassName());
-        $schema
-            ->nullable = $returnType->isNullable();
-
-        return new OpenApi\Response([
+        $responses->addResponse('200', new OpenApi\Response([
             'description' => 'Success response with json body',
             'content' => [
                 'application/json' => [
-                    'schema' => $schema,
+                    'schema' => $this->responseModelResolver->resolveReference($returnType->getClassName()),
                 ]
             ]
-        ]);
+        ]));
     }
 
-    private function createCollectionOfResponseModelsResponse(PropertyInfo\Type $returnType): OpenApi\Response
+    private function addCollectionOfResponseModelsResponse(OpenApi\Responses $responses, PropertyInfo\Type $returnType): void
     {
-        return new OpenApi\Response([
+        $responses->addResponse('200', new OpenApi\Response([
             'description' => 'Success response with json body',
             'content' => [
                 'application/json' => [
@@ -369,6 +361,47 @@ class SpecificationGenerator
                     ])
                 ]
             ]
+        ]));
+    }
+
+    private function createRequestBodyFromRequestModel(string $class): OpenApi\RequestBody
+    {
+        return new OpenApi\RequestBody([
+            'description' => 'Request body',
+            'required' => true,
+            'content' => [
+                'application/json' => [
+                    'schema' => $this->requestModelResolver->resolveModelType($class),
+                ]
+            ]
         ]);
+    }
+
+    /**
+     * @return OpenApi\Parameter[]
+     */
+    private function createQueryParametersFromRequestModel(string $class): array
+    {
+        $queryParameters = [];
+        $requestModelSchema = $this->requestModelResolver->resolveModelType($class);
+
+        foreach ($requestModelSchema->properties as $propertyName => $propertySchema) {
+            $parameter = new OpenApi\Parameter([
+                'in' => 'query',
+                'name' => $propertyName,
+                'required' => !$propertySchema->nullable,
+                'schema' => $propertySchema,
+            ]);
+
+            // Swagger UI shows description only from parameters
+            if ($propertySchema->description) {
+                $parameter->description = $propertySchema->description;
+                unset($propertySchema->description);
+            }
+
+            $queryParameters[] = $parameter;
+        }
+
+        return $queryParameters;
     }
 }

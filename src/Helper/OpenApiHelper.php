@@ -5,7 +5,7 @@ namespace RestApiBundle\Helper;
 use cebe\openapi\spec as OpenApi;
 use Symfony\Component\PropertyInfo;
 
-class OpenApiHelper
+final class OpenApiHelper
 {
     public static function getExampleDate(): \DateTime
     {
@@ -19,10 +19,10 @@ class OpenApiHelper
 
     public static function createScalarFromType(PropertyInfo\Type $type): OpenApi\Schema
     {
-        return self::createScalarFromString($type->getBuiltinType(), $type->isNullable());
+        return static::createScalarFromString($type->getBuiltinType(), $type->isNullable());
     }
 
-    public static function createScalarFromString(string $type, bool $nullable): OpenApi\Schema
+    public static function createScalarFromString(string $type, bool $nullable = false): OpenApi\Schema
     {
         return match ($type) {
             PropertyInfo\Type::BUILTIN_TYPE_STRING => new OpenApi\Schema([
@@ -44,5 +44,25 @@ class OpenApiHelper
             ]),
             default => throw new \InvalidArgumentException(),
         };
+    }
+
+    public static function createDate(string $format, bool $nullable = false): OpenApi\Schema
+    {
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::STRING,
+            'format' => 'date',
+            'example' => static::getExampleDate()->format($format),
+            'nullable' => $nullable,
+        ]);
+    }
+
+    public static function createDateTime(string $format, bool $nullable = false): OpenApi\Schema
+    {
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::STRING,
+            'format' => 'date-time',
+            'example' => static::getExampleDate()->format($format),
+            'nullable' => $nullable,
+        ]);
     }
 }
