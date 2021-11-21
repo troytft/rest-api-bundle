@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi;
+namespace RestApiBundle\Services\OpenApi\Specification;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
@@ -16,8 +16,8 @@ use function strtolower;
 class SpecificationGenerator
 {
     public function __construct(
-        private RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver,
-        private RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver,
+        private RestApiBundle\Services\OpenApi\Specification\RequestModelResolver $requestModelResolver,
+        private RestApiBundle\Services\OpenApi\Specification\ResponseModelResolver $responseModelResolver,
     ) {
     }
 

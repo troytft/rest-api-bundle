@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi;
+namespace RestApiBundle\Services\OpenApi\Specification;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
