@@ -2,7 +2,6 @@
 
 namespace Tests\Fixture\Common\Entity;
 
-use Tests;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
