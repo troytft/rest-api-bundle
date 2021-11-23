@@ -55,7 +55,7 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
         ]);
 
         $this->assertSame(1, $commandTester->getStatusCode());
-        $this->assertSame("An error occurred:\nAssociated parameter for placeholder unknown_parameter not matched TestApp\Controller\CommandTest\InvalidDefinition\DefaultController->testAction()", trim($commandTester->getDisplay()));
+        $this->assertSame("An error occurred:\nAssociated parameter for placeholder unknown_parameter not matched Tests\Fixture\OpenApi\Command\InvalidDefinition\DefaultController->testAction()", trim($commandTester->getDisplay()));
     }
 
     private function getOutputFileName(): string
