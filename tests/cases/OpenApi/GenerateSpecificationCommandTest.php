@@ -10,7 +10,7 @@ class GenerateSpecificationCommandTest extends Tests\BaseTestCase
         $fileName = $this->getOutputFileName() . '.yaml';
 
         $application = new Application($this->getKernel());
-        $command = $application->find('rest-api:openapi:generate-specification');
+        $command = $application->find('rest-api:open-api:generate-specification');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
@@ -28,7 +28,7 @@ class GenerateSpecificationCommandTest extends Tests\BaseTestCase
         $fileName = $this->getOutputFileName() . '.json';
 
         $application = new Application($this->getKernel());
-        $command = $application->find('rest-api:openapi:generate-specification');
+        $command = $application->find('rest-api:open-api:generate-specification');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
@@ -36,7 +36,7 @@ class GenerateSpecificationCommandTest extends Tests\BaseTestCase
             'output' => $fileName,
             '--template' => 'tests/src/Fixture/OpenApi/GenerateSpecificationCommand/Success/Resources/template.json'
         ]);
-        
+
         $this->assertSame(0, $commandTester->getStatusCode());
         $this->assertMatchesJsonSnapshot(file_get_contents($fileName));
     }
@@ -46,7 +46,7 @@ class GenerateSpecificationCommandTest extends Tests\BaseTestCase
         $fileName = $this->getOutputFileName() . '.json';
 
         $application = new Application($this->getKernel());
-        $command = $application->find('rest-api:openapi:generate-specification');
+        $command = $application->find('rest-api:open-api:generate-specification');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([

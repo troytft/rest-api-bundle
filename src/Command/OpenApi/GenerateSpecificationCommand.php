@@ -16,7 +16,7 @@ final class GenerateSpecificationCommand extends Command
     private const OPTION_TEMPLATE = 'template';
     private const OPTION_EXCLUDE_PATH = 'exclude-path';
 
-    protected static $defaultName = 'rest-api:openapi:generate-specification';
+    protected static $defaultName = 'rest-api:open-api:generate-specification';
 
     public function __construct(
         private RestApiBundle\Services\OpenApi\EndpointFinder $endpointFinder,
