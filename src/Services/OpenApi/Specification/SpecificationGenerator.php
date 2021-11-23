@@ -99,8 +99,10 @@ class SpecificationGenerator
             $schemas[$typename] = $schema;
         }
 
-        ksort($schemas);
-        $rootElement->components->schemas = $schemas;
+        if ($schemas) {
+            ksort($schemas);
+            $rootElement->components->schemas = $schemas;
+        }
 
         return $rootElement;
     }

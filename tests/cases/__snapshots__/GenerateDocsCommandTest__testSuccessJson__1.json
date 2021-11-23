@@ -77,50 +77,6 @@
                 ]
             }
         },
-        "\/books\/test-binary-file": {
-            "get": {
-                "tags": [
-                    "books"
-                ],
-                "summary": "Response with binary file response",
-                "responses": {
-                    "200": {
-                        "description": "Success binary file response",
-                        "headers": {
-                            "Content-Type": {
-                                "description": "File mime type",
-                                "schema": {
-                                    "type": "string",
-                                    "example": "application\/octet-stream"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "\/books\/test-redirect": {
-            "get": {
-                "tags": [
-                    "books"
-                ],
-                "summary": "Response with redirect",
-                "responses": {
-                    "302": {
-                        "description": "Success response with redirect",
-                        "headers": {
-                            "Location": {
-                                "description": "Redirect URL",
-                                "schema": {
-                                    "type": "string",
-                                    "example": "https:\/\/example.com"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "\/writers": {
             "post": {
                 "tags": [
