@@ -3,7 +3,6 @@
 namespace TestApp\Entity;
 
 use Tests;
-use TestApp;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
