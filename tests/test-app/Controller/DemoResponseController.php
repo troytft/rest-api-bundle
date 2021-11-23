@@ -13,14 +13,8 @@ use function array_map;
  */
 class DemoResponseController
 {
-    /**
-     * @var TestApp\Repository\BookRepository
-     */
-    private $bookRepository;
-
-    public function __construct(TestApp\Repository\BookRepository $bookRepository)
+    public function __construct(private TestApp\Repository\BookRepository $bookRepository)
     {
-        $this->bookRepository = $bookRepository;
     }
 
     /**
