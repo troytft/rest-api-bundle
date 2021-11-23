@@ -1,8 +1,8 @@
 <?php
 
-namespace TestApp\Controller\CommandTest\Success;
+namespace Tests\Fixture\OpenApi\Command\Success;
 
-use TestApp;
+use Tests;
 use RestApiBundle\Mapping\OpenApi;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,9 +16,9 @@ class BookController
      *
      * @Route(methods="GET")
      *
-     * @return TestApp\ResponseModel\Book[]
+     * @return Tests\Fixture\OpenApi\Command\Success\ResponseModel\Book[]
      */
-    public function listAction(TestApp\RequestModel\BookList $requestModel): array
+    public function listAction(Tests\Fixture\OpenApi\Command\Success\RequestModel\BookList $requestModel): array
     {
         return [];
     }

@@ -1,8 +1,8 @@
 <?php
 
-namespace TestApp\RequestModel;
+namespace Tests\Fixture\OpenApi\Command\Success\RequestModel;
 
-use TestApp;
+use Tests;
 use RestApiBundle\Mapping\Mapper as Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,12 +18,12 @@ class BookList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterf
      * @var string[]|null
      *
      * @Mapper\Expose
-     * @Assert\Choice(callback="TestApp\Enum\BookStatus::getValues", multiple=true)
+     * @Assert\Choice(callback="Tests\Fixture\Commonp\Enum\BookStatus::getValues", multiple=true)
      */
     private ?array $statuses;
 
     /** @Mapper\Expose */
-    public ?TestApp\Entity\Author $author;
+    public ?Tests\Fixture\Common\Entity\Author $author;
 
     /**
      * @return string[]|null

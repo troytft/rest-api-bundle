@@ -1,8 +1,8 @@
 <?php
 
-namespace TestApp\Controller\CommandTest\Success;
+namespace Tests\Fixture\OpenApi\Command\Success;
 
-use TestApp;
+use Tests;
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Mapping\OpenApi as Docs;
 
@@ -16,9 +16,9 @@ class WriterController
      *
      * @Route(methods="POST")
      */
-    public function createAction(TestApp\RequestModel\WriterData $requestModel): TestApp\ResponseModel\Author
+    public function createAction(Tests\Fixture\OpenApi\Command\Success\RequestModel\WriterData $requestModel): Tests\Fixture\OpenApi\Command\Success\ResponseModel\Author
     {
-        return new TestApp\ResponseModel\Author();
+        return new Tests\Fixture\OpenApi\Command\Success\ResponseModel\Author();
     }
 
     /**
@@ -26,9 +26,9 @@ class WriterController
      *
      * @Route(methods="GET")
      *
-     * @return TestApp\ResponseModel\Author[]
+     * @return Tests\Fixture\OpenApi\Command\Success\ResponseModel\Author[]
      */
-    public function listAction(TestApp\RequestModel\WriterList $requestModel)
+    public function listAction(Tests\Fixture\OpenApi\Command\Success\RequestModel\WriterList $requestModel)
     {
         return [];
     }
@@ -38,7 +38,7 @@ class WriterController
      *
      * @Route("/{id}", methods="DELETE", requirements={"id": "\d"})
      */
-    public function removeAction(TestApp\Entity\Author $writer): void
+    public function removeAction(Tests\Fixture\Common\Entity\Author $writer): void
     {
     }
 }

@@ -1,29 +1,15 @@
 <?php
 
-namespace TestApp\RequestModel;
+namespace Tests\Fixture\OpenApi\Command\Success\RequestModel;
 
-use TestApp;
+use Tests;
 use RestApiBundle\Mapping\Mapper as Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
+class WriterData implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     /**
-     * @var int
-     *
-     * @Mapper\Expose
-     */
-    private $offset;
-
-    /**
-     * @var int
-     *
-     * @Mapper\Expose
-     */
-    private $limit;
-
-    /**
-     * @var string|null
+     * @var string
      *
      * @Mapper\Expose
      * @Assert\Length(min=1, max=255, allowEmptyString=false)
@@ -31,7 +17,7 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     private $name;
 
     /**
-     * @var string|null
+     * @var string
      *
      * @Mapper\Expose
      * @Assert\Length(min=1, max=255, allowEmptyString=false)
@@ -44,54 +30,30 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     private ?Mapper\Date $birthday;
 
     /**
-     * @var TestApp\Entity\Book[]|null
+     * @var Tests\Fixture\Common\Entity\Genre[]
      *
      * @Mapper\Expose
      */
     private $genres;
 
-    public function getOffset(): int
-    {
-        return $this->offset;
-    }
-
-    public function setOffset(int $offset)
-    {
-        $this->offset = $offset;
-
-        return $this;
-    }
-
-    public function getLimit(): int
-    {
-        return $this->limit;
-    }
-
-    public function setLimit(int $limit)
-    {
-        $this->limit = $limit;
-
-        return $this;
-    }
-
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(?string $name)
+    public function setName(string $name)
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getSurname(): ?string
+    public function getSurname(): string
     {
         return $this->surname;
     }
 
-    public function setSurname(?string $surname)
+    public function setSurname(string $surname)
     {
         $this->surname = $surname;
 
@@ -110,12 +72,12 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
         return $this;
     }
 
-    public function getGenres(): ?array
+    public function getGenres(): array
     {
         return $this->genres;
     }
 
-    public function setGenres(?array $genres)
+    public function setGenres(array $genres)
     {
         $this->genres = $genres;
 

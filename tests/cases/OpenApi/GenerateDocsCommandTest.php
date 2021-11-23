@@ -14,7 +14,7 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
-            'input' => 'tests/test-app/Controller/CommandTest/Success',
+            'input' => 'tests/src/Fixture/OpenApi/Command/Success',
             'output' => $fileName,
             '--template' => 'tests/test-app/Resources/docs/swagger.yaml'
         ]);
@@ -32,7 +32,7 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
-            'input' => 'tests/test-app/Controller/CommandTest/Success',
+            'input' => 'tests/src/Fixture/OpenApi/Command/Success',
             'output' => $fileName,
             '--template' => 'tests/test-app/Resources/docs/swagger.json'
         ]);
@@ -50,7 +50,7 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
-            'input' => 'tests/test-app/Controller/CommandTest/InvalidDefinition',
+            'input' => 'tests/src/Fixture/OpenApi/Command/InvalidDefinition',
             'output' => $fileName,
         ]);
 
