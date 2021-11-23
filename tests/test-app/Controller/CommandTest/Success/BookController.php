@@ -6,12 +6,16 @@ use TestApp;
 use RestApiBundle\Mapping\OpenApi;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/books')]
+/**
+ * @Route("/books")
+ */
 class BookController
 {
-    #[OpenApi\Endpoint('Books list', tags: 'books')]
-    #[Route(methods: 'GET')]
     /**
+     * @OpenApi\Endpoint("Books list", tags="books")
+     *
+     * @Route(methods="GET")
+     *
      * @return TestApp\ResponseModel\Book[]
      */
     public function listAction(TestApp\RequestModel\BookList $requestModel): array
