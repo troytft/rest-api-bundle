@@ -2,6 +2,7 @@
 
 namespace TestApp\ResponseModel;
 
+use Tests;
 use TestApp;
 use RestApiBundle;
 
@@ -37,9 +38,9 @@ class Book implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
         return null;
     }
 
-    public function getStatus(): TestApp\Enum\BookStatus
+    public function getStatus(): Tests\Fixture\Common\Enum\BookStatus
     {
-        return TestApp\Enum\BookStatus::from($this->book->getStatus());
+        return Tests\Fixture\Common\Enum\BookStatus::from($this->book->getStatus());
     }
 
     public function getReleaseDate(): RestApiBundle\Mapping\ResponseModel\SerializableDate

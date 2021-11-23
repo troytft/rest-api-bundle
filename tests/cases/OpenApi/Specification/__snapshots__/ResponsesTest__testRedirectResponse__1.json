@@ -1,0 +1,37 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Open API Specification",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "\/": {
+            "get": {
+                "tags": [
+                    "tag"
+                ],
+                "summary": "title",
+                "responses": {
+                    "302": {
+                        "description": "Success response with redirect",
+                        "headers": {
+                            "Location": {
+                                "description": "Redirect URL",
+                                "schema": {
+                                    "type": "string",
+                                    "example": "https:\/\/example.com"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {},
+    "tags": [
+        {
+            "name": "tag"
+        }
+    ]
+}
