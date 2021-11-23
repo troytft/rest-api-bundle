@@ -16,7 +16,7 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
         $commandTester->execute([
             'input' => 'tests/src/Fixture/OpenApi/Command/Success',
             'output' => $fileName,
-            '--template' => 'tests/test-app/Resources/docs/swagger.yaml'
+            '--template' => 'tests/src/Fixture/OpenApi/Command/Success/Resources/template.yaml'
         ]);
 
         $this->assertSame(0, $commandTester->getStatusCode());
@@ -34,7 +34,7 @@ class GenerateDocsCommandTest extends Tests\BaseTestCase
         $commandTester->execute([
             'input' => 'tests/src/Fixture/OpenApi/Command/Success',
             'output' => $fileName,
-            '--template' => 'tests/test-app/Resources/docs/swagger.json'
+            '--template' => 'tests/src/Fixture/OpenApi/Command/Success/Resources/template.json'
         ]);
 
         $this->assertSame(0, $commandTester->getStatusCode());
