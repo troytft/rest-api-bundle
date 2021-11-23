@@ -9,9 +9,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use function array_map;
 
 /**
- * @Route("/demo-responses")
+ * @Route("/response-model-test")
  */
-class DemoResponseController
+class ResponseModelTestController
 {
     public function __construct(private TestApp\Repository\BookRepository $bookRepository)
     {
@@ -40,19 +40,17 @@ class DemoResponseController
      *
      * @return TestApp\ResponseModel\Book[]
      */
-    public function collectionOfResponseModelsAction()
+    public function collectionOfResponseModelsAction(): array
     {
         $items = $this->bookRepository->findAll();
 
-        return array_map(function ($item) {
-            return new TestApp\ResponseModel\Book($item);
-        }, $items);
+        return array_map(fn($item) => new TestApp\ResponseModel\Book($item), $items);
     }
 
     /**
      * @Route("/response-class", methods="GET")
      */
-    public function responseClassAction()
+    public function responseClassAction(): Response
     {
         return new Response('{"id": 7}', 201);
     }
