@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Fixture\OpenApi\Command\Success\ResponseModel;
+namespace Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\ResponseModel;
 
 use Tests;
 use RestApiBundle;
@@ -21,12 +21,12 @@ class Book implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
         return $this->data->getTitle();
     }
 
-    public function getAuthor(): Tests\Fixture\OpenApi\Command\Success\ResponseModel\Author
+    public function getAuthor(): Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\ResponseModel\Author
     {
-        return new Tests\Fixture\OpenApi\Command\Success\ResponseModel\Author();
+        return new Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\ResponseModel\Author();
     }
 
-    public function getGenre(): ?Tests\Fixture\OpenApi\Command\Success\ResponseModel\Genre
+    public function getGenre(): ?Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\ResponseModel\Genre
     {
         return null;
     }

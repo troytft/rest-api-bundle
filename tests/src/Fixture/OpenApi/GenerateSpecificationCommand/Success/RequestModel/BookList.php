@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Fixture\OpenApi\Command\Success\RequestModel;
+namespace Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\RequestModel;
 
 use Tests;
 use RestApiBundle\Mapping\Mapper as Mapper;

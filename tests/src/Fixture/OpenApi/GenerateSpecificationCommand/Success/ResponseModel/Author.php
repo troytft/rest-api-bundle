@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Fixture\OpenApi\Command\Success\ResponseModel;
+namespace Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\ResponseModel;
 
 use Tests;
 use RestApiBundle;
@@ -28,7 +28,7 @@ class Author implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterfa
     }
 
     /**
-     * @return Tests\Fixture\OpenApi\Command\Success\ResponseModel\Genre[]
+     * @return Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\ResponseModel\Genre[]
      */
     public function getGenres(): array
     {

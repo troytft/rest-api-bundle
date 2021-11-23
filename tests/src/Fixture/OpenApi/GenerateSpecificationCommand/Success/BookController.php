@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Fixture\OpenApi\Command\Success;
+namespace Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success;
 
 use Tests;
 use RestApiBundle\Mapping\OpenApi;
@@ -16,9 +16,9 @@ class BookController
      *
      * @Route(methods="GET")
      *
-     * @return Tests\Fixture\OpenApi\Command\Success\ResponseModel\Book[]
+     * @return Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\ResponseModel\Book[]
      */
-    public function listAction(Tests\Fixture\OpenApi\Command\Success\RequestModel\BookList $requestModel): array
+    public function listAction(Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\RequestModel\BookList $requestModel): array
     {
         return [];
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Fixture\OpenApi\Command\Success\ResponseModel;
+namespace Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\ResponseModel;
 
 use Tests;
 use RestApiBundle;

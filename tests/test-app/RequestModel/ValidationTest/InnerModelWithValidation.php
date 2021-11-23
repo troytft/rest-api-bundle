@@ -1,6 +1,6 @@
 <?php
 
-namespace TestApp\RequestModel;
+namespace TestApp\RequestModel\ValidationTest;
 
 use RestApiBundle\Mapping\Mapper as Mapper;
 use Symfony\Component\Validator\Constraints as Assert;

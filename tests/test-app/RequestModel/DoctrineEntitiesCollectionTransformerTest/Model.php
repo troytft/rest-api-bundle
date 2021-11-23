@@ -1,18 +1,17 @@
 <?php
 
-namespace TestApp\RequestModel;
+namespace TestApp\RequestModel\DoctrineEntitiesCollectionTransformerTest;
 
 use TestApp;
 use RestApiBundle\Mapping\Mapper;
 
-class ModelWithArrayOfEntities implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
+#[Mapper\ExposeAll]
+class Model implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     /**
      * @var TestApp\Entity\Book[]
-     *
-     * @Mapper\Expose
      */
-    private $books;
+    private array $books;
 
     /**
      * @return TestApp\Entity\Book[]

@@ -1,6 +1,6 @@
 <?php
 
-namespace TestApp\RequestModel;
+namespace TestApp\RequestModel\ValidationTest;
 
 use TestApp;
 use RestApiBundle\Mapping\Mapper as Mapper;
@@ -19,14 +19,14 @@ class ModelWithValidation implements \RestApiBundle\Mapping\RequestModel\Request
     private $stringField;
 
     /**
-     * @var TestApp\RequestModel\InnerModelWithValidation
+     * @var TestApp\RequestModel\ValidationTest\InnerModelWithValidation
      *
      * @Mapper\Expose
      */
     private $modelField;
 
     /**
-     * @var TestApp\RequestModel\InnerModelWithValidation[]
+     * @var TestApp\RequestModel\ValidationTest\InnerModelWithValidation[]
      *
      * @Mapper\Expose
      */

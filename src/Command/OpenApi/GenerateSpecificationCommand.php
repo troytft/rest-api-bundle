@@ -9,14 +9,14 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 
-final class GenerateDocsCommand extends Command
+final class GenerateSpecificationCommand extends Command
 {
     private const ARGUMENT_INPUT = 'input';
     private const ARGUMENT_OUTPUT = 'output';
     private const OPTION_TEMPLATE = 'template';
     private const OPTION_EXCLUDE_PATH = 'exclude-path';
 
-    protected static $defaultName = 'rest-api:generate-docs';
+    protected static $defaultName = 'rest-api:openapi:generate-specification';
 
     public function __construct(
         private RestApiBundle\Services\OpenApi\EndpointFinder $endpointFinder,

@@ -1,10 +1,10 @@
 <?php
 
-class EntitiesCollectionTest extends Tests\BaseTestCase
+class DoctrineEntitiesCollectionTransformerTest extends Tests\BaseTestCase
 {
     public function testSuccess()
     {
-        $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
+        $model = new TestApp\RequestModel\DoctrineEntitiesCollectionTransformerTest\Model();
         $this->getRequestHandler()->handle($model, [
             'books' => [1, 2]
         ]);
@@ -18,7 +18,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
 
     public function testOrder()
     {
-        $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
+        $model = new TestApp\RequestModel\DoctrineEntitiesCollectionTransformerTest\Model();
         $this->getRequestHandler()->handle($model, [
             'books' => [2, 1]
         ]);
@@ -34,7 +34,7 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
     public function testEntityNotFound()
     {
         try {
-            $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
+            $model = new TestApp\RequestModel\DoctrineEntitiesCollectionTransformerTest\Model();
             $this->getRequestHandler()->handle($model, [
                 'books' => [1, 2, 3]
             ]);
@@ -44,23 +44,10 @@ class EntitiesCollectionTest extends Tests\BaseTestCase
         }
     }
 
-    public function testNull()
-    {
-        try {
-            $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
-            $this->getRequestHandler()->handle($model, [
-                'books' => null
-            ]);
-            $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['books' => ['This value should not be null.']], $exception->getProperties());
-        }
-    }
-
     public function testRepeatableEntity()
     {
         try {
-            $model = new TestApp\RequestModel\ModelWithArrayOfEntities();
+            $model = new TestApp\RequestModel\DoctrineEntitiesCollectionTransformerTest\Model();
             $this->getRequestHandler()->handle($model, [
                 'books' => [1, 1]
             ]);

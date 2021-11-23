@@ -1,6 +1,6 @@
 <?php
 
-class ExceptionTranslationsTest extends Tests\BaseTestCase
+class ExceptionTranslationTest extends Tests\BaseTestCase
 {
     public function testAll()
     {
