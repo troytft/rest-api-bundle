@@ -2,6 +2,7 @@
 
 namespace TestApp\Entity;
 
+use Tests;
 use TestApp;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -37,7 +38,7 @@ class Book
     /**
      * @var string
      */
-    private $status = TestApp\Enum\BookStatus::PUBLISHED;
+    private $status = Tests\Fixture\Common\Enum\BookStatus::PUBLISHED;
 
     public function __construct(int $id, string $slug, string $title)
     {
