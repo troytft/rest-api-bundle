@@ -263,39 +263,27 @@ class SpecificationGenerator
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type is not specified', $reflectionMethod);
         }
 
-        switch (true) {
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL || $returnType->isNullable():
-                $this->addEmptyResponse($responses);
+        if ($returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL || $returnType->isNullable()) {
+            $this->addEmptyResponse($responses);
+        }
 
-                break;
+        if ($returnType->isCollection()) {
+            $collectionValueType = RestApiBundle\Helper\PropertyInfoTypeHelper::getFirstCollectionValueType($returnType);
+            if (!$collectionValueType->getClassName() || !RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
+                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Invalid response type, only collection of response models allowed', $reflectionMethod);
+            }
 
-            case $returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($returnType->getClassName()):
+            $this->addCollectionOfResponseModelsResponse($responses, $returnType);
+        } elseif ($returnType->getClassName()) {
+            if (RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($returnType->getClassName())) {
                 $this->addSingleResponseModelResponse($responses, $returnType);
-
-                break;
-
-            case $returnType->isCollection() && $returnType->getCollectionValueTypes() && RestApiBundle\Helper\PropertyInfoTypeHelper::getFirstCollectionValueType($returnType)->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT:
-                $collectionValueType = RestApiBundle\Helper\PropertyInfoTypeHelper::getFirstCollectionValueType($returnType);
-                if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
-                    throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Invalid response type, only collection of response models allowed', $reflectionMethod);
-                }
-
-                $this->addCollectionOfResponseModelsResponse($responses, $returnType);
-
-                break;
-
-            case $returnType->getClassName() === HttpFoundation\RedirectResponse::class:
+            } elseif ($returnType->getClassName() === HttpFoundation\RedirectResponse::class) {
                 $this->addRedirectResponse($responses);
-
-                break;
-
-            case $returnType->getClassName() === HttpFoundation\BinaryFileResponse::class:
+            } elseif ($returnType->getClassName() === HttpFoundation\BinaryFileResponse::class) {
                 $this->addBinaryFileResponse($responses);
-
-                break;
-
-            default:
-                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Unknown response type', $reflectionMethod);
+            } else {
+                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException(sprintf('Unknown response class type "%s"', $returnType->getClassName()), $reflectionMethod);
+            }
         }
 
         return $responses;
