@@ -78,7 +78,7 @@ class SpecificationGenerator
 
                 $method = strtolower($method);
                 if (isset($pathItem->getOperations()[$method])) {
-                    throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Operation with same url and http method already defined in specification', $endpointData->reflectionMethod);
+                    throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Operation with same url and method already defined in specification', $endpointData->reflectionMethod);
                 }
 
                 $pathItem->{$method} = $operation;
@@ -174,9 +174,9 @@ class SpecificationGenerator
             $reflectionMethodType = RestApiBundle\Helper\PropertyInfoTypeHelper::extractByReflectionType($reflectionMethodParameter->getType());
             if (RestApiBundle\Helper\PropertyInfoTypeHelper::isScalar($reflectionMethodType)) {
                 $scalarTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
-            } elseif ($reflectionMethodType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\DoctrineHelper::isEntity($reflectionMethodType->getClassName())) {
+            } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($reflectionMethodType->getClassName())) {
                 $doctrineEntityTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
-            } elseif ($reflectionMethodType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($reflectionMethodType->getClassName())) {
+            } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($reflectionMethodType->getClassName())) {
                 if ($requestModelType) {
                     throw new \LogicException();
                 }
