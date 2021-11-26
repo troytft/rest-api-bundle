@@ -13,7 +13,7 @@
                 "summary": "title",
                 "responses": {
                     "302": {
-                        "description": "Success response with redirect",
+                        "description": "Response with redirect",
                         "headers": {
                             "Location": {
                                 "description": "Redirect URL",

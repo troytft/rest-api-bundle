@@ -13,7 +13,7 @@
                 "summary": "title",
                 "responses": {
                     "200": {
-                        "description": "Success binary file response",
+                        "description": "Response with file download",
                         "headers": {
                             "Content-Type": {
                                 "description": "File mime type",

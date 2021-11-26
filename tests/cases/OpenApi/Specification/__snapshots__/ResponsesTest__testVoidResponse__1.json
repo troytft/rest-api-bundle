@@ -13,7 +13,7 @@
                 "summary": "title",
                 "responses": {
                     "204": {
-                        "description": "Success response with empty body"
+                        "description": "Response with empty body"
                     }
                 }
             }
