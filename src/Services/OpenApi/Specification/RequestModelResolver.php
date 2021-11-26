@@ -21,7 +21,7 @@ class RequestModelResolver
     public function resolve(string $class, bool $nullable = false): OpenApi\Schema
     {
         if (!RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($class)) {
-            throw new \InvalidArgumentException(sprintf('Class %s is not a request model.', $class));
+            throw new \InvalidArgumentException(sprintf('Class %s is not a request model', $class));
         }
 
         $properties = [];
@@ -186,7 +186,7 @@ class RequestModelResolver
         $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
 
         $result = RestApiBundle\Helper\OpenApiHelper::createScalarFromString($columnType);
-        $result->description = sprintf('Element by "%s"', $fieldName);
+        $result->description = sprintf('"%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName);
         $result->nullable = $nullable;
 
         return $result;
@@ -203,7 +203,14 @@ class RequestModelResolver
             'type' => OpenApi\Type::ARRAY,
             'items' => $itemsType,
             'nullable' => $nullable,
-            'description' => sprintf('Array of elements by "%s"', $fieldName),
+            'description' => sprintf('Collection of "%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName),
         ]);
+    }
+
+    private function resolveShortClassName(string $class): string
+    {
+        $chunks = explode('\\', $class);
+
+        return $chunks[array_key_last($chunks)] ?? throw new \LogicException();
     }
 }

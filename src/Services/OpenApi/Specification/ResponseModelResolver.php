@@ -36,7 +36,7 @@ class ResponseModelResolver
         $typename = $this->typenameCache[$class] ?? null;
         if (!$typename) {
             if (!RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($class)) {
-                throw new \InvalidArgumentException(sprintf('Class %s is not a response model.', $class));
+                throw new \InvalidArgumentException(sprintf('Class %s is not a response model', $class));
             }
 
             $typename = RestApiBundle\Helper\ResponseModel\TypenameResolver::resolve($class);
@@ -186,7 +186,7 @@ class ResponseModelResolver
         }
 
         if (!$values) {
-            throw new \LogicException('Empty enum');
+            throw new \LogicException('Empty enum values');
         }
 
         if (is_float($values[0])) {

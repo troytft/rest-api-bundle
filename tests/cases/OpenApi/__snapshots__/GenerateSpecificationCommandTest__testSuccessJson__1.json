@@ -13,7 +13,7 @@
                 "summary": "Books list",
                 "responses": {
                     "200": {
-                        "description": "Success response with json body",
+                        "description": "Response with JSON body",
                         "content": {
                             "application\/json": {
                                 "schema": {
@@ -72,7 +72,7 @@
                             "type": "integer",
                             "nullable": true
                         },
-                        "description": "Element by \"id\""
+                        "description": "\"Author\" fetched by field \"id\""
                     }
                 ]
             }
@@ -85,7 +85,7 @@
                 "summary": "Create writer",
                 "responses": {
                     "200": {
-                        "description": "Success response with json body",
+                        "description": "Response with JSON body",
                         "content": {
                             "application\/json": {
                                 "schema": {
@@ -96,7 +96,7 @@
                     }
                 },
                 "requestBody": {
-                    "description": "Request body",
+                    "description": "Request with JSON body",
                     "content": {
                         "application\/json": {
                             "schema": {
@@ -126,7 +126,7 @@
                                             "type": "integer",
                                             "nullable": false
                                         },
-                                        "description": "Array of elements by \"id\"",
+                                        "description": "Collection of \"Genre\" fetched by field \"id\"",
                                         "nullable": false
                                     }
                                 },
@@ -144,7 +144,7 @@
                 "summary": "Writers list with filters",
                 "responses": {
                     "200": {
-                        "description": "Success response with json body",
+                        "description": "Response with JSON body",
                         "content": {
                             "application\/json": {
                                 "schema": {
@@ -222,7 +222,7 @@
                             },
                             "nullable": true
                         },
-                        "description": "Array of elements by \"id\""
+                        "description": "Collection of \"Book\" fetched by field \"id\""
                     }
                 ]
             }
@@ -235,7 +235,7 @@
                 "summary": "Remove writer",
                 "responses": {
                     "204": {
-                        "description": "Success response with empty body"
+                        "description": "Response with empty body"
                     }
                 },
                 "parameters": [
