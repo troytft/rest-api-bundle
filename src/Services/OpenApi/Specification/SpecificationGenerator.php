@@ -291,13 +291,13 @@ class SpecificationGenerator
 
     private function addEmptyResponse(OpenApi\Responses $responses): void
     {
-        $responses->addResponse('204', new OpenApi\Response(['description' => 'Success response with empty body']));
+        $responses->addResponse('204', new OpenApi\Response(['description' => 'Response with empty body']));
     }
 
     private function addBinaryFileResponse(OpenApi\Responses $responses): void
     {
         $responses->addResponse('200', new OpenApi\Response([
-            'description' => 'Success binary file response',
+            'description' => 'Response with file download',
             'headers' => [
                 'Content-Type' => [
                     'schema' => new OpenApi\Schema([
@@ -313,7 +313,7 @@ class SpecificationGenerator
     private function addRedirectResponse(OpenApi\Responses $responses): void
     {
         $responses->addResponse('302', new OpenApi\Response([
-            'description' => 'Success response with redirect',
+            'description' => 'Response with redirect',
             'headers' => [
                 'Location' => [
                     'schema' => new OpenApi\Schema([
@@ -329,7 +329,7 @@ class SpecificationGenerator
     private function addSingleResponseModelResponse(OpenApi\Responses $responses, PropertyInfo\Type $returnType): void
     {
         $responses->addResponse('200', new OpenApi\Response([
-            'description' => 'Success response with json body',
+            'description' => 'Response with JSON body',
             'content' => [
                 'application/json' => [
                     'schema' => $this->responseModelResolver->resolveReference($returnType->getClassName()),
@@ -341,7 +341,7 @@ class SpecificationGenerator
     private function addCollectionOfResponseModelsResponse(OpenApi\Responses $responses, PropertyInfo\Type $returnType): void
     {
         $responses->addResponse('200', new OpenApi\Response([
-            'description' => 'Success response with json body',
+            'description' => 'Response with JSON body',
             'content' => [
                 'application/json' => [
                     'schema' => new OpenApi\Schema([
@@ -357,7 +357,7 @@ class SpecificationGenerator
     private function createRequestBodyFromRequestModel(string $class): OpenApi\RequestBody
     {
         return new OpenApi\RequestBody([
-            'description' => 'Request body',
+            'description' => 'Request with JSON body',
             'required' => true,
             'content' => [
                 'application/json' => [
