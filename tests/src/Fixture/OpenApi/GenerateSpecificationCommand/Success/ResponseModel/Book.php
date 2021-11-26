@@ -16,6 +16,11 @@ class Book implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
         return $this->data->getId();
     }
 
+    public function getCreatedAt(): \DateTime
+    {
+        return new \DateTime();
+    }
+
     public function getTitle(): string
     {
         return $this->data->getTitle();

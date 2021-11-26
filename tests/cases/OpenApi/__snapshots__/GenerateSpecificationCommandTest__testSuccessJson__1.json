@@ -297,6 +297,12 @@
                         "type": "integer",
                         "nullable": false
                     },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": false,
+                        "example": "2021-04-08T14:44:26+02:00"
+                    },
                     "title": {
                         "type": "string",
                         "nullable": false
