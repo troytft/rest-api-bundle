@@ -16,7 +16,7 @@ paths:
                             schema:
                                 type: array
                                 items:
-                                    $ref: '#/components/schemas/Book'
+                                    $ref: '#/components/schemas/BookResponseModel'
                                 nullable: false
             parameters:
                 -
@@ -66,7 +66,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Author'
+                                $ref: '#/components/schemas/AuthorResponseModel'
             requestBody:
                 description: 'Request with JSON body'
                 content:
@@ -110,7 +110,7 @@ paths:
                             schema:
                                 type: array
                                 items:
-                                    $ref: '#/components/schemas/Author'
+                                    $ref: '#/components/schemas/AuthorResponseModel'
                                 nullable: false
             parameters:
                 -
@@ -184,7 +184,7 @@ paths:
                         nullable: false
 components:
     schemas:
-        Author:
+        AuthorResponseModel:
             type: object
             properties:
                 id:
@@ -204,13 +204,13 @@ components:
                 genres:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Genre'
+                        $ref: '#/components/schemas/GenreResponseModel'
                     nullable: false
                 __typename:
                     type: string
                     default: Author
                     nullable: false
-        Book:
+        BookResponseModel:
             type: object
             properties:
                 id:
@@ -225,11 +225,11 @@ components:
                     type: string
                     nullable: false
                 author:
-                    $ref: '#/components/schemas/Author'
+                    $ref: '#/components/schemas/AuthorResponseModel'
                 genre:
                     anyOf:
                         -
-                            $ref: '#/components/schemas/Genre'
+                            $ref: '#/components/schemas/GenreResponseModel'
                     nullable: true
                 status:
                     enum:
@@ -247,7 +247,7 @@ components:
                     type: string
                     default: Book
                     nullable: false
-        Genre:
+        GenreResponseModel:
             type: object
             properties:
                 id:

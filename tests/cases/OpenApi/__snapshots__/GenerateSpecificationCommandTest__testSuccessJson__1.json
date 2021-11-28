@@ -19,7 +19,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#\/components\/schemas\/Book"
+                                        "$ref": "#\/components\/schemas\/BookResponseModel"
                                     },
                                     "nullable": false
                                 }
@@ -89,7 +89,7 @@
                         "content": {
                             "application\/json": {
                                 "schema": {
-                                    "$ref": "#\/components\/schemas\/Author"
+                                    "$ref": "#\/components\/schemas\/AuthorResponseModel"
                                 }
                             }
                         }
@@ -150,7 +150,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#\/components\/schemas\/Author"
+                                        "$ref": "#\/components\/schemas\/AuthorResponseModel"
                                     },
                                     "nullable": false
                                 }
@@ -255,7 +255,7 @@
     },
     "components": {
         "schemas": {
-            "Author": {
+            "AuthorResponseModel": {
                 "type": "object",
                 "properties": {
                     "id": {
@@ -279,7 +279,7 @@
                     "genres": {
                         "type": "array",
                         "items": {
-                            "$ref": "#\/components\/schemas\/Genre"
+                            "$ref": "#\/components\/schemas\/GenreResponseModel"
                         },
                         "nullable": false
                     },
@@ -290,7 +290,7 @@
                     }
                 }
             },
-            "Book": {
+            "BookResponseModel": {
                 "type": "object",
                 "properties": {
                     "id": {
@@ -308,12 +308,12 @@
                         "nullable": false
                     },
                     "author": {
-                        "$ref": "#\/components\/schemas\/Author"
+                        "$ref": "#\/components\/schemas\/AuthorResponseModel"
                     },
                     "genre": {
                         "anyOf": [
                             {
-                                "$ref": "#\/components\/schemas\/Genre"
+                                "$ref": "#\/components\/schemas\/GenreResponseModel"
                             }
                         ],
                         "nullable": true
@@ -340,7 +340,7 @@
                     }
                 }
             },
-            "Genre": {
+            "GenreResponseModel": {
                 "type": "object",
                 "properties": {
                     "id": {
