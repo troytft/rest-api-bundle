@@ -8,28 +8,33 @@ use function sprintf;
 
 class TypenameResolver
 {
-    public static function resolve(string $class): string
+    private static function resolve(string $class, string $requiredNamespacePart): string
     {
         $parts = [];
-        $hasResponseModelPart = false;
+        $hasRequiredPart = false;
 
         foreach (explode('\\', $class) as $part) {
-            if ($hasResponseModelPart) {
+            if ($hasRequiredPart) {
                 $parts[] = $part;
-            } elseif ($part === 'ResponseModel') {
-                $hasResponseModelPart = true;
+            } elseif ($part === $requiredNamespacePart) {
+                $hasRequiredPart = true;
             }
         }
 
-        if (!$hasResponseModelPart) {
-            throw new \RuntimeException(sprintf('Response model "%s" must be in "ResponseModel" namespace', $class));
+        if (!$hasRequiredPart) {
+            throw new \RuntimeException(sprintf('Class "%s" must be located in "%s" namespace', $class, $requiredNamespacePart));
         }
 
         $typename = join('_', $parts);
         if (!$typename) {
-            throw new \RuntimeException(sprintf('Response model "%s" must have typename', $class));
+            throw new \LogicException();
         }
 
         return $typename;
+    }
+
+    public static function resolveForResponseModel(string $class): string
+    {
+        return static::resolve($class, 'ResponseModel');
     }
 }
