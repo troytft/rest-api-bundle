@@ -17,6 +17,8 @@ use function substr;
 
 class ResponseModelResolver
 {
+    private const POSTFIX = 'ResponseModel';
+
     /**
      * @var array<string, OpenApi\Schema>
      */
@@ -50,7 +52,7 @@ class ResponseModelResolver
         }
 
         return new OpenApi\Reference([
-            '$ref' => sprintf('#/components/schemas/%s', $typename),
+            '$ref' => sprintf('#/components/schemas/%s%s', $typename, static::POSTFIX),
         ]);
     }
 
@@ -62,7 +64,7 @@ class ResponseModelResolver
         $result = [];
 
         foreach ($this->typenameCache as $class => $typename) {
-            $result[$typename] = $this->schemaCache[$class];
+            $result[$typename . static::POSTFIX] = $this->schemaCache[$class];
         }
 
         ksort($result);

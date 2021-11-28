@@ -30,11 +30,16 @@ class TypenameResolver
             throw new \LogicException();
         }
 
-        return $typename . $requiredNamespacePart;
+        return $typename;
     }
 
     public static function resolveForResponseModel(string $class): string
     {
         return static::resolve($class, 'ResponseModel');
+    }
+
+    public static function resolveForEnum(string $class): string
+    {
+        return static::resolve($class, 'Enum');
     }
 }
