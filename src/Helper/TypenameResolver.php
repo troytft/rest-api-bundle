@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Helper\ResponseModel;
+namespace RestApiBundle\Helper;
 
 use function explode;
 use function join;
