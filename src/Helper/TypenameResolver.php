@@ -30,7 +30,7 @@ class TypenameResolver
             throw new \LogicException();
         }
 
-        return $typename;
+        return $typename . $requiredNamespacePart;
     }
 
     public static function resolveForResponseModel(string $class): string
