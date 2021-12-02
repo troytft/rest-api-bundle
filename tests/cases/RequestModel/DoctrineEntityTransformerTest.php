@@ -66,7 +66,7 @@ class DoctrineEntityTransformerTest extends Tests\BaseTestCase
         try {
             $requestModel = new TestApp\RequestModel\DoctrineEntityTransformerTest\Model();
             $this->getRequestHandler()->handle($requestModel, [
-                'bookBySlug' => 10
+                'bookBySlug' => true,
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {

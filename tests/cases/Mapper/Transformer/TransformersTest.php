@@ -43,32 +43,13 @@ class TransformersTest extends Tests\BaseTestCase
         }
     }
 
-    public function testStringTransformerWithDisabledTrimOption()
+    public function testStringTransformer()
     {
-        $options = [
-            RestApiBundle\Services\Mapper\Transformer\StringTransformer::TRIM_OPTION => false,
-        ];
-
         $transformer = new RestApiBundle\Services\Mapper\Transformer\StringTransformer();
 
-        $this->assertSame(' ', $transformer->transform(' ', $options));
-        $this->assertSame(' s', $transformer->transform(' s', $options));
-        $this->assertSame('s ', $transformer->transform('s ', $options));
-        $this->assertSame(' s ', $transformer->transform(' s ', $options));
-    }
-
-    public function testStringTransformerWithEnabledTrimOption()
-    {
-        $options = [
-            RestApiBundle\Services\Mapper\Transformer\StringTransformer::TRIM_OPTION => true,
-        ];
-
-        $transformer = new RestApiBundle\Services\Mapper\Transformer\StringTransformer();
-
-        $this->assertSame('', $transformer->transform(' ', $options));
-        $this->assertSame('s', $transformer->transform(' s', $options));
-        $this->assertSame('s', $transformer->transform('s ', $options));
-        $this->assertSame('s', $transformer->transform(' s ', $options));
+        $this->assertSame('10', $transformer->transform(10));
+        $this->assertSame('10', $transformer->transform('10'));
+        $this->assertSame('10', $transformer->transform(10.0));
     }
 
     public function testTimestampTransformer()
