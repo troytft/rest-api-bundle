@@ -42,7 +42,4 @@ class TypesByTypeHint implements Mapper\ModelInterface
     #[Mapper\Expose]
     #[Mapper\DateFormat('d/m/y')]
     public ?Mapper\Date $dateWithFormat;
-
-    #[Mapper\Expose]
-    public ?Mapper\Timestamp $timestamp;
 }
