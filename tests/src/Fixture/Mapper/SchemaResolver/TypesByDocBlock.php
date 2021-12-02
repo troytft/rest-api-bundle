@@ -139,9 +139,4 @@ class TypesByDocBlock implements Mapper\ModelInterface
      * @Mapper\DateFormat("d/m/y")
      */
     public ?Mapper\Date $dateWithFormat;
-
-    /**
-     * @Mapper\Expose
-     */
-    public ?Mapper\Timestamp $timestamp;
 }

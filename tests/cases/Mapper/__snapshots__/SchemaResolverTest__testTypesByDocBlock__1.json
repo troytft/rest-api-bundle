@@ -287,16 +287,6 @@
             "type": "transformer-aware",
             "valuesType": null,
             "propertySetterName": null
-        },
-        "timestamp": {
-            "properties": [],
-            "class": null,
-            "isNullable": true,
-            "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\TimestampTransformer",
-            "transformerOptions": [],
-            "type": "transformer-aware",
-            "valuesType": null,
-            "propertySetterName": null
         }
     },
     "class": "Tests\\Fixture\\Mapper\\SchemaResolver\\TypesByDocBlock",

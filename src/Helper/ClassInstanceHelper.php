@@ -31,13 +31,6 @@ final class ClassInstanceHelper
     /**
      * @var array<string, bool>
      */
-    private static array $timestampCache = [
-        RestApiBundle\Mapping\Mapper\Timestamp::class => true,
-    ];
-
-    /**
-     * @var array<string, bool>
-     */
     private static array $serializableEnumCache = [];
 
     /**
@@ -91,17 +84,6 @@ final class ClassInstanceHelper
         }
 
         return static::$dateCache[$class];
-    }
-
-    public static function isTimestampMapperType(string $class): bool
-    {
-        if (!array_key_exists($class, static::$timestampCache)) {
-            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
-
-            static::$timestampCache[$class] = $reflectionClass->isInstantiable() && $reflectionClass->implementsInterface(RestApiBundle\Mapping\Mapper\TimestampInterface::class);
-        }
-
-        return static::$timestampCache[$class];
     }
 
     public static function isSerializableEnum(string $class): bool
