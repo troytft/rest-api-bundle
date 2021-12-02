@@ -50,6 +50,10 @@ class TransformersTest extends Tests\BaseTestCase
         $this->assertSame('10', $transformer->transform(10));
         $this->assertSame('10', $transformer->transform('10'));
         $this->assertSame('10', $transformer->transform(10.0));
+        $this->assertSame('', $transformer->transform(''));
+
+        
+        $this->assertSame('10', $transformer->transform(true));
     }
 
     public function testDateTimeFormatOption()
