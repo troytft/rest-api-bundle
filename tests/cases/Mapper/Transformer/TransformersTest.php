@@ -52,19 +52,6 @@ class TransformersTest extends Tests\BaseTestCase
         $this->assertSame('10', $transformer->transform(10.0));
     }
 
-    public function testTimestampTransformer()
-    {
-        $transformer = new RestApiBundle\Services\Mapper\Transformer\TimestampTransformer();
-
-        $this->assertTrue($transformer->transform(1620000000) instanceof \DateTime);
-
-        try {
-            $transformer->transform('s');
-            $this->fail();
-        } catch (RestApiBundle\Exception\Mapper\Transformer\IntegerRequiredException $exception) {
-        }
-    }
-
     public function testDateTimeFormatOption()
     {
         $options = [
