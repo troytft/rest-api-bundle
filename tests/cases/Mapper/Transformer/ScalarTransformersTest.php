@@ -14,6 +14,8 @@ class ScalarTransformersTest extends Tests\BaseTestCase
         $this->assertSame(true, $transformer->transform('1'));
         $this->assertSame(false, $transformer->transform('0'));
         $this->assertSame(false, $transformer->transform(''));
+        $this->assertSame(true, $transformer->transform(1));
+        $this->assertSame(false, $transformer->transform(0));
 
         // negative scenarios
         try {
@@ -24,12 +26,6 @@ class ScalarTransformersTest extends Tests\BaseTestCase
 
         try {
             $transformer->transform(10);
-            $this->fail();
-        } catch (RestApiBundle\Exception\Mapper\Transformer\BooleanRequiredException $exception) {
-        }
-
-        try {
-            $transformer->transform(1);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\Transformer\BooleanRequiredException $exception) {
         }
@@ -47,12 +43,18 @@ class ScalarTransformersTest extends Tests\BaseTestCase
 
         // positive scenarios
         $this->assertSame(10, $transformer->transform(10));
-        $this->assertSame(10, $transformer->transform('10'));
         $this->assertSame(10, $transformer->transform(10.0));
+        $this->assertSame(10, $transformer->transform('10'));
 
         // negative scenarios
         try {
             $transformer->transform(10.1);
+            $this->fail();
+        } catch (RestApiBundle\Exception\Mapper\Transformer\IntegerRequiredException $exception) {
+        }
+
+        try {
+            $transformer->transform('10.1');
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\Transformer\IntegerRequiredException $exception) {
         }
@@ -65,6 +67,12 @@ class ScalarTransformersTest extends Tests\BaseTestCase
 
         try {
             $transformer->transform(null);
+            $this->fail();
+        } catch (RestApiBundle\Exception\Mapper\Transformer\IntegerRequiredException $exception) {
+        }
+
+        try {
+            $transformer->transform('');
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\Transformer\IntegerRequiredException $exception) {
         }
@@ -82,7 +90,25 @@ class ScalarTransformersTest extends Tests\BaseTestCase
 
         // negative scenarios
         try {
+            $transformer->transform('');
+            $this->fail();
+        } catch (RestApiBundle\Exception\Mapper\Transformer\FloatRequiredException $exception) {
+        }
+
+        try {
             $transformer->transform('s');
+            $this->fail();
+        } catch (RestApiBundle\Exception\Mapper\Transformer\FloatRequiredException $exception) {
+        }
+
+        try {
+            $transformer->transform(true);
+            $this->fail();
+        } catch (RestApiBundle\Exception\Mapper\Transformer\FloatRequiredException $exception) {
+        }
+
+        try {
+            $transformer->transform(null);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\Transformer\FloatRequiredException $exception) {
         }
