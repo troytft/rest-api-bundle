@@ -1,61 +1,7 @@
 <?php
 
-class TransformersTest extends Tests\BaseTestCase
+class DateTransformersTest extends Tests\BaseTestCase
 {
-    public function testBooleanTransformer()
-    {
-        $transformer = new RestApiBundle\Services\Mapper\Transformer\BooleanTransformer();
-
-        $this->assertSame(true, $transformer->transform(true));
-        $this->assertSame(true, $transformer->transform('true'));
-        $this->assertSame(false, $transformer->transform(false));
-        $this->assertSame(false, $transformer->transform('false'));
-    }
-
-    public function testIntegerTransformer()
-    {
-        $transformer = new RestApiBundle\Services\Mapper\Transformer\IntegerTransformer();
-
-        $this->assertSame(10, $transformer->transform(10));
-        $this->assertSame(10, $transformer->transform('10'));
-        $this->assertSame(10, $transformer->transform(10.0));
-
-        try {
-            $transformer->transform(10.1);
-            $this->fail();
-        } catch (RestApiBundle\Exception\Mapper\Transformer\IntegerRequiredException $exception) {
-        }
-    }
-
-    public function testFloatTransformer()
-    {
-        $transformer = new RestApiBundle\Services\Mapper\Transformer\FloatTransformer();
-
-        $this->assertSame(10.0, $transformer->transform(10.0));
-        $this->assertSame(10.0, $transformer->transform(10));
-        $this->assertSame(10.0, $transformer->transform('10'));
-        $this->assertSame(10.1, $transformer->transform('10.1'));
-
-        try {
-            $transformer->transform('s');
-            $this->fail();
-        } catch (RestApiBundle\Exception\Mapper\Transformer\FloatRequiredException $exception) {
-        }
-    }
-
-    public function testStringTransformer()
-    {
-        $transformer = new RestApiBundle\Services\Mapper\Transformer\StringTransformer();
-
-        $this->assertSame('10', $transformer->transform(10));
-        $this->assertSame('10', $transformer->transform('10'));
-        $this->assertSame('10', $transformer->transform(10.0));
-        $this->assertSame('', $transformer->transform(''));
-
-        
-        $this->assertSame('10', $transformer->transform(true));
-    }
-
     public function testDateTimeFormatOption()
     {
         $options = [
