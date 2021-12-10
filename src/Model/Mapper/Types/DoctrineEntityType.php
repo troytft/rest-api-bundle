@@ -4,7 +4,7 @@ namespace RestApiBundle\Model\Mapper\Types;
 
 use RestApiBundle;
 
-class EntityType extends RestApiBundle\Model\Mapper\Types\BaseNullableType implements RestApiBundle\Model\Mapper\Types\TransformerAwareTypeInterface
+class DoctrineEntityType extends RestApiBundle\Model\Mapper\Types\BaseNullableType implements RestApiBundle\Model\Mapper\Types\TransformerAwareTypeInterface
 {
     public function __construct(
         private string $class = '',
@@ -16,14 +16,14 @@ class EntityType extends RestApiBundle\Model\Mapper\Types\BaseNullableType imple
 
     public function getTransformerClass(): string
     {
-        return RestApiBundle\Services\Mapper\Transformer\EntityTransformer::class;
+        return RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class;
     }
 
     public function getTransformerOptions(): array
     {
         return [
-            RestApiBundle\Services\Mapper\Transformer\EntityTransformer::CLASS_OPTION => $this->class,
-            RestApiBundle\Services\Mapper\Transformer\EntityTransformer::FIELD_OPTION => $this->field,
+            RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::CLASS_OPTION => $this->class,
+            RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::FIELD_OPTION => $this->field,
         ];
     }
 

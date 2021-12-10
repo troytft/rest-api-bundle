@@ -4,15 +4,12 @@ namespace RestApiBundle\Services\Mapper\Transformer;
 
 use RestApiBundle;
 use Symfony\Component\PropertyInfo;
-use Doctrine\ORM\EntityManagerInterface;
 
-class EntityTransformer implements TransformerInterface
+class EnumTransformer implements TransformerInterface
 {
     public const CLASS_OPTION = 'class';
-    public const FIELD_OPTION = 'field';
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
         private RestApiBundle\Services\Mapper\Transformer\StringTransformer $stringTransformer,
         private RestApiBundle\Services\Mapper\Transformer\IntegerTransformer $integerTransformer,
     ) {
@@ -20,8 +17,7 @@ class EntityTransformer implements TransformerInterface
 
     public function transform($value, array $options)
     {
-        $class = $options[static::CLASS_OPTION];
-        $field = $options[static::FIELD_OPTION];
+        $class = $options[static::CLASS_OPTION] ?? throw new \InvalidArgumentException();
 
         $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $field);
         $value = match ($columnType) {

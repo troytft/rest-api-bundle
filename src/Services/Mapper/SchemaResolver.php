@@ -68,9 +68,9 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             $schema = $this->resolve($mapping->getClass(), $mapping->getIsNullable() ?? false);
         } elseif ($mapping instanceof RestApiBundle\Model\Mapper\Types\ArrayType) {
             $valuesType = $mapping->getValuesType();
-            if ($valuesType instanceof RestApiBundle\Model\Mapper\Types\TransformerAwareTypeInterface && $valuesType->getTransformerClass() === RestApiBundle\Services\Mapper\Transformer\EntityTransformer::class) {
+            if ($valuesType instanceof RestApiBundle\Model\Mapper\Types\TransformerAwareTypeInterface && $valuesType->getTransformerClass() === RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class) {
                 $schema = RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(
-                    RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::class,
+                    RestApiBundle\Services\Mapper\Transformer\ArrayOfDoctrineEntitiesTransformer::class,
                     $valuesType->getTransformerOptions(),
                     $mapping->getIsNullable() ?? false
                 );
@@ -146,7 +146,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 break;
 
             case $type->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($type->getClassName()):
-                $result = new RestApiBundle\Model\Mapper\Types\EntityType(class: (string) $type->getClassName(), nullable: $type->isNullable());
+                $result = new RestApiBundle\Model\Mapper\Types\DoctrineEntityType(class: (string) $type->getClassName(), nullable: $type->isNullable());
 
                 foreach ($typeOptions as $typeOption) {
                     if ($typeOption instanceof RestApiBundle\Mapping\Mapper\FindByField) {

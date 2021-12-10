@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use function count;
 use function ucfirst;
 
-class EntitiesCollectionTransformer implements TransformerInterface
+class ArrayOfDoctrineEntitiesTransformer implements TransformerInterface
 {
     public const CLASS_OPTION = 'class';
     public const FIELD_OPTION = 'field';
@@ -19,8 +19,8 @@ class EntitiesCollectionTransformer implements TransformerInterface
 
     public function transform($value, array $options)
     {
-        $class = $options[static::CLASS_OPTION];
-        $field = $options[static::FIELD_OPTION];
+        $class = $options[static::CLASS_OPTION] ?? throw new \InvalidArgumentException();
+        $field = $options[static::FIELD_OPTION] ?? throw new \InvalidArgumentException();
 
         if (count($value) !== count(array_unique($value))) {
             throw new RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException();

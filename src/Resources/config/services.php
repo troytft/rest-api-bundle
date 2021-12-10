@@ -23,9 +23,5 @@ return function (ContainerConfigurator $configurator) {
         ->tag('controller.argument_value_resolver', ['priority' => 25]);
 
     $services
-        ->instanceof(ArgumentValueResolverInterface::class)
-        ->tag('controller.argument_value_resolver', ['priority' => 25]);
-
-    $services
         ->load('RestApiBundle\\', '../../../src/{EventSubscriber,Services,Command,CacheWarmer}/*');
 };
