@@ -216,7 +216,7 @@
             "properties": [],
             "class": null,
             "isNullable": true,
-            "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\EntityTransformer",
+            "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\DoctrineEntityTransformer",
             "transformerOptions": {
                 "class": "Tests\\Fixture\\Common\\Entity\\Author",
                 "field": "id"
@@ -229,7 +229,7 @@
             "properties": [],
             "class": null,
             "isNullable": true,
-            "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\EntitiesCollectionTransformer",
+            "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\ArrayOfDoctrineEntitiesTransformer",
             "transformerOptions": {
                 "class": "Tests\\Fixture\\Common\\Entity\\Author",
                 "field": "id"
@@ -242,7 +242,7 @@
             "properties": [],
             "class": null,
             "isNullable": true,
-            "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\EntityTransformer",
+            "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\DoctrineEntityTransformer",
             "transformerOptions": {
                 "class": "Tests\\Fixture\\Common\\Entity\\Book",
                 "field": "slug"
@@ -255,7 +255,7 @@
             "properties": [],
             "class": null,
             "isNullable": true,
-            "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\EntitiesCollectionTransformer",
+            "transformerClass": "RestApiBundle\\Services\\Mapper\\Transformer\\ArrayOfDoctrineEntitiesTransformer",
             "transformerOptions": {
                 "class": "Tests\\Fixture\\Common\\Entity\\Book",
                 "field": "slug"
