@@ -145,8 +145,7 @@ class RequestModelResolver
             RestApiBundle\Services\Mapper\Transformer\FloatTransformer::class => $this->resolveScalarTransformer(PropertyInfo\Type::BUILTIN_TYPE_FLOAT, $schema->isNullable, $validationConstraints),
             RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class => $this->resolveDateTimeTransformer($schema->transformerOptions, $schema->isNullable, $validationConstraints),
             RestApiBundle\Services\Mapper\Transformer\DateTransformer::class => $this->resolveDateTransformer($schema->transformerOptions, $schema->isNullable),
-            RestApiBundle\Services\Mapper\Transformer\EntityTransformer::class => $this->resolveEntityTransformer($schema->transformerOptions, $schema->isNullable),
-            RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::class => $this->resolveEntitiesCollectionTransformer($schema->transformerOptions, $schema->isNullable),
+            RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class => $this->resolveEntityTransformer($schema->transformerOptions, $schema->isNullable),
             default => throw new \InvalidArgumentException(),
         };
     }
@@ -181,30 +180,27 @@ class RequestModelResolver
 
     private function resolveEntityTransformer(array $options, bool $nullable): OpenApi\Schema
     {
-        $class = $options[RestApiBundle\Services\Mapper\Transformer\EntityTransformer::CLASS_OPTION];
-        $fieldName = $options[RestApiBundle\Services\Mapper\Transformer\EntityTransformer::FIELD_OPTION];
+        $class = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::CLASS_OPTION];
+        $fieldName = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::FIELD_OPTION];
+        $isMultiple = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::MULTIPLE_OPTION] ?? false;
         $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
 
-        $result = RestApiBundle\Helper\OpenApiHelper::createScalarFromString($columnType);
-        $result->description = sprintf('"%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName);
-        $result->nullable = $nullable;
+        if ($isMultiple) {
+            $itemsType = RestApiBundle\Helper\OpenApiHelper::createScalarFromString($columnType);
+
+            $result = new OpenApi\Schema([
+                'type' => OpenApi\Type::ARRAY,
+                'items' => $itemsType,
+                'nullable' => $nullable,
+                'description' => sprintf('Collection of "%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName),
+            ]);
+        } else {
+            $result = RestApiBundle\Helper\OpenApiHelper::createScalarFromString($columnType);
+            $result->description = sprintf('"%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName);
+            $result->nullable = $nullable;
+        }
 
         return $result;
-    }
-
-    private function resolveEntitiesCollectionTransformer(array $options, bool $nullable): OpenApi\Schema
-    {
-        $class = $options[RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::CLASS_OPTION];
-        $fieldName = $options[RestApiBundle\Services\Mapper\Transformer\EntitiesCollectionTransformer::FIELD_OPTION];
-        $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
-        $itemsType = RestApiBundle\Helper\OpenApiHelper::createScalarFromString($columnType);
-
-        return new OpenApi\Schema([
-            'type' => OpenApi\Type::ARRAY,
-            'items' => $itemsType,
-            'nullable' => $nullable,
-            'description' => sprintf('Collection of "%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName),
-        ]);
     }
 
     private function resolveShortClassName(string $class): string

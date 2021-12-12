@@ -10,7 +10,7 @@ class SettingsExtension extends Extension
 {
     public const ALIAS = 'rest_api';
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return static::ALIAS;
     }

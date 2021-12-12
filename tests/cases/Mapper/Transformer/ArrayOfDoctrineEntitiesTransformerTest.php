@@ -1,6 +1,6 @@
 <?php
 
-class DoctrineEntitiesCollectionTransformerTest extends Tests\BaseTestCase
+class ArrayOfDoctrineEntitiesTransformerTest extends Tests\BaseTestCase
 {
     public function testSuccess()
     {
