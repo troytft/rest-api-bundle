@@ -64,10 +64,10 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         switch (true) {
             case RestApiBundle\Helper\PropertyInfoTypeHelper::isScalar($type):
                 $schema  = match ($type->getBuiltinType()) {
-                    PropertyInfo\Type::BUILTIN_TYPE_STRING => RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(RestApiBundle\Services\Mapper\Transformer\StringTransformer::class, [], $type->isNullable()),
-                    PropertyInfo\Type::BUILTIN_TYPE_INT => RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class, [], $type->isNullable()),
-                    PropertyInfo\Type::BUILTIN_TYPE_FLOAT => RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(RestApiBundle\Services\Mapper\Transformer\FloatTransformer::class, [], $type->isNullable()),
-                    PropertyInfo\Type::BUILTIN_TYPE_BOOL => RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class, [], $type->isNullable()),
+                    PropertyInfo\Type::BUILTIN_TYPE_STRING => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\StringTransformer::class, $type->isNullable()),
+                    PropertyInfo\Type::BUILTIN_TYPE_INT => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class, $type->isNullable()),
+                    PropertyInfo\Type::BUILTIN_TYPE_FLOAT => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\FloatTransformer::class, $type->isNullable()),
+                    PropertyInfo\Type::BUILTIN_TYPE_BOOL => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class, $type->isNullable()),
                     default => throw new \LogicException(),
                 };
 
@@ -81,9 +81,9 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                     }
                 }
 
-                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(RestApiBundle\Services\Mapper\Transformer\DateTransformer::class, [
+                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DateTransformer::class, $type->isNullable(), [
                     RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION => $dateFormat,
-                ], $type->isNullable());
+                ]);
 
                 break;
 
@@ -95,9 +95,9 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                     }
                 }
 
-                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class, [
+                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class, $type->isNullable(), [
                     RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION => $dateFormat,
-                ], $type->isNullable());
+                ]);
 
                 break;
 
@@ -114,17 +114,17 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                     }
                 }
 
-                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class, [
+                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class, $type->isNullable(), [
                     RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::CLASS_OPTION => $type->getClassName(),
                     RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::FIELD_OPTION => $fieldName,
-                ], $type->isNullable());
+                ]);
 
                 break;
 
             case $type->isCollection():
                 $collectionValueSchema = $this->resolveSchemaByType(RestApiBundle\Helper\PropertyInfoTypeHelper::getFirstCollectionValueType($type), $typeOptions);
                 if ($collectionValueSchema->transformerClass === RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class) {
-                    $schema = RestApiBundle\Model\Mapper\Schema::createTransformerAwareType(RestApiBundle\Services\Mapper\Transformer\ArrayOfDoctrineEntitiesTransformer::class, $collectionValueSchema->transformerOptions, $type->isNullable());
+                    $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\ArrayOfDoctrineEntitiesTransformer::class, $type->isNullable(), $collectionValueSchema->transformerOptions);
                 } else {
                     $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $type->isNullable());
                 }

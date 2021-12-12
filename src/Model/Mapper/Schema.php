@@ -22,10 +22,10 @@ final class Schema
     {
     }
 
-    public static function createTransformerAwareType(
+    public static function createTransformerType(
         string $transformerClass,
-        array $transformerOptions,
-        bool $isNullable
+        bool $isNullable,
+        array $transformerOptions = [],
     ): self {
         $instance = new self();
         $instance->type = self::TRANSFORMER_AWARE_TYPE;
