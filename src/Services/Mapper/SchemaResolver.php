@@ -124,7 +124,9 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             case $type->isCollection():
                 $collectionValueSchema = $this->resolveSchemaByType(RestApiBundle\Helper\PropertyInfoTypeHelper::getFirstCollectionValueType($type), $typeOptions);
                 if ($collectionValueSchema->transformerClass === RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class) {
-                    $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\ArrayOfDoctrineEntitiesTransformer::class, $type->isNullable(), $collectionValueSchema->transformerOptions);
+                    $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class, $type->isNullable(), array_merge($collectionValueSchema->transformerOptions, [
+                       RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::MULTIPLE_OPTION => true,
+                    ]));
                 } else {
                     $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $type->isNullable());
                 }
