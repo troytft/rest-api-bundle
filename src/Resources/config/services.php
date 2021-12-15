@@ -23,5 +23,20 @@ return function (ContainerConfigurator $configurator) {
         ->tag('controller.argument_value_resolver', ['priority' => 25]);
 
     $services
-        ->load('RestApiBundle\\', '../../../src/{EventSubscriber,Services,Command,CacheWarmer}/*');
+        ->load('RestApiBundle\\EventSubscriber\\', '../../../src/EventSubscriber/*');
+
+    $services
+        ->load('RestApiBundle\\Services\\', '../../../src/Services/*');
+
+    $services
+        ->load('RestApiBundle\\Services\\OpenApi\\', '../../../src/Services/OpenApi/*')
+        ->tag('container.no_preload');
+
+    $services
+        ->load('RestApiBundle\\Command\\', '../../../src/Command/*')
+        ->tag('container.no_preload');
+
+    $services
+        ->load('RestApiBundle\\CacheWarmer\\', '../../../src/CacheWarmer/*')
+        ->tag('container.no_preload');
 };
