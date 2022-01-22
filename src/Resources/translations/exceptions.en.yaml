@@ -10,6 +10,7 @@ RestApiBundle\Exception\Mapper\Transformer\InvalidDateFormatException: This valu
 RestApiBundle\Exception\Mapper\Transformer\InvalidDateException: This value is not a valid date.
 RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeFormatException: This value should be valid date time with format "{format}".
 RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeException: This value is not a valid datetime.
+RestApiBundle\Exception\Mapper\Transformer\ValueNotFoundInEnumException: The value you selected is not a valid choice.
 RestApiBundle\Exception\RequestModel\EntityNotFoundException: An entity with specified value not found.
 RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException: One entity of entities collection not found.
 RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException: Values should be unique.

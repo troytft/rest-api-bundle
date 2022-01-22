@@ -4,7 +4,7 @@ namespace Tests\Fixture\Common\Enum;
 
 use RestApiBundle;
 
-class BookStatus extends RestApiBundle\Mapping\ResponseModel\BaseSerializableEnum
+class BookStatus extends RestApiBundle\Mapping\ResponseModel\BaseEnum
 {
     public const CREATED = 'created';
     public const PUBLISHED = 'published';

@@ -9,11 +9,11 @@ class SerializableEnumNormalizer implements ContextAwareNormalizerInterface
 {
     public function supportsNormalization($data, $format = null, array $context = [])
     {
-        return $data instanceof RestApiBundle\Mapping\ResponseModel\SerializableEnumInterface;
+        return $data instanceof RestApiBundle\Mapping\ResponseModel\EnumInterface;
     }
 
     /**
-     * @param RestApiBundle\Mapping\ResponseModel\SerializableEnumInterface $object
+     * @param RestApiBundle\Mapping\ResponseModel\EnumInterface $object
      */
     public function normalize($object, $format = null, array $context = [])
     {

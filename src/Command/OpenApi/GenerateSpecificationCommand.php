@@ -21,7 +21,7 @@ final class GenerateSpecificationCommand extends Command
     public function __construct(
         private RestApiBundle\Services\OpenApi\EndpointFinder $endpointFinder,
         private RestApiBundle\Services\OpenApi\FileAdapter $fileAdapter,
-        private RestApiBundle\Services\OpenApi\Specification\SpecificationGenerator $specificationGenerator,
+        private RestApiBundle\Services\OpenApi\Schema\SchemaGenerator $specificationGenerator,
     ) {
         parent::__construct();
     }
