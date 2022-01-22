@@ -2,7 +2,7 @@
 
 use Symfony\Component\HttpFoundation\Request;
 
-class ResponseModelTest extends Tests\BaseTestCase
+class ResponsesTest extends Tests\BaseTestCase
 {
     public function testResponseWithNull()
     {

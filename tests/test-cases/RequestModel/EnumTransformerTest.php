@@ -1,14 +1,14 @@
 <?php
 
-class EnumTransformer extends Tests\BaseTestCase
+class EnumTransformerTest extends Tests\BaseTestCase
 {
     public function testSuccess()
     {
-        $model = new Tests\Fixture\Mapper\EnumTransformerTest\Model();
-
+        $model = new Tests\Fixture\TestCases\RequestModel\EnumTransformer\Model();
         $this->getRequestModelHandler()->handle($model, [
             'value' => \Tests\Fixture\Common\Enum\BookStatus::CREATED,
         ]);
+
         $this->assertTrue($model->getValue() instanceof \Tests\Fixture\Common\Enum\BookStatus);
         $this->assertSame(\Tests\Fixture\Common\Enum\BookStatus::CREATED, $model->getValue()->getValue());
     }
@@ -16,7 +16,7 @@ class EnumTransformer extends Tests\BaseTestCase
     public function testValueNotFoundInEnum()
     {
         try {
-            $model = new Tests\Fixture\Mapper\EnumTransformerTest\Model();
+            $model = new Tests\Fixture\TestCases\RequestModel\EnumTransformer\Model();
             $this->getRequestModelHandler()->handle($model, [
                 'value' => 'invalid'
             ]);

@@ -1,6 +1,6 @@
 <?php
 
-class Validation extends Tests\BaseTestCase
+class ValidationTest extends Tests\BaseTestCase
 {
     public function testValidationException()
     {

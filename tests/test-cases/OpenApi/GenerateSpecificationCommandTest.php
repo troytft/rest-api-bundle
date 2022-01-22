@@ -3,7 +3,7 @@
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
-class GenerateSpecificationCommand extends Tests\BaseTestCase
+class GenerateSpecificationCommandTest extends Tests\BaseTestCase
 {
     public function testSuccessYaml()
     {

@@ -1,6 +1,6 @@
 <?php
 
-class RequestModelResolver extends Tests\BaseTestCase
+class RequestModelResolverTest extends Tests\BaseTestCase
 {
     public function testEnumSchema(): void
     {

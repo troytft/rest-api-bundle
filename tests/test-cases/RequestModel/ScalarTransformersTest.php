@@ -1,6 +1,6 @@
 <?php
 
-class ScalarTransformers extends Tests\BaseTestCase
+class ScalarTransformersTest extends Tests\BaseTestCase
 {
     public function testBooleanTransformer()
     {

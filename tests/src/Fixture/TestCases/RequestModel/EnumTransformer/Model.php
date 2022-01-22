@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Fixture\Mapper\EnumTransformerTest;
+namespace Tests\Fixture\TestCases\RequestModel\EnumTransformer;
 
 use Tests;
 use RestApiBundle\Mapping\Mapper;

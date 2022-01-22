@@ -1,6 +1,6 @@
 <?php
 
-class Responses extends Tests\BaseTestCase
+class ResponsesSchemaTest extends Tests\BaseTestCase
 {
     public function testRedirectResponse(): void
     {
