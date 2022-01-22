@@ -1,10 +1,10 @@
 <?php
 
-class EnumTransformerTest extends Tests\BaseTestCase
+class EnumTransformer extends Tests\BaseTestCase
 {
     public function testSuccess()
     {
-        $model = new Tests\Fixture\EnumTransformerTest\Model();
+        $model = new Tests\Fixture\Mapper\EnumTransformerTest\Model();
 
         $this->getRequestModelHandler()->handle($model, [
             'value' => \Tests\Fixture\Common\Enum\BookStatus::CREATED,
@@ -16,13 +16,13 @@ class EnumTransformerTest extends Tests\BaseTestCase
     public function testValueNotFoundInEnum()
     {
         try {
-            $model = new Tests\Fixture\EnumTransformerTest\Model();
+            $model = new Tests\Fixture\Mapper\EnumTransformerTest\Model();
             $this->getRequestModelHandler()->handle($model, [
                 'value' => 'invalid'
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['bookById' => ['The value you selected is not a valid choice.']], $exception->getProperties());
+            $this->assertSame(['value' => ['The value you selected is not a valid choice.']], $exception->getProperties());
         }
     }
 

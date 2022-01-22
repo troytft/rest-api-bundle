@@ -1,6 +1,6 @@
 <?php
 
-class DateTransformersTest extends Tests\BaseTestCase
+class DateTransformers extends Tests\BaseTestCase
 {
     public function testDateTimeFormatOption()
     {

@@ -1,6 +1,6 @@
 <?php
 
-class EntityTransformerTest extends Tests\BaseTestCase
+class EntityTransformer extends Tests\BaseTestCase
 {
     public function testFetchInteger()
     {
