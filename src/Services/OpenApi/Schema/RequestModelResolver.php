@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi\Specification;
+namespace RestApiBundle\Services\OpenApi\Schema;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
@@ -145,7 +145,8 @@ class RequestModelResolver
             RestApiBundle\Services\Mapper\Transformer\FloatTransformer::class => $this->resolveScalarTransformer(PropertyInfo\Type::BUILTIN_TYPE_FLOAT, $schema->isNullable, $validationConstraints),
             RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class => $this->resolveDateTimeTransformer($schema->transformerOptions, $schema->isNullable, $validationConstraints),
             RestApiBundle\Services\Mapper\Transformer\DateTransformer::class => $this->resolveDateTransformer($schema->transformerOptions, $schema->isNullable),
-            RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class => $this->resolveEntityTransformer($schema->transformerOptions, $schema->isNullable),
+            RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class => $this->resolveDoctrineEntityTransformer($schema->transformerOptions, $schema->isNullable),
+            RestApiBundle\Services\Mapper\Transformer\EnumTransformer::class => $this->resolveEnumTransformer($schema->transformerOptions, $schema->isNullable),
             default => throw new \InvalidArgumentException(),
         };
     }
@@ -178,7 +179,7 @@ class RequestModelResolver
         return RestApiBundle\Helper\OpenApiHelper::createDate($format, $nullable);
     }
 
-    private function resolveEntityTransformer(array $options, bool $nullable): OpenApi\Schema
+    private function resolveDoctrineEntityTransformer(array $options, bool $nullable): OpenApi\Schema
     {
         $class = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::CLASS_OPTION];
         $fieldName = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::FIELD_OPTION];
@@ -198,6 +199,30 @@ class RequestModelResolver
             $result = RestApiBundle\Helper\OpenApiHelper::createScalarFromString($columnType);
             $result->description = sprintf('"%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName);
             $result->nullable = $nullable;
+        }
+
+        return $result;
+    }
+
+    private function resolveEnumTransformer(array $options, bool $nullable): OpenApi\Schema
+    {
+        $class = $options[RestApiBundle\Services\Mapper\Transformer\EnumTransformer::CLASS_OPTION];
+        $enumValues = RestApiBundle\Helper\TypeExtractor::extractEnumValues($class);
+
+        if (is_int($enumValues[0])) {
+            $result = new OpenApi\Schema([
+                'type' => OpenApi\Type::INTEGER,
+                'nullable' => $nullable,
+                'enum' => $enumValues,
+            ]);
+        } elseif (is_string($enumValues[0])) {
+            $result = new OpenApi\Schema([
+                'type' => OpenApi\Type::STRING,
+                'nullable' => $nullable,
+                'enum' => $enumValues,
+            ]);
+        } else {
+            throw new \LogicException();
         }
 
         return $result;

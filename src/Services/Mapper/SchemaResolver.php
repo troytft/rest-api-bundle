@@ -36,7 +36,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             }
 
             try {
-                $reflectionPropertyType = RestApiBundle\Helper\PropertyInfoTypeHelper::extractPropertyType($reflectionProperty);
+                $reflectionPropertyType = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
                 if (!$reflectionPropertyType) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException('Property has empty type', $reflectionProperty);
                 }
@@ -62,7 +62,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
     private function resolveSchemaByType(PropertyInfo\Type $type, array $typeOptions = []): RestApiBundle\Model\Mapper\Schema
     {
         switch (true) {
-            case RestApiBundle\Helper\PropertyInfoTypeHelper::isScalar($type):
+            case RestApiBundle\Helper\TypeExtractor::isScalar($type):
                 $schema  = match ($type->getBuiltinType()) {
                     PropertyInfo\Type::BUILTIN_TYPE_STRING => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\StringTransformer::class, $type->isNullable()),
                     PropertyInfo\Type::BUILTIN_TYPE_INT => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class, $type->isNullable()),
@@ -129,7 +129,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 break;
 
             case $type->isCollection():
-                $collectionValueSchema = $this->resolveSchemaByType(RestApiBundle\Helper\PropertyInfoTypeHelper::getFirstCollectionValueType($type), $typeOptions);
+                $collectionValueSchema = $this->resolveSchemaByType(RestApiBundle\Helper\TypeExtractor::getFirstCollectionValueType($type), $typeOptions);
                 if ($collectionValueSchema->transformerClass === RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class) {
                     $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class, $type->isNullable(), array_merge($collectionValueSchema->transformerOptions, [
                        RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::MULTIPLE_OPTION => true,

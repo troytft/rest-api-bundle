@@ -25,4 +25,9 @@ class EnumTransformerTest extends Tests\BaseTestCase
             $this->assertSame(['bookById' => ['The value you selected is not a valid choice.']], $exception->getProperties());
         }
     }
+
+    private function getRequestModelHandler(): RestApiBundle\Services\RequestModel\RequestModelHandler
+    {
+        return $this->getContainer()->get(RestApiBundle\Services\RequestModel\RequestModelHandler::class);
+    }
 }

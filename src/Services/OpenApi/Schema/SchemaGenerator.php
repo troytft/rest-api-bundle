@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi\Specification;
+namespace RestApiBundle\Services\OpenApi\Schema;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
@@ -13,11 +13,11 @@ use function ksort;
 use function sprintf;
 use function strtolower;
 
-class SpecificationGenerator
+class SchemaGenerator
 {
     public function __construct(
-        private RestApiBundle\Services\OpenApi\Specification\RequestModelResolver $requestModelResolver,
-        private RestApiBundle\Services\OpenApi\Specification\ResponseModelResolver $responseModelResolver,
+        private RestApiBundle\Services\OpenApi\Schema\RequestModelResolver $requestModelResolver,
+        private RestApiBundle\Services\OpenApi\Schema\ResponseModelResolver $responseModelResolver,
     ) {
     }
 
@@ -171,8 +171,8 @@ class SpecificationGenerator
                 continue;
             }
 
-            $reflectionMethodType = RestApiBundle\Helper\PropertyInfoTypeHelper::extractByReflectionType($reflectionMethodParameter->getType());
-            if (RestApiBundle\Helper\PropertyInfoTypeHelper::isScalar($reflectionMethodType)) {
+            $reflectionMethodType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionMethodParameter->getType());
+            if (RestApiBundle\Helper\TypeExtractor::isScalar($reflectionMethodType)) {
                 $scalarTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
             } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($reflectionMethodType->getClassName())) {
                 $doctrineEntityTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
@@ -258,7 +258,7 @@ class SpecificationGenerator
     {
         $responses = new OpenApi\Responses([]);
 
-        $returnType = RestApiBundle\Helper\PropertyInfoTypeHelper::extractReturnType($reflectionMethod);
+        $returnType = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
         if (!$returnType) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type is not specified', $reflectionMethod);
         }
@@ -268,7 +268,7 @@ class SpecificationGenerator
         }
 
         if ($returnType->isCollection()) {
-            $collectionValueType = RestApiBundle\Helper\PropertyInfoTypeHelper::getFirstCollectionValueType($returnType);
+            $collectionValueType = RestApiBundle\Helper\TypeExtractor::getFirstCollectionValueType($returnType);
             if (!$collectionValueType->getClassName() || !RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
                 throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Invalid response type, only collection of response models allowed', $reflectionMethod);
             }

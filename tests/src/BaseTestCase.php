@@ -44,9 +44,4 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     {
         return $this->kernel;
     }
-
-    protected function getRequestModelHandler(): RestApiBundle\Services\RequestModel\RequestModelHandler
-    {
-        return $this->getContainer()->get(RestApiBundle\Services\RequestModel\RequestModelHandler::class);
-    }
 }

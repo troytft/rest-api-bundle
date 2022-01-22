@@ -65,4 +65,9 @@ final class OpenApiHelper
             'nullable' => $nullable,
         ]);
     }
+
+    public static function schemaToJson(OpenApi\Schema $schema): string
+    {
+        return json_encode($schema->getSerializableData());
+    }
 }

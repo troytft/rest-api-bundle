@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi\Specification;
+namespace RestApiBundle\Services\OpenApi\Schema;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
@@ -85,7 +85,7 @@ class ResponseModelResolver
             $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
 
             try {
-                $returnType = RestApiBundle\Helper\PropertyInfoTypeHelper::extractReturnType($reflectionMethod);
+                $returnType = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
                 if (!$returnType) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type is not specified', $reflectionMethod);
                 }
@@ -121,7 +121,7 @@ class ResponseModelResolver
 
                 break;
 
-            case RestApiBundle\Helper\PropertyInfoTypeHelper::isScalar($type):
+            case RestApiBundle\Helper\TypeExtractor::isScalar($type):
                 $result = RestApiBundle\Helper\OpenApiHelper::createScalarFromPropertyInfoType($type);
 
                 break;
@@ -169,14 +169,14 @@ class ResponseModelResolver
 
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
-            'items' => $this->resolveByType(RestApiBundle\Helper\PropertyInfoTypeHelper::getFirstCollectionValueType($type)),
+            'items' => $this->resolveByType(RestApiBundle\Helper\TypeExtractor::getFirstCollectionValueType($type)),
             'nullable' => $type->isNullable(),
         ]);
     }
 
     private function resolveEnum(PropertyInfo\Type $type): OpenApi\Schema
     {
-        $enumValues = RestApiBundle\Helper\PropertyInfoTypeHelper::extractEnumValues($type->getClassName());
+        $enumValues = RestApiBundle\Helper\TypeExtractor::extractEnumValues($type->getClassName());
 
         if (is_int($enumValues[0])) {
             $result = new OpenApi\Schema([

@@ -11,7 +11,7 @@ class EnumTransformer implements TransformerInterface
     public function transform($value, array $options)
     {
         $class = $options[static::CLASS_OPTION] ?? throw new \InvalidArgumentException();
-        $enumValues = RestApiBundle\Helper\PropertyInfoTypeHelper::extractEnumValues($class);
+        $enumValues = RestApiBundle\Helper\TypeExtractor::extractEnumValues($class);
 
         if (!in_array($value, $enumValues, true)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\ValueNotFoundInEnumException();

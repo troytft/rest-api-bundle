@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "properties": {
+        "value": {
+            "enum": [
+                "created",
+                "published",
+                "archived"
+            ],
+            "type": "string",
+            "nullable": true
+        }
+    },
+    "nullable": false
+}

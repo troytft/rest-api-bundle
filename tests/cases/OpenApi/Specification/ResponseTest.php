@@ -1,6 +1,6 @@
 <?php
 
-class ResponsesTest extends Tests\BaseTestCase
+class ResponseTest extends Tests\BaseTestCase
 {
     public function testRedirectResponse(): void
     {
@@ -38,8 +38,8 @@ class ResponsesTest extends Tests\BaseTestCase
         $this->assertMatchesJsonSnapshot(json_encode($specification->getSerializableData()));
     }
 
-    private function getSpecificationGenerator(): RestApiBundle\Services\OpenApi\Specification\SpecificationGenerator
+    private function getSpecificationGenerator(): RestApiBundle\Services\OpenApi\Schema\SchemaGenerator
     {
-        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\Specification\SpecificationGenerator::class);
+        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\Schema\SchemaGenerator::class);
     }
 }

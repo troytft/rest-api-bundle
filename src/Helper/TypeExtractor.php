@@ -10,7 +10,7 @@ use phpDocumentor\Reflection as PhpDoc;
 
 use function in_array;
 
-final class PropertyInfoTypeHelper
+final class TypeExtractor
 {
     private static ?PropertyInfo\Util\PhpDocTypeHelper $phpDocTypeHelper = null;
     private static ?DocBlockFactory $docBlockFactory = null;
@@ -73,7 +73,7 @@ final class PropertyInfoTypeHelper
         $returnTag = static::resolveReturnTag($reflectionMethod);
 
         if ($returnTag) {
-            $result = RestApiBundle\Helper\PropertyInfoTypeHelper::extractByPhpDocType($returnTag->getType());
+            $result = RestApiBundle\Helper\TypeExtractor::extractByPhpDocType($returnTag->getType());
         } elseif ($reflectionMethod->getReturnType()) {
             $result = static::extractByReflectionType($reflectionMethod->getReturnType());
         }
@@ -87,7 +87,7 @@ final class PropertyInfoTypeHelper
         $varTag = static::resolveVarTag($reflectionProperty);
 
         if ($varTag) {
-            $result = RestApiBundle\Helper\PropertyInfoTypeHelper::extractByPhpDocType($varTag->getType());
+            $result = RestApiBundle\Helper\TypeExtractor::extractByPhpDocType($varTag->getType());
         } elseif ($reflectionProperty->getType()) {
             $result = static::extractByReflectionType($reflectionProperty->getType());
         }
