@@ -1,8 +1,8 @@
 <?php
 
-class DoctrineEntityTransformerTest extends Tests\BaseTestCase
+class EntityTransformerTest extends Tests\BaseTestCase
 {
-    public function testSuccessById()
+    public function testFetchInteger()
     {
         $requestModel = new TestApp\RequestModel\DoctrineEntityTransformerTest\Model();
         $this->getRequestHandler()->handle($requestModel, [
@@ -12,7 +12,7 @@ class DoctrineEntityTransformerTest extends Tests\BaseTestCase
         $this->assertSame(1, $requestModel->getBookById()->getId());
     }
 
-    public function testSuccessBySlug()
+    public function testFetchString()
     {
         $model = new TestApp\RequestModel\DoctrineEntityTransformerTest\Model();
         $this->getRequestHandler()->handle($model, [
@@ -22,7 +22,7 @@ class DoctrineEntityTransformerTest extends Tests\BaseTestCase
         $this->assertSame(1, $model->getBookBySlug()->getId());
     }
 
-    public function testEntityNotFoundById()
+    public function testNotFoundInteger()
     {
         try {
             $requestModel = new TestApp\RequestModel\DoctrineEntityTransformerTest\Model();
@@ -35,7 +35,7 @@ class DoctrineEntityTransformerTest extends Tests\BaseTestCase
         }
     }
 
-    public function testEntityNotFoundBySlug()
+    public function testNotFoundString()
     {
         try {
             $requestModel = new TestApp\RequestModel\DoctrineEntityTransformerTest\Model();
@@ -48,7 +48,7 @@ class DoctrineEntityTransformerTest extends Tests\BaseTestCase
         }
     }
 
-    public function testWrongValueTypeById()
+    public function testWrongValueTypeInteger()
     {
         try {
             $requestModel = new TestApp\RequestModel\DoctrineEntityTransformerTest\Model();
@@ -61,7 +61,7 @@ class DoctrineEntityTransformerTest extends Tests\BaseTestCase
         }
     }
 
-    public function testWrongValueTypeBySlug()
+    public function testWrongValueTypeString()
     {
         try {
             $requestModel = new TestApp\RequestModel\DoctrineEntityTransformerTest\Model();

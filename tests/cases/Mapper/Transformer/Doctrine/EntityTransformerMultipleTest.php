@@ -1,10 +1,10 @@
 <?php
 
-class ArrayOfDoctrineEntitiesTransformerTest extends Tests\BaseTestCase
+class DoctrineEntityTransformerMutipleTest extends Tests\BaseTestCase
 {
     public function testSuccess()
     {
-        $model = new TestApp\RequestModel\DoctrineEntitiesCollectionTransformerTest\Model();
+        $model = new TestApp\RequestModel\DoctrineEntityTransformerMultipleTest\Model();
         $this->getRequestHandler()->handle($model, [
             'books' => [1, 2]
         ]);
@@ -18,7 +18,7 @@ class ArrayOfDoctrineEntitiesTransformerTest extends Tests\BaseTestCase
 
     public function testOrder()
     {
-        $model = new TestApp\RequestModel\DoctrineEntitiesCollectionTransformerTest\Model();
+        $model = new TestApp\RequestModel\DoctrineEntityTransformerMultipleTest\Model();
         $this->getRequestHandler()->handle($model, [
             'books' => [2, 1]
         ]);
@@ -34,7 +34,7 @@ class ArrayOfDoctrineEntitiesTransformerTest extends Tests\BaseTestCase
     public function testEntityNotFound()
     {
         try {
-            $model = new TestApp\RequestModel\DoctrineEntitiesCollectionTransformerTest\Model();
+            $model = new TestApp\RequestModel\DoctrineEntityTransformerMultipleTest\Model();
             $this->getRequestHandler()->handle($model, [
                 'books' => [1, 2, 3]
             ]);
@@ -47,7 +47,7 @@ class ArrayOfDoctrineEntitiesTransformerTest extends Tests\BaseTestCase
     public function testRepeatableEntity()
     {
         try {
-            $model = new TestApp\RequestModel\DoctrineEntitiesCollectionTransformerTest\Model();
+            $model = new TestApp\RequestModel\DoctrineEntityTransformerMultipleTest\Model();
             $this->getRequestHandler()->handle($model, [
                 'books' => [1, 1]
             ]);

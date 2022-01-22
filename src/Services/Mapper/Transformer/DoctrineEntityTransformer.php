@@ -26,15 +26,15 @@ class DoctrineEntityTransformer implements TransformerInterface
         $isMultiple = $options[static::MULTIPLE_OPTION] ?? false;
 
         if ($isMultiple) {
-            $result = $this->transformArrayOfEntities($class, $fieldName, $value);
+            $result = $this->transformMultipleItems($class, $fieldName, $value);
         } else {
-            $result = $this->transformSingleEntity($class, $fieldName, $value);
+            $result = $this->transformSingleItem($class, $fieldName, $value);
         }
 
         return $result;
     }
 
-    private function transformSingleEntity(string $class, string $fieldName, mixed $value): object
+    private function transformSingleItem(string $class, string $fieldName, mixed $value): object
     {
         $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
         $value = match ($columnType) {
@@ -51,7 +51,7 @@ class DoctrineEntityTransformer implements TransformerInterface
         return $entity;
     }
 
-    private function transformArrayOfEntities(string $class, string $fieldName, mixed $value): array
+    private function transformMultipleItems(string $class, string $fieldName, mixed $value): array
     {
         if (count($value) !== count(array_unique($value))) {
             throw new RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException();

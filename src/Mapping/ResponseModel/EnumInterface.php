@@ -2,7 +2,7 @@
 
 namespace RestApiBundle\Mapping\ResponseModel;
 
-interface SerializableEnumInterface
+interface EnumInterface
 {
     /**
      * @return int|string

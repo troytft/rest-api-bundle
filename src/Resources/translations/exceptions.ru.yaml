@@ -10,6 +10,7 @@ RestApiBundle\Exception\Mapper\Transformer\InvalidDateFormatException: Это з
 RestApiBundle\Exception\Mapper\Transformer\InvalidDateException: Значение не является правильной датой.
 RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeFormatException: Это значение должно быть датой и временем в формате "{format}".
 RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeException: Значение даты и времени недопустимо.
+RestApiBundle\Exception\Mapper\Transformer\ValueNotFoundInEnumException: Выбранное Вами значение недопустимо.
 RestApiBundle\Exception\RequestModel\EntityNotFoundException: Сущность не найдена.
 RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException: Одна из сущностей коллекции не найдена.
 RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException: Значения должны быть уникальными.

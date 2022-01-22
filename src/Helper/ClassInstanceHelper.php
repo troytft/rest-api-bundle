@@ -31,7 +31,12 @@ final class ClassInstanceHelper
     /**
      * @var array<string, bool>
      */
-    private static array $serializableEnumCache = [];
+    private static array $responseModelEnumCache = [];
+
+    /**
+     * @var array<string, bool>
+     */
+    private static array $mapperEnumCache = [];
 
     /**
      * @var array<string, bool>
@@ -86,19 +91,34 @@ final class ClassInstanceHelper
         return static::$dateCache[$class];
     }
 
-    public static function isSerializableEnum(string $class): bool
+    public static function isResponseModelEnum(string $class): bool
     {
         if (!class_exists($class)) {
             return false;
         }
 
-        if (!array_key_exists($class, static::$serializableEnumCache)) {
+        if (!array_key_exists($class, static::$responseModelEnumCache)) {
             $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
-            static::$serializableEnumCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Mapping\ResponseModel\SerializableEnumInterface::class);
+            static::$responseModelEnumCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Mapping\ResponseModel\EnumInterface::class);
         }
 
-        return static::$serializableEnumCache[$class];
+        return static::$responseModelEnumCache[$class];
+    }
+
+    public static function isMapperEnum(string $class): bool
+    {
+        if (!class_exists($class)) {
+            return false;
+        }
+
+        if (!array_key_exists($class, static::$mapperEnumCache)) {
+            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+
+            static::$mapperEnumCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Mapping\Mapper\EnumInterface::class);
+        }
+
+        return static::$mapperEnumCache[$class];
     }
 
     public static function isSerializableDate(string $class): bool

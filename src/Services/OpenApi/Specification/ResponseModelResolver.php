@@ -143,7 +143,7 @@ class ResponseModelResolver
 
                 break;
 
-            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isSerializableEnum($type->getClassName()):
+            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ClassInstanceHelper::isResponseModelEnum($type->getClassName()):
                 $result = $this->resolveEnum($type);
 
                 break;
@@ -176,37 +176,19 @@ class ResponseModelResolver
 
     private function resolveEnum(PropertyInfo\Type $type): OpenApi\Schema
     {
-        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($type->getClassName());
+        $enumValues = RestApiBundle\Helper\PropertyInfoTypeHelper::extractEnumValues($type->getClassName());
 
-        $values = [];
-        foreach ($reflectionClass->getReflectionConstants() as $reflectionClassConstant) {
-            if ($reflectionClassConstant->isPublic() && is_scalar($reflectionClassConstant->getValue())) {
-                $values[] = $reflectionClassConstant->getValue();
-            }
-        }
-
-        if (!$values) {
-            throw new \LogicException('Empty enum values');
-        }
-
-        if (is_float($values[0])) {
-            $result = new OpenApi\Schema([
-                'type' => OpenApi\Type::NUMBER,
-                'format' => 'double',
-                'nullable' => $type->isNullable(),
-                'enum' => $values,
-            ]);
-        } elseif (is_int($values[0])) {
+        if (is_int($enumValues[0])) {
             $result = new OpenApi\Schema([
                 'type' => OpenApi\Type::INTEGER,
                 'nullable' => $type->isNullable(),
-                'enum' => $values,
+                'enum' => $enumValues,
             ]);
-        } elseif (is_string($values[0])) {
+        } elseif (is_string($enumValues[0])) {
             $result = new OpenApi\Schema([
                 'type' => OpenApi\Type::STRING,
                 'nullable' => $type->isNullable(),
-                'enum' => $values,
+                'enum' => $enumValues,
             ]);
         } else {
             throw new \LogicException();

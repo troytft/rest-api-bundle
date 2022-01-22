@@ -174,4 +174,23 @@ final class PropertyInfoTypeHelper
 
         return $type->getCollectionValueTypes()[0] ?? null;
     }
+
+    /**
+     * @return string[]|int[]
+     */
+    public static function extractEnumValues(string $class): array
+    {
+        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+
+        $values = [];
+        foreach ($reflectionClass->getReflectionConstants(\ReflectionClassConstant::IS_PUBLIC) as $reflectionConstant) {
+            $values[] = $reflectionConstant->getValue();
+        }
+
+        if (!$values) {
+            throw new \LogicException();
+        }
+
+        return $values;
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace TestApp\RequestModel\DoctrineEntitiesCollectionTransformerTest;
+namespace TestApp\RequestModel\DoctrineEntityTransformerMultipleTest;
 
 use TestApp;
 use RestApiBundle\Mapping\Mapper;

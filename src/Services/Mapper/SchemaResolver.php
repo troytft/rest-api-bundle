@@ -106,6 +106,13 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
 
                 break;
 
+            case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isMapperEnum($type->getClassName()):
+                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\EnumTransformer::class, $type->isNullable(), [
+                    RestApiBundle\Services\Mapper\Transformer\EnumTransformer::CLASS_OPTION => $type->getClassName(),
+                ]);
+
+                break;
+
             case $type->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($type->getClassName()):
                 $fieldName = 'id';
                 foreach ($typeOptions as $typeOption) {
