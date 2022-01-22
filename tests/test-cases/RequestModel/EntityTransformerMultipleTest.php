@@ -1,6 +1,6 @@
 <?php
 
-class DoctrineEntityTransformerMutipleTest extends Tests\BaseTestCase
+class EntityTransformerMultipleTest extends Tests\BaseTestCase
 {
     public function testSuccess()
     {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Fixture\OpenApi\RequestModelResolverTest;
+namespace Tests\Fixture\TestCases\OpenApi\RequestModelsSchemaTest;
 
 use Tests;
 use RestApiBundle\Mapping\Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[Mapper\ExposeAll]
-class Enum implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
+class ModelWithEnums implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     public ?Tests\Fixture\Common\Enum\BookStatus $transformerBasedSingleItem;
 

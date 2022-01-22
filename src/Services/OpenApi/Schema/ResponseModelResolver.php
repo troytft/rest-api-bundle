@@ -6,9 +6,7 @@ use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
 use Symfony\Component\PropertyInfo;
 
-use function is_float;
 use function is_int;
-use function is_scalar;
 use function is_string;
 use function ksort;
 use function lcfirst;

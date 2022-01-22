@@ -2,7 +2,7 @@
 
 use Symfony\Component\HttpFoundation\Request;
 
-class ResponsesTest extends Tests\BaseTestCase
+class ResponseSerializationTest extends Tests\BaseTestCase
 {
     public function testResponseWithNull()
     {

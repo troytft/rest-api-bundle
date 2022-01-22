@@ -1,10 +1,11 @@
 <?php
 
-class RequestModelResolverTest extends Tests\BaseTestCase
+class RequestModelsSchemaTest extends Tests\BaseTestCase
 {
     public function testEnumSchema(): void
     {
-        $schema = $this->getRequestModelResolver()->resolve(\Tests\Fixture\OpenApi\RequestModelResolverTest\Enum::class);
+        $schema = $this->getRequestModelResolver()->resolve(\Tests\Fixture\TestCases\OpenApi\RequestModelsSchemaTest\ModelWithEnums::class);
+
         $this->assertMatchesJsonSnapshot(\RestApiBundle\Helper\OpenApiHelper::schemaToJson($schema));
     }
 
