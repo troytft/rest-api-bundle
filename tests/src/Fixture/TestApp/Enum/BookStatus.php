@@ -1,10 +1,8 @@
 <?php
 
-namespace Tests\Fixture\Common\Enum;
+namespace Tests\Fixture\TestApp\Enum;
 
-use RestApiBundle;
-
-class BookStatus extends RestApiBundle\Mapping\ResponseModel\BaseEnum
+class BookStatus extends \RestApiBundle\Mapping\ResponseModel\BaseEnum
 {
     public const CREATED = 'created';
     public const PUBLISHED = 'published';

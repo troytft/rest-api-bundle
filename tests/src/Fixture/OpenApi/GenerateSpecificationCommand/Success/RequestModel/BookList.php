@@ -18,7 +18,7 @@ class BookList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterf
      * @var string[]|null
      *
      * @Mapper\Expose
-     * @Assert\Choice(callback="Tests\Fixture\Common\Enum\BookStatus::getValues", multiple=true)
+     * @Assert\Choice(callback="Tests\Fixture\TestApp\Enum\BookStatus::getValues", multiple=true)
      */
     private ?array $statuses;
 

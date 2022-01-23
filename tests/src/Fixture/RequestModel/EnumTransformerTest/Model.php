@@ -8,16 +8,16 @@ use RestApiBundle\Mapping\Mapper;
 #[Mapper\ExposeAll]
 class Model implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
-    private ?Tests\Fixture\Common\Enum\BookStatus $value;
+    private ?Tests\Fixture\TestApp\Enum\BookStatus $field;
 
-    public function getValue(): ?Tests\Fixture\Common\Enum\BookStatus
+    public function getField(): ?Tests\Fixture\TestApp\Enum\BookStatus
     {
-        return $this->value;
+        return $this->field;
     }
 
-    public function setValue(?Tests\Fixture\Common\Enum\BookStatus $value): static
+    public function setField(?Tests\Fixture\TestApp\Enum\BookStatus $field): static
     {
-        $this->value = $value;
+        $this->field = $field;
 
         return $this;
     }

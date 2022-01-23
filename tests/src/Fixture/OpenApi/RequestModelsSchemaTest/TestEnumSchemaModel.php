@@ -9,19 +9,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Mapper\ExposeAll]
 class TestEnumSchemaModel implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
-    public ?Tests\Fixture\Common\Enum\BookStatus $transformerBasedSingleItem;
+    public ?Tests\Fixture\TestApp\Enum\BookStatus $transformerBasedSingleItem;
 
     /**
-     * @var Tests\Fixture\Common\Enum\BookStatus[]|null
+     * @var Tests\Fixture\TestApp\Enum\BookStatus[]|null
      */
     public ?array $transformerBasedMultipleItem;
 
-    #[Assert\Choice(callback: 'Tests\Fixture\Common\Enum\BookStatus::getValues')]
+    #[Assert\Choice(callback: 'Tests\Fixture\TestApp\Enum\BookStatus::getValues')]
     public ?string $validatorBasedSingleItem;
 
     /**
      * @var string[]|null
      */
-    #[Assert\Choice(callback: 'Tests\Fixture\Common\Enum\BookStatus::getValues', multiple: true)]
+    #[Assert\Choice(callback: 'Tests\Fixture\TestApp\Enum\BookStatus::getValues', multiple: true)]
     public ?array $validatorBasedMultipleItem;
 }
