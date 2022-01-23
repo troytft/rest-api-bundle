@@ -3,44 +3,19 @@
 namespace Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel;
 
 use Tests;
-use RestApiBundle\Mapping\Mapper as Mapper;
-use Symfony\Component\Validator\Constraints as Assert;
+use RestApiBundle\Mapping\Mapper;
 
+#[Mapper\ExposeAll]
 class BookList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
-    /** @Mapper\Expose */
     public ?int $offset;
-
-    /** @Mapper\Expose */
     public ?int $limit;
 
     /**
-     * @var string[]|null
-     *
-     * @Mapper\Expose
-     * @Assert\Choice(callback="Tests\Fixture\TestApp\Enum\BookStatus::getValues", multiple=true)
+     * @var Tests\Fixture\TestApp\Enum\BookStatus[]|null
      */
-    private ?array $statuses;
+    public ?array $statuses;
 
     /** @Mapper\Expose */
     public ?Tests\Fixture\TestApp\Entity\Author $author;
-
-    /**
-     * @return string[]|null
-     */
-    public function getStatuses(): ?array
-    {
-        return $this->statuses;
-    }
-
-    /**
-     * @param string[]|null $statuses
-     * @return $this
-     */
-    public function setStatuses(?array $statuses)
-    {
-        $this->statuses = $statuses;
-
-        return $this;
-    }
 }
