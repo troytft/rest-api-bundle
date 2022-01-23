@@ -4,9 +4,9 @@ class ValidationTest extends Tests\BaseTestCase
 {
     public function testNestedValidation()
     {
-        // child model
-        $model = new TestApp\RequestModel\ValidationTest\RequestModelWithNestedRequestModel();
+        $model = new Tests\Fixture\TestCases\RequestModel\ValidationTest\TestNestedValidationModel();
 
+        // child model
         try {
             $this->getRequestModelHandler()->handle($model, [
                 'childModel' => [
@@ -23,8 +23,6 @@ class ValidationTest extends Tests\BaseTestCase
         }
 
         // model inside child collection
-        $model = new TestApp\RequestModel\ValidationTest\RequestModelWithNestedArrayOfRequestModels();
-
         try {
             $this->getRequestModelHandler()->handle($model, [
                 'childModels' => [
