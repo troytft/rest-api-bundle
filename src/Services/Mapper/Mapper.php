@@ -37,21 +37,21 @@ class Mapper
             throw $this->convertStackedMappingException($exception);
         }
 
-        $errors = $this->modelValidator->validate($model);
-        if ($errors) {
-            throw new RestApiBundle\Exception\RequestModelMappingException($errors);
+        $errorsStacks = $this->modelValidator->validate($model);
+        if ($errorsStacks) {
+            throw new RestApiBundle\Exception\Mapper\MappingException($errorsStacks);
         }
     }
 
-    private function convertStackedMappingException(RestApiBundle\Exception\Mapper\StackedMappingException $exception): RestApiBundle\Exception\RequestModelMappingException
+    private function convertStackedMappingException(RestApiBundle\Exception\Mapper\StackedMappingException $exception): RestApiBundle\Exception\Mapper\MappingException
     {
-        $result = [];
+        $errors = [];
 
         foreach ($exception->getExceptions() as $stackableException) {
             $translationParameters = [];
 
             if ($stackableException instanceof RestApiBundle\Exception\Mapper\Transformer\WrappedTransformerException) {
-                $path = $stackableException->getPathAsString();
+                $propertyPath = $stackableException->getPathAsString();
                 $previousException = $stackableException->getPrevious();
                 $translationId = get_class($previousException);
 
@@ -67,7 +67,7 @@ class Mapper
                     ];
                 }
             } else {
-                $path = $stackableException->getPathAsString();
+                $propertyPath = $stackableException->getPathAsString();
                 $translationId = get_class($stackableException);
             }
 
@@ -76,10 +76,10 @@ class Mapper
                 throw new \InvalidArgumentException(sprintf('Can\'t find translation with key "%s"', $translationId));
             }
 
-            $result[$path] = [$message];
+            $errors[$propertyPath] = [$message];
         }
 
-        return new RestApiBundle\Exception\RequestModelMappingException($result);
+        return new RestApiBundle\Exception\Mapper\MappingException($errors);
     }
 
     private function mapObject(RestApiBundle\Model\Mapper\Schema $schema, RestApiBundle\Mapping\Mapper\ModelInterface $model, array $data, array $basePath, RestApiBundle\Model\Mapper\Context $context): void

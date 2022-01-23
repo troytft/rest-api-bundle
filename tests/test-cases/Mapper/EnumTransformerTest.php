@@ -21,8 +21,8 @@ class EnumTransformerTest extends Tests\BaseTestCase
                 'field' => 'invalid'
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['field' => ['The value you selected is not a valid choice.']], $exception->getProperties());
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
+            $this->assertSame(['field' => ['The value you selected is not a valid choice.']], $exception->getErrors());
         }
     }
 }

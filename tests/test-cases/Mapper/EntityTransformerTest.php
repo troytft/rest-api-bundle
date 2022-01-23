@@ -31,8 +31,8 @@ class EntityTransformerTest extends Tests\BaseTestCase
                 'byId' => 100404,
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['byId' => ['An entity with specified value not found.']], $exception->getProperties());
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
+            $this->assertSame(['byId' => ['An entity with specified value not found.']], $exception->getErrors());
         }
 
         // by custom field
@@ -41,8 +41,8 @@ class EntityTransformerTest extends Tests\BaseTestCase
                 'bySlug' => 'invalid-slug',
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['bySlug' => ['An entity with specified value not found.']], $exception->getProperties());
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
+            $this->assertSame(['bySlug' => ['An entity with specified value not found.']], $exception->getErrors());
         }
     }
 
@@ -56,8 +56,8 @@ class EntityTransformerTest extends Tests\BaseTestCase
                 'byId' => false,
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['byId' => ['This value should be an integer.']], $exception->getProperties());
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
+            $this->assertSame(['byId' => ['This value should be an integer.']], $exception->getErrors());
         }
 
         // string type
@@ -66,8 +66,8 @@ class EntityTransformerTest extends Tests\BaseTestCase
                 'bySlug' => false,
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['bySlug' => ['This value should be a string.']], $exception->getProperties());
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
+            $this->assertSame(['bySlug' => ['This value should be a string.']], $exception->getErrors());
         }
     }
 }

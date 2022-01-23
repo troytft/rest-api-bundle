@@ -12,10 +12,10 @@ class ValidationTest extends Tests\BaseTestCase
                 'childModel' => [],
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
                 'childModel.field' => ['This value is not valid.'],
-            ], $exception->getProperties());
+            ], $exception->getErrors());
         }
 
         // nested collection of models
@@ -29,11 +29,11 @@ class ValidationTest extends Tests\BaseTestCase
                 ],
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
                 'childModels.0.field' => ['This value is not valid.'],
                 'childModels.1.field' => ['This value is not valid.'],
-            ], $exception->getProperties());
+            ], $exception->getErrors());
         }
     }
 
@@ -46,11 +46,11 @@ class ValidationTest extends Tests\BaseTestCase
         try {
             $this->getMapper()->map($model, [], $context);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
                 'name' => ['This value should not be null.'],
                 'rating' => ['This value should not be null.'],
-            ], $exception->getProperties());
+            ], $exception->getErrors());
         }
 
         // disabled
@@ -72,8 +72,8 @@ class ValidationTest extends Tests\BaseTestCase
                 'keyNotDefinedInModel' => null,
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['keyNotDefinedInModel' => ['The key is not defined in the model.']], $exception->getProperties());
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
+            $this->assertSame(['keyNotDefinedInModel' => ['The key is not defined in the model.']], $exception->getErrors());
         }
     }
 
@@ -88,11 +88,11 @@ class ValidationTest extends Tests\BaseTestCase
                 'rating' => null,
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
                 'name' => ['This value should not be null.'],
                 'rating' => ['This value should not be null.'],
-            ], $exception->getProperties());
+            ], $exception->getErrors());
         }
 
         // element of collection
@@ -105,10 +105,10 @@ class ValidationTest extends Tests\BaseTestCase
                 ]
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
                 'releases.0' => ['This value should not be null.'],
-            ], $exception->getProperties());
+            ], $exception->getErrors());
         }
 
         // object inside collection
@@ -124,11 +124,11 @@ class ValidationTest extends Tests\BaseTestCase
                 ]
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
                 'releases.0.country' => ['This value should not be null.'],
                 'releases.0.date' => ['This value should not be null.'],
-            ], $exception->getProperties());
+            ], $exception->getErrors());
         }
     }
 }
