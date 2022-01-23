@@ -16,13 +16,13 @@ class TypenameResolver
         foreach (explode('\\', $class) as $part) {
             if ($hasResponseModelPart) {
                 $parts[] = $part;
-            } elseif ($part === 'ResponseModel') {
+            } elseif ($part === 'Response') {
                 $hasResponseModelPart = true;
             }
         }
 
         if (!$hasResponseModelPart) {
-            throw new \RuntimeException(sprintf('Response model "%s" must be in "ResponseModel" namespace', $class));
+            throw new \RuntimeException(sprintf('Response model "%s" must be in "Response" namespace', $class));
         }
 
         $typename = join('_', $parts);
