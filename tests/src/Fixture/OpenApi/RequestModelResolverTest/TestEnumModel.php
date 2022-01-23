@@ -7,7 +7,7 @@ use RestApiBundle\Mapping\Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[Mapper\ExposeAll]
-class TestEnumSchemaModel implements Mapper\ModelInterface
+class TestEnumModel implements Mapper\ModelInterface
 {
     public ?Tests\Fixture\TestApp\Enum\BookStatus $transformerBasedSingleItem;
 

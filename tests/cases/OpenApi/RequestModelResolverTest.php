@@ -2,11 +2,11 @@
 
 class RequestModelResolverTest extends Tests\BaseTestCase
 {
-    public function testEnumSchema(): void
+    public function testEnum(): void
     {
-        $schema = $this->getRequestModelResolver()->resolve(Tests\Fixture\OpenApi\RequestModelResolverTest\TestEnumSchemaModel::class);
+        $schema = $this->getRequestModelResolver()->resolve(Tests\Fixture\OpenApi\RequestModelResolverTest\TestEnumModel::class);
 
-        $this->assertMatchesJsonSnapshot($this->convertOpenApiToJson($schema));
+        $this->assertMatchesOpenApiSchemaSnapshot($schema);
     }
 
     private function getRequestModelResolver(): RestApiBundle\Services\OpenApi\RequestModelResolver

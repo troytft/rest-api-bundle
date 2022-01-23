@@ -11,7 +11,7 @@ class ResponsesTest extends Tests\BaseTestCase
         );
         $schema = $this->getSchemaGenerator()->generate([$endpointData]);
 
-        $this->assertMatchesJsonSnapshot($this->convertOpenApiToJson($schema));
+        $this->assertMatchesOpenApiSchemaSnapshot($schema);
     }
 
     public function testBinaryFileResponse(): void
@@ -23,7 +23,7 @@ class ResponsesTest extends Tests\BaseTestCase
         );
         $schema = $this->getSchemaGenerator()->generate([$endpointData]);
 
-        $this->assertMatchesJsonSnapshot($this->convertOpenApiToJson($schema));
+        $this->assertMatchesOpenApiSchemaSnapshot($schema);
     }
 
     public function testVoidResponse(): void
@@ -35,7 +35,7 @@ class ResponsesTest extends Tests\BaseTestCase
         );
         $schema = $this->getSchemaGenerator()->generate([$endpointData]);
 
-        $this->assertMatchesJsonSnapshot($this->convertOpenApiToJson($schema));
+        $this->assertMatchesOpenApiSchemaSnapshot($schema);
     }
 
     private function getSchemaGenerator(): RestApiBundle\Services\OpenApi\SchemaGenerator
