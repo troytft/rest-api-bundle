@@ -19,7 +19,7 @@ class GenerateDocumentationCommandTest extends Tests\BaseTestCase
             '--template' => 'tests/src/Fixture/OpenApi/GenerateDocumentationCommandTest/TestSuccess/Resources/template.yaml'
         ]);
 
-        $this->assertSame(0, $commandTester->getStatusCode());
+        $this->assertSame(0, $commandTester->getStatusCode(), $commandTester->getDisplay());
         $this->assertMatchesTextSnapshot(file_get_contents($fileName));
     }
 
@@ -37,7 +37,7 @@ class GenerateDocumentationCommandTest extends Tests\BaseTestCase
             '--template' => 'tests/src/Fixture/OpenApi/GenerateDocumentationCommandTest/TestSuccess/Resources/template.json'
         ]);
 
-        $this->assertSame(0, $commandTester->getStatusCode());
+        $this->assertSame(0, $commandTester->getStatusCode(), $commandTester->getDisplay());
         $this->assertMatchesJsonSnapshot(file_get_contents($fileName));
     }
 

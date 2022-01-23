@@ -16,7 +16,7 @@ class BookController
      *
      * @Route(methods="GET")
      *
-     * @return Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\TestDateModel[]
+     * @return Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\Book[]
      */
     public function listAction(Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\BookList $requestModel): array
     {
