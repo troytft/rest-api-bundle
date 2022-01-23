@@ -5,7 +5,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
     public function testSuccess()
     {
         $model = new TestApp\RequestModel\DoctrineEntityTransformerMultipleTest\Model();
-        $this->getRequestHandler()->handle($model, [
+        $this->getRequestModelHandler()->handle($model, [
             'books' => [1, 2]
         ]);
         $this->assertIsArray($model->getBooks());
@@ -19,7 +19,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
     public function testOrder()
     {
         $model = new TestApp\RequestModel\DoctrineEntityTransformerMultipleTest\Model();
-        $this->getRequestHandler()->handle($model, [
+        $this->getRequestModelHandler()->handle($model, [
             'books' => [2, 1]
         ]);
 
@@ -35,7 +35,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
     {
         try {
             $model = new TestApp\RequestModel\DoctrineEntityTransformerMultipleTest\Model();
-            $this->getRequestHandler()->handle($model, [
+            $this->getRequestModelHandler()->handle($model, [
                 'books' => [1, 2, 3]
             ]);
             $this->fail();
@@ -48,7 +48,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
     {
         try {
             $model = new TestApp\RequestModel\DoctrineEntityTransformerMultipleTest\Model();
-            $this->getRequestHandler()->handle($model, [
+            $this->getRequestModelHandler()->handle($model, [
                 'books' => [1, 1]
             ]);
             $this->fail();
@@ -57,7 +57,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
         }
     }
 
-    private function getRequestHandler(): RestApiBundle\Services\RequestModel\RequestModelHandler
+    private function getRequestModelHandler(): RestApiBundle\Services\RequestModel\RequestModelHandler
     {
         return $this->getContainer()->get(RestApiBundle\Services\RequestModel\RequestModelHandler::class);
     }
