@@ -113,27 +113,18 @@ class ValidationTest extends Tests\BaseTestCase
         $this->getMapper()->map($movie, [], $context);
         $this->assertSame('Taxi 2', $movie->name);
     }
-    
+
     public function testUndefinedKey()
     {
-        $context = new RestApiBundle\Model\Mapper\Context(clearMissing: false);
-
-        $model = new Tests\Fixture\Mapper\Movie();
-        $data = [
-            'releases' => [
-                [
-                    'name' => 'Release 1',
-                ]
-            ]
-        ];
+        $model = new Tests\Fixture\RequestModel\ValidationTest\TestUndefinedKeyModel();
 
         try {
-            $this->getMapper()->map($model, $data, $context);
+            $this->getRequestModelHandler()->handle($model, [
+                'keyNotDefinedInModel' => null,
+            ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
-            $this->assertCount(1, $exception->getExceptions());
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\UndefinedKeyException::class, $exception->getExceptions()[0]);
-            $this->assertSame('releases.0.name', $exception->getExceptions()[0]->getPathAsString());
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $this->assertSame(['keyNotDefinedInModel' => ['The key is not defined in the model.']], $exception->getProperties());
         }
     }
 
