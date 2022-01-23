@@ -5,7 +5,7 @@ namespace Tests\Fixture\Mapper;
 use Tests;
 use RestApiBundle\Mapping\Mapper as Mapper;
 
-class Movie implements Mapper\ModelInterface
+class Movie implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     /**
      * @Mapper\Expose

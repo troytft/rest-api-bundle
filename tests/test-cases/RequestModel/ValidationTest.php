@@ -132,67 +132,54 @@ class ValidationTest extends Tests\BaseTestCase
     {
         $model = new Tests\Fixture\Mapper\Movie();
 
-        // object
-        $data = [
-            'name' => null,
-            'rating' => null,
-        ];
-
+        // properties inside object
         try {
-            $this->getMapper()->map($model, $data);
+            $this->getRequestModelHandler()->handle($model, [
+                'name' => null,
+                'rating' => null,
+            ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
-            $this->assertCount(2, $exception->getExceptions());
-
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[0]);
-            $this->assertSame('name', $exception->getExceptions()[0]->getPathAsString());
-
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[1]);
-            $this->assertSame('rating', $exception->getExceptions()[1]->getPathAsString());
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $this->assertSame([
+                'name' => ['This value should not be null.'],
+                'rating' => ['This value should not be null.'],
+            ], $exception->getProperties());
         }
 
         // element of collection
-        $data = [
-            'name' => 'Taxi 3',
-            'rating' => 8.3,
-            'releases' => [
-                null,
-            ]
-        ];
-
         try {
-            $this->getMapper()->map($model, $data);
+            $this->getRequestModelHandler()->handle($model, [
+                'name' => 'Taxi 3',
+                'rating' => 8.3,
+                'releases' => [
+                    null,
+                ]
+            ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
-            $this->assertCount(1, $exception->getExceptions());
-
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[0]);
-            $this->assertSame('releases.0', $exception->getExceptions()[0]->getPathAsString());
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $this->assertSame([
+                'releases.0' => ['This value should not be null.'],
+            ], $exception->getProperties());
         }
 
-        // object inside element of collection
-        $data = [
-            'name' => 'Taxi 3',
-            'rating' => 8.3,
-            'releases' => [
-                [
-                    'country' => null,
-                    'date' => null,
-                ]
-            ]
-        ];
-
+        // object inside collection
         try {
-            $this->getMapper()->map($model, $data);
+            $this->getRequestModelHandler()->handle($model, [
+                'name' => 'Taxi 3',
+                'rating' => 8.3,
+                'releases' => [
+                    [
+                        'country' => null,
+                        'date' => null,
+                    ]
+                ]
+            ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
-            $this->assertCount(2, $exception->getExceptions());
-
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[0]);
-            $this->assertSame('releases.0.country', $exception->getExceptions()[0]->getPathAsString());
-
-            $this->assertInstanceOf(RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException::class, $exception->getExceptions()[1]);
-            $this->assertSame('releases.0.date', $exception->getExceptions()[1]->getPathAsString());
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $this->assertSame([
+                'releases.0.country' => ['This value should not be null.'],
+                'releases.0.date' => ['This value should not be null.'],
+            ], $exception->getProperties());
         }
     }
 
