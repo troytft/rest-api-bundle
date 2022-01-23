@@ -1,0 +1,37 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Open API Specification",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "\/": {
+            "get": {
+                "tags": [
+                    "tag"
+                ],
+                "summary": "title",
+                "responses": {
+                    "200": {
+                        "description": "Response with file download",
+                        "headers": {
+                            "Content-Type": {
+                                "description": "File mime type",
+                                "schema": {
+                                    "type": "string",
+                                    "example": "application\/octet-stream"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {},
+    "tags": [
+        {
+            "name": "tag"
+        }
+    ]
+}

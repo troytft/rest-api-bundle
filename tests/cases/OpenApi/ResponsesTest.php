@@ -1,11 +1,11 @@
 <?php
 
-class ResponsesSchemaTest extends Tests\BaseTestCase
+class ResponsesTest extends Tests\BaseTestCase
 {
     public function testRedirectResponse(): void
     {
         $endpointData = new \RestApiBundle\Model\OpenApi\EndpointData(
-            new \ReflectionMethod(\Tests\Fixture\OpenApi\AllResponsesController::class, 'redirectResponseAction'),
+            new \ReflectionMethod(\Tests\Fixture\OpenApi\ResponsesTest\DefaultController::class, 'redirectResponseAction'),
             new \RestApiBundle\Mapping\OpenApi\Endpoint(title: 'title', tags: 'tag'),
             new \Symfony\Component\Routing\Annotation\Route('/', methods: 'GET')
         );
@@ -17,7 +17,7 @@ class ResponsesSchemaTest extends Tests\BaseTestCase
     public function testBinaryFileResponse(): void
     {
         $endpointData = new \RestApiBundle\Model\OpenApi\EndpointData(
-            new \ReflectionMethod(\Tests\Fixture\OpenApi\AllResponsesController::class, 'binaryFileResponseAction'),
+            new \ReflectionMethod(\Tests\Fixture\OpenApi\ResponsesTest\DefaultController::class, 'binaryFileResponseAction'),
             new \RestApiBundle\Mapping\OpenApi\Endpoint(title: 'title', tags: 'tag'),
             new \Symfony\Component\Routing\Annotation\Route('/', methods: 'GET')
         );
@@ -29,7 +29,7 @@ class ResponsesSchemaTest extends Tests\BaseTestCase
     public function testVoidResponse(): void
     {
         $endpointData = new \RestApiBundle\Model\OpenApi\EndpointData(
-            new \ReflectionMethod(\Tests\Fixture\OpenApi\AllResponsesController::class, 'voidResponseAction'),
+            new \ReflectionMethod(\Tests\Fixture\OpenApi\ResponsesTest\DefaultController::class, 'voidResponseAction'),
             new \RestApiBundle\Mapping\OpenApi\Endpoint(title: 'title', tags: 'tag'),
             new \Symfony\Component\Routing\Annotation\Route('/', methods: 'GET')
         );

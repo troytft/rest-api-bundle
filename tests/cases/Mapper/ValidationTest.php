@@ -40,27 +40,22 @@ class ValidationTest extends Tests\BaseTestCase
     public function testClearMissing()
     {
         // enabled
-        $context = new RestApiBundle\Model\Mapper\Context(clearMissing: true);
-        $model = new Tests\Fixture\Mapper\Movie();
-
+        $model = new Tests\Fixture\Mapper\ValidationTest\TestClearMissingModel();
         try {
-            $this->getMapper()->map($model, [], $context);
+            $this->getMapper()->map($model, [], new RestApiBundle\Model\Mapper\Context(clearMissing: true));
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
-                'name' => ['This value should not be null.'],
-                'rating' => ['This value should not be null.'],
+                'field' => ['This value should not be null.'],
             ], $exception->getProperties());
         }
 
         // disabled
-        $context = new RestApiBundle\Model\Mapper\Context(clearMissing: false);
-        $model = new Tests\Fixture\Mapper\Movie();
+        $model = new Tests\Fixture\Mapper\ValidationTest\TestClearMissingModel();
+        $this->assertSame('default value', $model->field);
 
-        $this->assertSame('Taxi 2', $model->name);
-
-        $this->getMapper()->map($model, [], $context);
-        $this->assertSame('Taxi 2', $model->name);
+        $this->getMapper()->map($model, [], new RestApiBundle\Model\Mapper\Context(clearMissing: false));
+        $this->assertSame('default value', $model->field);
     }
 
     public function testUndefinedKey()
@@ -74,61 +69,6 @@ class ValidationTest extends Tests\BaseTestCase
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame(['keyNotDefinedInModel' => ['The key is not defined in the model.']], $exception->getProperties());
-        }
-    }
-
-    public function testErrorPropertyPaths()
-    {
-        $model = new Tests\Fixture\Mapper\Movie();
-
-        // properties inside object
-        try {
-            $this->getMapper()->map($model, [
-                'name' => null,
-                'rating' => null,
-            ]);
-            $this->fail();
-        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
-            $this->assertSame([
-                'name' => ['This value should not be null.'],
-                'rating' => ['This value should not be null.'],
-            ], $exception->getProperties());
-        }
-
-        // element of collection
-        try {
-            $this->getMapper()->map($model, [
-                'name' => 'Taxi 3',
-                'rating' => 8.3,
-                'releases' => [
-                    null,
-                ]
-            ]);
-            $this->fail();
-        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
-            $this->assertSame([
-                'releases.0' => ['This value should not be null.'],
-            ], $exception->getProperties());
-        }
-
-        // object inside collection
-        try {
-            $this->getMapper()->map($model, [
-                'name' => 'Taxi 3',
-                'rating' => 8.3,
-                'releases' => [
-                    [
-                        'country' => null,
-                        'date' => null,
-                    ]
-                ]
-            ]);
-            $this->fail();
-        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
-            $this->assertSame([
-                'releases.0.country' => ['This value should not be null.'],
-                'releases.0.date' => ['This value should not be null.'],
-            ], $exception->getProperties());
         }
     }
 }

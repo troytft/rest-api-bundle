@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Fixture\OpenApi;
+namespace Tests\Fixture\OpenApi\ResponsesTest;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-class AllResponsesController extends AbstractController
+class DefaultController extends AbstractController
 {
     public function redirectResponseAction(): RedirectResponse
     {
