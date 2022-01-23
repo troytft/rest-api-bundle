@@ -10,11 +10,8 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
-    private RestApiBundle\Services\SettingsProvider $settingsProvider;
-
-    public function __construct(RestApiBundle\Services\SettingsProvider $settingsProvider)
+    public function __construct(private RestApiBundle\Services\SettingsProvider $settingsProvider)
     {
-        $this->settingsProvider = $settingsProvider;
     }
 
     public static function getSubscribedEvents()
@@ -31,11 +28,10 @@ class ExceptionSubscriber implements EventSubscriberInterface
         }
 
         $exception = $event->getThrowable();
-        if ($exception instanceof RestApiBundle\Exception\RequestModelMappingException) {
-            $event
-                ->setResponse(new JsonResponse(['properties' => $exception->getProperties()], 400));
-
+        if (!$exception instanceof RestApiBundle\Exception\Mapper\MappingException) {
             return;
         }
+
+        $event->setResponse(new JsonResponse(['properties' => $exception->getProperties()], 400));
     }
 }

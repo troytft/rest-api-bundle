@@ -7,9 +7,9 @@ use RestApiBundle;
 class MappingException extends \RuntimeException implements RestApiBundle\Exception\ExceptionInterface
 {
     /**
-     * @param array<string, string[]> $errors
+     * @param array<string, string[]> $properties
      */
-    public function __construct(private array $errors)
+    public function __construct(private array $properties)
     {
         parent::__construct();
     }
@@ -17,8 +17,8 @@ class MappingException extends \RuntimeException implements RestApiBundle\Except
     /**
      * @return array<string, string[]>
      */
-    public function getErrors(): array
+    public function getProperties(): array
     {
-        return $this->errors;
+        return $this->properties;
     }
 }

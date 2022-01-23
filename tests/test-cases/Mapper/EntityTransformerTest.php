@@ -32,7 +32,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
-            $this->assertSame(['byId' => ['An entity with specified value not found.']], $exception->getErrors());
+            $this->assertSame(['byId' => ['An entity with specified value not found.']], $exception->getProperties());
         }
 
         // by custom field
@@ -42,7 +42,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
-            $this->assertSame(['bySlug' => ['An entity with specified value not found.']], $exception->getErrors());
+            $this->assertSame(['bySlug' => ['An entity with specified value not found.']], $exception->getProperties());
         }
     }
 
@@ -57,7 +57,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
-            $this->assertSame(['byId' => ['This value should be an integer.']], $exception->getErrors());
+            $this->assertSame(['byId' => ['This value should be an integer.']], $exception->getProperties());
         }
 
         // string type
@@ -67,7 +67,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
-            $this->assertSame(['bySlug' => ['This value should be a string.']], $exception->getErrors());
+            $this->assertSame(['bySlug' => ['This value should be a string.']], $exception->getProperties());
         }
     }
 }

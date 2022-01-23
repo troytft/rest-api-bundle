@@ -15,7 +15,7 @@ class ValidationTest extends Tests\BaseTestCase
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
                 'childModel.field' => ['This value is not valid.'],
-            ], $exception->getErrors());
+            ], $exception->getProperties());
         }
 
         // nested collection of models
@@ -33,7 +33,7 @@ class ValidationTest extends Tests\BaseTestCase
             $this->assertSame([
                 'childModels.0.field' => ['This value is not valid.'],
                 'childModels.1.field' => ['This value is not valid.'],
-            ], $exception->getErrors());
+            ], $exception->getProperties());
         }
     }
 
@@ -50,7 +50,7 @@ class ValidationTest extends Tests\BaseTestCase
             $this->assertSame([
                 'name' => ['This value should not be null.'],
                 'rating' => ['This value should not be null.'],
-            ], $exception->getErrors());
+            ], $exception->getProperties());
         }
 
         // disabled
@@ -73,7 +73,7 @@ class ValidationTest extends Tests\BaseTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
-            $this->assertSame(['keyNotDefinedInModel' => ['The key is not defined in the model.']], $exception->getErrors());
+            $this->assertSame(['keyNotDefinedInModel' => ['The key is not defined in the model.']], $exception->getProperties());
         }
     }
 
@@ -92,7 +92,7 @@ class ValidationTest extends Tests\BaseTestCase
             $this->assertSame([
                 'name' => ['This value should not be null.'],
                 'rating' => ['This value should not be null.'],
-            ], $exception->getErrors());
+            ], $exception->getProperties());
         }
 
         // element of collection
@@ -108,7 +108,7 @@ class ValidationTest extends Tests\BaseTestCase
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
                 'releases.0' => ['This value should not be null.'],
-            ], $exception->getErrors());
+            ], $exception->getProperties());
         }
 
         // object inside collection
@@ -128,7 +128,7 @@ class ValidationTest extends Tests\BaseTestCase
             $this->assertSame([
                 'releases.0.country' => ['This value should not be null.'],
                 'releases.0.date' => ['This value should not be null.'],
-            ], $exception->getErrors());
+            ], $exception->getProperties());
         }
     }
 }

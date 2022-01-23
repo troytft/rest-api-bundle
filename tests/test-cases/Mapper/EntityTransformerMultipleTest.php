@@ -57,7 +57,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
-            $this->assertSame(['byId' => ['One entity of entities collection not found.']], $exception->getErrors());
+            $this->assertSame(['byId' => ['One entity of entities collection not found.']], $exception->getProperties());
         }
     }
 
@@ -71,7 +71,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
-            $this->assertSame(['byId' => ['Values should be unique.']], $exception->getErrors());
+            $this->assertSame(['byId' => ['Values should be unique.']], $exception->getProperties());
         }
     }
 }

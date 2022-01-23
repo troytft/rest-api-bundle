@@ -22,7 +22,7 @@ class EnumTransformerTest extends Tests\BaseTestCase
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
-            $this->assertSame(['field' => ['The value you selected is not a valid choice.']], $exception->getErrors());
+            $this->assertSame(['field' => ['The value you selected is not a valid choice.']], $exception->getProperties());
         }
     }
 }
