@@ -67,7 +67,7 @@ final class GenerateDocumentationCommand extends Command
     {
         $fileType = RestApiBundle\Helper\OpenApi\FileTypeResolver::resolveByFilename($filename);
         $fileContent = file_get_contents($filename);
-        
+
         return match ($fileType) {
             RestApiBundle\Helper\OpenApi\FileTypeResolver::JSON_TYPE => $this->schemaSerializer->fromJson($fileContent),
             RestApiBundle\Helper\OpenApi\FileTypeResolver::YAML_TYPE => $this->schemaSerializer->fromYaml($fileContent),
