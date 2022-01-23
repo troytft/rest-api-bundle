@@ -40,12 +40,12 @@ paths:
                     schema:
                         type: array
                         items:
-                            type: string
-                            nullable: false
                             enum:
                                 - created
                                 - published
                                 - archived
+                            type: string
+                            nullable: false
                         nullable: true
                 -
                     name: author
