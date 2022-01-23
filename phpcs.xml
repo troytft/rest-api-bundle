@@ -45,7 +45,7 @@
 
     <rule ref="PSR1.Classes.ClassDeclaration">
         <exclude-pattern>tests/unit-tests</exclude-pattern>
-        <exclude-pattern>tests/functional-tests</exclude-pattern>
+        <exclude-pattern>tests/integration-tests</exclude-pattern>
     </rule>
 
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/Namespaces/UnusedUsesSniff.php">
