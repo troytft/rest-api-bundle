@@ -13,11 +13,9 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
 
     public int $limit;
 
-    #[Assert\NotBlank]
     #[Assert\Length(min: 1, max: 255)]
     public ?string $name;
 
-    #[Assert\NotBlank]
     #[Assert\Length(min: 1, max: 255)]
     public ?string $surname;
 

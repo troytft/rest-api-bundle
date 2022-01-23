@@ -11,11 +11,6 @@ class BookList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterf
     public ?int $offset;
     public ?int $limit;
 
-    /**
-     * @var Tests\Fixture\TestApp\Enum\BookStatus[]|null
-     */
-    public ?array $statuses;
-
     /** @Mapper\Expose */
     public ?Tests\Fixture\TestApp\Entity\Author $author;
 }

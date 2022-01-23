@@ -34,20 +34,6 @@ paths:
                         type: integer
                         nullable: true
                 -
-                    name: statuses
-                    in: query
-                    required: false
-                    schema:
-                        type: array
-                        items:
-                            enum:
-                                - created
-                                - published
-                                - archived
-                            type: string
-                            nullable: false
-                        nullable: true
-                -
                     name: author
                     in: query
                     required: false
