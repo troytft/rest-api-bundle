@@ -6,7 +6,7 @@ class RequestModelsSchemaTest extends Tests\BaseTestCase
     {
         $schema = $this->getRequestModelResolver()->resolve(\Tests\Fixture\TestCases\OpenApi\RequestModelsSchemaTest\ModelWithEnums::class);
 
-        $this->assertMatchesJsonSnapshot(\RestApiBundle\Helper\OpenApiHelper::schemaToJson($schema));
+        $this->assertMatchesJsonSnapshot(\RestApiBundle\Helper\OpenApiHelper::toJson($schema));
     }
 
     private function getRequestModelResolver(): RestApiBundle\Services\OpenApi\Schema\RequestModelResolver

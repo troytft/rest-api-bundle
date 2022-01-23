@@ -66,7 +66,7 @@ final class OpenApiHelper
         ]);
     }
 
-    public static function schemaToJson(OpenApi\Schema $schema): string
+    public static function toJson(OpenApi\Schema|OpenApi\OpenApi $schema): string
     {
         return json_encode($schema->getSerializableData());
     }
