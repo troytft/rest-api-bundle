@@ -20,7 +20,7 @@ class RequestModelResolver
 
     public function resolve(string $class, bool $nullable = false): OpenApi\Schema
     {
-        if (!RestApiBundle\Helper\InterfaceChecker::isMapperModelInterface($class)) {
+        if (!RestApiBundle\Helper\InterfaceChecker::isMapperModel($class)) {
             throw new \InvalidArgumentException(sprintf('Class %s is not a request model', $class));
         }
 
