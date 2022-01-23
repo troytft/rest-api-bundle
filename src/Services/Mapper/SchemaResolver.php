@@ -101,7 +101,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
 
                 break;
 
-            case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($type->getClassName()):
+            case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isMapperModelInterface($type->getClassName()):
                 $schema = $this->resolve($type->getClassName(), $type->isNullable());
 
                 break;

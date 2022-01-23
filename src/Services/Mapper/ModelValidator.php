@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\RequestModel;
+namespace RestApiBundle\Services\Mapper;
 
 use RestApiBundle;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -15,7 +15,7 @@ use function sprintf;
 use function str_replace;
 use function ucfirst;
 
-class RequestModelValidator
+class ModelValidator
 {
     public function __construct(
         private RestApiBundle\Services\Mapper\SchemaResolverInterface $schemaResolver,
@@ -26,18 +26,18 @@ class RequestModelValidator
     /**
      * @return array<string, string[]>
      */
-    public function validate(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel): array
+    public function validate(RestApiBundle\Mapping\Mapper\ModelInterface $model): array
     {
-        return array_merge_recursive($this->getFirstLevelErrors($requestModel), $this->getNestedErrors($requestModel));
+        return array_merge_recursive($this->getFirstLevelErrors($model), $this->getNestedErrors($model));
     }
 
     /**
      * @return array<string, string[]>
      */
-    private function getFirstLevelErrors(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel): array
+    private function getFirstLevelErrors(RestApiBundle\Mapping\Mapper\ModelInterface $model): array
     {
         $errors = [];
-        $violations = $this->validator->validate($requestModel);
+        $violations = $this->validator->validate($model);
 
         foreach ($violations as $violation) {
             $path = $this->normalizeConstraintViolationPath($violation);
@@ -54,16 +54,16 @@ class RequestModelValidator
     /**
      * @return array<string, string[]>
      */
-    private function getNestedErrors(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel): array
+    private function getNestedErrors(RestApiBundle\Mapping\Mapper\ModelInterface $model): array
     {
         $result = [];
 
-        $schema = $this->schemaResolver->resolve(get_class($requestModel));
+        $schema = $this->schemaResolver->resolve(get_class($model));
 
         /** @var RestApiBundle\Model\Mapper\Schema $propertySchema */
         foreach ($schema->properties as $propertyName => $propertySchema) {
             if ($propertySchema->type === RestApiBundle\Model\Mapper\Schema::MODEL_TYPE) {
-                $propertyValue = $this->getPropertyValueFromInstance($requestModel, $propertyName);
+                $propertyValue = $this->getPropertyValueFromInstance($model, $propertyName);
                 if (!$propertyValue) {
                     continue;
                 }
@@ -74,7 +74,7 @@ class RequestModelValidator
                     $result[] = $this->appendPrefixToArrayKeys($prefix, $innerErrors);
                 }
             } elseif ($propertySchema->type === RestApiBundle\Model\Mapper\Schema::ARRAY_TYPE && $propertySchema->valuesType->type === RestApiBundle\Model\Mapper\Schema::MODEL_TYPE) {
-                $propertyValue = $this->getPropertyValueFromInstance($requestModel, $propertyName);
+                $propertyValue = $this->getPropertyValueFromInstance($model, $propertyName);
                 if (!$propertyValue) {
                     continue;
                 }
@@ -96,7 +96,7 @@ class RequestModelValidator
         return array_merge(...$result);
     }
 
-    private function getPropertyValueFromInstance(RestApiBundle\Mapping\RequestModel\RequestModelInterface $instance, string $propertyName): mixed
+    private function getPropertyValueFromInstance(RestApiBundle\Mapping\Mapper\ModelInterface $instance, string $propertyName): mixed
     {
         $getterName = 'get' . ucfirst($propertyName);
 
@@ -139,9 +139,9 @@ class RequestModelValidator
         return $path;
     }
 
-    private function hasProperty(RestApiBundle\Mapping\RequestModel\RequestModelInterface $requestModel, string $propertyName): bool
+    private function hasProperty(RestApiBundle\Mapping\Mapper\ModelInterface $model, string $propertyName): bool
     {
-        $schema = $this->schemaResolver->resolve(get_class($requestModel));
+        $schema = $this->schemaResolver->resolve(get_class($model));
 
         return isset($schema->properties[$propertyName]);
     }

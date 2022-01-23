@@ -7,7 +7,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
         $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
 
         // by id
-        $this->getRequestModelHandler()->handle($model, [
+        $this->getMapper()->map($model, [
             'byId' => [1, 2]
         ]);
 
@@ -16,7 +16,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
         $this->assertSame(2, $model->byId[1]->getId());
 
         // by custom field
-        $this->getRequestModelHandler()->handle($model, [
+        $this->getMapper()->map($model, [
             'bySlug' => [
                 'keto-cookbook-beginners-low-carb-homemade',
                 'design-ideas-making-house-home',
@@ -32,14 +32,14 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
     {
         $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
 
-        $this->getRequestModelHandler()->handle($model, [
+        $this->getMapper()->map($model, [
             'byId' => [2, 1],
         ]);
 
         $this->assertSame(2, $model->byId[0]->getId());
         $this->assertSame(1, $model->byId[1]->getId());
 
-        $this->getRequestModelHandler()->handle($model, [
+        $this->getMapper()->map($model, [
             'byId' => [1, 2],
         ]);
 
@@ -52,7 +52,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
         $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
 
         try {
-            $this->getRequestModelHandler()->handle($model, [
+            $this->getMapper()->map($model, [
                 'byId' => [1, 2, 3],
             ]);
             $this->fail();
@@ -66,17 +66,12 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
         $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
 
         try {
-            $this->getRequestModelHandler()->handle($model, [
+            $this->getMapper()->map($model, [
                 'byId' => [1, 1],
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
             $this->assertSame(['byId' => ['Values should be unique.']], $exception->getProperties());
         }
-    }
-
-    private function getRequestModelHandler(): RestApiBundle\Services\RequestModel\RequestModelHandler
-    {
-        return $this->getContainer()->get(RestApiBundle\Services\RequestModel\RequestModelHandler::class);
     }
 }

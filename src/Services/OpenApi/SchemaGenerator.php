@@ -176,7 +176,7 @@ class SchemaGenerator
                 $scalarTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
             } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($reflectionMethodType->getClassName())) {
                 $doctrineEntityTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
-            } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($reflectionMethodType->getClassName())) {
+            } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isMapperModelInterface($reflectionMethodType->getClassName())) {
                 if ($requestModelType) {
                     throw new \LogicException();
                 }

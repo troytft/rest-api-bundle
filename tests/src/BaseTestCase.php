@@ -50,4 +50,9 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     {
         return json_encode($schema->getSerializableData());
     }
+
+    protected function getMapper(): RestApiBundle\Services\Mapper\Mapper
+    {
+        return $this->getContainer()->get(RestApiBundle\Services\Mapper\Mapper::class);
+    }
 }
