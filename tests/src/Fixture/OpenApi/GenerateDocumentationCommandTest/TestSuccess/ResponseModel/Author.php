@@ -11,27 +11,4 @@ class Author implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterfa
     {
         return 0;
     }
-
-    public function getName(): string
-    {
-        return '';
-    }
-
-    public function getSurname(): string
-    {
-        return '';
-    }
-
-    public function getBirthday(): ?\DateTime
-    {
-        return null;
-    }
-
-    /**
-     * @return Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\Genre[]
-     */
-    public function getGenres(): array
-    {
-        return [];
-    }
 }

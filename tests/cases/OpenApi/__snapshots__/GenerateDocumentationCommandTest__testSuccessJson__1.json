@@ -53,13 +53,13 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "string",
-                                "nullable": false,
                                 "enum": [
                                     "created",
                                     "published",
                                     "archived"
-                                ]
+                                ],
+                                "type": "string",
+                                "nullable": false
                             },
                             "nullable": true
                         }
@@ -262,27 +262,6 @@
                         "type": "integer",
                         "nullable": false
                     },
-                    "name": {
-                        "type": "string",
-                        "nullable": false
-                    },
-                    "surname": {
-                        "type": "string",
-                        "nullable": false
-                    },
-                    "birthday": {
-                        "type": "string",
-                        "format": "date-time",
-                        "nullable": true,
-                        "example": "2021-04-08T14:44:26+02:00"
-                    },
-                    "genres": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#\/components\/schemas\/Genre"
-                        },
-                        "nullable": false
-                    },
                     "__typename": {
                         "type": "string",
                         "default": "Author",
@@ -297,59 +276,9 @@
                         "type": "integer",
                         "nullable": false
                     },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "nullable": false,
-                        "example": "2021-04-08T14:44:26+02:00"
-                    },
-                    "title": {
-                        "type": "string",
-                        "nullable": false
-                    },
-                    "author": {
-                        "$ref": "#\/components\/schemas\/Author"
-                    },
-                    "genre": {
-                        "anyOf": [
-                            {
-                                "$ref": "#\/components\/schemas\/Genre"
-                            }
-                        ],
-                        "nullable": true
-                    },
-                    "status": {
-                        "enum": [
-                            "created",
-                            "published",
-                            "archived"
-                        ],
-                        "type": "string",
-                        "nullable": false
-                    },
-                    "releaseDate": {
-                        "type": "string",
-                        "format": "date",
-                        "nullable": false,
-                        "example": "2021-04-08"
-                    },
                     "__typename": {
                         "type": "string",
                         "default": "Book",
-                        "nullable": false
-                    }
-                }
-            },
-            "Genre": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "nullable": false
-                    },
-                    "__typename": {
-                        "type": "string",
-                        "default": "Genre",
                         "nullable": false
                     }
                 }

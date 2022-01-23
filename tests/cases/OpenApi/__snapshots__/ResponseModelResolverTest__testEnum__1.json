@@ -1,0 +1,19 @@
+{
+    "type": "object",
+    "properties": {
+        "field": {
+            "enum": [
+                "created",
+                "published",
+                "archived"
+            ],
+            "type": "string",
+            "nullable": false
+        },
+        "__typename": {
+            "type": "string",
+            "default": "TestEnumModel",
+            "nullable": false
+        }
+    }
+}

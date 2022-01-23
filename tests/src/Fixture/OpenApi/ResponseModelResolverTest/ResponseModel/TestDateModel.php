@@ -8,6 +8,6 @@ class TestDateModel implements RestApiBundle\Mapping\ResponseModel\ResponseModel
 {
     public function getField(): RestApiBundle\Mapping\ResponseModel\Date
     {
-        return RestApiBundle\Mapping\ResponseModel\Date::from(new \DateTime('2012-03-17'));
+        return RestApiBundle\Mapping\ResponseModel\Date::from(new \DateTime());
     }
 }
