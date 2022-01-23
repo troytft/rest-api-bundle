@@ -15,14 +15,13 @@ final class GenerateDocumentationCommand extends Command
     private const ARGUMENT_OUTPUT = 'output';
     private const OPTION_TEMPLATE = 'template';
     private const OPTION_EXCLUDE_PATH = 'exclude-path';
-    private const OPTION_DRY_RUN = 'dry-run';
 
     protected static $defaultName = 'rest-api:generate-documentation';
 
     public function __construct(
         private RestApiBundle\Services\OpenApi\EndpointFinder $endpointFinder,
         private RestApiBundle\Services\OpenApi\FileAdapter $fileAdapter,
-        private RestApiBundle\Services\OpenApi\Schema\SchemaGenerator $specificationGenerator,
+        private RestApiBundle\Services\OpenApi\SchemaGenerator $schemaGenerator,
     ) {
         parent::__construct();
     }
@@ -33,8 +32,7 @@ final class GenerateDocumentationCommand extends Command
             ->addArgument(static::ARGUMENT_INPUT, InputArgument::REQUIRED, 'Path to directory with controllers')
             ->addArgument(static::ARGUMENT_OUTPUT, InputArgument::REQUIRED, 'Path to output file')
             ->addOption(static::OPTION_TEMPLATE, null, InputOption::VALUE_REQUIRED, 'Path to template file')
-            ->addOption(static::OPTION_EXCLUDE_PATH, null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Exclude files from search by string or regular expression')
-            ->addOption(static::OPTION_DRY_RUN, null, InputOption::VALUE_NONE);
+            ->addOption(static::OPTION_EXCLUDE_PATH, null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Exclude files from search by string or regular expression');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -53,7 +51,7 @@ final class GenerateDocumentationCommand extends Command
         }
 
         try {
-            $specification = $this->specificationGenerator->generate($endpoints, $template);
+            $schema = $this->schemaGenerator->generate($endpoints, $template);
         } catch (RestApiBundle\Exception\ContextAware\ContextAwareExceptionInterface $exception) {
             $output->writeln([
                 'An error occurred:',
@@ -63,7 +61,7 @@ final class GenerateDocumentationCommand extends Command
             return 1;
         }
 
-        $this->fileAdapter->write($specification, $outputFile);
+        $this->fileAdapter->write($schema, $outputFile);
 
         return 0;
     }

@@ -38,8 +38,8 @@ class ResponsesSchemaTest extends Tests\BaseTestCase
         $this->assertMatchesJsonSnapshot($this->convertOpenApiToJson($schema));
     }
 
-    private function getSchemaGenerator(): RestApiBundle\Services\OpenApi\Schema\SchemaGenerator
+    private function getSchemaGenerator(): RestApiBundle\Services\OpenApi\SchemaGenerator
     {
-        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\Schema\SchemaGenerator::class);
+        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\SchemaGenerator::class);
     }
 }

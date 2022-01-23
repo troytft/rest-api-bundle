@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi\Schema;
+namespace RestApiBundle\Services\OpenApi;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
@@ -14,7 +14,7 @@ class RequestModelResolver
 {
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
-        private RestApiBundle\Services\Mapper\SchemaResolver $mapperSchemaResolver,
+        private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver,
     ) {
     }
 
@@ -27,7 +27,7 @@ class RequestModelResolver
         $properties = [];
         $reflectedClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
-        $schema = $this->mapperSchemaResolver->resolve($class);
+        $schema = $this->schemaResolver->resolve($class);
 
         foreach ($schema->properties as $propertyName => $propertySchema) {
             $reflectionProperty = $reflectedClass->getProperty($propertyName);

@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Services\OpenApi\Schema;
+namespace RestApiBundle\Services\OpenApi;
 
 use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
@@ -16,8 +16,8 @@ use function strtolower;
 class SchemaGenerator
 {
     public function __construct(
-        private RestApiBundle\Services\OpenApi\Schema\RequestModelResolver $requestModelResolver,
-        private RestApiBundle\Services\OpenApi\Schema\ResponseModelResolver $responseModelResolver,
+        private RestApiBundle\Services\OpenApi\RequestModelResolver $requestModelResolver,
+        private RestApiBundle\Services\OpenApi\ResponseModelResolver $responseModelResolver,
     ) {
     }
 

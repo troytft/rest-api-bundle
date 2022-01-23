@@ -9,8 +9,8 @@ class RequestModelsSchemaTest extends Tests\BaseTestCase
         $this->assertMatchesJsonSnapshot($this->convertOpenApiToJson($schema));
     }
 
-    private function getRequestModelResolver(): RestApiBundle\Services\OpenApi\Schema\RequestModelResolver
+    private function getRequestModelResolver(): RestApiBundle\Services\OpenApi\RequestModelResolver
     {
-        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\Schema\RequestModelResolver::class);
+        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\RequestModelResolver::class);
     }
 }
