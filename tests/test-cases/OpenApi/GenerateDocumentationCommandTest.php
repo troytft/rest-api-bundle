@@ -3,14 +3,14 @@
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
-class GenerateSpecificationCommandTest extends Tests\BaseTestCase
+class GenerateDocumentationCommandTest extends Tests\BaseTestCase
 {
     public function testSuccessYaml()
     {
         $fileName = $this->getOutputFileName() . '.yaml';
 
         $application = new Application($this->getKernel());
-        $command = $application->find('rest-api:open-api:generate-specification');
+        $command = $application->find('rest-api:generate-documentation');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
@@ -28,7 +28,7 @@ class GenerateSpecificationCommandTest extends Tests\BaseTestCase
         $fileName = $this->getOutputFileName() . '.json';
 
         $application = new Application($this->getKernel());
-        $command = $application->find('rest-api:open-api:generate-specification');
+        $command = $application->find('rest-api:generate-documentation');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
@@ -46,7 +46,7 @@ class GenerateSpecificationCommandTest extends Tests\BaseTestCase
         $fileName = $this->getOutputFileName() . '.json';
 
         $application = new Application($this->getKernel());
-        $command = $application->find('rest-api:open-api:generate-specification');
+        $command = $application->find('rest-api:generate-documentation');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([

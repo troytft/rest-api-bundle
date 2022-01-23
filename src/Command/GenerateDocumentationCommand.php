@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Command\OpenApi;
+namespace RestApiBundle\Command;
 
 use RestApiBundle;
 use Symfony\Component\Console\Input\InputArgument;
@@ -9,14 +9,14 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 
-final class GenerateSpecificationCommand extends Command
+final class GenerateDocumentationCommand extends Command
 {
     private const ARGUMENT_INPUT = 'input';
     private const ARGUMENT_OUTPUT = 'output';
     private const OPTION_TEMPLATE = 'template';
     private const OPTION_EXCLUDE_PATH = 'exclude-path';
 
-    protected static $defaultName = 'rest-api:open-api:generate-specification';
+    protected static $defaultName = 'rest-api:generate-documentation';
 
     public function __construct(
         private RestApiBundle\Services\OpenApi\EndpointFinder $endpointFinder,
