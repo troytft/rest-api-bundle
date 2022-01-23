@@ -2,24 +2,22 @@
 
 namespace RestApiBundle\Services\OpenApi;
 
+use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
 use Symfony\Component\Filesystem;
 use Symfony\Component\Yaml;
 
-final class FileAdapter
+final class SchemaSerializer
 {
-    private const YAML_TYPE = 'yaml';
-    private const JSON_TYPE = 'json';
-
     public function __construct(private Filesystem\Filesystem $filesystem)
     {
     }
 
     public function write(OpenApi\OpenApi $specification, string $filename): void
     {
-        $content = match ($this->resolveTypeByFileExtension($filename)) {
-            static::YAML_TYPE => $this->toYaml($specification),
-            static::JSON_TYPE => $this->toJson($specification),
+        $content = match (RestApiBundle\Helper\FileTypeDetector::resolveByFilename($filename)) {
+            RestApiBundle\Helper\FileTypeDetector::YAML_TYPE => $this->toYaml($specification),
+            RestApiBundle\Helper\FileTypeDetector::JSON_TYPE => $this->toJson($specification),
             default => throw new \LogicException(),
         };
 
@@ -30,9 +28,9 @@ final class FileAdapter
     {
         $content = file_get_contents($filename);
 
-        return match ($this->resolveTypeByFileExtension($filename)) {
-            static::YAML_TYPE => $this->fromYaml($content),
-            static::JSON_TYPE => $this->fromJson($content),
+        return match (RestApiBundle\Helper\FileTypeDetector::resolveByFilename($filename)) {
+            RestApiBundle\Helper\FileTypeDetector::YAML_TYPE => $this->fromYaml($content),
+            RestApiBundle\Helper\FileTypeDetector::JSON_TYPE => $this->fromJson($content),
             default => throw new \LogicException(),
         };
     }
@@ -69,14 +67,5 @@ final class FileAdapter
             'tags' => [],
             'components' => [],
         ], $data));
-    }
-
-    private function resolveTypeByFileExtension(string $filename): string
-    {
-        return match (pathinfo($filename, \PATHINFO_EXTENSION)) {
-            'yml', 'yaml' => static::YAML_TYPE,
-            'json' => static::JSON_TYPE,
-            default => throw new \InvalidArgumentException('Invalid file extension'),
-        };
     }
 }

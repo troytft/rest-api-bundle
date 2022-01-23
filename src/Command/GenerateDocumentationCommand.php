@@ -20,7 +20,7 @@ final class GenerateDocumentationCommand extends Command
 
     public function __construct(
         private RestApiBundle\Services\OpenApi\EndpointFinder $endpointFinder,
-        private RestApiBundle\Services\OpenApi\FileAdapter $fileAdapter,
+        private RestApiBundle\Services\OpenApi\SchemaSerializer $fileAdapter,
         private RestApiBundle\Services\OpenApi\SchemaGenerator $schemaGenerator,
     ) {
         parent::__construct();
