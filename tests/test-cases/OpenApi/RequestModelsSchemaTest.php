@@ -6,11 +6,11 @@ class RequestModelsSchemaTest extends Tests\BaseTestCase
     {
         $schema = $this->getRequestModelResolver()->resolve(Tests\Fixture\OpenApi\RequestModelsSchemaTest\TestEnumSchemaModel::class);
 
-        $this->assertMatchesJsonSnapshot(RestApiBundle\Helper\OpenApiHelper::toJson($schema));
+        $this->assertMatchesJsonSnapshot($this->convertOpenApiToJson($schema));
     }
 
-    private function getRequestModelResolver(): RestApiBundle\Services\OpenApi\Schema\RequestModelResolver
+    private function getRequestModelResolver(): RestApiBundle\Services\OpenApi\RequestModelResolver
     {
-        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\Schema\RequestModelResolver::class);
+        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\RequestModelResolver::class);
     }
 }

@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Tests;
+use cebe\openapi\spec as OpenApi;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use RestApiBundle;
 use Spatie\Snapshots\MatchesSnapshots;
@@ -43,5 +44,10 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     public function getKernel(): KernelInterface
     {
         return $this->kernel;
+    }
+
+    protected function convertOpenApiToJson(OpenApi\Schema|OpenApi\OpenApi $schema): string
+    {
+        return json_encode($schema->getSerializableData());
     }
 }
