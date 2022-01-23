@@ -1,0 +1,16 @@
+{
+    "type": "object",
+    "properties": {
+        "field": {
+            "type": "string",
+            "format": "date",
+            "nullable": false,
+            "example": "2021-04-08"
+        },
+        "__typename": {
+            "type": "string",
+            "default": "TestDateModel",
+            "nullable": false
+        }
+    }
+}

@@ -44,7 +44,7 @@ class ResponseModelResolver
             }
 
             $this->typenameCache[$class] = $typename;
-            $this->schemaCache[$class] = $this->resolveResponseModel($class, $typename);
+            $this->schemaCache[$class] = $this->resolveModelSchema($class, $typename);
         }
 
         return new OpenApi\Reference([
@@ -68,7 +68,7 @@ class ResponseModelResolver
         return $result;
     }
 
-    private function resolveResponseModel(string $class, string $typename): OpenApi\Schema
+    private function resolveModelSchema(string $class, string $typename): OpenApi\Schema
     {
         $properties = [];
 

@@ -46,9 +46,9 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
         return $this->kernel;
     }
 
-    protected function convertOpenApiToJson(OpenApi\Schema|OpenApi\OpenApi $schema): string
+    protected function assertMatchesOpenApiSchemaSnapshot(OpenApi\Schema|OpenApi\OpenApi $schema): void
     {
-        return json_encode($schema->getSerializableData());
+        $this->assertMatchesJsonSnapshot(json_encode($schema->getSerializableData()));
     }
 
     protected function getMapper(): RestApiBundle\Services\Mapper\Mapper

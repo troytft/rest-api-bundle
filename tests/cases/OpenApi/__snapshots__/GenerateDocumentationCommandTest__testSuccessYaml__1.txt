@@ -1,0 +1,199 @@
+openapi: 3.0.0
+info:
+    title: 'Yaml Template'
+    version: 1.0.0
+paths:
+    /books:
+        get:
+            tags:
+                - books
+            summary: 'Books list'
+            responses:
+                '200':
+                    description: 'Response with JSON body'
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Book'
+                                nullable: false
+            parameters:
+                -
+                    name: offset
+                    in: query
+                    required: false
+                    schema:
+                        type: integer
+                        nullable: true
+                -
+                    name: limit
+                    in: query
+                    required: false
+                    schema:
+                        type: integer
+                        nullable: true
+                -
+                    name: author
+                    in: query
+                    required: false
+                    schema:
+                        type: integer
+                        nullable: true
+                    description: '"Author" fetched by field "id"'
+    /writers:
+        post:
+            tags:
+                - writers
+            summary: 'Create writer'
+            responses:
+                '200':
+                    description: 'Response with JSON body'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Author'
+            requestBody:
+                description: 'Request with JSON body'
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                                    nullable: false
+                                    minLength: 1
+                                    maxLength: 255
+                                surname:
+                                    type: string
+                                    nullable: false
+                                    minLength: 1
+                                    maxLength: 255
+                                birthday:
+                                    type: string
+                                    format: date
+                                    nullable: true
+                                    example: '2021-04-08'
+                                genres:
+                                    type: array
+                                    items:
+                                        type: integer
+                                        nullable: false
+                                    description: 'Collection of "Genre" fetched by field "id"'
+                                    nullable: false
+                            nullable: false
+                required: true
+        get:
+            tags:
+                - writers
+            summary: 'Writers list with filters'
+            responses:
+                '200':
+                    description: 'Response with JSON body'
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Author'
+                                nullable: false
+            parameters:
+                -
+                    name: offset
+                    in: query
+                    required: true
+                    schema:
+                        type: integer
+                        nullable: false
+                -
+                    name: limit
+                    in: query
+                    required: true
+                    schema:
+                        type: integer
+                        nullable: false
+                -
+                    name: name
+                    in: query
+                    required: false
+                    schema:
+                        type: string
+                        nullable: true
+                        minLength: 1
+                        maxLength: 255
+                -
+                    name: surname
+                    in: query
+                    required: false
+                    schema:
+                        type: string
+                        nullable: true
+                        minLength: 1
+                        maxLength: 255
+                -
+                    name: birthday
+                    in: query
+                    required: false
+                    schema:
+                        type: string
+                        format: date
+                        nullable: true
+                        example: '2021-04-08'
+                -
+                    name: genres
+                    in: query
+                    required: false
+                    schema:
+                        type: array
+                        items:
+                            type: integer
+                            nullable: false
+                        nullable: true
+                    description: 'Collection of "Book" fetched by field "id"'
+    '/writers/{id}':
+        delete:
+            tags:
+                - writers
+            summary: 'Remove writer'
+            responses:
+                '204':
+                    description: 'Response with empty body'
+            parameters:
+                -
+                    name: id
+                    in: path
+                    description: 'Element by "id"'
+                    required: true
+                    schema:
+                        type: integer
+                        nullable: false
+components:
+    schemas:
+        Author:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    nullable: false
+                __typename:
+                    type: string
+                    default: Author
+                    nullable: false
+        Book:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    nullable: false
+                __typename:
+                    type: string
+                    default: Book
+                    nullable: false
+tags:
+    -
+        name: books
+        description: Books
+    -
+        name: writers
+        description: Writers

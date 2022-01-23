@@ -1,0 +1,28 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Open API Specification",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "\/": {
+            "get": {
+                "tags": [
+                    "tag"
+                ],
+                "summary": "title",
+                "responses": {
+                    "204": {
+                        "description": "Response with empty body"
+                    }
+                }
+            }
+        }
+    },
+    "components": {},
+    "tags": [
+        {
+            "name": "tag"
+        }
+    ]
+}
