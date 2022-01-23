@@ -3,38 +3,26 @@
 namespace Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\RequestModel;
 
 use Tests;
-use RestApiBundle\Mapping\Mapper as Mapper;
+use RestApiBundle\Mapping\Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
 
+#[Mapper\ExposeAll]
 class WriterData implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
-    /**
-     * @var string
-     *
-     * @Mapper\Expose
-     * @Assert\Length(min=1, max=255, allowEmptyString=false)
-     */
-    private $name;
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 1, max: 255)]
+    private string $name;
 
-    /**
-     * @var string
-     *
-     * @Mapper\Expose
-     * @Assert\Length(min=1, max=255, allowEmptyString=false)
-     */
-    private $surname;
-
-    /**
-     * @Mapper\Expose
-     */
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 1, max: 255)]
+    private string $surname;
+    
     private ?Mapper\Date $birthday;
 
     /**
-     * @var Tests\Fixture\Common\Entity\Genre[]
-     *
-     * @Mapper\Expose
+     * @var Tests\Fixture\TestApp\Entity\Genre[]
      */
-    private $genres;
+    private array $genres;
 
     public function getName(): string
     {

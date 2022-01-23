@@ -44,7 +44,7 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     private ?Mapper\Date $birthday;
 
     /**
-     * @var Tests\Fixture\Common\Entity\Book[]|null
+     * @var Tests\Fixture\TestApp\Entity\Book[]|null
      *
      * @Mapper\Expose
      */

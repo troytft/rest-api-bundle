@@ -38,7 +38,7 @@ class WriterController
      *
      * @Route("/{id}", methods="DELETE", requirements={"id": "\d"})
      */
-    public function removeAction(Tests\Fixture\Common\Entity\Author $writer): void
+    public function removeAction(Tests\Fixture\TestApp\Entity\Author $writer): void
     {
     }
 }

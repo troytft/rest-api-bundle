@@ -7,7 +7,7 @@ use RestApiBundle;
 
 class Book implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {
-    public function __construct(private Tests\Fixture\Common\Entity\Book $data)
+    public function __construct(private Tests\Fixture\TestApp\Entity\Book $data)
     {
     }
 

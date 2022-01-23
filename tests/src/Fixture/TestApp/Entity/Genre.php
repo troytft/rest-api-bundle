@@ -1,15 +1,14 @@
 <?php
 
-namespace Tests\Fixture\Common\Entity;
+namespace Tests\Fixture\TestApp\Entity;
 
-use Tests;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table()
  * @ORM\Entity()
  */
-class Book
+class Genre
 {
     /**
      * @var int
@@ -23,26 +22,13 @@ class Book
     /**
      * @var string
      *
-     * @ORM\Column(name="slug", type="string")
-     */
-    private $slug;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="title", type="string")
      */
     private $title;
 
-    /**
-     * @var string
-     */
-    private $status = Tests\Fixture\TestApp\Enum\BookStatus::PUBLISHED;
-
-    public function __construct(int $id, string $slug, string $title)
+    public function __construct(int $id, string $title)
     {
         $this->id = $id;
-        $this->slug = $slug;
         $this->title = $title;
     }
 
@@ -58,18 +44,6 @@ class Book
         return $this;
     }
 
-    public function getSlug(): string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug)
-    {
-        $this->slug = $slug;
-
-        return $this;
-    }
-
     public function getTitle(): string
     {
         return $this->title;
@@ -78,18 +52,6 @@ class Book
     public function setTitle(string $title)
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(string $status)
-    {
-        $this->status = $status;
 
         return $this;
     }

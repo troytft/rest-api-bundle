@@ -23,7 +23,7 @@ class BookList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterf
     private ?array $statuses;
 
     /** @Mapper\Expose */
-    public ?Tests\Fixture\Common\Entity\Author $author;
+    public ?Tests\Fixture\TestApp\Entity\Author $author;
 
     /**
      * @return string[]|null
