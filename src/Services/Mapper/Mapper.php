@@ -3,6 +3,7 @@
 namespace RestApiBundle\Services\Mapper;
 
 use RestApiBundle;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function array_diff;
 use function array_is_list;
@@ -20,14 +21,65 @@ class Mapper
      */
     private array $transformers = [];
 
-    public function __construct(private RestApiBundle\Services\Mapper\SchemaResolverInterface $schemaResolver)
-    {
+    public function __construct(
+        private RestApiBundle\Services\Mapper\SchemaResolverInterface $schemaResolver,
+        private TranslatorInterface $translator,
+        private RestApiBundle\Services\Mapper\ModelValidator $modelValidator,
+    ) {
     }
 
-    public function map(RestApiBundle\Mapping\Mapper\ModelInterface $requestModel, array $data, ?RestApiBundle\Model\Mapper\Context $context = null): void
+    public function map(RestApiBundle\Mapping\Mapper\ModelInterface $model, array $data, ?RestApiBundle\Model\Mapper\Context $context = null): void
     {
-        $schema = $this->schemaResolver->resolve(get_class($requestModel));
-        $this->mapObject($schema, $requestModel, $data, [], $context ?: new RestApiBundle\Model\Mapper\Context());
+        try {
+            $schema = $this->schemaResolver->resolve(get_class($model));
+            $this->mapObject($schema, $model, $data, [], $context ?: new RestApiBundle\Model\Mapper\Context());
+        } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
+            throw $this->convertStackedMappingException($exception);
+        }
+
+        $errorsStacks = $this->modelValidator->validate($model);
+        if ($errorsStacks) {
+            throw new RestApiBundle\Exception\Mapper\MappingException($errorsStacks);
+        }
+    }
+
+    private function convertStackedMappingException(RestApiBundle\Exception\Mapper\StackedMappingException $exception): RestApiBundle\Exception\Mapper\MappingException
+    {
+        $errors = [];
+
+        foreach ($exception->getExceptions() as $stackableException) {
+            $translationParameters = [];
+
+            if ($stackableException instanceof RestApiBundle\Exception\Mapper\Transformer\WrappedTransformerException) {
+                $propertyPath = $stackableException->getPathAsString();
+                $previousException = $stackableException->getPrevious();
+                $translationId = get_class($previousException);
+
+                if ($previousException instanceof RestApiBundle\Exception\Mapper\Transformer\InvalidDateFormatException) {
+                    $translationParameters = [
+                        '{format}' => $previousException->getFormat(),
+                    ];
+                }
+
+                if ($previousException instanceof RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeFormatException) {
+                    $translationParameters = [
+                        '{format}' => $previousException->getFormat(),
+                    ];
+                }
+            } else {
+                $propertyPath = $stackableException->getPathAsString();
+                $translationId = get_class($stackableException);
+            }
+
+            $message = $this->translator->trans($translationId, $translationParameters, 'exceptions');
+            if ($message === $translationId) {
+                throw new \InvalidArgumentException(sprintf('Can\'t find translation with key "%s"', $translationId));
+            }
+
+            $errors[$propertyPath] = [$message];
+        }
+
+        return new RestApiBundle\Exception\Mapper\MappingException($errors);
     }
 
     private function mapObject(RestApiBundle\Model\Mapper\Schema $schema, RestApiBundle\Mapping\Mapper\ModelInterface $model, array $data, array $basePath, RestApiBundle\Model\Mapper\Context $context): void

@@ -8,11 +8,11 @@ class ValidationTest extends Tests\BaseTestCase
 
         // nested model
         try {
-            $this->getRequestModelHandler()->handle($model, [
+            $this->getMapper()->map($model, [
                 'childModel' => [],
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
                 'childModel.field' => ['This value is not valid.'],
             ], $exception->getProperties());
@@ -20,7 +20,7 @@ class ValidationTest extends Tests\BaseTestCase
 
         // nested collection of models
         try {
-            $this->getRequestModelHandler()->handle($model, [
+            $this->getMapper()->map($model, [
                 'childModels' => [
                     [
                     ],
@@ -29,7 +29,7 @@ class ValidationTest extends Tests\BaseTestCase
                 ],
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
                 'childModels.0.field' => ['This value is not valid.'],
                 'childModels.1.field' => ['This value is not valid.'],
@@ -44,9 +44,9 @@ class ValidationTest extends Tests\BaseTestCase
         $model = new Tests\Fixture\Mapper\Movie();
 
         try {
-            $this->getRequestModelHandler()->handle($model, [], $context);
+            $this->getMapper()->map($model, [], $context);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
                 'name' => ['This value should not be null.'],
                 'rating' => ['This value should not be null.'],
@@ -59,7 +59,7 @@ class ValidationTest extends Tests\BaseTestCase
 
         $this->assertSame('Taxi 2', $model->name);
 
-        $this->getRequestModelHandler()->handle($model, [], $context);
+        $this->getMapper()->map($model, [], $context);
         $this->assertSame('Taxi 2', $model->name);
     }
 
@@ -68,11 +68,11 @@ class ValidationTest extends Tests\BaseTestCase
         $model = new Tests\Fixture\Mapper\ValidationTest\TestUndefinedKeyModel();
 
         try {
-            $this->getRequestModelHandler()->handle($model, [
+            $this->getMapper()->map($model, [
                 'keyNotDefinedInModel' => null,
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame(['keyNotDefinedInModel' => ['The key is not defined in the model.']], $exception->getProperties());
         }
     }
@@ -83,12 +83,12 @@ class ValidationTest extends Tests\BaseTestCase
 
         // properties inside object
         try {
-            $this->getRequestModelHandler()->handle($model, [
+            $this->getMapper()->map($model, [
                 'name' => null,
                 'rating' => null,
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
                 'name' => ['This value should not be null.'],
                 'rating' => ['This value should not be null.'],
@@ -97,7 +97,7 @@ class ValidationTest extends Tests\BaseTestCase
 
         // element of collection
         try {
-            $this->getRequestModelHandler()->handle($model, [
+            $this->getMapper()->map($model, [
                 'name' => 'Taxi 3',
                 'rating' => 8.3,
                 'releases' => [
@@ -105,7 +105,7 @@ class ValidationTest extends Tests\BaseTestCase
                 ]
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
                 'releases.0' => ['This value should not be null.'],
             ], $exception->getProperties());
@@ -113,7 +113,7 @@ class ValidationTest extends Tests\BaseTestCase
 
         // object inside collection
         try {
-            $this->getRequestModelHandler()->handle($model, [
+            $this->getMapper()->map($model, [
                 'name' => 'Taxi 3',
                 'rating' => 8.3,
                 'releases' => [
@@ -124,16 +124,11 @@ class ValidationTest extends Tests\BaseTestCase
                 ]
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame([
                 'releases.0.country' => ['This value should not be null.'],
                 'releases.0.date' => ['This value should not be null.'],
             ], $exception->getProperties());
         }
-    }
-
-    private function getRequestModelHandler(): RestApiBundle\Services\RequestModel\RequestModelHandler
-    {
-        return $this->getContainer()->get(RestApiBundle\Services\RequestModel\RequestModelHandler::class);
     }
 }

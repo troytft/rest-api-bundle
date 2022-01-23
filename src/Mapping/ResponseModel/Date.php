@@ -2,7 +2,7 @@
 
 namespace RestApiBundle\Mapping\ResponseModel;
 
-class SerializableDate implements SerializableDateInterface
+class Date implements DateInterface
 {
     private \DateTimeInterface $value;
 

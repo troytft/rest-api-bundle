@@ -176,7 +176,7 @@ class SchemaGenerator
                 $scalarTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
             } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($reflectionMethodType->getClassName())) {
                 $doctrineEntityTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
-            } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($reflectionMethodType->getClassName())) {
+            } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\InterfaceChecker::isMapperModel($reflectionMethodType->getClassName())) {
                 if ($requestModelType) {
                     throw new \LogicException();
                 }
@@ -269,13 +269,13 @@ class SchemaGenerator
 
         if ($returnType->isCollection()) {
             $collectionValueType = RestApiBundle\Helper\TypeExtractor::getFirstCollectionValueType($returnType);
-            if (!$collectionValueType->getClassName() || !RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($collectionValueType->getClassName())) {
+            if (!$collectionValueType->getClassName() || !RestApiBundle\Helper\InterfaceChecker::isResponseModel($collectionValueType->getClassName())) {
                 throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Invalid response type, only collection of response models allowed', $reflectionMethod);
             }
 
             $this->addCollectionOfResponseModelsResponse($responses, $returnType);
         } elseif ($returnType->getClassName()) {
-            if (RestApiBundle\Helper\ClassInstanceHelper::isResponseModel($returnType->getClassName())) {
+            if (RestApiBundle\Helper\InterfaceChecker::isResponseModel($returnType->getClassName())) {
                 $this->addSingleResponseModelResponse($responses, $returnType);
             } elseif ($returnType->getClassName() === HttpFoundation\RedirectResponse::class) {
                 $this->addRedirectResponse($responses);

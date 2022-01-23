@@ -6,7 +6,7 @@ use RestApiBundle\Mapping\Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[Mapper\ExposeAll]
-class ChildModel implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
+class ChildModel implements Mapper\ModelInterface
 {
     #[Assert\Expression(expression: 'false')]
     public ?string $field;

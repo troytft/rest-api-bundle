@@ -2,7 +2,7 @@
 
 namespace RestApiBundle\Mapping\ResponseModel;
 
-interface SerializableDateInterface
+interface DateInterface
 {
     public function getValue(): \DateTimeInterface;
 }

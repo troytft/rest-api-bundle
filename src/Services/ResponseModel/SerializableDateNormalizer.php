@@ -11,11 +11,11 @@ class SerializableDateNormalizer implements ContextAwareNormalizerInterface
 
     public function supportsNormalization($data, $format = null, array $context = [])
     {
-        return $data instanceof RestApiBundle\Mapping\ResponseModel\SerializableDateInterface;
+        return $data instanceof RestApiBundle\Mapping\ResponseModel\DateInterface;
     }
 
     /**
-     * @param RestApiBundle\Mapping\ResponseModel\SerializableDateInterface $object
+     * @param RestApiBundle\Mapping\ResponseModel\DateInterface $object
      */
     public function normalize($object, $format = null, array $context = [])
     {

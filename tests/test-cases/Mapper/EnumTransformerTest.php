@@ -5,7 +5,7 @@ class EnumTransformerTest extends Tests\BaseTestCase
     public function testSuccess()
     {
         $model = new Tests\Fixture\Mapper\EnumTransformerTest\Model();
-        $this->getRequestModelHandler()->handle($model, [
+        $this->getMapper()->map($model, [
             'field' => Tests\Fixture\TestApp\Enum\BookStatus::CREATED,
         ]);
 
@@ -17,17 +17,12 @@ class EnumTransformerTest extends Tests\BaseTestCase
     {
         try {
             $model = new Tests\Fixture\Mapper\EnumTransformerTest\Model();
-            $this->getRequestModelHandler()->handle($model, [
+            $this->getMapper()->map($model, [
                 'field' => 'invalid'
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame(['field' => ['The value you selected is not a valid choice.']], $exception->getProperties());
         }
-    }
-
-    private function getRequestModelHandler(): RestApiBundle\Services\RequestModel\RequestModelHandler
-    {
-        return $this->getContainer()->get(RestApiBundle\Services\RequestModel\RequestModelHandler::class);
     }
 }

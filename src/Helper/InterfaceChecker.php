@@ -7,7 +7,7 @@ use RestApiBundle;
 use function array_key_exists;
 use function class_exists;
 
-final class ClassInstanceHelper
+final class InterfaceChecker
 {
     /**
      * @var array<string, bool>
@@ -24,7 +24,7 @@ final class ClassInstanceHelper
     /**
      * @var array<string, bool>
      */
-    private static array $dateCache = [
+    private static array $mapperDateCache = [
         RestApiBundle\Mapping\Mapper\Date::class => true,
     ];
 
@@ -41,12 +41,17 @@ final class ClassInstanceHelper
     /**
      * @var array<string, bool>
      */
-    private static array $serializableDateCache = [];
+    private static array $responseModelDateCache = [];
 
     /**
      * @var array<string, bool>
      */
     private static array $mapperModelCache = [];
+
+    /**
+     * @var array<string, bool>
+     */
+    private static array $requestModelCache = [];
 
     public static function isResponseModel(string $class): bool
     {
@@ -80,15 +85,15 @@ final class ClassInstanceHelper
         return static::$dateTimeCache[$class];
     }
 
-    public static function isDateMapperType(string $class): bool
+    public static function isMapperDate(string $class): bool
     {
-        if (!array_key_exists($class, static::$dateCache)) {
+        if (!array_key_exists($class, static::$mapperDateCache)) {
             $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
-            static::$dateCache[$class] = $reflectionClass->isInstantiable() && $reflectionClass->implementsInterface(RestApiBundle\Mapping\Mapper\DateInterface::class);
+            static::$mapperDateCache[$class] = $reflectionClass->isInstantiable() && $reflectionClass->implementsInterface(RestApiBundle\Mapping\Mapper\DateInterface::class);
         }
 
-        return static::$dateCache[$class];
+        return static::$mapperDateCache[$class];
     }
 
     public static function isResponseModelEnum(string $class): bool
@@ -121,19 +126,19 @@ final class ClassInstanceHelper
         return static::$mapperEnumCache[$class];
     }
 
-    public static function isSerializableDate(string $class): bool
+    public static function isResponseModelDate(string $class): bool
     {
         if (!class_exists($class)) {
             return false;
         }
 
-        if (!array_key_exists($class, static::$serializableDateCache)) {
+        if (!array_key_exists($class, static::$responseModelDateCache)) {
             $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
-            static::$serializableDateCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Mapping\ResponseModel\SerializableDateInterface::class);
+            static::$responseModelDateCache[$class] = $reflectionClass->implementsInterface(RestApiBundle\Mapping\ResponseModel\DateInterface::class);
         }
 
-        return static::$serializableDateCache[$class];
+        return static::$responseModelDateCache[$class];
     }
 
     public static function isMapperModel(string $class): bool
@@ -150,5 +155,21 @@ final class ClassInstanceHelper
         }
 
         return static::$mapperModelCache[$class];
+    }
+
+    public static function isRequestModel(string $class): bool
+    {
+        if (!class_exists($class)) {
+            return false;
+        }
+
+        if (!array_key_exists($class, static::$requestModelCache)) {
+            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+
+            static::$requestModelCache[$class] = $reflectionClass->isInstantiable()
+                && $reflectionClass->implementsInterface(RestApiBundle\Mapping\RequestModel\RequestModelInterface::class);
+        }
+
+        return static::$requestModelCache[$class];
     }
 }

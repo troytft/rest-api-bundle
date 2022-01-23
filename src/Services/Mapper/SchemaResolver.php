@@ -73,7 +73,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
 
                 break;
 
-            case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isDateMapperType($type->getClassName()):
+            case $type->getClassName() && RestApiBundle\Helper\InterfaceChecker::isMapperDate($type->getClassName()):
                 $dateFormat = null;
                 foreach ($typeOptions as $typeOption) {
                     if ($typeOption instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
@@ -87,7 +87,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
 
                 break;
 
-            case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isDateTime($type->getClassName()):
+            case $type->getClassName() && RestApiBundle\Helper\InterfaceChecker::isDateTime($type->getClassName()):
                 $dateFormat = null;
                 foreach ($typeOptions as $typeOption) {
                     if ($typeOption instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
@@ -101,12 +101,12 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
 
                 break;
 
-            case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isMapperModel($type->getClassName()):
+            case $type->getClassName() && RestApiBundle\Helper\InterfaceChecker::isMapperModel($type->getClassName()):
                 $schema = $this->resolve($type->getClassName(), $type->isNullable());
 
                 break;
 
-            case $type->getClassName() && RestApiBundle\Helper\ClassInstanceHelper::isMapperEnum($type->getClassName()):
+            case $type->getClassName() && RestApiBundle\Helper\InterfaceChecker::isMapperEnum($type->getClassName()):
                 $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\EnumTransformer::class, $type->isNullable(), [
                     RestApiBundle\Services\Mapper\Transformer\EnumTransformer::CLASS_OPTION => $type->getClassName(),
                 ]);

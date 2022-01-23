@@ -41,8 +41,8 @@ class Book implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
         return Tests\Fixture\TestApp\Enum\BookStatus::from($this->data->getStatus());
     }
 
-    public function getReleaseDate(): RestApiBundle\Mapping\ResponseModel\SerializableDate
+    public function getReleaseDate(): RestApiBundle\Mapping\ResponseModel\Date
     {
-        return RestApiBundle\Mapping\ResponseModel\SerializableDate::from(new \DateTime('2012-03-17'));
+        return RestApiBundle\Mapping\ResponseModel\Date::from(new \DateTime('2012-03-17'));
     }
 }

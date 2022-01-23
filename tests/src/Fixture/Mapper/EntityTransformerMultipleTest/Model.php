@@ -6,7 +6,7 @@ use Tests;
 use RestApiBundle\Mapping\Mapper;
 
 #[Mapper\ExposeAll]
-class Model implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
+class Model implements Mapper\ModelInterface
 {
     /**
      * @var Tests\Fixture\TestApp\Entity\Book[]|null

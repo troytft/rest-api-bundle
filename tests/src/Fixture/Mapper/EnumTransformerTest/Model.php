@@ -6,7 +6,7 @@ use Tests;
 use RestApiBundle\Mapping\Mapper;
 
 #[Mapper\ExposeAll]
-class Model implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
+class Model implements Mapper\ModelInterface
 {
     private ?Tests\Fixture\TestApp\Enum\BookStatus $field;
 

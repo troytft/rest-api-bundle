@@ -7,14 +7,14 @@ class EntityTransformerTest extends Tests\BaseTestCase
         $model = new Tests\Fixture\Mapper\EntityTransformerTest\Model();
 
         // by id
-        $this->getRequestHandler()->handle($model, [
+        $this->getMapper()->map($model, [
             'byId' => 1
         ]);
 
         $this->assertSame(1, $model->byId?->getId());
 
         // by custom field
-        $this->getRequestHandler()->handle($model, [
+        $this->getMapper()->map($model, [
             'bySlug' => 'design-ideas-making-house-home'
         ]);
 
@@ -27,21 +27,21 @@ class EntityTransformerTest extends Tests\BaseTestCase
 
         // by id
         try {
-            $this->getRequestHandler()->handle($model, [
+            $this->getMapper()->map($model, [
                 'byId' => 100404,
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame(['byId' => ['An entity with specified value not found.']], $exception->getProperties());
         }
 
         // by custom field
         try {
-            $this->getRequestHandler()->handle($model, [
+            $this->getMapper()->map($model, [
                 'bySlug' => 'invalid-slug',
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame(['bySlug' => ['An entity with specified value not found.']], $exception->getProperties());
         }
     }
@@ -52,27 +52,22 @@ class EntityTransformerTest extends Tests\BaseTestCase
 
         // integer type
         try {
-            $this->getRequestHandler()->handle($model, [
+            $this->getMapper()->map($model, [
                 'byId' => false,
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame(['byId' => ['This value should be an integer.']], $exception->getProperties());
         }
 
         // string type
         try {
-            $this->getRequestHandler()->handle($model, [
+            $this->getMapper()->map($model, [
                 'bySlug' => false,
             ]);
             $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame(['bySlug' => ['This value should be a string.']], $exception->getProperties());
         }
-    }
-
-    private function getRequestHandler(): RestApiBundle\Services\RequestModel\RequestModelHandler
-    {
-        return $this->getContainer()->get(RestApiBundle\Services\RequestModel\RequestModelHandler::class);
     }
 }
