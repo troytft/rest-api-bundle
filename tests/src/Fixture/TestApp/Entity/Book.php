@@ -1,13 +1,13 @@
 <?php
 
-namespace TestApp\Entity;
+namespace Tests\Fixture\TestApp\Entity;
 
 use Tests;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="TestApp\Repository\BookRepository")
+ * @ORM\Entity(repositoryClass="Tests\Fixture\TestApp\Repository\BookRepository")
  */
 class Book
 {

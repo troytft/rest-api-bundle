@@ -1,8 +1,8 @@
 <?php
 
-namespace TestApp\Repository;
+namespace Tests\Fixture\TestApp\Repository;
 
-use TestApp;
+use Tests;
 
 use function in_array;
 
@@ -15,7 +15,7 @@ class AuthorRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\Servic
 
     public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
     {
-        parent::__construct($registry, TestApp\Entity\Author::class);
+        parent::__construct($registry, Tests\Fixture\TestApp\Entity\Author::class);
     }
 
     public function findOneBy(array $criteria, array $orderBy = null)
@@ -44,9 +44,9 @@ class AuthorRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\Servic
         return $result;
     }
 
-    private function createEntityWithId(int $id): TestApp\Entity\Author
+    private function createEntityWithId(int $id): Tests\Fixture\TestApp\Entity\Author
     {
-        $genre = new TestApp\Entity\Author();
+        $genre = new Tests\Fixture\TestApp\Entity\Author();
         $genre
             ->setId($id);
 

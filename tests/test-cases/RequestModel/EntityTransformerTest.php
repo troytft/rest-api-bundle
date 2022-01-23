@@ -2,75 +2,72 @@
 
 class EntityTransformerTest extends Tests\BaseTestCase
 {
-    public function testFetchInteger()
+    public function testSuccessFetch()
     {
-        $requestModel = new TestApp\RequestModel\DoctrineEntityTransformerTest\Model();
-        $this->getRequestHandler()->handle($requestModel, [
-            'bookById' => 1
-        ]);
-        $this->assertTrue($requestModel->getBookById() instanceof TestApp\Entity\Book);
-        $this->assertSame(1, $requestModel->getBookById()->getId());
-    }
+        $model = new Tests\Fixture\RequestModel\EntityTransformerTest\Model();
 
-    public function testFetchString()
-    {
-        $model = new TestApp\RequestModel\DoctrineEntityTransformerTest\Model();
+        // by id
         $this->getRequestHandler()->handle($model, [
-            'bookBySlug' => 'keto-cookbook-beginners-low-carb-homemade'
+            'byId' => 1
         ]);
-        $this->assertTrue($model->getBookBySlug() instanceof TestApp\Entity\Book);
-        $this->assertSame(1, $model->getBookBySlug()->getId());
+
+        $this->assertSame(1, $model->byId?->getId());
+
+        // by custom field
+        $this->getRequestHandler()->handle($model, [
+            'bySlug' => 'design-ideas-making-house-home'
+        ]);
+
+        $this->assertSame(2, $model->bySlug?->getId());
     }
 
-    public function testNotFoundInteger()
+    public function testEntityNotFound()
     {
+        $model = new Tests\Fixture\RequestModel\EntityTransformerTest\Model();
+
+        // by id
         try {
-            $requestModel = new TestApp\RequestModel\DoctrineEntityTransformerTest\Model();
-            $this->getRequestHandler()->handle($requestModel, [
-                'bookById' => 3
+            $this->getRequestHandler()->handle($model, [
+                'byId' => 100404,
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['bookById' => ['An entity with specified value not found.']], $exception->getProperties());
+            $this->assertSame(['byId' => ['An entity with specified value not found.']], $exception->getProperties());
+        }
+
+        // by custom field
+        try {
+            $this->getRequestHandler()->handle($model, [
+                'bySlug' => 'invalid-slug',
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $this->assertSame(['bySlug' => ['An entity with specified value not found.']], $exception->getProperties());
         }
     }
 
-    public function testNotFoundString()
+    public function testInvalidValueType()
     {
-        try {
-            $requestModel = new TestApp\RequestModel\DoctrineEntityTransformerTest\Model();
-            $this->getRequestHandler()->handle($requestModel, [
-                'bookBySlug' => 'wrong_slug'
-            ]);
-            $this->fail();
-        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['bookBySlug' => ['An entity with specified value not found.']], $exception->getProperties());
-        }
-    }
+        $model = new Tests\Fixture\RequestModel\EntityTransformerTest\Model();
 
-    public function testWrongValueTypeInteger()
-    {
+        // integer type
         try {
-            $requestModel = new TestApp\RequestModel\DoctrineEntityTransformerTest\Model();
-            $this->getRequestHandler()->handle($requestModel, [
-                'bookById' => 'string'
+            $this->getRequestHandler()->handle($model, [
+                'byId' => false,
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['bookById' => ['This value should be an integer.']], $exception->getProperties());
+            $this->assertSame(['byId' => ['This value should be an integer.']], $exception->getProperties());
         }
-    }
 
-    public function testWrongValueTypeString()
-    {
+        // string type
         try {
-            $requestModel = new TestApp\RequestModel\DoctrineEntityTransformerTest\Model();
-            $this->getRequestHandler()->handle($requestModel, [
-                'bookBySlug' => true,
+            $this->getRequestHandler()->handle($model, [
+                'bySlug' => false,
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['bookBySlug' => ['This value should be a string.']], $exception->getProperties());
+            $this->assertSame(['bySlug' => ['This value should be a string.']], $exception->getProperties());
         }
     }
 

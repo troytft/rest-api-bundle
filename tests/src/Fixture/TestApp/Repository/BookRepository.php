@@ -1,8 +1,8 @@
 <?php
 
-namespace TestApp\Repository;
+namespace Tests\Fixture\TestApp\Repository;
 
-use TestApp;
+use Tests;
 
 use function array_values;
 use function in_array;
@@ -11,7 +11,7 @@ class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceE
 {
     public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
     {
-        parent::__construct($registry, TestApp\Entity\Book::class);
+        parent::__construct($registry, Tests\Fixture\TestApp\Entity\Book::class);
     }
 
     public function find($id, $lockMode = null, $lockVersion = null)
@@ -19,7 +19,7 @@ class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceE
         return $this->findOneBy(['id' => $id]);
     }
 
-    public function findOneBy(array $criteria, array $orderBy = null): ?TestApp\Entity\Book
+    public function findOneBy(array $criteria, array $orderBy = null): ?Tests\Fixture\TestApp\Entity\Book
     {
         $result = null;
 
@@ -45,7 +45,7 @@ class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceE
     }
 
     /**
-     * @return TestApp\Entity\Book[]
+     * @return Tests\Fixture\TestApp\Entity\Book[]
      */
     public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null): array
     {
@@ -74,13 +74,13 @@ class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceE
     }
 
     /**
-     * @return TestApp\Entity\Book[]
+     * @return Tests\Fixture\TestApp\Entity\Book[]
      */
     public function findAll(): array
     {
         return [
-            new TestApp\Entity\Book(1, 'keto-cookbook-beginners-low-carb-homemade', 'Keto Cookbook For Beginners: 1000 Recipes For Quick & Easy Low-Carb Homemade Cooking'),
-            new TestApp\Entity\Book(2, 'design-ideas-making-house-home', 'Home Stories: Design Ideas for Making a House a Home')
+            new Tests\Fixture\TestApp\Entity\Book(1, 'keto-cookbook-beginners-low-carb-homemade', 'Keto Cookbook For Beginners: 1000 Recipes For Quick & Easy Low-Carb Homemade Cooking'),
+            new Tests\Fixture\TestApp\Entity\Book(2, 'design-ideas-making-house-home', 'Home Stories: Design Ideas for Making a House a Home')
         ];
     }
 }
