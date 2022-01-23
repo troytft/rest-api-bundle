@@ -6,7 +6,7 @@ use Tests;
 use RestApiBundle\Mapping\Mapper;
 
 #[Mapper\ExposeAll]
-class TestNestedValidationModel implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
+class TestNestedValidationModel implements Mapper\ModelInterface
 {
     public ?Tests\Fixture\Mapper\ValidationTest\ChildModel $childModel;
 

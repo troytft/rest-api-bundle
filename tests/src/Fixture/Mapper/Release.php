@@ -5,7 +5,7 @@ namespace Tests\Fixture\Mapper;
 use RestApiBundle\Mapping\Mapper;
 
 #[Mapper\ExposeAll]
-class Release implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
+class Release implements Mapper\ModelInterface
 {
     private string $country;
     private Mapper\Date $date;
