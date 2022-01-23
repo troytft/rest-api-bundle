@@ -32,7 +32,7 @@ class Mapper
 
     private function mapObject(RestApiBundle\Model\Mapper\Schema $schema, RestApiBundle\Mapping\Mapper\ModelInterface $model, array $data, array $basePath, RestApiBundle\Model\Mapper\Context $context): void
     {
-        if ($context->isClearMissing) {
+        if ($context->clearMissing) {
             $propertiesNotPresentedInData = array_diff(array_keys($schema->properties), array_keys($data));
             foreach ($propertiesNotPresentedInData as $propertyName) {
                 $data[$propertyName] = null;

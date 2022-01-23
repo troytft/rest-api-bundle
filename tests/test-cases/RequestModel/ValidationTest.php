@@ -86,11 +86,10 @@ class ValidationTest extends Tests\BaseTestCase
         $this->assertSame(['Invalid value.'], $value['nestedRequestModels.1.field']);
     }
 
-    public function testClearMissingEnabled()
+    public function testClearMissing()
     {
-        $context = new RestApiBundle\Model\Mapper\Context();
-        $context
-            ->isClearMissing = true;
+        // enabled
+        $context = new RestApiBundle\Model\Mapper\Context(clearMissing: true);
 
         try {
             $this->getMapper()->map(new Tests\Fixture\Mapper\Movie(), [], $context);
@@ -104,13 +103,9 @@ class ValidationTest extends Tests\BaseTestCase
             $this->assertSame('name', $exception->getExceptions()[0]->getPathAsString());
             $this->assertSame('rating', $exception->getExceptions()[1]->getPathAsString());
         }
-    }
 
-    public function testClearMissingDisabled()
-    {
-        $context = new RestApiBundle\Model\Mapper\Context();
-        $context
-            ->isClearMissing = false;
+        // disabled
+        $context = new RestApiBundle\Model\Mapper\Context(clearMissing: false);
 
         $movie = new Tests\Fixture\Mapper\Movie();
         $this->assertSame('Taxi 2', $movie->name);
@@ -118,12 +113,10 @@ class ValidationTest extends Tests\BaseTestCase
         $this->getMapper()->map($movie, [], $context);
         $this->assertSame('Taxi 2', $movie->name);
     }
-
+    
     public function testUndefinedKey()
     {
-        $context = new RestApiBundle\Model\Mapper\Context();
-        $context
-            ->isClearMissing = false;
+        $context = new RestApiBundle\Model\Mapper\Context(clearMissing: false);
 
         $model = new Tests\Fixture\Mapper\Movie();
         $data = [
