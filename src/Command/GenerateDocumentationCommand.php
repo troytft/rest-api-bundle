@@ -15,6 +15,7 @@ final class GenerateDocumentationCommand extends Command
     private const ARGUMENT_OUTPUT = 'output';
     private const OPTION_TEMPLATE = 'template';
     private const OPTION_EXCLUDE_PATH = 'exclude-path';
+    private const OPTION_DRY_RUN = 'dry-run';
 
     protected static $defaultName = 'rest-api:generate-documentation';
 
@@ -32,7 +33,8 @@ final class GenerateDocumentationCommand extends Command
             ->addArgument(static::ARGUMENT_INPUT, InputArgument::REQUIRED, 'Path to directory with controllers')
             ->addArgument(static::ARGUMENT_OUTPUT, InputArgument::REQUIRED, 'Path to output file')
             ->addOption(static::OPTION_TEMPLATE, null, InputOption::VALUE_REQUIRED, 'Path to template file')
-            ->addOption(static::OPTION_EXCLUDE_PATH, null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Exclude files from search by string or regular expression');
+            ->addOption(static::OPTION_EXCLUDE_PATH, null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Exclude files from search by string or regular expression')
+            ->addOption(static::OPTION_DRY_RUN, null, InputOption::VALUE_NONE);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
