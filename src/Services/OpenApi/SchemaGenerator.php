@@ -222,7 +222,7 @@ class SchemaGenerator
             'in' => 'path',
             'name' => $name,
             'required' => true,
-            'schema' => RestApiBundle\Helper\OpenApiHelper::createScalarFromPropertyInfoType($type),
+            'schema' => RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromPropertyInfoType($type),
         ]);
     }
 
@@ -234,7 +234,7 @@ class SchemaGenerator
             'in' => 'path',
             'name' => $name,
             'required' => !$type->isNullable(),
-            'schema' => RestApiBundle\Helper\OpenApiHelper::createScalarFromString($entityColumnType, $type->isNullable()),
+            'schema' => RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromString($entityColumnType, $type->isNullable()),
             'description' => sprintf('Element by "%s"', $entityFieldName),
         ]);
     }

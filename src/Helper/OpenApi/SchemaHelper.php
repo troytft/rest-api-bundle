@@ -1,11 +1,11 @@
 <?php
 
-namespace RestApiBundle\Helper;
+namespace RestApiBundle\Helper\OpenApi;
 
 use cebe\openapi\spec as OpenApi;
 use Symfony\Component\PropertyInfo;
 
-final class OpenApiHelper
+final class SchemaHelper
 {
     private static function createExampleDateTime(): \DateTime
     {

@@ -153,7 +153,7 @@ class RequestModelResolver
 
     private function resolveScalarTransformer(string $type, bool $nullable, array $validationConstraints): OpenApi\Schema
     {
-        $result = RestApiBundle\Helper\OpenApiHelper::createScalarFromString($type, $nullable);
+        $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromString($type, $nullable);
         $this->applyConstraints($result, $validationConstraints);
 
         return $result;
@@ -165,7 +165,7 @@ class RequestModelResolver
     private function resolveDateTimeTransformer(array $options, bool $nullable, array $validationConstraints): OpenApi\Schema
     {
         $format = $options[RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateTimeFormat();
-        $result = RestApiBundle\Helper\OpenApiHelper::createDateTime($format, $nullable);
+        $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createDateTime($format, $nullable);
 
         $this->applyConstraints($result, $validationConstraints);
 
@@ -176,7 +176,7 @@ class RequestModelResolver
     {
         $format = $options[RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
 
-        return RestApiBundle\Helper\OpenApiHelper::createDate($format, $nullable);
+        return RestApiBundle\Helper\OpenApi\SchemaHelper::createDate($format, $nullable);
     }
 
     private function resolveDoctrineEntityTransformer(array $options, bool $nullable): OpenApi\Schema
@@ -187,7 +187,7 @@ class RequestModelResolver
         $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
 
         if ($isMultiple) {
-            $itemsType = RestApiBundle\Helper\OpenApiHelper::createScalarFromString($columnType);
+            $itemsType = RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromString($columnType);
 
             $result = new OpenApi\Schema([
                 'type' => OpenApi\Type::ARRAY,
@@ -196,7 +196,7 @@ class RequestModelResolver
                 'description' => sprintf('Collection of "%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName),
             ]);
         } else {
-            $result = RestApiBundle\Helper\OpenApiHelper::createScalarFromString($columnType);
+            $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromString($columnType);
             $result->description = sprintf('"%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName);
             $result->nullable = $nullable;
         }
