@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success;
+namespace Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess;
 
 use Tests;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,9 +16,9 @@ class WriterController
      *
      * @Route(methods="POST")
      */
-    public function createAction(Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\RequestModel\WriterData $requestModel): Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\ResponseModel\Author
+    public function createAction(Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\WriterData $requestModel): Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\Author
     {
-        return new Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\ResponseModel\Author();
+        return new Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\Author();
     }
 
     /**
@@ -26,9 +26,9 @@ class WriterController
      *
      * @Route(methods="GET")
      *
-     * @return Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\ResponseModel\Author[]
+     * @return Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\Author[]
      */
-    public function listAction(Tests\Fixture\OpenApi\GenerateSpecificationCommand\Success\RequestModel\WriterList $requestModel)
+    public function listAction(Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\WriterList $requestModel)
     {
         return [];
     }

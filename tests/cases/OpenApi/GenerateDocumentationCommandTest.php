@@ -14,9 +14,9 @@ class GenerateDocumentationCommandTest extends Tests\BaseTestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
-            'input' => 'tests/src/Fixture/OpenApi/GenerateSpecificationCommand/Success',
+            'input' => 'tests/src/Fixture/OpenApi/GenerateDocumentationCommandTest/TestSuccess',
             'output' => $fileName,
-            '--template' => 'tests/src/Fixture/OpenApi/GenerateSpecificationCommand/Success/Resources/template.yaml'
+            '--template' => 'tests/src/Fixture/OpenApi/GenerateDocumentationCommandTest/TestSuccess/Resources/template.yaml'
         ]);
 
         $this->assertSame(0, $commandTester->getStatusCode());
@@ -32,9 +32,9 @@ class GenerateDocumentationCommandTest extends Tests\BaseTestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
-            'input' => 'tests/src/Fixture/OpenApi/GenerateSpecificationCommand/Success',
+            'input' => 'tests/src/Fixture/OpenApi/GenerateDocumentationCommandTest/TestSuccess',
             'output' => $fileName,
-            '--template' => 'tests/src/Fixture/OpenApi/GenerateSpecificationCommand/Success/Resources/template.json'
+            '--template' => 'tests/src/Fixture/OpenApi/GenerateDocumentationCommandTest/TestSuccess/Resources/template.json'
         ]);
 
         $this->assertSame(0, $commandTester->getStatusCode());
@@ -50,12 +50,12 @@ class GenerateDocumentationCommandTest extends Tests\BaseTestCase
 
         $commandTester = new CommandTester($command);
         $commandTester->execute([
-            'input' => 'tests/src/Fixture/OpenApi/GenerateSpecificationCommand/InvalidDefinition',
+            'input' => 'tests/src/Fixture/OpenApi/GenerateDocumentationCommandTest/TestInvalidDefinition',
             'output' => $fileName,
         ]);
 
         $this->assertSame(1, $commandTester->getStatusCode());
-        $this->assertSame("An error occurred:\nAssociated parameter for placeholder unknown_parameter not matched Tests\Fixture\OpenApi\GenerateSpecificationCommand\InvalidDefinition\DefaultController->testAction()", trim($commandTester->getDisplay()));
+        $this->assertSame("An error occurred:\nAssociated parameter for placeholder unknown_parameter not matched Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestInvalidDefinition\DefaultController->testAction()", trim($commandTester->getDisplay()));
     }
 
     private function getOutputFileName(): string

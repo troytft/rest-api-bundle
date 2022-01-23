@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Fixture\OpenApi\GenerateSpecificationCommand\InvalidDefinition;
+namespace Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestInvalidDefinition;
 
 use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Mapping\OpenApi as Docs;
