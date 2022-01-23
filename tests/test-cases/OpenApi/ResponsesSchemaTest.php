@@ -9,9 +9,9 @@ class ResponsesSchemaTest extends Tests\BaseTestCase
             new \RestApiBundle\Mapping\OpenApi\Endpoint(title: 'title', tags: 'tag'),
             new \Symfony\Component\Routing\Annotation\Route('/', methods: 'GET')
         );
-        $specification = $this->getSpecificationGenerator()->generate([$endpointData]);
+        $schema = $this->getSpecificationGenerator()->generate([$endpointData]);
 
-        $this->assertMatchesJsonSnapshot(json_encode($specification->getSerializableData()));
+        $this->assertMatchesJsonSnapshot(RestApiBundle\Helper\OpenApiHelper::toJson($schema));
     }
 
     public function testBinaryFileResponse(): void
@@ -21,9 +21,9 @@ class ResponsesSchemaTest extends Tests\BaseTestCase
             new \RestApiBundle\Mapping\OpenApi\Endpoint(title: 'title', tags: 'tag'),
             new \Symfony\Component\Routing\Annotation\Route('/', methods: 'GET')
         );
-        $specification = $this->getSpecificationGenerator()->generate([$endpointData]);
+        $schema = $this->getSpecificationGenerator()->generate([$endpointData]);
 
-        $this->assertMatchesJsonSnapshot(json_encode($specification->getSerializableData()));
+        $this->assertMatchesJsonSnapshot(RestApiBundle\Helper\OpenApiHelper::toJson($schema));
     }
 
     public function testVoidResponse(): void
@@ -33,9 +33,9 @@ class ResponsesSchemaTest extends Tests\BaseTestCase
             new \RestApiBundle\Mapping\OpenApi\Endpoint(title: 'title', tags: 'tag'),
             new \Symfony\Component\Routing\Annotation\Route('/', methods: 'GET')
         );
-        $specification = $this->getSpecificationGenerator()->generate([$endpointData]);
+        $schema = $this->getSpecificationGenerator()->generate([$endpointData]);
 
-        $this->assertMatchesJsonSnapshot(json_encode($specification->getSerializableData()));
+        $this->assertMatchesJsonSnapshot(RestApiBundle\Helper\OpenApiHelper::toJson($schema));
     }
 
     private function getSpecificationGenerator(): RestApiBundle\Services\OpenApi\Schema\SchemaGenerator
