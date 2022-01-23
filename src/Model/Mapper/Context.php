@@ -4,5 +4,7 @@ namespace RestApiBundle\Model\Mapper;
 
 class Context
 {
-    public bool $isClearMissing = true;
+    public function __construct(public bool $clearMissing = true)
+    {
+    }
 }

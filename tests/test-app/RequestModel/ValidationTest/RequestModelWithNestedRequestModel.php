@@ -3,26 +3,10 @@
 namespace TestApp\RequestModel\ValidationTest;
 
 use TestApp;
-use RestApiBundle\Mapping\Mapper as Mapper;
+use RestApiBundle\Mapping\Mapper;
 
+#[Mapper\ExposeAll]
 class RequestModelWithNestedRequestModel implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
-    /**
-     * @var TestApp\RequestModel\ValidationTest\InnerRequestModel
-     *
-     * @Mapper\Expose
-     */
-    private $nestedRequestModel;
-
-    public function getNestedRequestModel(): TestApp\RequestModel\ValidationTest\InnerRequestModel
-    {
-        return $this->nestedRequestModel;
-    }
-
-    public function setNestedRequestModel(TestApp\RequestModel\ValidationTest\InnerRequestModel $nestedRequestModel)
-    {
-        $this->nestedRequestModel = $nestedRequestModel;
-
-        return $this;
-    }
+    public TestApp\RequestModel\ValidationTest\ChildModel $childModel;
 }

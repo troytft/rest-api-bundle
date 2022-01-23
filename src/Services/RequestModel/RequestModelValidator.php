@@ -97,16 +97,16 @@ class RequestModelValidator
     }
 
     /**
-     * @param RestApiBundle\Mapping\RequestModel\RequestModelInterface $instance
-     * @param string $propertyName
-     *
-     * @return RestApiBundle\Mapping\RequestModel\RequestModelInterface|RestApiBundle\Mapping\RequestModel\RequestModelInterface[]:null
+     * @return RestApiBundle\Mapping\RequestModel\RequestModelInterface|RestApiBundle\Mapping\RequestModel\RequestModelInterface[]|null
      */
     private function getPropertyValueFromInstance(RestApiBundle\Mapping\RequestModel\RequestModelInterface $instance, string $propertyName)
     {
         $getterName = 'get' . ucfirst($propertyName);
+        if (method_exists($instance, $getterName)) {
+            return $instance->{$getterName}();
+        }
 
-        return $instance->{$getterName}();
+        return $instance->{$propertyName};
     }
 
     private function appendPrefixToArrayKeys(string $prefix, array $array)
