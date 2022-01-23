@@ -36,9 +36,9 @@ class Book implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
         return null;
     }
 
-    public function getStatus(): Tests\Fixture\Common\Enum\BookStatus
+    public function getStatus(): Tests\Fixture\TestApp\Enum\BookStatus
     {
-        return Tests\Fixture\Common\Enum\BookStatus::from($this->data->getStatus());
+        return Tests\Fixture\TestApp\Enum\BookStatus::from($this->data->getStatus());
     }
 
     public function getReleaseDate(): RestApiBundle\Mapping\ResponseModel\SerializableDate

@@ -1,13 +1,13 @@
 <?php
 
-namespace TestApp\Entity;
+namespace Tests\Fixture\TestApp\Entity;
 
-use TestApp;
+use Tests;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="TestApp\Repository\AuthorRepository")
+ * @ORM\Entity(repositoryClass="Tests\Fixture\TestApp\Repository\AuthorRepository")
  */
 class Author
 {
@@ -48,7 +48,7 @@ class Author
     }
 
     /**
-     * @return TestApp\Entity\Book[]
+     * @return Tests\Fixture\TestApp\Entity\Book[]
      */
     public function getGenres(): array
     {

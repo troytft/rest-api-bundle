@@ -10,8 +10,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/src",
-            "TestApp\\": "tests/test-app"
+            "Tests\\": "tests/src"
         }
     },
     "config": {

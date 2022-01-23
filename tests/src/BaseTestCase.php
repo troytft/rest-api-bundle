@@ -2,10 +2,10 @@
 
 namespace Tests;
 
+use Tests;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use RestApiBundle;
 use Spatie\Snapshots\MatchesSnapshots;
-use TestApp;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
@@ -32,10 +32,10 @@ abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
     protected function createKernel()
     {
         $this->kernel = parent::createKernel();
-        $this->kernel->setRootDir(__DIR__ . '/../test-app');
-        $this->kernel->addBundle(TestApp\TestAppBundle::class);
+        $this->kernel->setRootDir(__DIR__ . '/Fixture/TestApp');
+        $this->kernel->addBundle(Tests\Fixture\TestApp\TestAppBundle::class);
         $this->kernel->addBundle(DoctrineBundle::class);
-        $this->kernel->addConfigFile(__DIR__ . '/../test-app/Resources/config/config.yaml');
+        $this->kernel->addConfigFile(__DIR__ . '/Fixture/TestApp/Resources/config/config.yaml');
 
         return $this->kernel;
     }

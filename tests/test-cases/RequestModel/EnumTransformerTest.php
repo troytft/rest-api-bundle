@@ -4,25 +4,25 @@ class EnumTransformerTest extends Tests\BaseTestCase
 {
     public function testSuccess()
     {
-        $model = new Tests\Fixture\TestCases\RequestModel\EnumTransformerTest\Model();
+        $model = new Tests\Fixture\RequestModel\EnumTransformerTest\Model();
         $this->getRequestModelHandler()->handle($model, [
-            'value' => \Tests\Fixture\Common\Enum\BookStatus::CREATED,
+            'field' => Tests\Fixture\TestApp\Enum\BookStatus::CREATED,
         ]);
 
-        $this->assertTrue($model->getValue() instanceof \Tests\Fixture\Common\Enum\BookStatus);
-        $this->assertSame(\Tests\Fixture\Common\Enum\BookStatus::CREATED, $model->getValue()->getValue());
+        $this->assertTrue($model->getField() instanceof Tests\Fixture\TestApp\Enum\BookStatus);
+        $this->assertSame(\Tests\Fixture\TestApp\Enum\BookStatus::CREATED, $model->getField()->getValue());
     }
 
-    public function testValueNotFoundInEnum()
+    public function testValueNotFound()
     {
         try {
-            $model = new Tests\Fixture\TestCases\RequestModel\EnumTransformerTest\Model();
+            $model = new Tests\Fixture\RequestModel\EnumTransformerTest\Model();
             $this->getRequestModelHandler()->handle($model, [
-                'value' => 'invalid'
+                'field' => 'invalid'
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['value' => ['The value you selected is not a valid choice.']], $exception->getProperties());
+            $this->assertSame(['field' => ['The value you selected is not a valid choice.']], $exception->getProperties());
         }
     }
 

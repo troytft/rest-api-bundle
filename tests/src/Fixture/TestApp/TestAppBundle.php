@@ -1,6 +1,6 @@
 <?php
 
-namespace TestApp;
+namespace Tests\Fixture\TestApp;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

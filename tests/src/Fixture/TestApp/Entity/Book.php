@@ -1,13 +1,13 @@
 <?php
 
-namespace TestApp\Entity;
+namespace Tests\Fixture\TestApp\Entity;
 
 use Tests;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="TestApp\Repository\BookRepository")
+ * @ORM\Entity(repositoryClass="Tests\Fixture\TestApp\Repository\BookRepository")
  */
 class Book
 {
@@ -37,7 +37,7 @@ class Book
     /**
      * @var string
      */
-    private $status = Tests\Fixture\Common\Enum\BookStatus::PUBLISHED;
+    private $status = Tests\Fixture\TestApp\Enum\BookStatus::PUBLISHED;
 
     public function __construct(int $id, string $slug, string $title)
     {

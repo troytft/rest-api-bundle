@@ -2,58 +2,76 @@
 
 class EntityTransformerMultipleTest extends Tests\BaseTestCase
 {
-    public function testSuccess()
+    public function testSuccessFetch()
     {
-        $model = new TestApp\RequestModel\DoctrineEntityTransformerMultipleTest\Model();
+        $model = new Tests\Fixture\RequestModel\EntityTransformerMultipleTest\Model();
+
+        // by id
         $this->getRequestModelHandler()->handle($model, [
-            'books' => [1, 2]
+            'byId' => [1, 2]
         ]);
-        $this->assertIsArray($model->getBooks());
-        $this->assertCount(2, $model->getBooks());
-        $this->assertTrue($model->getBooks()[0] instanceof TestApp\Entity\Book);
-        $this->assertSame($model->getBooks()[0]->getId(), 1);
-        $this->assertTrue($model->getBooks()[1] instanceof TestApp\Entity\Book);
-        $this->assertSame($model->getBooks()[1]->getId(), 2);
+
+        $this->assertCount(2, $model->byId);
+        $this->assertSame(1, $model->byId[0]->getId());
+        $this->assertSame(2, $model->byId[1]->getId());
+
+        // by custom field
+        $this->getRequestModelHandler()->handle($model, [
+            'bySlug' => [
+                'keto-cookbook-beginners-low-carb-homemade',
+                'design-ideas-making-house-home',
+            ]
+        ]);
+
+        $this->assertCount(2, $model->bySlug);
+        $this->assertSame(1, $model->bySlug[0]->getId());
+        $this->assertSame(2, $model->bySlug[1]->getId());
     }
 
     public function testOrder()
     {
-        $model = new TestApp\RequestModel\DoctrineEntityTransformerMultipleTest\Model();
+        $model = new Tests\Fixture\RequestModel\EntityTransformerMultipleTest\Model();
+
         $this->getRequestModelHandler()->handle($model, [
-            'books' => [2, 1]
+            'byId' => [2, 1],
         ]);
 
-        $this->assertIsArray($model->getBooks());
-        $this->assertCount(2, $model->getBooks());
-        $this->assertTrue($model->getBooks()[0] instanceof TestApp\Entity\Book);
-        $this->assertSame($model->getBooks()[0]->getId(), 2);
-        $this->assertTrue($model->getBooks()[1] instanceof TestApp\Entity\Book);
-        $this->assertSame($model->getBooks()[1]->getId(), 1);
+        $this->assertSame(2, $model->byId[0]->getId());
+        $this->assertSame(1, $model->byId[1]->getId());
+
+        $this->getRequestModelHandler()->handle($model, [
+            'byId' => [1, 2],
+        ]);
+
+        $this->assertSame(1, $model->byId[0]->getId());
+        $this->assertSame(2, $model->byId[1]->getId());
     }
 
     public function testEntityNotFound()
     {
+        $model = new Tests\Fixture\RequestModel\EntityTransformerMultipleTest\Model();
+
         try {
-            $model = new TestApp\RequestModel\DoctrineEntityTransformerMultipleTest\Model();
             $this->getRequestModelHandler()->handle($model, [
-                'books' => [1, 2, 3]
+                'byId' => [1, 2, 3],
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['books' => ['One entity of entities collection not found.']], $exception->getProperties());
+            $this->assertSame(['byId' => ['One entity of entities collection not found.']], $exception->getProperties());
         }
     }
 
-    public function testRepeatableEntity()
+    public function testNotUniqueValues()
     {
+        $model = new Tests\Fixture\RequestModel\EntityTransformerMultipleTest\Model();
+
         try {
-            $model = new TestApp\RequestModel\DoctrineEntityTransformerMultipleTest\Model();
             $this->getRequestModelHandler()->handle($model, [
-                'books' => [1, 1]
+                'byId' => [1, 1],
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
-            $this->assertSame(['books' => ['Values should be unique.']], $exception->getProperties());
+            $this->assertSame(['byId' => ['Values should be unique.']], $exception->getProperties());
         }
     }
 
