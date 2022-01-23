@@ -4,7 +4,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
 {
     public function testSuccessFetch()
     {
-        $model = new Tests\Fixture\RequestModel\EntityTransformerMultipleTest\Model();
+        $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
 
         // by id
         $this->getRequestModelHandler()->handle($model, [
@@ -30,7 +30,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
 
     public function testOrder()
     {
-        $model = new Tests\Fixture\RequestModel\EntityTransformerMultipleTest\Model();
+        $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
 
         $this->getRequestModelHandler()->handle($model, [
             'byId' => [2, 1],
@@ -49,7 +49,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
 
     public function testEntityNotFound()
     {
-        $model = new Tests\Fixture\RequestModel\EntityTransformerMultipleTest\Model();
+        $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
 
         try {
             $this->getRequestModelHandler()->handle($model, [
@@ -63,7 +63,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
 
     public function testNotUniqueValues()
     {
-        $model = new Tests\Fixture\RequestModel\EntityTransformerMultipleTest\Model();
+        $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
 
         try {
             $this->getRequestModelHandler()->handle($model, [

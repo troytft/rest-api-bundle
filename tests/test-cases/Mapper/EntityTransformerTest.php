@@ -4,7 +4,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
 {
     public function testSuccessFetch()
     {
-        $model = new Tests\Fixture\RequestModel\EntityTransformerTest\Model();
+        $model = new Tests\Fixture\Mapper\EntityTransformerTest\Model();
 
         // by id
         $this->getRequestHandler()->handle($model, [
@@ -23,7 +23,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
 
     public function testEntityNotFound()
     {
-        $model = new Tests\Fixture\RequestModel\EntityTransformerTest\Model();
+        $model = new Tests\Fixture\Mapper\EntityTransformerTest\Model();
 
         // by id
         try {
@@ -48,7 +48,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
 
     public function testInvalidValueType()
     {
-        $model = new Tests\Fixture\RequestModel\EntityTransformerTest\Model();
+        $model = new Tests\Fixture\Mapper\EntityTransformerTest\Model();
 
         // integer type
         try {

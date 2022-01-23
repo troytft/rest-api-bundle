@@ -4,7 +4,7 @@ class ValidationTest extends Tests\BaseTestCase
 {
     public function testNestedValidation()
     {
-        $model = new Tests\Fixture\RequestModel\ValidationTest\TestNestedValidationModel();
+        $model = new Tests\Fixture\Mapper\ValidationTest\TestNestedValidationModel();
 
         // nested model
         try {
@@ -65,7 +65,7 @@ class ValidationTest extends Tests\BaseTestCase
 
     public function testUndefinedKey()
     {
-        $model = new Tests\Fixture\RequestModel\ValidationTest\TestUndefinedKeyModel();
+        $model = new Tests\Fixture\Mapper\ValidationTest\TestUndefinedKeyModel();
 
         try {
             $this->getRequestModelHandler()->handle($model, [

@@ -26,7 +26,7 @@ class MapperBench
     {
         $schemaResolver = new RestApiBundle\Services\Mapper\SchemaResolver();
         $schemaResolver
-            ->resolve(Tests\Fixture\Mapper\Benchmark\RootModel::class);
+            ->resolve(Tests\Fixture\Benchmark\RootModel::class);
     }
 
     /**
@@ -34,7 +34,7 @@ class MapperBench
      */
     public function benchComplexModelMapping(): void
     {
-        $model = new Tests\Fixture\Mapper\Benchmark\RootModel();
+        $model = new Tests\Fixture\Benchmark\RootModel();
 
         $schemaResolver = new RestApiBundle\Services\Mapper\SchemaResolver();
         $mapper = new RestApiBundle\Services\Mapper\Mapper($schemaResolver);
@@ -53,7 +53,7 @@ class MapperBench
      */
     public function benchComplexModelMappingWithCache(): void
     {
-        $model = new Tests\Fixture\Mapper\Benchmark\RootModel();
+        $model = new Tests\Fixture\Benchmark\RootModel();
 
         $mapper = new RestApiBundle\Services\Mapper\Mapper($this->cacheSchemaResolver);
         $mapper

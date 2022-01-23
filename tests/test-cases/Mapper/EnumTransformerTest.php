@@ -4,7 +4,7 @@ class EnumTransformerTest extends Tests\BaseTestCase
 {
     public function testSuccess()
     {
-        $model = new Tests\Fixture\RequestModel\EnumTransformerTest\Model();
+        $model = new Tests\Fixture\Mapper\EnumTransformerTest\Model();
         $this->getRequestModelHandler()->handle($model, [
             'field' => Tests\Fixture\TestApp\Enum\BookStatus::CREATED,
         ]);
@@ -16,7 +16,7 @@ class EnumTransformerTest extends Tests\BaseTestCase
     public function testValueNotFound()
     {
         try {
-            $model = new Tests\Fixture\RequestModel\EnumTransformerTest\Model();
+            $model = new Tests\Fixture\Mapper\EnumTransformerTest\Model();
             $this->getRequestModelHandler()->handle($model, [
                 'field' => 'invalid'
             ]);
