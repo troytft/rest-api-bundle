@@ -2,34 +2,39 @@
 
 class ValidationTest extends Tests\BaseTestCase
 {
-    public function testNestedRequestModel()
+    public function testNestedValidation()
     {
-        $innerRequestModel = new TestApp\RequestModel\ValidationTest\InnerRequestModel();
-        $requestModel = new TestApp\RequestModel\ValidationTest\RequestModelWithNestedRequestModel();
-        $requestModel->setNestedRequestModel($innerRequestModel);
+        $model = new Tests\Fixture\RequestModel\ValidationTest\TestNestedValidationModel();
 
-        $value = $this->getRequestModelValidator()->validate($requestModel);
+        // nested model
+        try {
+            $this->getRequestModelHandler()->handle($model, [
+                'childModel' => [],
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $this->assertSame([
+                'childModel.field' => ['This value is not valid.'],
+            ], $exception->getProperties());
+        }
 
-        $this->assertCount(1, $value);
-        $this->assertArrayHasKey('nestedRequestModel.field', $value);
-        $this->assertSame(['Invalid value.'], $value['nestedRequestModel.field']);
-    }
-
-    public function testNestedArrayOfRequestModels()
-    {
-        $requestModel = new TestApp\RequestModel\ValidationTest\RequestModelWithNestedArrayOfRequestModels();
-        $requestModel->setNestedRequestModels([
-            new TestApp\RequestModel\ValidationTest\InnerRequestModel(),
-            new TestApp\RequestModel\ValidationTest\InnerRequestModel(),
-        ]);
-
-        $value = $this->getRequestModelValidator()->validate($requestModel);
-
-        $this->assertCount(2, $value);
-        $this->assertArrayHasKey('nestedRequestModels.0.field', $value);
-        $this->assertArrayHasKey('nestedRequestModels.1.field', $value);
-        $this->assertSame(['Invalid value.'], $value['nestedRequestModels.0.field']);
-        $this->assertSame(['Invalid value.'], $value['nestedRequestModels.1.field']);
+        // nested collection of models
+        try {
+            $this->getRequestModelHandler()->handle($model, [
+                'childModels' => [
+                    [
+                    ],
+                    [
+                    ],
+                ],
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\RequestModelMappingException $exception) {
+            $this->assertSame([
+                'childModels.0.field' => ['This value is not valid.'],
+                'childModels.1.field' => ['This value is not valid.'],
+            ], $exception->getProperties());
+        }
     }
 
     public function testClearMissing()
@@ -126,12 +131,7 @@ class ValidationTest extends Tests\BaseTestCase
             ], $exception->getProperties());
         }
     }
-
-    private function getRequestModelValidator(): RestApiBundle\Services\RequestModel\RequestModelValidator
-    {
-        return $this->getContainer()->get(RestApiBundle\Services\RequestModel\RequestModelValidator::class);
-    }
-
+    
     private function getRequestModelHandler(): RestApiBundle\Services\RequestModel\RequestModelHandler
     {
         return $this->getContainer()->get(RestApiBundle\Services\RequestModel\RequestModelHandler::class);
