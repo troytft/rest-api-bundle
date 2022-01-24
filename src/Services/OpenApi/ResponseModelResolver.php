@@ -188,8 +188,15 @@ class ResponseModelResolver
                 'nullable' => $type->isNullable(),
                 'enum' => $enumValues,
             ]);
+        } elseif (is_float($enumValues[0])) {
+            $result = new OpenApi\Schema([
+                'type' => OpenApi\Type::NUMBER,
+                'format' => 'double',
+                'nullable' => $type->isNullable(),
+                'enum' => $enumValues,
+            ]);
         } else {
-            throw new \LogicException('Invalid value');
+            throw new \InvalidArgumentException();
         }
 
         return $result;
