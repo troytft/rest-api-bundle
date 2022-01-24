@@ -189,7 +189,7 @@ class ResponseModelResolver
                 'enum' => $enumValues,
             ]);
         } else {
-            throw new \LogicException(gettype($enumValues[0]));
+            throw new \LogicException($type->getClassName());
         }
 
         return $result;
