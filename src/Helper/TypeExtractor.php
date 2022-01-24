@@ -184,7 +184,7 @@ final class TypeExtractor
 
         $values = [];
         foreach ($reflectionClass->getReflectionConstants(\ReflectionClassConstant::IS_PUBLIC) as $reflectionConstant) {
-            if ($reflectionConstant->getValue()) {
+            if (is_scalar($reflectionConstant->getValue())) {
                 $values[] = $reflectionConstant->getValue();
             }
         }
