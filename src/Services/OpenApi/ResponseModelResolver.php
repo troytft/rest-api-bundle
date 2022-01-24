@@ -189,8 +189,7 @@ class ResponseModelResolver
                 'enum' => $enumValues,
             ]);
         } else {
-            var_dump('sss', $type);
-            throw new \LogicException($type->getClassName());
+            throw new \LogicException('Invalid value');
         }
 
         return $result;
