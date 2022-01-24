@@ -53,6 +53,13 @@ class DoctrineEntityTransformer implements TransformerInterface
 
     private function transformMultipleItems(string $class, string $fieldName, mixed $value): array
     {
+        $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
+        if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_INT && !is_int($value[0] ?? null)) {
+            throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
+        } elseif ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING && !is_string($value[0] ?? null)) {
+            throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
+        }
+
         if (count($value) !== count(array_unique($value))) {
             throw new RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException();
         }

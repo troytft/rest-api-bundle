@@ -28,6 +28,20 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
         $this->assertSame(2, $model->bySlug[1]->getId());
     }
 
+    public function testInvalid()
+    {
+        $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
+
+        try {
+            $this->getMapper()->map($model, [
+                'byId' => 'undefined'
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
+            $this->assertSame(['byId' => ['This value should be a collection of integers.']], $exception->getProperties());
+        }
+    }
+
     public function testOrder()
     {
         $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
