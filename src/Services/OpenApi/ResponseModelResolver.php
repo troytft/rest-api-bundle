@@ -120,7 +120,7 @@ class ResponseModelResolver
                 break;
 
             case RestApiBundle\Helper\TypeExtractor::isScalar($type):
-                $result = RestApiBundle\Helper\OpenApiHelper::createScalarFromPropertyInfoType($type);
+                $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromPropertyInfoType($type);
 
                 break;
 
@@ -137,7 +137,7 @@ class ResponseModelResolver
 
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\InterfaceChecker::isDateTime($type->getClassName()):
                 $format = $this->settingsProvider->getResponseModelDateTimeFormat();
-                $result = RestApiBundle\Helper\OpenApiHelper::createDateTime($format, $type->isNullable());
+                $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createDateTime($format, $type->isNullable());
 
                 break;
 
@@ -148,7 +148,7 @@ class ResponseModelResolver
 
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\InterfaceChecker::isResponseModelDate($type->getClassName()):
                 $format = $this->settingsProvider->getResponseModelDateFormat();
-                $result = RestApiBundle\Helper\OpenApiHelper::createDate($format, $type->isNullable());
+                $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createDate($format, $type->isNullable());
 
                 break;
 

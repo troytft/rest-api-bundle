@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Fixture\OpenApi\ResponsesTest;
+namespace Tests\Fixture\OpenApi\SchemaGeneratorTest;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
