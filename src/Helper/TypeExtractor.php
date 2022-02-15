@@ -180,12 +180,16 @@ final class TypeExtractor
      */
     public static function extractEnumValues(string $class): array
     {
-        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+        if (method_exists($class, 'getValues')) {
+            $values = $class::getValues();
+        } else {
+            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
 
-        $values = [];
-        foreach ($reflectionClass->getReflectionConstants(\ReflectionClassConstant::IS_PUBLIC) as $reflectionConstant) {
-            if (is_scalar($reflectionConstant->getValue())) {
-                $values[] = $reflectionConstant->getValue();
+            $values = [];
+            foreach ($reflectionClass->getReflectionConstants(\ReflectionClassConstant::IS_PUBLIC) as $reflectionConstant) {
+                if (is_scalar($reflectionConstant->getValue())) {
+                    $values[] = $reflectionConstant->getValue();
+                }
             }
         }
 
