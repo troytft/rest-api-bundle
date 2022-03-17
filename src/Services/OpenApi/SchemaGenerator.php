@@ -378,7 +378,7 @@ class SchemaGenerator
         foreach ($requestModelSchema->properties as $propertyName => $propertySchema) {
             $parameter = new OpenApi\Parameter([
                 'in' => 'query',
-                'name' => $propertyName,
+                'name' => $propertySchema->type === OpenApi\Type::ARRAY ? sprintf('%s[]', $propertyName) : $propertyName,
                 'required' => !$propertySchema->nullable,
                 'schema' => $propertySchema,
             ]);
