@@ -28,17 +28,44 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
         $this->assertSame(2, $model->bySlug[1]->getId());
     }
 
-    public function testInvalid()
+    public function testInvalidCollection()
     {
         $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
 
         try {
             $this->getMapper()->map($model, [
-                'byId' => 'undefined'
+                'byId' => 13,
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
             $this->assertSame(['byId' => ['This value should be a collection of integers.']], $exception->getProperties());
+        }
+
+        try {
+            $this->getMapper()->map($model, [
+                'byId' => [null,],
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
+            $this->assertSame(['byId' => ['This value should be a collection of integers.']], $exception->getProperties());
+        }
+
+        try {
+            $this->getMapper()->map($model, [
+                'bySlug' => 'keto-cookbook-beginners-low-carb-homemade',
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
+            $this->assertSame(['bySlug' => ['This value should be a collection of strings.']], $exception->getProperties());
+        }
+
+        try {
+            $this->getMapper()->map($model, [
+                'bySlug' => [null,],
+            ]);
+            $this->fail();
+        } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
+            $this->assertSame(['bySlug' => ['This value should be a collection of strings.']], $exception->getProperties());
         }
     }
 
