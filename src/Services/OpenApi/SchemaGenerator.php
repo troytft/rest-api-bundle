@@ -142,7 +142,7 @@ class SchemaGenerator
     {
         $operation = new OpenApi\Operation([
             'summary' => $endpointData->endpointMapping->title,
-            'responses' => $this->createResponses($endpointData->reflectionMethod),
+            'responses' => $this->createResponses($endpointData->reflectionMethod, $endpointData->endpointMapping->httpStatusCode),
             'tags' => match (true) {
                 is_string($endpointData->endpointMapping->tags) => [$endpointData->endpointMapping->tags],
                 is_array($endpointData->endpointMapping->tags) => $endpointData->endpointMapping->tags,
@@ -260,7 +260,7 @@ class SchemaGenerator
         return $placeholders;
     }
 
-    private function createResponses(\ReflectionMethod $reflectionMethod): OpenApi\Responses
+    private function createResponses(\ReflectionMethod $reflectionMethod, ?int $httpStatusCode = null): OpenApi\Responses
     {
         $responses = new OpenApi\Responses([]);
 
@@ -270,7 +270,7 @@ class SchemaGenerator
         }
 
         if ($returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL || $returnType->isNullable()) {
-            $this->addEmptyResponse($responses);
+            $this->addEmptyResponse($responses, $httpStatusCode);
         }
 
         if ($returnType->isCollection()) {
@@ -279,14 +279,14 @@ class SchemaGenerator
                 throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Invalid response type, only collection of response models allowed', $reflectionMethod);
             }
 
-            $this->addCollectionOfResponseModelsResponse($responses, $returnType);
+            $this->addCollectionOfResponseModelsResponse($responses, $returnType, $httpStatusCode);
         } elseif ($returnType->getClassName()) {
             if (RestApiBundle\Helper\InterfaceChecker::isResponseModel($returnType->getClassName())) {
-                $this->addSingleResponseModelResponse($responses, $returnType);
+                $this->addSingleResponseModelResponse($responses, $returnType, $httpStatusCode);
             } elseif ($returnType->getClassName() === HttpFoundation\RedirectResponse::class) {
-                $this->addRedirectResponse($responses);
+                $this->addRedirectResponse($responses, $httpStatusCode);
             } elseif ($returnType->getClassName() === HttpFoundation\BinaryFileResponse::class) {
-                $this->addBinaryFileResponse($responses);
+                $this->addBinaryFileResponse($responses, $httpStatusCode);
             } else {
                 throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException(sprintf('Unknown response class type "%s"', $returnType->getClassName()), $reflectionMethod);
             }
@@ -295,14 +295,18 @@ class SchemaGenerator
         return $responses;
     }
 
-    private function addEmptyResponse(OpenApi\Responses $responses): void
+    private function addEmptyResponse(OpenApi\Responses $responses, ?int $httpStatusCode = null): void
     {
-        $responses->addResponse('204', new OpenApi\Response(['description' => 'Response with empty body']));
+        $httpStatusCode = $httpStatusCode ?? 204;
+
+        $responses->addResponse((string) $httpStatusCode, new OpenApi\Response(['description' => 'Response with empty body']));
     }
 
-    private function addBinaryFileResponse(OpenApi\Responses $responses): void
+    private function addBinaryFileResponse(OpenApi\Responses $responses, ?int $httpStatusCode = null): void
     {
-        $responses->addResponse('200', new OpenApi\Response([
+        $httpStatusCode = $httpStatusCode ?? 200;
+
+        $responses->addResponse((string) $httpStatusCode, new OpenApi\Response([
             'description' => 'Response with file download',
             'headers' => [
                 'Content-Type' => [
@@ -316,9 +320,11 @@ class SchemaGenerator
         ]));
     }
 
-    private function addRedirectResponse(OpenApi\Responses $responses): void
+    private function addRedirectResponse(OpenApi\Responses $responses, ?int $httpStatusCode = null): void
     {
-        $responses->addResponse('302', new OpenApi\Response([
+        $httpStatusCode = $httpStatusCode ?? 302;
+        
+        $responses->addResponse((string) $httpStatusCode, new OpenApi\Response([
             'description' => 'Response with redirect',
             'headers' => [
                 'Location' => [
@@ -332,9 +338,11 @@ class SchemaGenerator
         ]));
     }
 
-    private function addSingleResponseModelResponse(OpenApi\Responses $responses, PropertyInfo\Type $returnType): void
+    private function addSingleResponseModelResponse(OpenApi\Responses $responses, PropertyInfo\Type $returnType, ?int $httpStatusCode = null): void
     {
-        $responses->addResponse('200', new OpenApi\Response([
+        $httpStatusCode = $httpStatusCode ?? 200;
+        
+        $responses->addResponse((string) $httpStatusCode, new OpenApi\Response([
             'description' => 'Response with JSON body',
             'content' => [
                 'application/json' => [
@@ -344,9 +352,11 @@ class SchemaGenerator
         ]));
     }
 
-    private function addCollectionOfResponseModelsResponse(OpenApi\Responses $responses, PropertyInfo\Type $returnType): void
+    private function addCollectionOfResponseModelsResponse(OpenApi\Responses $responses, PropertyInfo\Type $returnType, ?int $httpStatusCode = null): void
     {
-        $responses->addResponse('200', new OpenApi\Response([
+        $httpStatusCode = $httpStatusCode ?? 200;
+        
+        $responses->addResponse((string) $httpStatusCode, new OpenApi\Response([
             'description' => 'Response with JSON body',
             'content' => [
                 'application/json' => [
