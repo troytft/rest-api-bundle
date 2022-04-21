@@ -203,6 +203,12 @@ class SchemaGenerator
             }
         }
 
+        if ($requestModelType && $endpointData->endpointMapping->requestModel) {
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('RequestModel already defined by action arguments', $endpointData->reflectionMethod);
+        } elseif ($endpointData->endpointMapping->requestModel) {
+            $requestModelType = new PropertyInfo\Type(PropertyInfo\Type::BUILTIN_TYPE_OBJECT, false, $endpointData->endpointMapping->requestModel);
+        }
+
         if ($requestModelType && $httpMethod === HttpFoundation\Request::METHOD_GET) {
             $operationParameters = array_merge($operationParameters, $this->createQueryParametersFromRequestModel($requestModelType->getClassName()));
         } elseif ($requestModelType) {
