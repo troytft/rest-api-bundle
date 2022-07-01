@@ -29,7 +29,12 @@ class ModelValidator
      */
     public function validate(RestApiBundle\Mapping\Mapper\ModelInterface $model): array
     {
-        return array_merge_recursive($this->getFirstLevelErrors($model), $this->getNestedErrors($model));
+        $errors = $this->getFirstLevelErrors($model);
+        if (!$errors) {
+            $errors = $this->getNestedErrors($model);
+        }
+
+        return $errors;
     }
 
     /**
