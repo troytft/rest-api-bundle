@@ -13,7 +13,8 @@ class EnumTransformer implements TransformerInterface
         $class = $options[static::CLASS_OPTION] ?? throw new \InvalidArgumentException();
         $enumValues = RestApiBundle\Helper\TypeExtractor::extractEnumValues($class);
 
-        if (!in_array($value, $enumValues, true)) {
+        // strict compare disabled cause value has raw type
+        if (!in_array($value, $enumValues)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\ValueNotFoundInEnumException();
         }
 

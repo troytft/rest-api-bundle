@@ -126,18 +126,23 @@ class ModelValidator
             $path = str_replace(['[', ']'], ['.', ''], $path);
         }
 
-        $pathParts = explode('.', $path);
-        $lastPartKey = array_key_last($pathParts);
+        $pathParts = [];
+        $schema = $this->schemaResolver->resolve(get_class($constraintViolation->getRoot()));
+        foreach (explode('.', $path) as $part) {
+            $property = $schema->properties[$part] ?? null;
+            if ($property instanceof RestApiBundle\Model\Mapper\Schema) {
+                $pathParts[] = $part;
+                $schema = $property;
+            } elseif (is_numeric($part)) {
+                $pathParts[] = $part;
+            } else {
+                $pathParts[] = '*';
 
-        $isProperty = $this->hasProperty($constraintViolation->getRoot(), $pathParts[$lastPartKey]);
-        $isItemOfCollection = is_numeric($pathParts[$lastPartKey]);
-
-        if (!$isProperty && !$isItemOfCollection) {
-            $pathParts[$lastPartKey] = '*';
-            $path = implode('.', $pathParts);
+                break;
+            }
         }
 
-        return $path;
+        return implode('.', $pathParts);
     }
 
     private function hasProperty(RestApiBundle\Mapping\Mapper\ModelInterface $model, string $propertyName): bool
