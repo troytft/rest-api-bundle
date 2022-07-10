@@ -2,7 +2,6 @@
 
 namespace RestApiBundle\CacheWarmer\Mapper;
 
-use RestApiBundle;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 class SchemaCacheWarmer implements CacheWarmerInterface
