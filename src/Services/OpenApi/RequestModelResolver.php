@@ -51,60 +51,66 @@ class RequestModelResolver
     }
 
     /**
+     * @todo: refactor to more clear solution
+     *
      * @param Validator\Constraint[] $constraints
      */
     private function applyConstraints(OpenApi\Schema $schema, array $constraints): void
     {
         foreach ($constraints as $constraint) {
-            $this->applyConstraint($schema, $constraint);
-        }
-    }
+            switch ($constraint::class) {
+                case Validator\Constraints\Range::class:
+                    if ($constraint->min !== null) {
+                        $schema->minimum = $constraint->min;
+                    }
 
-    /**
-     * @todo: refactor to more clear solution
-     */
-    private function applyConstraint(OpenApi\Schema $schema, Validator\Constraint $constraint): void
-    {
-        switch (true) {
-            case $constraint instanceof Validator\Constraints\Range:
-                if ($constraint->min !== null) {
-                    $schema->minimum = $constraint->min;
-                }
+                    if ($constraint->max !== null) {
+                        $schema->maximum = $constraint->max;
+                    }
 
-                if ($constraint->max !== null) {
-                    $schema->maximum = $constraint->max;
-                }
+                    break;
 
-                break;
+                case Validator\Constraints\Choice::class:
+                    if ($constraint->choices) {
+                        $choices = $constraint->choices;
+                    } elseif ($constraint->callback) {
+                        $callback = $constraint->callback;
+                        $choices = $callback();
+                    } else {
+                        throw new \InvalidArgumentException();
+                    }
 
-            case $constraint instanceof Validator\Constraints\Choice:
-                if ($constraint->choices) {
-                    $choices = $constraint->choices;
-                } elseif ($constraint->callback) {
-                    $callback = $constraint->callback;
-                    $choices = $callback();
-                } else {
-                    throw new \InvalidArgumentException();
-                }
+                    if (!array_is_list($choices)) {
+                        throw new \InvalidArgumentException();
+                    }
 
-                if (!array_is_list($choices)) {
-                    throw new \InvalidArgumentException();
-                }
+                    $schema->enum = $choices;
 
-                $schema->enum = $choices;
+                    break;
 
-                break;
+                case Validator\Constraints\Length::class:
+                    if ($constraint->min !== null) {
+                        $schema->minLength = $constraint->min;
+                    }
 
-            case $constraint instanceof Validator\Constraints\Length:
-                if ($constraint->min !== null) {
-                    $schema->minLength = $constraint->min;
-                }
+                    if ($constraint->max !== null) {
+                        $schema->maxLength = $constraint->max;
+                    }
 
-                if ($constraint->max !== null) {
-                    $schema->maxLength = $constraint->max;
-                }
+                    break;
 
-                break;
+                case Validator\Constraints\NotBlank::class:
+                    if (!$constraint->allowNull) {
+                        $schema->nullable = false;
+                    }
+
+                    break;
+
+                case Validator\Constraints\NotNull::class:
+                    $schema->nullable = false;
+
+                    break;
+            }
         }
     }
 
