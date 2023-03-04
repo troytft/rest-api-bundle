@@ -8,8 +8,6 @@ use phpDocumentor\Reflection\DocBlockFactory;
 use Symfony\Component\PropertyInfo;
 use phpDocumentor\Reflection as PhpDoc;
 
-use Tests\Fixture\Helper\TypeExtractorTest\StringEnumAsBackedEnum;
-
 use function in_array;
 
 final class TypeExtractor
