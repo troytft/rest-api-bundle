@@ -2,9 +2,6 @@
 
 namespace RestApiBundle\Mapping\ResponseModel;
 
-/**
- * @property int|string $value
- */
 interface EnumInterface
 {
     /**

@@ -18,6 +18,7 @@ class Serializer
             $responseModelNormalizer,
             new RestApiBundle\Services\ResponseModel\SerializableDateNormalizer(),
             new RestApiBundle\Services\ResponseModel\SerializableEnumNormalizer(),
+            new RestApiBundle\Services\ResponseModel\BackedEnumNormalizer(),
             new DateTimeNormalizer(),
         ];
         $encoders = [

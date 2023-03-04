@@ -2,21 +2,20 @@
 
 namespace RestApiBundle\Services\ResponseModel;
 
-use RestApiBundle;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 
-class SerializableEnumNormalizer implements ContextAwareNormalizerInterface
+class BackedEnumNormalizer implements ContextAwareNormalizerInterface
 {
     public function supportsNormalization($data, $format = null, array $context = [])
     {
-        return $data instanceof RestApiBundle\Mapping\ResponseModel\EnumInterface;
+        return $data instanceof \BackedEnum;
     }
 
     /**
-     * @param RestApiBundle\Mapping\ResponseModel\EnumInterface $object
+     * @param \BackedEnum $object
      */
     public function normalize($object, $format = null, array $context = [])
     {
-        return $object->getValue();
+        return $object->value;
     }
 }
