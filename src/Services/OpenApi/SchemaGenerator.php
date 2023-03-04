@@ -146,7 +146,6 @@ class SchemaGenerator
             'tags' => match (true) {
                 is_string($endpointData->endpointMapping->tags) => [$endpointData->endpointMapping->tags],
                 is_array($endpointData->endpointMapping->tags) => $endpointData->endpointMapping->tags,
-                default => throw new \InvalidArgumentException(),
             },
         ]);
 
@@ -323,7 +322,7 @@ class SchemaGenerator
     private function addRedirectResponse(OpenApi\Responses $responses, ?int $httpStatusCode = null): void
     {
         $httpStatusCode = $httpStatusCode ?? 302;
-        
+
         $responses->addResponse((string) $httpStatusCode, new OpenApi\Response([
             'description' => 'Response with redirect',
             'headers' => [
@@ -341,7 +340,7 @@ class SchemaGenerator
     private function addSingleResponseModelResponse(OpenApi\Responses $responses, PropertyInfo\Type $returnType, ?int $httpStatusCode = null): void
     {
         $httpStatusCode = $httpStatusCode ?? 200;
-        
+
         $responses->addResponse((string) $httpStatusCode, new OpenApi\Response([
             'description' => 'Response with JSON body',
             'content' => [
@@ -355,7 +354,7 @@ class SchemaGenerator
     private function addCollectionOfResponseModelsResponse(OpenApi\Responses $responses, PropertyInfo\Type $returnType, ?int $httpStatusCode = null): void
     {
         $httpStatusCode = $httpStatusCode ?? 200;
-        
+
         $responses->addResponse((string) $httpStatusCode, new OpenApi\Response([
             'description' => 'Response with JSON body',
             'content' => [

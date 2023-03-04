@@ -2,6 +2,7 @@
 
 namespace RestApiBundle\Helper\OpenApi;
 
+use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
 use Symfony\Component\PropertyInfo;
 
@@ -64,5 +65,24 @@ final class SchemaHelper
             'example' => static::createExampleDateTime()->format($format),
             'nullable' => $nullable,
         ]);
+    }
+
+    public static function createEnum(string $class, bool $nullable = false): OpenApi\Schema
+    {
+        $enumData = RestApiBundle\Helper\TypeExtractor::extractEnumData($class);
+
+        $allowedTypes = [
+            PropertyInfo\Type::BUILTIN_TYPE_STRING,
+            PropertyInfo\Type::BUILTIN_TYPE_INT,
+            PropertyInfo\Type::BUILTIN_TYPE_FLOAT,
+        ];
+        if (!in_array($enumData->type, $allowedTypes, true)) {
+            throw new \LogicException();
+        }
+
+        $result = static::createScalarFromString($enumData->type, $nullable);
+        $result->enum = $enumData->values;
+
+        return $result;
     }
 }

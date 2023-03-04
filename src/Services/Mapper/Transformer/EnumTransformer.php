@@ -11,7 +11,7 @@ class EnumTransformer implements TransformerInterface
     public function transform($value, array $options)
     {
         $class = $options[static::CLASS_OPTION] ?? throw new \InvalidArgumentException();
-        $enumValues = RestApiBundle\Helper\TypeExtractor::extractEnumValues($class);
+        $enumValues = RestApiBundle\Helper\TypeExtractor::extractEnumData($class)->values;
 
         // strict compare disabled cause value has raw type
         if (!in_array($value, $enumValues)) {

@@ -94,7 +94,7 @@ class RequestModelResolver
                 $schema->enum = $choices;
 
                 break;
-                
+
             case $constraint instanceof Validator\Constraints\Length:
                 if ($constraint->min !== null) {
                     $schema->minLength = $constraint->min;
@@ -207,25 +207,8 @@ class RequestModelResolver
     private function resolveEnumTransformer(array $options, bool $nullable): OpenApi\Schema
     {
         $class = $options[RestApiBundle\Services\Mapper\Transformer\EnumTransformer::CLASS_OPTION];
-        $enumValues = RestApiBundle\Helper\TypeExtractor::extractEnumValues($class);
 
-        if (is_int($enumValues[0])) {
-            $result = new OpenApi\Schema([
-                'type' => OpenApi\Type::INTEGER,
-                'nullable' => $nullable,
-                'enum' => $enumValues,
-            ]);
-        } elseif (is_string($enumValues[0])) {
-            $result = new OpenApi\Schema([
-                'type' => OpenApi\Type::STRING,
-                'nullable' => $nullable,
-                'enum' => $enumValues,
-            ]);
-        } else {
-            throw new \LogicException();
-        }
-
-        return $result;
+        return RestApiBundle\Helper\OpenApi\SchemaHelper::createEnum($class, $nullable);
     }
 
     private function resolveShortClassName(string $class): string
