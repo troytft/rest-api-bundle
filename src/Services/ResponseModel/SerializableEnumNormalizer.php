@@ -17,6 +17,12 @@ class SerializableEnumNormalizer implements ContextAwareNormalizerInterface
      */
     public function normalize($object, $format = null, array $context = [])
     {
-        return $object->getValue();
+        if (property_exists($object, 'value')) {
+            $result = $object->value;
+        } else {
+            $result = $object->getValue();
+        }
+
+        return $result;
     }
 }
