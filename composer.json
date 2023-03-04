@@ -33,7 +33,6 @@
         "symfony/finder": "^5.3",
         "symfony/framework-bundle": "^5.3",
         "symfony/http-kernel": "^5.3",
-        "symfony/polyfill-php81": "^1.23",
         "symfony/property-info": "^5.3",
         "symfony/routing": "^5.3",
         "symfony/serializer": "^5.3",
