@@ -142,7 +142,7 @@ class ResponseModelResolver
                 break;
 
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\InterfaceChecker::isResponseModelEnum($type->getClassName()):
-                $result = $this->resolveEnum($type);
+                $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createEnum($type->getClassName(), $type->isNullable());
 
                 break;
 
@@ -170,35 +170,5 @@ class ResponseModelResolver
             'items' => $this->resolveByType(RestApiBundle\Helper\TypeExtractor::getFirstCollectionValueType($type)),
             'nullable' => $type->isNullable(),
         ]);
-    }
-
-    private function resolveEnum(PropertyInfo\Type $type): OpenApi\Schema
-    {
-        $enumValues = RestApiBundle\Helper\TypeExtractor::extractEnumValues($type->getClassName());
-
-        if (is_int($enumValues[0])) {
-            $result = new OpenApi\Schema([
-                'type' => OpenApi\Type::INTEGER,
-                'nullable' => $type->isNullable(),
-                'enum' => $enumValues,
-            ]);
-        } elseif (is_string($enumValues[0])) {
-            $result = new OpenApi\Schema([
-                'type' => OpenApi\Type::STRING,
-                'nullable' => $type->isNullable(),
-                'enum' => $enumValues,
-            ]);
-        } elseif (is_float($enumValues[0])) {
-            $result = new OpenApi\Schema([
-                'type' => OpenApi\Type::NUMBER,
-                'format' => 'double',
-                'nullable' => $type->isNullable(),
-                'enum' => $enumValues,
-            ]);
-        } else {
-            throw new \InvalidArgumentException();
-        }
-
-        return $result;
     }
 }

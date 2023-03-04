@@ -175,10 +175,7 @@ final class TypeExtractor
         return $type->getCollectionValueTypes()[0] ?? null;
     }
 
-    /**
-     * @return string[]|int[]
-     */
-    public static function extractEnumValues(string $class): array
+    public static function extractEnumData(string $class): RestApiBundle\Model\Helper\TypeExtractor\EnumData
     {
         if (method_exists($class, 'getValues')) {
             $values = $class::getValues();
@@ -197,6 +194,16 @@ final class TypeExtractor
             throw new \LogicException();
         }
 
-        return $values;
+        if (is_int($values[0])) {
+            $type = PropertyInfo\Type::BUILTIN_TYPE_INT;
+        } elseif (is_string($values[0])) {
+            $type = PropertyInfo\Type::BUILTIN_TYPE_STRING;
+        } elseif (is_float($values[0])) {
+            $type = PropertyInfo\Type::BUILTIN_TYPE_FLOAT;
+        } else {
+            throw new \InvalidArgumentException();
+        }
+
+        return new RestApiBundle\Model\Helper\TypeExtractor\EnumData($type, $values);
     }
 }
