@@ -11,7 +11,7 @@ jobs:
         strategy:
             matrix:
                 symfony-versions: [ '5.3' ]
-                php-versions: [ '8.1' ]
+                php-versions: [ '8.1', '8.2' ]
 
         steps:
             -   name: Checkout repository
