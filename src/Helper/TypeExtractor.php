@@ -201,7 +201,7 @@ final class TypeExtractor
             } elseif (is_string($value)) {
                 $types[PropertyInfo\Type::BUILTIN_TYPE_STRING] = true;
             } elseif (is_float($value)) {
-                $type[PropertyInfo\Type::BUILTIN_TYPE_FLOAT] = true;
+                $types[PropertyInfo\Type::BUILTIN_TYPE_FLOAT] = true;
             } else {
                 throw new \InvalidArgumentException();
             }
