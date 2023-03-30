@@ -208,9 +208,7 @@ final class TypeExtractor
         }
 
         $types = array_keys($types);
-        if (!$types) {
-            throw new \LogicException();
-        } elseif (count($types) === 1) {
+        if (count($types) === 1) {
             $type = $types[0];
         } else {
             if (in_array(PropertyInfo\Type::BUILTIN_TYPE_STRING, $types, true)) {
