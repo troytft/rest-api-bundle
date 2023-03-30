@@ -194,14 +194,30 @@ final class TypeExtractor
             throw new \LogicException();
         }
 
-        if (is_int($values[0])) {
-            $type = PropertyInfo\Type::BUILTIN_TYPE_INT;
-        } elseif (is_string($values[0])) {
-            $type = PropertyInfo\Type::BUILTIN_TYPE_STRING;
-        } elseif (is_float($values[0])) {
-            $type = PropertyInfo\Type::BUILTIN_TYPE_FLOAT;
+        $types = [];
+        foreach ($values as $value) {
+            if (is_int($value)) {
+                $types[PropertyInfo\Type::BUILTIN_TYPE_INT] = true;
+            } elseif (is_string($value)) {
+                $types[PropertyInfo\Type::BUILTIN_TYPE_STRING] = true;
+            } elseif (is_float($value)) {
+                $types[PropertyInfo\Type::BUILTIN_TYPE_FLOAT] = true;
+            } else {
+                throw new \InvalidArgumentException();
+            }
+        }
+
+        $types = array_keys($types);
+        if (count($types) === 1) {
+            $type = $types[0];
         } else {
-            throw new \InvalidArgumentException();
+            if (in_array(PropertyInfo\Type::BUILTIN_TYPE_STRING, $types, true)) {
+                $type = PropertyInfo\Type::BUILTIN_TYPE_STRING;
+            } elseif (in_array(PropertyInfo\Type::BUILTIN_TYPE_FLOAT, $types, true)) {
+                $type = PropertyInfo\Type::BUILTIN_TYPE_FLOAT;
+            } else {
+                $type = PropertyInfo\Type::BUILTIN_TYPE_INT;
+            }
         }
 
         return new RestApiBundle\Model\Helper\TypeExtractor\EnumData($type, $values);
