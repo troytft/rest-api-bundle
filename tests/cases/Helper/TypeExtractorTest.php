@@ -29,5 +29,10 @@ class TypeExtractorTest extends Tests\BaseTestCase
         $enumData = RestApiBundle\Helper\TypeExtractor::extractEnumData(Tests\Fixture\Helper\TypeExtractorTest\IntegerEnumAsBackedEnum::class);
         $this->assertSame(\Symfony\Component\PropertyInfo\Type::BUILTIN_TYPE_INT, $enumData->type);
         $this->assertSame([5, 10, 100], $enumData->values);
+
+        // combined types
+        $enumData = RestApiBundle\Helper\TypeExtractor::extractEnumData(Tests\Fixture\Helper\TypeExtractorTest\CombinedTypesEnum::class);
+        $this->assertSame(\Symfony\Component\PropertyInfo\Type::BUILTIN_TYPE_STRING, $enumData->type);
+        $this->assertSame([5, 'value_10', 'value_100'], $enumData->values);
     }
 }
