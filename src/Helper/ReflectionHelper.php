@@ -106,8 +106,8 @@ final class ReflectionHelper
         return $reflectionClass->isInstantiable() && $reflectionClass->implementsInterface(RestApiBundle\Mapping\RequestModel\RequestModelInterface::class);
     }
 
-    public static function isDeprecated(\ReflectionMethod $reflectionMethod): bool
+    public static function isDeprecated(\ReflectionMethod|\ReflectionProperty $reflection): bool
     {
-        return is_string($reflectionMethod->getDocComment()) && str_contains($reflectionMethod->getDocComment(), '@deprecated');
+        return is_string($reflection->getDocComment()) && str_contains($reflection->getDocComment(), '@deprecated');
     }
 }

@@ -29,7 +29,7 @@ class RequestModelResolver
 
         $schema = $this->schemaResolver->resolve($class);
 
-        foreach ($schema->properties as $propertyName => $propertySchema) {
+        foreach ($schema->properties as $propertyName => $propertyMapperSchema) {
             $reflectionProperty = $reflectedClass->getProperty($propertyName);
             $propertyConstraints = [];
 
@@ -40,7 +40,13 @@ class RequestModelResolver
                 }
             }
 
-            $properties[$propertyName] = $this->resolveByMapperSchema($propertySchema, $propertyConstraints);
+            $propertyOpenApiSchema = $this->resolveByMapperSchema($propertyMapperSchema, $propertyConstraints);
+
+            if (RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionProperty)) {
+                $propertyOpenApiSchema->deprecated = true;
+            }
+
+            $properties[$propertyName] = $propertyOpenApiSchema;
         }
 
         return new OpenApi\Schema([

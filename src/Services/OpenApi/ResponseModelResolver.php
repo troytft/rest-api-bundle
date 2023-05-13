@@ -87,6 +87,10 @@ class ResponseModelResolver
                 }
 
                 $propertySchema = $this->resolveByType($returnType);
+
+                if (RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionMethod)) {
+                    $propertySchema->deprecated = true;
+                }
             } catch (RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException $exception) {
                 throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Unknown type', $reflectionMethod);
             }

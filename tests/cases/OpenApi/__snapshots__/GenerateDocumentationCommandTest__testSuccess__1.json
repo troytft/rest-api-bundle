@@ -202,7 +202,8 @@
                                 "type": "integer",
                                 "nullable": false
                             },
-                            "nullable": true
+                            "nullable": true,
+                            "deprecated": true
                         },
                         "description": "Collection of \"Book\" fetched by field \"id\""
                     }
@@ -247,7 +248,8 @@
                     },
                     "genresCount": {
                         "type": "integer",
-                        "nullable": false
+                        "nullable": false,
+                        "deprecated": true
                     },
                     "__typename": {
                         "type": "string",
