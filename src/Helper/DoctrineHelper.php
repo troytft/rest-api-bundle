@@ -28,7 +28,7 @@ class DoctrineHelper
             throw new \InvalidArgumentException();
         }
 
-        $type = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
+        $type = RestApiBundle\Helper\TypeExtractor::extractByReflectionProperty($reflectionProperty);
         if (!$type) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException('Property has empty type', $reflectionProperty);
         }

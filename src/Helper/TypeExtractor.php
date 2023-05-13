@@ -12,10 +12,10 @@ use function in_array;
 
 final class TypeExtractor
 {
-    private static ?PropertyInfo\Util\PhpDocTypeHelper $phpDocTypeHelper = null;
+    private static ?PropertyInfo\Util\PhpDocTypeHelper $docBlockHelper = null;
     private static ?DocBlockFactory $docBlockFactory = null;
 
-    public static function extractByReflectionType(\ReflectionType $sourceReflectionType): ?PropertyInfo\Type
+    private static function extractByReflectionType(\ReflectionType $sourceReflectionType): ?PropertyInfo\Type
     {
         $result = [];
 
@@ -27,7 +27,7 @@ final class TypeExtractor
 
         foreach ($reflectionTypes as $reflectionType) {
             $phpTypeOrClass = $sourceReflectionType instanceof \ReflectionNamedType ? $sourceReflectionType->getName() : (string) $reflectionType;
-            if ($phpTypeOrClass === PropertyInfo\Type::BUILTIN_TYPE_ARRAY || $phpTypeOrClass === 'mixed') {
+            if ($phpTypeOrClass === 'mixed') {
                 continue;
             }
 
@@ -47,10 +47,9 @@ final class TypeExtractor
         return $result[0] ?? null;
     }
 
-    public static function extractByPhpDocType(PhpDoc\Type $phpDocType): ?PropertyInfo\Type
+    private static function extractByDocBlockTag(PhpDoc\Type $phpDocType): ?PropertyInfo\Type
     {
-        $result = static::getPhpDocTypeHelper()->getTypes($phpDocType);
-
+        $result = static::getDocBlockHelper()->getTypes($phpDocType);
         if (count($result) > 1) {
             throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('Union types are not supported.');
         }
@@ -58,38 +57,59 @@ final class TypeExtractor
         return $result[0] ?? null;
     }
 
-    private static function getPhpDocTypeHelper(): PropertyInfo\Util\PhpDocTypeHelper
+    private static function getDocBlockHelper(): PropertyInfo\Util\PhpDocTypeHelper
     {
-        if (!static::$phpDocTypeHelper) {
-            static::$phpDocTypeHelper = new PropertyInfo\Util\PhpDocTypeHelper();
+        if (!static::$docBlockHelper) {
+            static::$docBlockHelper = new PropertyInfo\Util\PhpDocTypeHelper();
         }
 
-        return static::$phpDocTypeHelper;
+        return static::$docBlockHelper;
     }
 
-    public static function extractReturnType(\ReflectionMethod $reflectionMethod): ?PropertyInfo\Type
+    private static function extract(?\ReflectionType $reflectionType, ?PhpDoc\Type $docBlockType): ?PropertyInfo\Type
     {
-        $result = null;
+        $typeByDocBlock = $docBlockType ? static::extractByDocBlockTag($docBlockType) : null;
+        $typeByReflection = $reflectionType ? static::extractByReflectionType($reflectionType) : null;
+
+        if ($typeByDocBlock && $typeByReflection) {
+            if ($typeByDocBlock->isNullable() !== $typeByReflection->isNullable() || $typeByDocBlock->getBuiltinType() !== $typeByReflection->getBuiltinType()) {
+                throw new RestApiBundle\Exception\TypeExtractor\TypeMismatchException();
+            }
+        }
+
+        if ($typeByReflection?->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_ARRAY) {
+            $typeByReflection = null;
+        }
+
+        return $typeByDocBlock ?: $typeByReflection;
+    }
+
+    public static function extractByReflectionParameter(\ReflectionParameter $reflectionParameter): ?PropertyInfo\Type
+    {
+        return static::extract($reflectionParameter->getType(), null);
+    }
+
+    public static function extractByReflectionMethod(\ReflectionMethod $reflectionMethod): ?PropertyInfo\Type
+    {
         $returnTag = static::resolveReturnTag($reflectionMethod);
 
-        if ($returnTag) {
-            $result = RestApiBundle\Helper\TypeExtractor::extractByPhpDocType($returnTag->getType());
-        } elseif ($reflectionMethod->getReturnType()) {
-            $result = static::extractByReflectionType($reflectionMethod->getReturnType());
+        try {
+            $result = static::extract($reflectionMethod->getReturnType(), $returnTag?->getType());
+        } catch (RestApiBundle\Exception\TypeExtractor\TypeMismatchException $exception) {
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('DocBlock type and code type mismatch', $reflectionMethod);
         }
 
         return $result;
     }
 
-    public static function extractPropertyType(\ReflectionProperty $reflectionProperty): ?PropertyInfo\Type
+    public static function extractByReflectionProperty(\ReflectionProperty $reflectionProperty): ?PropertyInfo\Type
     {
-        $result = null;
         $varTag = static::resolveVarTag($reflectionProperty);
 
-        if ($varTag) {
-            $result = RestApiBundle\Helper\TypeExtractor::extractByPhpDocType($varTag->getType());
-        } elseif ($reflectionProperty->getType()) {
-            $result = static::extractByReflectionType($reflectionProperty->getType());
+        try {
+            $result = static::extract($reflectionProperty->getType(), $varTag?->getType());
+        } catch (RestApiBundle\Exception\TypeExtractor\TypeMismatchException $exception) {
+            throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException('DocBlock type and code type mismatch', $reflectionProperty);
         }
 
         return $result;
@@ -166,7 +186,7 @@ final class TypeExtractor
         return in_array($type->getBuiltinType(), $types, true);
     }
 
-    public static function getFirstCollectionValueType(PropertyInfo\Type $type): ?PropertyInfo\Type
+    public static function extractFirstCollectionValueType(PropertyInfo\Type $type): ?PropertyInfo\Type
     {
         if (count($type->getCollectionValueTypes()) > 1) {
             throw new \InvalidArgumentException();

@@ -36,7 +36,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             }
 
             try {
-                $reflectionPropertyType = RestApiBundle\Helper\TypeExtractor::extractPropertyType($reflectionProperty);
+                $reflectionPropertyType = RestApiBundle\Helper\TypeExtractor::extractByReflectionProperty($reflectionProperty);
                 if (!$reflectionPropertyType) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException('Property has empty type', $reflectionProperty);
                 }
@@ -129,7 +129,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 break;
 
             case $type->isCollection():
-                $collectionValueSchema = $this->resolveSchemaByType(RestApiBundle\Helper\TypeExtractor::getFirstCollectionValueType($type), $typeOptions);
+                $collectionValueSchema = $this->resolveSchemaByType(RestApiBundle\Helper\TypeExtractor::extractFirstCollectionValueType($type), $typeOptions);
                 if ($collectionValueSchema->transformerClass === RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class) {
                     $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class, $type->isNullable(), array_merge($collectionValueSchema->transformerOptions, [
                        RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::MULTIPLE_OPTION => true,
