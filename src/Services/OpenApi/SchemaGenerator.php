@@ -171,7 +171,7 @@ class SchemaGenerator
 
         foreach ($endpointData->reflectionMethod->getParameters() as $reflectionMethodParameter) {
             $reflectionMethodType = RestApiBundle\Helper\TypeExtractor::extractByReflectionParameter($reflectionMethodParameter);
-            if (!$reflectionMethodParameter) {
+            if (!$reflectionMethodType) {
                 continue;
             }
 
