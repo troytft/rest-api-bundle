@@ -31,7 +31,7 @@ class ResponseModelResolver
     {
         $typename = $this->typenameCache[$class] ?? null;
         if (!$typename) {
-            if (!RestApiBundle\Helper\InterfaceChecker::isResponseModel($class)) {
+            if (!RestApiBundle\Helper\ReflectionHelper::isResponseModel($class)) {
                 throw new \InvalidArgumentException(sprintf('Class %s is not a response model', $class));
             }
 
@@ -70,7 +70,7 @@ class ResponseModelResolver
     {
         $properties = [];
 
-        $reflectedClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+        $reflectedClass = RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class);
         $reflectedMethods = $reflectedClass->getMethods(\ReflectionMethod::IS_PUBLIC);
 
         foreach ($reflectedMethods as $reflectionMethod) {
@@ -122,7 +122,7 @@ class ResponseModelResolver
 
                 break;
 
-            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\InterfaceChecker::isResponseModel($type->getClassName()):
+            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ReflectionHelper::isResponseModel($type->getClassName()):
                 $result = $this->resolveReference($type->getClassName());
                 if ($type->isNullable()) {
                     $result = new OpenApi\Schema([
@@ -133,18 +133,18 @@ class ResponseModelResolver
 
                 break;
 
-            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\InterfaceChecker::isDateTime($type->getClassName()):
+            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ReflectionHelper::isDateTime($type->getClassName()):
                 $format = $this->settingsProvider->getResponseModelDateTimeFormat();
                 $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createDateTime($format, $type->isNullable());
 
                 break;
 
-            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\InterfaceChecker::isResponseModelEnum($type->getClassName()):
+            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ReflectionHelper::isResponseModelEnum($type->getClassName()):
                 $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createEnum($type->getClassName(), $type->isNullable());
 
                 break;
 
-            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\InterfaceChecker::isResponseModelDate($type->getClassName()):
+            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ReflectionHelper::isResponseModelDate($type->getClassName()):
                 $format = $this->settingsProvider->getResponseModelDateFormat();
                 $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createDate($format, $type->isNullable());
 

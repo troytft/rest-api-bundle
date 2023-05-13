@@ -12,14 +12,14 @@ class DoctrineHelper
 {
     public static function isEntity(string $class): bool
     {
-        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+        $reflectionClass = RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class);
 
         return (bool) RestApiBundle\Helper\AnnotationReader::getClassAnnotation($reflectionClass, Doctrine\ORM\Mapping\Entity::class);
     }
 
     public static function extractColumnType(string $class, string $field): string
     {
-        $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+        $reflectionClass = RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class);
         $reflectionProperty = $reflectionClass->getProperty($field);
 
 

@@ -180,7 +180,7 @@ final class TypeExtractor
         if (method_exists($class, 'getValues')) {
             $values = $class::getValues();
         } else {
-            $reflectionClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+            $reflectionClass = RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class);
 
             $values = [];
             foreach ($reflectionClass->getReflectionConstants(\ReflectionClassConstant::IS_PUBLIC) as $reflectionConstant) {
