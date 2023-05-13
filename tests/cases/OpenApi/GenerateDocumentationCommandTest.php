@@ -7,7 +7,7 @@ class GenerateDocumentationCommandTest extends Tests\BaseTestCase
 {
     public function testSuccess()
     {
-        $filename = tempnam(sys_get_temp_dir(), 'openapi') . '.json';
+        $filename = tempnam(sys_get_temp_dir(), 'openapi') . '.yaml';
 
         $application = new Application($this->getKernel());
         $command = $application->find('rest-api:generate-documentation');
@@ -16,11 +16,11 @@ class GenerateDocumentationCommandTest extends Tests\BaseTestCase
         $commandTester->execute([
             'input' => 'tests/src/Fixture/OpenApi/GenerateDocumentationCommandTest/TestSuccess',
             'output' => $filename,
-            '--template' => 'tests/src/Fixture/OpenApi/GenerateDocumentationCommandTest/TestSuccess/Resources/template.json'
+            '--template' => 'tests/src/Fixture/OpenApi/GenerateDocumentationCommandTest/TestSuccess/Resources/template.yaml'
         ]);
 
         $this->assertSame(0, $commandTester->getStatusCode(), $commandTester->getDisplay());
-        $this->assertMatchesJsonSnapshot(file_get_contents($filename));
+        $this->assertMatchesSnapshot(file_get_contents($filename));
     }
 
     public function testInvalidDefinition()

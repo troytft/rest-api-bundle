@@ -31,7 +31,7 @@ info:
     version: 1.0.0
 paths: {  }
 components: {  }
-tags: {  }
+tags: []
 
 YAML;
 

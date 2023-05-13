@@ -9,7 +9,7 @@ final class SchemaSerializer
 {
     public function toYaml(OpenApi\OpenApi $specification): string
     {
-        return Yaml::dump($specification->getSerializableData(), 256, 4, Yaml::DUMP_OBJECT_AS_MAP);
+        return Yaml::dump($specification->getSerializableData(), 256, 4, Yaml::DUMP_OBJECT_AS_MAP | Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
     }
 
     public function toJson(OpenApi\OpenApi $specification): string
