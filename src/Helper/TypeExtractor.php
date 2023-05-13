@@ -94,7 +94,7 @@ final class TypeExtractor
         $returnTag = static::resolveReturnTag($reflectionMethod);
 
         try {
-            $result = static::extract($reflectionMethod->getReturnType(), $returnTag);
+            $result = static::extract($reflectionMethod->getReturnType(), $returnTag?->getType());
         } catch (RestApiBundle\Exception\TypeExtractor\TypeMismatchException $exception) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('DocBlock type and code type mismatch', $reflectionMethod);
         }
@@ -107,7 +107,7 @@ final class TypeExtractor
         $varTag = static::resolveVarTag($reflectionProperty);
 
         try {
-            $result = static::extract($reflectionProperty->getType(), $varTag);
+            $result = static::extract($reflectionProperty->getType(), $varTag?->getType());
         } catch (RestApiBundle\Exception\TypeExtractor\TypeMismatchException $exception) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException('DocBlock type and code type mismatch', $reflectionProperty);
         }
