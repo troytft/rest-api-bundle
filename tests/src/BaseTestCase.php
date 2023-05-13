@@ -8,42 +8,38 @@ use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use RestApiBundle;
 use Spatie\Snapshots\MatchesSnapshots;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Nyholm\BundleTest\TestKernel;
 
-abstract class BaseTestCase extends \Nyholm\BundleTest\BaseBundleTestCase
+abstract class BaseTestCase extends KernelTestCase
 {
     use MatchesSnapshots;
 
-    /**
-     * @var KernelInterface
-     */
-    private $kernel;
-
-    public function __construct()
+    protected static function getKernelClass(): string
     {
-        parent::__construct();
-
-        $this->bootKernel();
+        return TestKernel::class;
     }
 
-    protected function getBundleClass()
+    protected static function createKernel(array $options = []): KernelInterface
     {
-        return RestApiBundle\RestApiBundle::class;
-    }
+        /** @var TestKernel $kernel */
+        $kernel = parent::createKernel($options);
+        $kernel->addTestBundle(RestApiBundle\RestApiBundle::class);
+        $kernel->addTestBundle(Tests\Fixture\TestApp\TestAppBundle::class);
+        $kernel->addTestBundle(DoctrineBundle::class);
+        $kernel->addTestConfig(__DIR__ . '/Fixture/TestApp/Resources/config/config.yaml');
+        $kernel->handleOptions($options);
 
-    protected function createKernel()
-    {
-        $this->kernel = parent::createKernel();
-        $this->kernel->setRootDir(__DIR__ . '/Fixture/TestApp');
-        $this->kernel->addBundle(Tests\Fixture\TestApp\TestAppBundle::class);
-        $this->kernel->addBundle(DoctrineBundle::class);
-        $this->kernel->addConfigFile(__DIR__ . '/Fixture/TestApp/Resources/config/config.yaml');
-
-        return $this->kernel;
+        return $kernel;
     }
 
     public function getKernel(): KernelInterface
     {
-        return $this->kernel;
+        if (!static::$kernel) {
+            $this->bootKernel();
+        }
+
+        return static::$kernel;
     }
 
     protected function assertMatchesOpenApiSchemaSnapshot(OpenApi\Schema|OpenApi\OpenApi $schema): void
