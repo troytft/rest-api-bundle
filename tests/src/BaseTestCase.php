@@ -35,9 +35,7 @@ abstract class BaseTestCase extends KernelTestCase
 
     public function getKernel(): KernelInterface
     {
-        if (!static::$kernel) {
-            $this->bootKernel();
-        }
+        $this->bootKernel();
 
         return static::$kernel;
     }
