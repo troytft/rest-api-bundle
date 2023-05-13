@@ -81,7 +81,7 @@ class ResponseModelResolver
             $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
 
             try {
-                $returnType = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
+                $returnType = RestApiBundle\Helper\TypeExtractor::extractByReflectionMethod($reflectionMethod);
                 if (!$returnType) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type is not specified', $reflectionMethod);
                 }
@@ -169,7 +169,7 @@ class ResponseModelResolver
 
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
-            'items' => $this->resolveByType(RestApiBundle\Helper\TypeExtractor::getFirstCollectionValueType($type)),
+            'items' => $this->resolveByType(RestApiBundle\Helper\TypeExtractor::extractFirstCollectionValueType($type)),
             'nullable' => $type->isNullable(),
         ]);
     }

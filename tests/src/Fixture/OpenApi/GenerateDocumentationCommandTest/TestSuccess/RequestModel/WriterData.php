@@ -14,7 +14,7 @@ class WriterData implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
 
     #[Assert\Length(min: 1, max: 255)]
     public string $surname;
-    
+
     public ?Mapper\Date $birthday;
 
     /**

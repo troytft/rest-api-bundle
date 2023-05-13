@@ -170,11 +170,11 @@ class SchemaGenerator
         $requestModelType = null;
 
         foreach ($endpointData->reflectionMethod->getParameters() as $reflectionMethodParameter) {
-            if (!$reflectionMethodParameter->getType()) {
+            $reflectionMethodType = RestApiBundle\Helper\TypeExtractor::extractByReflectionParameter($reflectionMethodParameter);
+            if (!$reflectionMethodParameter) {
                 continue;
             }
 
-            $reflectionMethodType = RestApiBundle\Helper\TypeExtractor::extractByReflectionType($reflectionMethodParameter->getType());
             if (RestApiBundle\Helper\TypeExtractor::isScalar($reflectionMethodType)) {
                 $scalarTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
             } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($reflectionMethodType->getClassName())) {
@@ -267,7 +267,7 @@ class SchemaGenerator
     {
         $responses = new OpenApi\Responses([]);
 
-        $returnType = RestApiBundle\Helper\TypeExtractor::extractReturnType($reflectionMethod);
+        $returnType = RestApiBundle\Helper\TypeExtractor::extractByReflectionMethod($reflectionMethod);
         if (!$returnType) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type is not specified', $reflectionMethod);
         }
@@ -277,7 +277,7 @@ class SchemaGenerator
         }
 
         if ($returnType->isCollection()) {
-            $collectionValueType = RestApiBundle\Helper\TypeExtractor::getFirstCollectionValueType($returnType);
+            $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractFirstCollectionValueType($returnType);
             if (!$collectionValueType->getClassName() || !RestApiBundle\Helper\ReflectionHelper::isResponseModel($collectionValueType->getClassName())) {
                 throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Invalid response type, only collection of response models allowed', $reflectionMethod);
             }
