@@ -244,6 +244,10 @@
                         "type": "integer",
                         "nullable": false
                     },
+                    "genresCount": {
+                        "type": "integer",
+                        "nullable": false
+                    },
                     "__typename": {
                         "type": "string",
                         "default": "Author",

@@ -34,6 +34,8 @@ class WriterController
     }
 
     /**
+     * @deprecated
+     *
      * @Docs\Endpoint(title="Remove writer", tags={"writers"})
      *
      * @Route("/{id}", methods="DELETE", requirements={"id": "\d"})

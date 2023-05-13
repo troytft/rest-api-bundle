@@ -46,7 +46,7 @@ class SchemaGenerator
             }
         } else {
             $rootElement = new OpenApi\OpenApi([
-                'openapi' => '3.0.0',
+                'openapi' => '3.1.0',
                 'info' => [
                     'title' => 'Open API Specification',
                     'version' => '1.0.0',
