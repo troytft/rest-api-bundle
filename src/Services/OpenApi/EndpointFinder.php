@@ -31,7 +31,7 @@ class EndpointFinder
         $finder
             ->files()
             ->in($directory)
-            ->name('*.php')
+            ->name('*Controller.php')
             ->notPath($excludePaths);
 
         $autoloadFixed = false;
@@ -76,7 +76,9 @@ class EndpointFinder
                 continue;
             }
 
-            $endpoints[] = new RestApiBundle\Model\OpenApi\EndpointData($reflectionMethod, $endpointMapping, $methodRouteMapping, $classRouteMapping);
+            $isDeprecated = is_string($reflectionMethod->getDocComment()) && str_contains($reflectionMethod->getDocComment(), '@deprecated');
+
+            $endpoints[] = new RestApiBundle\Model\OpenApi\EndpointData($reflectionMethod, $endpointMapping, $methodRouteMapping, $classRouteMapping, $isDeprecated);
         }
 
         return $endpoints;

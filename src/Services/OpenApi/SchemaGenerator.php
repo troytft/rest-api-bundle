@@ -161,6 +161,10 @@ class SchemaGenerator
             $operation->description = $endpointData->endpointMapping->description;
         }
 
+        if ($endpointData->deprecated) {
+            $operation->deprecated = true;
+        }
+
         $scalarTypes = [];
         $doctrineEntityTypes = [];
         $requestModelType = null;

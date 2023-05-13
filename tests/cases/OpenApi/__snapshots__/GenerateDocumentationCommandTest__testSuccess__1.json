@@ -220,6 +220,7 @@
                         "description": "Response with empty body"
                     }
                 },
+                "deprecated": true,
                 "parameters": [
                     {
                         "name": "id",
