@@ -202,7 +202,8 @@
                                 "type": "integer",
                                 "nullable": false
                             },
-                            "nullable": true
+                            "nullable": true,
+                            "deprecated": true
                         },
                         "description": "Collection of \"Book\" fetched by field \"id\""
                     }
@@ -220,6 +221,7 @@
                         "description": "Response with empty body"
                     }
                 },
+                "deprecated": true,
                 "parameters": [
                     {
                         "name": "id",
@@ -243,6 +245,11 @@
                     "id": {
                         "type": "integer",
                         "nullable": false
+                    },
+                    "genresCount": {
+                        "type": "integer",
+                        "nullable": false,
+                        "deprecated": true
                     },
                     "__typename": {
                         "type": "string",

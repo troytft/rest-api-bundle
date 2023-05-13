@@ -31,7 +31,7 @@ class EndpointFinder
         $finder
             ->files()
             ->in($directory)
-            ->name('*.php')
+            ->name('*Controller.php')
             ->notPath($excludePaths);
 
         $autoloadFixed = false;
@@ -50,7 +50,7 @@ class EndpointFinder
                 $autoloadFixed = true;
             }
 
-            $endpoints[] = $this->extractEndpointsByReflectionClass(RestApiBundle\Helper\ReflectionClassStore::get($class));
+            $endpoints[] = $this->extractEndpointsByReflectionClass(RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class));
         }
 
         return array_merge(...$endpoints);
@@ -61,25 +61,30 @@ class EndpointFinder
      */
     private function extractEndpointsByReflectionClass(\ReflectionClass $reflectionClass): array
     {
+        $result = [];
         $classRouteMapping = RestApiBundle\Helper\AnnotationReader::getClassAnnotation($reflectionClass, Route::class);
-
-        $endpoints = [];
 
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             $methodRouteMapping = RestApiBundle\Helper\AnnotationReader::getMethodAnnotation($reflectionMethod, Route::class);
-            if (!$methodRouteMapping instanceof Route) {
+            if (!$methodRouteMapping) {
                 continue;
             }
 
             $endpointMapping = RestApiBundle\Helper\AnnotationReader::getMethodAnnotation($reflectionMethod, RestApiBundle\Mapping\OpenApi\Endpoint::class);
-            if (!$endpointMapping instanceof RestApiBundle\Mapping\OpenApi\Endpoint) {
+            if (!$endpointMapping) {
                 continue;
             }
 
-            $endpoints[] = new RestApiBundle\Model\OpenApi\EndpointData($reflectionMethod, $endpointMapping, $methodRouteMapping, $classRouteMapping);
+            $result[] = new RestApiBundle\Model\OpenApi\EndpointData(
+                $reflectionMethod,
+                $endpointMapping,
+                $methodRouteMapping,
+                $classRouteMapping,
+                RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionMethod),
+            );
         }
 
-        return $endpoints;
+        return $result;
     }
 
     private function getClassLoader(): ClassLoader

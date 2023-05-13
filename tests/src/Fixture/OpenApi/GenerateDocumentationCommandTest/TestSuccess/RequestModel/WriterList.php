@@ -22,6 +22,8 @@ class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInte
     public ?Mapper\Date $birthday;
 
     /**
+     * @deprecated
+     *
      * @var Tests\Fixture\TestApp\Entity\Book[]|null
      */
     public ?array $genres;

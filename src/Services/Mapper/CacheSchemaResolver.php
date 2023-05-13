@@ -53,7 +53,7 @@ final class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaR
         foreach ($finder as $fileInfo) {
             try {
                 $class = RestApiBundle\Helper\PhpFileParserHelper::getClassByFileInfo($fileInfo);
-                if (!$class || !RestApiBundle\Helper\InterfaceChecker::isMapperModel($class)) {
+                if (!$class || !RestApiBundle\Helper\ReflectionHelper::isMapperModel($class)) {
                     continue;
                 }
             } catch (\Throwable $throwable) {

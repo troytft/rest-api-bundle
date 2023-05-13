@@ -10,4 +10,12 @@ class Author implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterfa
     {
         return 1;
     }
+
+    /**
+     * @deprecated
+     */
+    public function getGenresCount(): int
+    {
+        return 0;
+    }
 }

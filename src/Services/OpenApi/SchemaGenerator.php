@@ -46,7 +46,7 @@ class SchemaGenerator
             }
         } else {
             $rootElement = new OpenApi\OpenApi([
-                'openapi' => '3.0.0',
+                'openapi' => '3.1.0',
                 'info' => [
                     'title' => 'Open API Specification',
                     'version' => '1.0.0',
@@ -161,6 +161,10 @@ class SchemaGenerator
             $operation->description = $endpointData->endpointMapping->description;
         }
 
+        if ($endpointData->deprecated) {
+            $operation->deprecated = true;
+        }
+
         $scalarTypes = [];
         $doctrineEntityTypes = [];
         $requestModelType = null;
@@ -175,7 +179,7 @@ class SchemaGenerator
                 $scalarTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
             } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($reflectionMethodType->getClassName())) {
                 $doctrineEntityTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
-            } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\InterfaceChecker::isMapperModel($reflectionMethodType->getClassName())) {
+            } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isMapperModel($reflectionMethodType->getClassName())) {
                 if ($requestModelType) {
                     throw new \LogicException();
                 }
@@ -274,13 +278,13 @@ class SchemaGenerator
 
         if ($returnType->isCollection()) {
             $collectionValueType = RestApiBundle\Helper\TypeExtractor::getFirstCollectionValueType($returnType);
-            if (!$collectionValueType->getClassName() || !RestApiBundle\Helper\InterfaceChecker::isResponseModel($collectionValueType->getClassName())) {
+            if (!$collectionValueType->getClassName() || !RestApiBundle\Helper\ReflectionHelper::isResponseModel($collectionValueType->getClassName())) {
                 throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Invalid response type, only collection of response models allowed', $reflectionMethod);
             }
 
             $this->addCollectionOfResponseModelsResponse($responses, $returnType, $httpStatusCode);
         } elseif ($returnType->getClassName()) {
-            if (RestApiBundle\Helper\InterfaceChecker::isResponseModel($returnType->getClassName())) {
+            if (RestApiBundle\Helper\ReflectionHelper::isResponseModel($returnType->getClassName())) {
                 $this->addSingleResponseModelResponse($responses, $returnType, $httpStatusCode);
             } elseif ($returnType->getClassName() === HttpFoundation\RedirectResponse::class) {
                 $this->addRedirectResponse($responses, $httpStatusCode);

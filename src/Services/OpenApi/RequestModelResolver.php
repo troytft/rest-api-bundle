@@ -20,16 +20,16 @@ class RequestModelResolver
 
     public function resolve(string $class, bool $nullable = false): OpenApi\Schema
     {
-        if (!RestApiBundle\Helper\InterfaceChecker::isMapperModel($class)) {
+        if (!RestApiBundle\Helper\ReflectionHelper::isMapperModel($class)) {
             throw new \InvalidArgumentException(sprintf('Class %s is not a request model', $class));
         }
 
         $properties = [];
-        $reflectedClass = RestApiBundle\Helper\ReflectionClassStore::get($class);
+        $reflectedClass = RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class);
 
         $schema = $this->schemaResolver->resolve($class);
 
-        foreach ($schema->properties as $propertyName => $propertySchema) {
+        foreach ($schema->properties as $propertyName => $propertyMapperSchema) {
             $reflectionProperty = $reflectedClass->getProperty($propertyName);
             $propertyConstraints = [];
 
@@ -40,7 +40,13 @@ class RequestModelResolver
                 }
             }
 
-            $properties[$propertyName] = $this->resolveByMapperSchema($propertySchema, $propertyConstraints);
+            $propertyOpenApiSchema = $this->resolveByMapperSchema($propertyMapperSchema, $propertyConstraints);
+
+            if (RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionProperty)) {
+                $propertyOpenApiSchema->deprecated = true;
+            }
+
+            $properties[$propertyName] = $propertyOpenApiSchema;
         }
 
         return new OpenApi\Schema([
