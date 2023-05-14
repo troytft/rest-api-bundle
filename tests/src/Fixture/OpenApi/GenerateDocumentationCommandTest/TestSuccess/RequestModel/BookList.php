@@ -9,8 +9,10 @@ use RestApiBundle\Mapping\Mapper;
 class BookList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
 {
     public ?int $offset;
+
     public ?int $limit;
 
-    /** @Mapper\Expose */
     public ?Tests\Fixture\TestApp\Entity\Author $author;
+
+    public ?Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\Coordinates $coordinates;
 }

@@ -391,14 +391,40 @@ class SchemaGenerator
      */
     private function createQueryParametersFromRequestModel(string $class): array
     {
-        $queryParameters = [];
+        $result = [];
         $requestModelSchema = $this->requestModelResolver->resolve($class);
 
         foreach ($requestModelSchema->properties as $propertyName => $propertySchema) {
+            $result = array_merge($result, $this->createQueryParametersByProperty($propertyName, $propertySchema));
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return OpenApi\Parameter[]
+     */
+    private function createQueryParametersByProperty(string $propertyName, OpenApi\Schema $propertySchema, ?bool $overrideNull = null): array
+    {
+        $result = [];
+
+        if ($propertySchema->type === OpenApi\Type::OBJECT) {
+            foreach ($propertySchema->properties as $innerPropertyName => $innerPropertySchema) {
+                $innerPropertyName = sprintf('%s[%s]', $propertyName, $innerPropertyName);
+                $result = array_merge($result, $this->createQueryParametersByProperty($innerPropertyName, $innerPropertySchema, $propertySchema->nullable));
+            }
+        } else {
+            $propertyName = $propertySchema->type === OpenApi\Type::ARRAY ? sprintf('%s[]', $propertyName) : $propertyName;
+
+            $isRequired = !$propertySchema->nullable;
+            if ($overrideNull !== null) {
+                $isRequired = !$overrideNull;
+                $propertySchema->nullable = $overrideNull;
+            }
             $parameter = new OpenApi\Parameter([
                 'in' => 'query',
-                'name' => $propertySchema->type === OpenApi\Type::ARRAY ? sprintf('%s[]', $propertyName) : $propertyName,
-                'required' => !$propertySchema->nullable,
+                'name' => $propertyName,
+                'required' => $isRequired,
                 'schema' => $propertySchema,
             ]);
 
@@ -408,9 +434,9 @@ class SchemaGenerator
                 unset($propertySchema->description);
             }
 
-            $queryParameters[] = $parameter;
+            $result[] = $parameter;
         }
 
-        return $queryParameters;
+        return $result;
     }
 }
