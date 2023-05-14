@@ -9,7 +9,7 @@ use function is_string;
 
 class BooleanTransformer implements TransformerInterface
 {
-    public function transform($value, array $options = [])
+    public function transform($value, array $options = []): bool
     {
         if (is_string($value)) {
             $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
