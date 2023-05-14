@@ -28,6 +28,8 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                     $propertyOptions[] = $propertyAnnotation;
                 } elseif ($propertyAnnotation instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
                     $propertyOptions[] = $propertyAnnotation;
+                } elseif ($propertyAnnotation instanceof RestApiBundle\Mapping\Mapper\Trim) {
+                    $propertyOptions[] = $propertyAnnotation;
                 }
             }
 
@@ -62,9 +64,22 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
     private function resolveSchemaByType(PropertyInfo\Type $type, array $typeOptions = []): RestApiBundle\Model\Mapper\Schema
     {
         switch (true) {
+            case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING:
+                $trim = null;
+                foreach ($typeOptions as $typeOption) {
+                    if ($typeOption instanceof RestApiBundle\Mapping\Mapper\Trim) {
+                        $trim = true;
+                    }
+                }
+
+                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\StringTransformer::class, $type->isNullable(), [
+                    RestApiBundle\Services\Mapper\Transformer\StringTransformer::TRIM_OPTION => $trim,
+                ]);
+
+                break;
+
             case RestApiBundle\Helper\TypeExtractor::isScalar($type):
                 $schema  = match ($type->getBuiltinType()) {
-                    PropertyInfo\Type::BUILTIN_TYPE_STRING => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\StringTransformer::class, $type->isNullable()),
                     PropertyInfo\Type::BUILTIN_TYPE_INT => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class, $type->isNullable()),
                     PropertyInfo\Type::BUILTIN_TYPE_FLOAT => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\FloatTransformer::class, $type->isNullable()),
                     PropertyInfo\Type::BUILTIN_TYPE_BOOL => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class, $type->isNullable()),

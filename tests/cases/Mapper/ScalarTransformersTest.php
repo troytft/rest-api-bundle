@@ -134,5 +134,11 @@ class ScalarTransformersTest extends Tests\BaseTestCase
             $transformer->transform(null);
         } catch (RestApiBundle\Exception\Mapper\Transformer\StringRequiredException $exception) {
         }
+        
+        // trim
+        $this->assertSame(' 10', $transformer->transform(' 10'));
+        $this->assertSame('10', $transformer->transform(' 10', [
+            \RestApiBundle\Services\Mapper\Transformer\StringTransformer::TRIM_OPTION => true,
+        ]));
     }
 }

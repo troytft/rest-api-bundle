@@ -16,7 +16,7 @@ class DateTransformer implements TransformerInterface
     {
     }
 
-    public function transform($value, array $options = [])
+    public function transform($value, array $options = []): \DateTime
     {
         $format = $options[static::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
 
