@@ -402,6 +402,10 @@ class SchemaGenerator
                 'schema' => $propertySchema,
             ]);
 
+            if ($propertySchema->type === OpenApi\Type::OBJECT) {
+                $parameter->style = 'deepObject';
+            }
+
             // Swagger UI shows description only from parameters
             if ($propertySchema->description) {
                 $parameter->description = $propertySchema->description;
