@@ -41,22 +41,6 @@ paths:
                         type: integer
                         nullable: true
                     description: '"Author" fetched by field "id"'
-                -
-                    name: 'coordinates[latitude]'
-                    in: query
-                    required: false
-                    schema:
-                        type: number
-                        format: double
-                        nullable: true
-                -
-                    name: 'coordinates[longitude]'
-                    in: query
-                    required: false
-                    schema:
-                        type: number
-                        format: double
-                        nullable: true
     /writers:
         post:
             tags:
