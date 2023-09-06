@@ -56,8 +56,10 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                     if (!$reflectionClass->hasMethod($propertySchema->propertyGetterName) || !$reflectionClass->getMethod($propertySchema->propertyGetterName)->isPublic()) {
                         $propertySchema->propertyGetterName = $reflectionProperty->getName();
                         if (!$reflectionClass->hasMethod($propertySchema->propertyGetterName) || !$reflectionClass->getMethod($propertySchema->propertyGetterName)->isPublic()) {
-                            throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException(sprintf('Property "%s" must be public or getter must exist.', $reflectionProperty->getName()));
-                        }
+                            $propertySchema->propertyGetterName = 'is' . $formattedPropertyName;
+                            if (!$reflectionClass->hasMethod($propertySchema->propertyGetterName) || !$reflectionClass->getMethod($propertySchema->propertyGetterName)->isPublic()) {
+                                throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException(sprintf('Property "%s" must be public or getter must exist.', $reflectionProperty->getName()));
+                            }                        }
                     }
                 }
             } catch (RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException $exception) {
