@@ -13,7 +13,6 @@ use function implode;
 use function is_numeric;
 use function sprintf;
 use function str_replace;
-use function ucfirst;
 
 class ModelValidator
 {
@@ -64,7 +63,7 @@ class ModelValidator
         /** @var RestApiBundle\Model\Mapper\Schema $propertySchema */
         foreach ($schema->properties as $propertyName => $propertySchema) {
             if ($propertySchema->type === RestApiBundle\Model\Mapper\Schema::MODEL_TYPE) {
-                $propertyValue = $this->getPropertyValueFromInstance($model, $propertyName);
+                $propertyValue = $this->getPropertyValueFromInstance($model, $propertyName, $propertySchema);
                 if (!$propertyValue) {
                     continue;
                 }
@@ -75,7 +74,7 @@ class ModelValidator
                     $result[] = $this->appendPrefixToArrayKeys($prefix, $innerErrors);
                 }
             } elseif ($propertySchema->type === RestApiBundle\Model\Mapper\Schema::ARRAY_TYPE && $propertySchema->valuesType->type === RestApiBundle\Model\Mapper\Schema::MODEL_TYPE) {
-                $propertyValue = $this->getPropertyValueFromInstance($model, $propertyName);
+                $propertyValue = $this->getPropertyValueFromInstance($model, $propertyName, $propertySchema);
                 if (!$propertyValue) {
                     continue;
                 }
@@ -97,18 +96,18 @@ class ModelValidator
         return array_merge(...$result);
     }
 
-    private function getPropertyValueFromInstance(RestApiBundle\Mapping\Mapper\ModelInterface $instance, string $propertyName): mixed
+    private function getPropertyValueFromInstance(RestApiBundle\Mapping\Mapper\ModelInterface $instance, string $propertyName, RestApiBundle\Model\Mapper\Schema $propertySchema): mixed
     {
-        $getterName = 'get' . ucfirst($propertyName);
-
-        if (method_exists($instance, $getterName)) {
-            return $instance->{$getterName}();
+        if ($propertySchema->propertyGetterName) {
+            $result = $instance->{$propertySchema->propertyGetterName}();
+        } else {
+            $result = $instance->$propertyName;
         }
 
-        return $instance->$propertyName;
+        return $result;
     }
 
-    private function appendPrefixToArrayKeys(string $prefix, array $array)
+    private function appendPrefixToArrayKeys(string $prefix, array $array): array
     {
         $result = [];
 
@@ -143,12 +142,5 @@ class ModelValidator
         }
 
         return implode('.', $pathParts);
-    }
-
-    private function hasProperty(RestApiBundle\Mapping\Mapper\ModelInterface $model, string $propertyName): bool
-    {
-        $schema = $this->schemaResolver->resolve(get_class($model));
-
-        return isset($schema->properties[$propertyName]);
     }
 }

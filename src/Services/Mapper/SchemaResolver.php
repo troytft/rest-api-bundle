@@ -44,12 +44,18 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 }
 
                 $propertySchema = $this->resolveSchemaByType($reflectionPropertyType, $propertyOptions);
-                $propertySetterName = 'set' . ucfirst($reflectionProperty->getName());
 
-                if ($reflectionClass->hasMethod($propertySetterName) && $reflectionClass->getMethod($propertySetterName)->isPublic()) {
-                    $propertySchema->propertySetterName = $propertySetterName;
-                } elseif (!$reflectionProperty->isPublic()) {
-                    throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException(sprintf('Setter with name "%s" does not exist.', $propertySetterName));
+                if (!$reflectionProperty->isPublic()) {
+                    $formattedPropertyName = ucfirst($reflectionProperty->getName());
+                    $propertySchema->propertySetterName = 'set' . $formattedPropertyName;
+                    if (!$reflectionClass->hasMethod($propertySchema->propertySetterName) || !$reflectionClass->getMethod($propertySchema->propertySetterName)->isPublic()) {
+                        throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException(sprintf('Property "%s" must be public or setter must exist.', $reflectionProperty->getName()));
+                    }
+
+                    $propertySchema->propertyGetterName = 'get' . $formattedPropertyName;
+                    if (!$reflectionClass->hasMethod($propertySchema->propertyGetterName) || !$reflectionClass->getMethod($propertySchema->propertyGetterName)->isPublic()) {
+                        throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException(sprintf('Property "%s" must be public or getter must exist.', $reflectionProperty->getName()));
+                    }
                 }
             } catch (RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException $exception) {
                 throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException($exception->getMessage(), $reflectionProperty, $exception);
