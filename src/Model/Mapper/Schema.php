@@ -17,6 +17,7 @@ final class Schema
     public string $type;
     public ?self $valuesType = null;
     public ?string $propertySetterName = null;
+    public ?string $propertyGetterName = null;
 
     private function __construct()
     {
@@ -83,6 +84,7 @@ final class Schema
             'transformerOptions',
             'valuesType',
             'propertySetterName',
+            'propertyGetterName',
         ];
     }
 }
