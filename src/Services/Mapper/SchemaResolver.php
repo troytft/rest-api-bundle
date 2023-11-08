@@ -24,11 +24,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             foreach ($propertyAnnotations as $propertyAnnotation) {
                 if ($propertyAnnotation instanceof RestApiBundle\Mapping\Mapper\Expose) {
                     $isExposed = true;
-                } elseif ($propertyAnnotation instanceof RestApiBundle\Mapping\Mapper\FindByField) {
-                    $propertyOptions[] = $propertyAnnotation;
-                } elseif ($propertyAnnotation instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
-                    $propertyOptions[] = $propertyAnnotation;
-                } elseif ($propertyAnnotation instanceof RestApiBundle\Mapping\Mapper\Trim) {
+                } elseif ($propertyAnnotation instanceof RestApiBundle\Mapping\Mapper\PropertyOptionInterface) {
                     $propertyOptions[] = $propertyAnnotation;
                 }
             }
@@ -78,14 +74,21 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         switch (true) {
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING:
                 $trim = null;
+                $emptyToNull = null;
+
                 foreach ($typeOptions as $typeOption) {
                     if ($typeOption instanceof RestApiBundle\Mapping\Mapper\Trim) {
                         $trim = true;
+                    }
+
+                    if ($typeOption instanceof RestApiBundle\Mapping\Mapper\EmptyToNull) {
+                        $emptyToNull = true;
                     }
                 }
 
                 $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\StringTransformer::class, $type->isNullable(), [
                     RestApiBundle\Services\Mapper\Transformer\StringTransformer::TRIM_OPTION => $trim,
+                    RestApiBundle\Services\Mapper\Transformer\StringTransformer::EMPTY_TO_NULL_OPTION => $emptyToNull,
                 ]);
 
                 break;

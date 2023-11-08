@@ -10,7 +10,7 @@ use function is_string;
  * @Target({"PROPERTY", "ANNOTATION"})
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class FindByField
+class FindByField implements PropertyOptionInterface
 {
     private string $field;
 
