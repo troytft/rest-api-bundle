@@ -73,7 +73,7 @@ final class TypeExtractor
 
         if ($typeByDocBlock && $typeByReflection) {
             if ($typeByDocBlock->isNullable() !== $typeByReflection->isNullable() || $typeByDocBlock->getBuiltinType() !== $typeByReflection->getBuiltinType()) {
-                throw new RestApiBundle\Exception\TypeExtractor\TypeMismatchException();
+                throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('DocBlock type and code type mismatch');
             }
         }
 
@@ -95,8 +95,8 @@ final class TypeExtractor
 
         try {
             $result = static::extract($reflectionMethod->getReturnType(), $returnTag?->getType());
-        } catch (RestApiBundle\Exception\TypeExtractor\TypeMismatchException $exception) {
-            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('DocBlock type and code type mismatch', $reflectionMethod);
+        } catch (RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException $exception) {
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException($exception->getMessage(), $reflectionMethod);
         }
 
         return $result;
@@ -108,8 +108,8 @@ final class TypeExtractor
 
         try {
             $result = static::extract($reflectionProperty->getType(), $varTag?->getType());
-        } catch (RestApiBundle\Exception\TypeExtractor\TypeMismatchException $exception) {
-            throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException('DocBlock type and code type mismatch', $reflectionProperty);
+        } catch (RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException $exception) {
+            throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException($exception->getMessage(), $reflectionProperty);
         }
 
         return $result;
