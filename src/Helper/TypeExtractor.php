@@ -91,9 +91,8 @@ final class TypeExtractor
 
     public static function extractByReflectionMethod(\ReflectionMethod $reflectionMethod): ?PropertyInfo\Type
     {
-        $returnTag = static::resolveReturnTag($reflectionMethod);
-
         try {
+            $returnTag = static::resolveReturnTag($reflectionMethod);
             $result = static::extract($reflectionMethod->getReturnType(), $returnTag?->getType());
         } catch (RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException $exception) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException($exception->getMessage(), $reflectionMethod);
@@ -104,9 +103,8 @@ final class TypeExtractor
 
     public static function extractByReflectionProperty(\ReflectionProperty $reflectionProperty): ?PropertyInfo\Type
     {
-        $varTag = static::resolveVarTag($reflectionProperty);
-
         try {
+            $varTag = static::resolveVarTag($reflectionProperty);
             $result = static::extract($reflectionProperty->getType(), $varTag?->getType());
         } catch (RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException $exception) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException($exception->getMessage(), $reflectionProperty);
@@ -129,7 +127,7 @@ final class TypeExtractor
         }
 
         if ($count > 1) {
-            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('DocBlock contains two or more return tags.', $reflectionMethod);
+            throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('DocBlock contains two or more return tags.');
         }
 
         $returnTag = $docBlock->getTagsByName('return')[0];
