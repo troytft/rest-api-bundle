@@ -1,6 +1,6 @@
 <?php
 
-namespace RestApiBundle\Exception\Mapper\Schema;
+namespace RestApiBundle\Exception\Schema;
 
 class InvalidDefinitionException extends \InvalidArgumentException
 {

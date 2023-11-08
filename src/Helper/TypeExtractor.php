@@ -41,7 +41,7 @@ final class TypeExtractor
         }
 
         if (count($result) > 1) {
-            throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('Union types are not supported.');
+            throw new RestApiBundle\Exception\Schema\InvalidDefinitionException('Union types are not supported.');
         }
 
         return $result[0] ?? null;
@@ -51,7 +51,7 @@ final class TypeExtractor
     {
         $result = static::getDocBlockHelper()->getTypes($phpDocType);
         if (count($result) > 1) {
-            throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('Union types are not supported.');
+            throw new RestApiBundle\Exception\Schema\InvalidDefinitionException('Union types are not supported.');
         }
 
         return $result[0] ?? null;
@@ -73,7 +73,7 @@ final class TypeExtractor
 
         if ($typeByDocBlock && $typeByReflection) {
             if ($typeByDocBlock->isNullable() !== $typeByReflection->isNullable() || $typeByDocBlock->getBuiltinType() !== $typeByReflection->getBuiltinType()) {
-                throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('DocBlock type and code type mismatch');
+                throw new RestApiBundle\Exception\Schema\InvalidDefinitionException('DocBlock type and code type mismatch');
             }
         }
 
@@ -94,7 +94,7 @@ final class TypeExtractor
         try {
             $returnTag = static::resolveReturnTag($reflectionMethod);
             $result = static::extract($reflectionMethod->getReturnType(), $returnTag?->getType());
-        } catch (RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException $exception) {
+        } catch (RestApiBundle\Exception\Schema\InvalidDefinitionException $exception) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException($exception->getMessage(), $reflectionMethod);
         }
 
@@ -106,7 +106,7 @@ final class TypeExtractor
         try {
             $varTag = static::resolveVarTag($reflectionProperty);
             $result = static::extract($reflectionProperty->getType(), $varTag?->getType());
-        } catch (RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException $exception) {
+        } catch (RestApiBundle\Exception\Schema\InvalidDefinitionException $exception) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException($exception->getMessage(), $reflectionProperty);
         }
 
@@ -127,7 +127,7 @@ final class TypeExtractor
         }
 
         if ($count > 1) {
-            throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException('DocBlock contains two or more return tags.');
+            throw new RestApiBundle\Exception\Schema\InvalidDefinitionException('DocBlock contains two or more return tags.');
         }
 
         $returnTag = $docBlock->getTagsByName('return')[0];

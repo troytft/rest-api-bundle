@@ -49,7 +49,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                     $formattedPropertyName = ucfirst($reflectionProperty->getName());
                     $propertySchema->propertySetterName = 'set' . $formattedPropertyName;
                     if (!$reflectionClass->hasMethod($propertySchema->propertySetterName) || !$reflectionClass->getMethod($propertySchema->propertySetterName)->isPublic()) {
-                        throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException(sprintf('Property "%s" must be public or setter must exist.', $reflectionProperty->getName()));
+                        throw new RestApiBundle\Exception\Schema\InvalidDefinitionException(sprintf('Property "%s" must be public or setter must exist.', $reflectionProperty->getName()));
                     }
 
                     $propertySchema->propertyGetterName = 'get' . $formattedPropertyName;
@@ -58,12 +58,12 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                         if (!$reflectionClass->hasMethod($propertySchema->propertyGetterName) || !$reflectionClass->getMethod($propertySchema->propertyGetterName)->isPublic()) {
                             $propertySchema->propertyGetterName = 'is' . $formattedPropertyName;
                             if (!$reflectionClass->hasMethod($propertySchema->propertyGetterName) || !$reflectionClass->getMethod($propertySchema->propertyGetterName)->isPublic()) {
-                                throw new RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException(sprintf('Property "%s" must be public or getter must exist.', $reflectionProperty->getName()));
+                                throw new RestApiBundle\Exception\Schema\InvalidDefinitionException(sprintf('Property "%s" must be public or getter must exist.', $reflectionProperty->getName()));
                             }
                         }
                     }
                 }
-            } catch (RestApiBundle\Exception\Mapper\Schema\InvalidDefinitionException $exception) {
+            } catch (RestApiBundle\Exception\Schema\InvalidDefinitionException $exception) {
                 throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException($exception->getMessage(), $reflectionProperty, $exception);
             }
 
