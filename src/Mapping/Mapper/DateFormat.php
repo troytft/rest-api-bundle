@@ -10,7 +10,7 @@ use function is_string;
  * @Target({"PROPERTY", "ANNOTATION"})
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class DateFormat
+class DateFormat implements PropertyOptionInterface
 {
     private string $format;
 

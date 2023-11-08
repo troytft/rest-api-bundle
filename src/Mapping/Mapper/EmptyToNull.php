@@ -7,6 +7,6 @@ namespace RestApiBundle\Mapping\Mapper;
  * @Target({"PROPERTY", "ANNOTATION"})
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class Trim implements PropertyOptionInterface
+class EmptyToNull implements PropertyOptionInterface
 {
 }
