@@ -24,7 +24,7 @@ class ActionArgumentValueResolver implements ArgumentValueResolverInterface
     public function resolve(Request $request, ArgumentMetadata $argument): \Generator
     {
         $request = $this->requestStack->getCurrentRequest();
-        $requestData = $request->getRealMethod() === 'GET' ? $request->query->all() : $request->request->all();
+        $requestData = array_merge($request->files->all(), $request->getRealMethod() === 'GET' ? $request->query->all() : $request->request->all());
 
         $requestModel = $this->instantiate($argument->getType());
 
