@@ -16,3 +16,4 @@ RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException:
 RestApiBundle\Exception\RequestModel\EntityNotFoundException: Сущность не найдена.
 RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException: Одна из сущностей коллекции не найдена.
 RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException: Значения должны быть уникальными.
+RestApiBundle\Exception\Mapper\MappingValidation\UploadedFileRequiredException: Выберите файл.

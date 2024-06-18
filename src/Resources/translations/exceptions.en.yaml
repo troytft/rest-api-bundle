@@ -16,3 +16,4 @@ RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException:
 RestApiBundle\Exception\RequestModel\EntityNotFoundException: An entity with specified value not found.
 RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException: One entity of entities collection not found.
 RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException: Values should be unique.
+RestApiBundle\Exception\Mapper\MappingValidation\UploadedFileRequiredException: Select a file.

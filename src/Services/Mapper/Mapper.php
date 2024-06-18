@@ -3,6 +3,7 @@
 namespace RestApiBundle\Services\Mapper;
 
 use RestApiBundle;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function array_diff;
@@ -153,8 +154,17 @@ class Mapper
 
                 break;
 
+            case RestApiBundle\Model\Mapper\Schema::UPLOADED_FILE_TYPE:
+                if (!$rawValue instanceof UploadedFile) {
+                    throw new RestApiBundle\Exception\Mapper\MappingValidation\UploadedFileRequiredException($basePath);
+                }
+
+                $value = $rawValue;
+
+                break;
+
             default:
-                throw new \InvalidArgumentException();
+                throw new \InvalidArgumentException($schema->type);
 
         }
 
