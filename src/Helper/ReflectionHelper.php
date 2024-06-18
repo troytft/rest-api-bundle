@@ -4,6 +4,8 @@ namespace RestApiBundle\Helper;
 
 use RestApiBundle;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 use function class_exists;
 
 final class ReflectionHelper
@@ -42,6 +44,11 @@ final class ReflectionHelper
         $reflectionClass = static::getReflectionClass($class);
 
         return $reflectionClass->isInstantiable() && $reflectionClass->implementsInterface(\DateTimeInterface::class);
+    }
+
+    public static function isUploadedFile(string $class): bool
+    {
+        return $class === UploadedFile::class;
     }
 
     public static function isMapperDate(string $class): bool
