@@ -22,4 +22,13 @@ class BookController
     {
         return [];
     }
+
+    /**
+     * @OpenApi\Endpoint("Upload book", tags="books")
+     *
+     * @Route(methods="POST")
+     */
+    public function uploadAction(Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\UploadBook $requestModel): void
+    {
+    }
 }

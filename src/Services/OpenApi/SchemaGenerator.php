@@ -360,7 +360,7 @@ class SchemaGenerator
         $httpStatusCode = $httpStatusCode ?? 200;
 
         $responses->addResponse((string) $httpStatusCode, new OpenApi\Response([
-            'description' => 'Response with JSON body',
+            'description' => 'Response body',
             'content' => [
                 'application/json' => [
                     'schema' => new OpenApi\Schema([
@@ -375,12 +375,23 @@ class SchemaGenerator
 
     private function createRequestBodyFromRequestModel(string $class): OpenApi\RequestBody
     {
+        $schema = $this->requestModelResolver->resolve($class);
+
+        $contentType = 'application/json';
+        foreach ($schema->properties as $schemaProperty) {
+            if ($schemaProperty->type === OpenApi\Type::STRING && $schemaProperty->format === 'binary') {
+                $contentType = 'multipart/form-data';
+
+                break;
+            }
+        }
+
         return new OpenApi\RequestBody([
-            'description' => 'Request with JSON body',
+            'description' => 'Request body',
             'required' => true,
             'content' => [
-                'application/json' => [
-                    'schema' => $this->requestModelResolver->resolve($class),
+                $contentType => [
+                    'schema' => $schema,
                 ]
             ]
         ]);

@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "properties": {
+        "file": {
+            "type": "string",
+            "format": "binary",
+            "nullable": false
+        },
+        "previewName": {
+            "type": "string",
+            "nullable": true
+        }
+    },
+    "nullable": false
+}

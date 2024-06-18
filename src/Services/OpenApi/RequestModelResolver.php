@@ -129,6 +129,7 @@ class RequestModelResolver
             RestApiBundle\Model\Mapper\Schema::MODEL_TYPE => $this->resolve($schema->class, $schema->isNullable),
             RestApiBundle\Model\Mapper\Schema::ARRAY_TYPE => $this->resolveArrayType($schema, $validationConstraints),
             RestApiBundle\Model\Mapper\Schema::TRANSFORMER_AWARE_TYPE => $this->resolveTransformerAwareType($schema, $validationConstraints),
+            RestApiBundle\Model\Mapper\Schema::UPLOADED_FILE_TYPE => $this->resolveUploadedFile($schema->isNullable),
             default => throw new \InvalidArgumentException(),
         };
     }
@@ -221,6 +222,15 @@ class RequestModelResolver
         $class = $options[RestApiBundle\Services\Mapper\Transformer\EnumTransformer::CLASS_OPTION];
 
         return RestApiBundle\Helper\OpenApi\SchemaHelper::createEnum($class, $nullable);
+    }
+
+    private function resolveUploadedFile(bool $nullable): OpenApi\Schema
+    {
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::STRING,
+            'nullable' => $nullable,
+            'format' => 'binary',
+        ]);
     }
 
     private function resolveShortClassName(string $class): string

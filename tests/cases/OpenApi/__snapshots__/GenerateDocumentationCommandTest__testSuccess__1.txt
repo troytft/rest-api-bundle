@@ -10,7 +10,7 @@ paths:
             summary: 'Books list'
             responses:
                 '200':
-                    description: 'Response with JSON body'
+                    description: 'Response body'
                     content:
                         application/json:
                             schema:
@@ -41,6 +41,29 @@ paths:
                         type: integer
                         nullable: true
                     description: '"Author" fetched by field "id"'
+        post:
+            tags:
+                - books
+            summary: 'Upload book'
+            responses:
+                '204':
+                    description: 'Response with empty body'
+            requestBody:
+                description: 'Request body'
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            properties:
+                                file:
+                                    type: string
+                                    format: binary
+                                    nullable: false
+                                title:
+                                    type: string
+                                    nullable: false
+                            nullable: false
+                required: true
     /writers:
         post:
             tags:
@@ -54,7 +77,7 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Author'
             requestBody:
-                description: 'Request with JSON body'
+                description: 'Request body'
                 content:
                     application/json:
                         schema:
@@ -90,7 +113,7 @@ paths:
             summary: 'Writers list with filters'
             responses:
                 '200':
-                    description: 'Response with JSON body'
+                    description: 'Response body'
                     content:
                         application/json:
                             schema:

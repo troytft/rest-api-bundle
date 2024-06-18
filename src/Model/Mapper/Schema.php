@@ -7,6 +7,7 @@ final class Schema
     public const ARRAY_TYPE = 'array';
     public const MODEL_TYPE = 'model';
     public const TRANSFORMER_AWARE_TYPE = 'transformer-aware';
+    public const UPLOADED_FILE_TYPE = 'uploaded-file';
 
     /** @var array<string, self> */
     public array $properties = [];
@@ -65,6 +66,15 @@ final class Schema
         $instance = new self();
         $instance->valuesType = $valuesType;
         $instance->type = self::ARRAY_TYPE;
+        $instance->isNullable = $isNullable;
+
+        return $instance;
+    }
+
+    public static function createUploadedFileType(bool $isNullable): self
+    {
+        $instance = new self();
+        $instance->type = self::UPLOADED_FILE_TYPE;
         $instance->isNullable = $isNullable;
 
         return $instance;

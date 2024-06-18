@@ -170,6 +170,11 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
 
                 break;
 
+            case $type->getClassName() && RestApiBundle\Helper\ReflectionHelper::isUploadedFile($type->getClassName()):
+                $schema = RestApiBundle\Model\Mapper\Schema::createUploadedFileType($type->isNullable());
+
+                break;
+
             default:
                 throw new \LogicException();
         }
