@@ -163,7 +163,7 @@ final class TypeExtractor
         return $varTag;
     }
 
-    private static function getDocBlockFactory(): DocBlockFactory
+    private static function getDocBlockFactory(): PhpDoc\DocBlockFactoryInterface
     {
         if (!static::$docBlockFactory) {
             static::$docBlockFactory = DocBlockFactory::createInstance();
