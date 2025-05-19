@@ -107,10 +107,16 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             } elseif ($propertyInfoType->isCollection()) {
                 $collectionValueSchema = $this->resolveSchemaByType(RestApiBundle\Helper\TypeExtractor::extractFirstCollectionValueType($propertyInfoType), $typeOptions);
                 if ($collectionValueSchema->transformerClass === RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class) {
-                    $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class, $propertyInfoType->isNullable(),
-                        array_merge($collectionValueSchema->transformerOptions, [
-                            RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::MULTIPLE_OPTION => true,
-                        ]));
+                    $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(
+                        RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class,
+                        $propertyInfoType->isNullable(),
+                        array_merge(
+                            $collectionValueSchema->transformerOptions,
+                            [
+                                RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::MULTIPLE_OPTION => true,
+                            ]
+                        ),
+                    );
                 } else {
                     $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $propertyInfoType->isNullable());
                 }
