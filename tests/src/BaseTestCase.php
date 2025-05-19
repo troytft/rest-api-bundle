@@ -45,6 +45,11 @@ abstract class BaseTestCase extends KernelTestCase
         $this->assertMatchesJsonSnapshot(json_encode($schema->getSerializableData()));
     }
 
+    protected function assertMatchesOpenApiSchemaSnapshots(array $schemas): void
+    {
+        $this->assertMatchesJsonSnapshot(json_encode(array_map(fn (OpenApi\Schema|OpenApi\OpenApi $schema) => $schema->getSerializableData(), $schemas)));
+    }
+
     protected function getMapper(): RestApiBundle\Services\Mapper\Mapper
     {
         return $this->getContainer()->get(RestApiBundle\Services\Mapper\Mapper::class);

@@ -10,9 +10,7 @@ class ResponseModelTest extends Tests\BaseTestCase
     public function testOpenApiSchema(): void
     {
         $this->getResponseModelResolver()->resolveReference(Tests\Fixture\ResponseModel\Root::class);
-        $schemas = $this->getResponseModelResolver()->dumpSchemas();
-
-        $this->assertMatchesOpenApiSchemaSnapshot($schemas[array_key_first($schemas)]);
+        $this->assertMatchesOpenApiSchemaSnapshots($this->getResponseModelResolver()->dumpSchemas());
     }
 
     private function getResponseModelResolver(): RestApiBundle\Services\OpenApi\ResponseModelResolver
