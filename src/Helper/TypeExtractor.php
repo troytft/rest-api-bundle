@@ -13,7 +13,7 @@ use function in_array;
 final class TypeExtractor
 {
     private static ?PropertyInfo\Util\PhpDocTypeHelper $docBlockHelper = null;
-    private static ?DocBlockFactory $docBlockFactory = null;
+    private static ?PhpDoc\DocBlockFactoryInterface $docBlockFactory = null;
 
     private static function extractByReflectionType(\ReflectionType $sourceReflectionType): ?PropertyInfo\Type
     {
@@ -163,7 +163,7 @@ final class TypeExtractor
         return $varTag;
     }
 
-    private static function getDocBlockFactory(): DocBlockFactory
+    private static function getDocBlockFactory(): PhpDoc\DocBlockFactoryInterface
     {
         if (!static::$docBlockFactory) {
             static::$docBlockFactory = DocBlockFactory::createInstance();
