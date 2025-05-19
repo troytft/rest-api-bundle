@@ -195,12 +195,20 @@ final class TypeExtractor
 
     public static function extractEnumData(string $class): RestApiBundle\Model\Helper\TypeExtractor\EnumData
     {
-        if (method_exists($class, 'getValues')) {
+        $values = null;
+
+        if (class_exists($class) && enum_exists($class)) {
+            foreach ($class::cases() as $case) {
+                if ($case instanceof \BackedEnum) {
+                    $values[] = $case->value;
+                } else {
+                    throw new \InvalidArgumentException();
+                }
+            }
+        } elseif (method_exists($class, 'getValues')) {
             $values = $class::getValues();
         } else {
             $reflectionClass = RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class);
-
-            $values = [];
             foreach ($reflectionClass->getReflectionConstants(\ReflectionClassConstant::IS_PUBLIC) as $reflectionConstant) {
                 if (is_scalar($reflectionConstant->getValue())) {
                     $values[] = $reflectionConstant->getValue();

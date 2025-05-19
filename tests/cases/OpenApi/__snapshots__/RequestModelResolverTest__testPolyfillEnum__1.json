@@ -1,0 +1,126 @@
+{
+    "type": "object",
+    "properties": {
+        "stringRequired": {
+            "type": "string",
+            "nullable": false,
+            "enum": [
+                "created",
+                "published",
+                "archived"
+            ]
+        },
+        "stringNullable": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+                "created",
+                "published",
+                "archived"
+            ]
+        },
+        "sringArrayRequired": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "nullable": false,
+                "enum": [
+                    "created",
+                    "published",
+                    "archived"
+                ]
+            },
+            "nullable": false
+        },
+        "stringArrayNullable": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "nullable": false,
+                "enum": [
+                    "created",
+                    "published",
+                    "archived"
+                ]
+            },
+            "nullable": true
+        },
+        "choiceCallbackStringRequired": {
+            "type": "string",
+            "nullable": false,
+            "enum": [
+                "created",
+                "published",
+                "archived"
+            ]
+        },
+        "choiceCallbackStringNullable": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+                "created",
+                "published",
+                "archived"
+            ]
+        },
+        "choiceCallbackStringArrayRequired": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "nullable": false,
+                "enum": [
+                    "created",
+                    "published",
+                    "archived"
+                ]
+            },
+            "nullable": false
+        },
+        "choiceCallbackStringArrayNullable": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "nullable": false,
+                "enum": [
+                    "created",
+                    "published",
+                    "archived"
+                ]
+            },
+            "nullable": true
+        },
+        "choiceInlineEnumString": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+                "created",
+                "published"
+            ]
+        },
+        "choiceInlineStringArrayRequired": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "nullable": false,
+                "enum": [
+                    "created",
+                    "published"
+                ]
+            },
+            "nullable": false
+        },
+        "choiceInlineStringArrayNullable": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "nullable": false,
+                "enum": [
+                    "created",
+                    "published"
+                ]
+            },
+            "nullable": true
+        }
+    },
+    "nullable": false
+}

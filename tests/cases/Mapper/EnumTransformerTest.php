@@ -6,11 +6,11 @@ class EnumTransformerTest extends Tests\BaseTestCase
     {
         $model = new Tests\Fixture\Mapper\EnumTransformerTest\Model();
         $this->getMapper()->map($model, [
-            'field' => Tests\Fixture\TestApp\Enum\BookStatus::CREATED,
+            'field' => Tests\Fixture\TestApp\Enum\PolyfillStringEnum::CREATED,
         ]);
 
-        $this->assertTrue($model->getField() instanceof Tests\Fixture\TestApp\Enum\BookStatus);
-        $this->assertSame(\Tests\Fixture\TestApp\Enum\BookStatus::CREATED, $model->getField()->getValue());
+        $this->assertTrue($model->getField() instanceof Tests\Fixture\TestApp\Enum\PolyfillStringEnum);
+        $this->assertSame(\Tests\Fixture\TestApp\Enum\PolyfillStringEnum::CREATED, $model->getField()->getValue());
     }
 
     public function testValueNotFound()

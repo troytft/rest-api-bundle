@@ -7,8 +7,8 @@ use RestApiBundle;
 
 class TestEnumModel implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {
-    public function getField(): Tests\Fixture\TestApp\Enum\BookStatus
+    public function getField(): Tests\Fixture\TestApp\Enum\PolyfillStringEnum
     {
-        return Tests\Fixture\TestApp\Enum\BookStatus::from(Tests\Fixture\TestApp\Enum\BookStatus::ARCHIVED);
+        return Tests\Fixture\TestApp\Enum\PolyfillStringEnum::from(Tests\Fixture\TestApp\Enum\PolyfillStringEnum::ARCHIVED);
     }
 }

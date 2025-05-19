@@ -2,7 +2,7 @@
 
 namespace Tests\Fixture\TestApp\Enum;
 
-class BookStatus extends \RestApiBundle\Mapping\ResponseModel\BaseEnum
+class PolyfillStringEnum extends \RestApiBundle\Mapping\ResponseModel\BaseEnum
 {
     public const CREATED = 'created';
     public const PUBLISHED = 'published';

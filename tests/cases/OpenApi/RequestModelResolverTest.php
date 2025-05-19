@@ -2,9 +2,16 @@
 
 class RequestModelResolverTest extends Tests\BaseTestCase
 {
-    public function testEnum(): void
+    public function testPolyfillEnum(): void
     {
-        $schema = $this->getRequestModelResolver()->resolve(Tests\Fixture\OpenApi\RequestModelResolverTest\TestEnumModel::class);
+        $schema = $this->getRequestModelResolver()->resolve(Tests\Fixture\OpenApi\RequestModelResolverTest\PolyfillEnumTestModel::class);
+
+        $this->assertMatchesOpenApiSchemaSnapshot($schema);
+    }
+
+    public function testPhpEnum(): void
+    {
+        $schema = $this->getRequestModelResolver()->resolve(Tests\Fixture\OpenApi\RequestModelResolverTest\PhpEnumTestModel::class);
 
         $this->assertMatchesOpenApiSchemaSnapshot($schema);
     }
