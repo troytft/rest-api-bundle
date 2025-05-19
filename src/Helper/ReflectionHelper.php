@@ -3,7 +3,6 @@
 namespace RestApiBundle\Helper;
 
 use RestApiBundle;
-
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 use function class_exists;

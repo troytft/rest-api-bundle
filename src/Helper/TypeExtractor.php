@@ -33,7 +33,7 @@ final class TypeExtractor
 
             if ($phpTypeOrClass === 'null' | $phpTypeOrClass === 'void') {
                 $result[] = new PropertyInfo\Type(PropertyInfo\Type::BUILTIN_TYPE_NULL, $sourceReflectionType->allowsNull());
-            } elseif ($reflectionType->isBuiltin()) {
+            } elseif ($reflectionType instanceof  \ReflectionNamedType && $reflectionType->isBuiltin()) {
                 $result[] = new PropertyInfo\Type($phpTypeOrClass, $sourceReflectionType->allowsNull());
             } else {
                 $result[] = new PropertyInfo\Type(PropertyInfo\Type::BUILTIN_TYPE_OBJECT, $sourceReflectionType->allowsNull(), $phpTypeOrClass);
