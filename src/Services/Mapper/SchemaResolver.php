@@ -3,6 +3,7 @@
 namespace RestApiBundle\Services\Mapper;
 
 use RestApiBundle;
+use RestApiBundle\Services\Mapper\SchemaTypeResolver\DoctrineEntityTypeResolver;
 use Symfony\Component\PropertyInfo;
 
 use function sprintf;
@@ -20,6 +21,8 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\FloatTypeResolver(),
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\BooleanTypeResolver(),
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\PhpEnumTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\PolyfillEnumTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\DoctrineEntityTypeResolver(),
         ];
     }
 
@@ -131,28 +134,6 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
 
             case $propertyInfoType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isMapperModel($propertyInfoType->getClassName()):
                 $schema = $this->resolve($propertyInfoType->getClassName(), $propertyInfoType->isNullable());
-
-                break;
-
-            case $propertyInfoType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isMapperEnum($propertyInfoType->getClassName()):
-                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\EnumTransformer::class, $propertyInfoType->isNullable(), [
-                    RestApiBundle\Services\Mapper\Transformer\EnumTransformer::CLASS_OPTION => $propertyInfoType->getClassName(),
-                ]);
-
-                break;
-
-            case $propertyInfoType->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($propertyInfoType->getClassName()):
-                $fieldName = 'id';
-                foreach ($typeOptions as $typeOption) {
-                    if ($typeOption instanceof RestApiBundle\Mapping\Mapper\FindByField) {
-                        $fieldName = $typeOption->getField();
-                    }
-                }
-
-                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class, $propertyInfoType->isNullable(), [
-                    RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::CLASS_OPTION => $propertyInfoType->getClassName(),
-                    RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::FIELD_OPTION => $fieldName,
-                ]);
 
                 break;
 
