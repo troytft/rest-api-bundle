@@ -20,7 +20,6 @@ class JsonSerializationTest extends Tests\BaseTestCase
     public function testPolyfillEnumType(): void
     {
         $this->assertMatchesJsonSnapshot($this->getResponseModelSerializer()->serialize(new Tests\Fixture\ResponseModel\PolyfillEnumType()));
-
     }
 
     public function testPhpEnumType(): void

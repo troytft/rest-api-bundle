@@ -212,5 +212,4 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
 
         return $prefix . $builtinType;
     }
-
 }

@@ -7,8 +7,6 @@ use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel;
 
 use function array_merge;
-use function is_array;
-use function join;
 
 class ResponseHandler
 {
