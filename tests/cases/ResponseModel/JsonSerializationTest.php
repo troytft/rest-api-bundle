@@ -31,11 +31,6 @@ class JsonSerializationTest extends Tests\BaseTestCase
     {
         return $this->getContainer()->get(RestApiBundle\Services\ResponseModel\Serializer::class);
     }
-
-    private function getResponseModelResolver(): RestApiBundle\Services\OpenApi\ResponseModelResolver
-    {
-        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\ResponseModelResolver::class);
-    }
 }
 
 

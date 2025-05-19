@@ -3,7 +3,7 @@
 namespace RestApiBundle\Services\Mapper\SchemaTypeResolver;
 
 use RestApiBundle;
-use \Symfony\Component\PropertyInfo;
+use Symfony\Component\PropertyInfo;
 
 interface SchemaTypeResolverInterface
 {
