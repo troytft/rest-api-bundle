@@ -1,0 +1,22 @@
+{
+    "type": "object",
+    "properties": {
+        "required": {
+            "type": "string",
+            "format": "date",
+            "nullable": false,
+            "example": "2021-04-08"
+        },
+        "nullable": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "example": "2021-04-08"
+        },
+        "__typename": {
+            "type": "string",
+            "default": "DateType",
+            "nullable": false
+        }
+    }
+}

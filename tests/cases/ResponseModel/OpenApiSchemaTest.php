@@ -5,9 +5,9 @@ namespace cases\ResponseModel;
 use RestApiBundle;
 use Tests;
 
-class ResponseModelResolverTest extends Tests\BaseTestCase
+class OpenApiSchemaTest extends Tests\BaseTestCase
 {
-    public function testDate(): void
+    public function testDateType(): void
     {
         $this->getResponseModelResolver()->resolveReference(Tests\Fixture\ResponseModel\DateType::class);
         $schemas = $this->getResponseModelResolver()->dumpSchemas();
@@ -15,7 +15,7 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
         $this->assertMatchesOpenApiSchemaSnapshot($schemas[array_key_first($schemas)]);
     }
 
-    public function testDateTime(): void
+    public function testDateTimeType(): void
     {
         $this->getResponseModelResolver()->resolveReference(Tests\Fixture\ResponseModel\DateTimeType::class);
         $schemas = $this->getResponseModelResolver()->dumpSchemas();
@@ -23,7 +23,7 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
         $this->assertMatchesOpenApiSchemaSnapshot($schemas[array_key_first($schemas)]);
     }
 
-    public function testPolyfillEnum(): void
+    public function testPolyfillEnumType(): void
     {
         $this->getResponseModelResolver()->resolveReference(Tests\Fixture\ResponseModel\PolyfillEnumType::class);
         $schemas = $this->getResponseModelResolver()->dumpSchemas();
@@ -31,7 +31,7 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
         $this->assertMatchesOpenApiSchemaSnapshot($schemas[array_key_first($schemas)]);
     }
 
-    public function testPhpEnum(): void
+    public function testPhpEnumType(): void
     {
         $this->getResponseModelResolver()->resolveReference(Tests\Fixture\ResponseModel\PhpEnumType::class);
         $schemas = $this->getResponseModelResolver()->dumpSchemas();

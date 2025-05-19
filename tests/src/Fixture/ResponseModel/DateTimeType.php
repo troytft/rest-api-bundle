@@ -8,7 +8,7 @@ class DateTimeType implements RestApiBundle\Mapping\ResponseModel\ResponseModelI
 {
     public function getRequired(): \DateTime
     {
-        return new \DateTime();
+        return new \DateTime('2025-05-19 00:00:00');
     }
 
     public function getNullable(): ?\DateTime

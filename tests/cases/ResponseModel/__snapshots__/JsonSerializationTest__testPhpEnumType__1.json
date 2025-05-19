@@ -1,0 +1,5 @@
+{
+    "stringRequired": "created",
+    "stringNullable": null,
+    "__typename": "PhpEnumType"
+}
