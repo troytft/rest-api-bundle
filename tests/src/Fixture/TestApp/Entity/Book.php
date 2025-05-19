@@ -37,7 +37,7 @@ class Book
     /**
      * @var string
      */
-    private $status = Tests\Fixture\TestApp\Enum\BookStatus::PUBLISHED;
+    private $status = Tests\Fixture\TestApp\Enum\PolyfillStringEnum::PUBLISHED;
 
     public function __construct(int $id, string $slug, string $title)
     {

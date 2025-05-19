@@ -1,0 +1,28 @@
+{
+    "type": "object",
+    "properties": {
+        "stringRequired": {
+            "type": "string",
+            "nullable": false,
+            "enum": [
+                "created",
+                "published",
+                "archived"
+            ]
+        },
+        "stringNullable": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+                "created",
+                "published",
+                "archived"
+            ]
+        },
+        "__typename": {
+            "type": "string",
+            "default": "PhpEnumType",
+            "nullable": false
+        }
+    }
+}

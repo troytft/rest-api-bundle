@@ -7,8 +7,6 @@ use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel;
 
 use function array_merge;
-use function is_array;
-use function join;
 
 class ResponseHandler
 {
@@ -18,7 +16,7 @@ class ResponseHandler
     ) {
     }
 
-    public function handleControllerResultEvent(HttpKernel\Event\ViewEvent $event)
+    public function handleControllerResultEvent(HttpKernel\Event\ViewEvent $event): void
     {
         if (!$this->settingsProvider->isResponseHandlerEnabled()) {
             return;
@@ -31,39 +29,10 @@ class ResponseHandler
             ];
 
             $event->setResponse(new HttpFoundation\Response(
-                $this->serializeResponse($result),
+                $this->serializer->serialize($result),
                 $result === null ? 204 : 200,
                 array_merge($defaultHeaders, $event->getRequest()->attributes->get('_response_headers', [])),
             ));
         }
-    }
-
-    private function serializeResponse($value): ?string
-    {
-        if ($value === null) {
-            $result = null;
-        } elseif ($value instanceof RestApiBundle\Mapping\ResponseModel\ResponseModelInterface) {
-            $result = $this->serializer->toJson($value);
-        } elseif (is_array($value)) {
-            if (!array_is_list($value)) {
-                throw new \InvalidArgumentException('Associative arrays are not allowed');
-            }
-
-            $chunks = [];
-
-            foreach ($value as $item) {
-                if (!$item instanceof RestApiBundle\Mapping\ResponseModel\ResponseModelInterface) {
-                    throw new \InvalidArgumentException('The collection should consist of response models');
-                }
-
-                $chunks[] = $this->serializer->toJson($item);
-            }
-
-            $result = '[' . join(',', $chunks) . ']';
-        } else {
-            throw new \InvalidArgumentException();
-        }
-
-        return $result;
     }
 }

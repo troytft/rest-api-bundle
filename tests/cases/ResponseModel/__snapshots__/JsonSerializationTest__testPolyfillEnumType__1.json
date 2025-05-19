@@ -1,0 +1,5 @@
+{
+    "stringRequired": "archived",
+    "stringNullable": null,
+    "__typename": "PolyfillEnumType"
+}

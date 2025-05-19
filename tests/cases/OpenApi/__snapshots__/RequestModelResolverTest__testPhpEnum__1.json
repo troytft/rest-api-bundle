@@ -1,0 +1,90 @@
+{
+    "type": "object",
+    "properties": {
+        "stringRequired": {
+            "type": "string",
+            "nullable": false,
+            "enum": [
+                "created",
+                "published",
+                "archived"
+            ]
+        },
+        "stringNullable": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+                "created",
+                "published",
+                "archived"
+            ]
+        },
+        "arrayRequired": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "nullable": false,
+                "enum": [
+                    "created",
+                    "published",
+                    "archived"
+                ]
+            },
+            "nullable": false
+        },
+        "arrayNullable": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "nullable": false,
+                "enum": [
+                    "created",
+                    "published",
+                    "archived"
+                ]
+            },
+            "nullable": true
+        },
+        "choiceInlineStringRequired": {
+            "type": "string",
+            "nullable": false,
+            "enum": [
+                "created",
+                "published"
+            ]
+        },
+        "choiceInlineStringNullable": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+                "created",
+                "published"
+            ]
+        },
+        "choiceInlineStringArrayRequired": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "nullable": false,
+                "enum": [
+                    "created",
+                    "published"
+                ]
+            },
+            "nullable": false
+        },
+        "choiceInlineStringArrayNullable": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "nullable": false,
+                "enum": [
+                    "created",
+                    "published"
+                ]
+            },
+            "nullable": true
+        }
+    },
+    "nullable": false
+}

@@ -17,7 +17,7 @@ jobs:
             -   name: Checkout repository
                 uses: actions/checkout@v4
 
-            -   name: Setup PHP ${{ matrix.php-versions }}
+            -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
                     php-version: ${{ matrix.php-versions }}
@@ -35,7 +35,7 @@ jobs:
                     path: vendor
                     key: composer-vendor-cache-${{ matrix.php-versions }}-${{ hashFiles('**/composer.json') }}
 
-            -   name: Install Symfony ${{ matrix.symfony-versions }}
+            -   name: Install Symfony
                 if: steps.composer-cache.outputs.cache-hit != 'true'
                 run: composer require 'symfony/framework-bundle:^${{ matrix.symfony-versions }}' --no-suggest --no-interaction --no-progress
 

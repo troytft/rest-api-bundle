@@ -28,7 +28,36 @@ class Serializer
         $this->serializer = new \Symfony\Component\Serializer\Serializer($normalizers, $encoders);
     }
 
-    public function toJson(RestApiBundle\Mapping\ResponseModel\ResponseModelInterface $responseModel): string
+    public function serialize($value): ?string
+    {
+        if ($value === null) {
+            $result = null;
+        } elseif ($value instanceof RestApiBundle\Mapping\ResponseModel\ResponseModelInterface) {
+            $result = $this->responseModelToJson($value);
+        } elseif (is_array($value)) {
+            if (!array_is_list($value)) {
+                throw new \InvalidArgumentException('Associative arrays are not allowed');
+            }
+
+            $chunks = [];
+
+            foreach ($value as $item) {
+                if (!$item instanceof RestApiBundle\Mapping\ResponseModel\ResponseModelInterface) {
+                    throw new \InvalidArgumentException('The collection should consist of response models');
+                }
+
+                $chunks[] = $this->responseModelToJson($item);
+            }
+
+            $result = '[' . join(',', $chunks) . ']';
+        } else {
+            throw new \InvalidArgumentException();
+        }
+
+        return $result;
+    }
+
+    private function responseModelToJson(RestApiBundle\Mapping\ResponseModel\ResponseModelInterface $responseModel): string
     {
         return $this->serializer->serialize($responseModel, 'json', [
             RestApiBundle\Services\ResponseModel\SerializableDateNormalizer::FORMAT_KEY => $this->settingsProvider->getResponseModelDateFormat(),

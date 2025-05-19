@@ -92,7 +92,7 @@ class ResponseModelResolver
                     $propertySchema->deprecated = true;
                 }
             } catch (RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException $exception) {
-                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Unknown type', $reflectionMethod);
+                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException(sprintf('Unknown type: %s', $reflectionMethod->class), $reflectionMethod);
             }
 
             $properties[$propertyName] = $propertySchema;
@@ -143,6 +143,7 @@ class ResponseModelResolver
 
                 break;
 
+            case $type->getClassName() && enum_exists($type->getClassName()):
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ReflectionHelper::isResponseModelEnum($type->getClassName()):
                 $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createEnum($type->getClassName(), $type->isNullable());
 
