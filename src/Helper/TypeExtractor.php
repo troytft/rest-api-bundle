@@ -184,13 +184,18 @@ final class TypeExtractor
         return in_array($type->getBuiltinType(), $types, true);
     }
 
-    public static function extractFirstCollectionValueType(PropertyInfo\Type $type): ?PropertyInfo\Type
+    public static function extractCollectionValueType(PropertyInfo\Type $type): PropertyInfo\Type
     {
         if (count($type->getCollectionValueTypes()) > 1) {
             throw new \InvalidArgumentException();
         }
 
-        return $type->getCollectionValueTypes()[0] ?? null;
+        $result = $type->getCollectionValueTypes()[0] ?? null;
+        if (!$result) {
+            throw new \LogicException('Collection value type is empty');
+        }
+
+        return $result;
     }
 
     public static function extractEnumData(string $class): RestApiBundle\Model\Helper\TypeExtractor\EnumData

@@ -1,0 +1,124 @@
+{
+    "DateTimeType": {
+        "type": "object",
+        "properties": {
+            "required": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": false,
+                "example": "2021-04-08T14:44:26+02:00"
+            },
+            "nullable": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "example": "2021-04-08T14:44:26+02:00"
+            },
+            "__typename": {
+                "type": "string",
+                "default": "DateTimeType",
+                "nullable": false
+            }
+        }
+    },
+    "DateType": {
+        "type": "object",
+        "properties": {
+            "required": {
+                "type": "string",
+                "format": "date",
+                "nullable": false,
+                "example": "2021-04-08"
+            },
+            "nullable": {
+                "type": "string",
+                "format": "date",
+                "nullable": true,
+                "example": "2021-04-08"
+            },
+            "__typename": {
+                "type": "string",
+                "default": "DateType",
+                "nullable": false
+            }
+        }
+    },
+    "PhpEnumType": {
+        "type": "object",
+        "properties": {
+            "stringRequired": {
+                "type": "string",
+                "nullable": false,
+                "enum": [
+                    "created",
+                    "published",
+                    "archived"
+                ]
+            },
+            "stringNullable": {
+                "type": "string",
+                "nullable": true,
+                "enum": [
+                    "created",
+                    "published",
+                    "archived"
+                ]
+            },
+            "__typename": {
+                "type": "string",
+                "default": "PhpEnumType",
+                "nullable": false
+            }
+        }
+    },
+    "PolyfillEnumType": {
+        "type": "object",
+        "properties": {
+            "stringRequired": {
+                "type": "string",
+                "nullable": false,
+                "enum": [
+                    "created",
+                    "published",
+                    "archived"
+                ]
+            },
+            "stringNullable": {
+                "type": "string",
+                "nullable": true,
+                "enum": [
+                    "created",
+                    "published",
+                    "archived"
+                ]
+            },
+            "__typename": {
+                "type": "string",
+                "default": "PolyfillEnumType",
+                "nullable": false
+            }
+        }
+    },
+    "Root": {
+        "type": "object",
+        "properties": {
+            "dateType": {
+                "$ref": "#\/components\/schemas\/DateType"
+            },
+            "dateTimeType": {
+                "$ref": "#\/components\/schemas\/DateTimeType"
+            },
+            "phpEnumType": {
+                "$ref": "#\/components\/schemas\/PhpEnumType"
+            },
+            "polyfillEnumType": {
+                "$ref": "#\/components\/schemas\/PolyfillEnumType"
+            },
+            "__typename": {
+                "type": "string",
+                "default": "Root",
+                "nullable": false
+            }
+        }
+    }
+}

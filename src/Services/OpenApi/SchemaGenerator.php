@@ -277,7 +277,7 @@ class SchemaGenerator
         }
 
         if ($returnType->isCollection()) {
-            $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractFirstCollectionValueType($returnType);
+            $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($returnType);
             if (!$collectionValueType->getClassName() || !RestApiBundle\Helper\ReflectionHelper::isResponseModel($collectionValueType->getClassName())) {
                 throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Invalid response type, only collection of response models allowed', $reflectionMethod);
             }

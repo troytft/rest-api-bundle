@@ -16,7 +16,16 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
     {
         $this->schemaTypeResolvers = [
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\StringTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\IntegerTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\FloatTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\BooleanTypeResolver(),
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\PhpEnumTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\PolyfillEnumTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\DoctrineEntityTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\DoctrineEntityArrayTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\DateTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\DateTimeTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\UploadedFileTypeResolver(),
         ];
     }
 
@@ -84,104 +93,25 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
      */
     private function resolveSchemaByType(PropertyInfo\Type $propertyInfoType, array $typeOptions = []): RestApiBundle\Model\Mapper\Schema
     {
-        $selectedSchemaTypeResolver = null;
+        $schema = null;
         foreach ($this->schemaTypeResolvers as $schemaTypeResolver) {
             if ($schemaTypeResolver->supports($propertyInfoType, $typeOptions)) {
-                $selectedSchemaTypeResolver = $schemaTypeResolver;
+                $schema = $schemaTypeResolver->resolve($propertyInfoType, $typeOptions);
 
                 break;
             }
         }
 
-        if ($selectedSchemaTypeResolver) {
-            return $selectedSchemaTypeResolver->resolve($propertyInfoType, $typeOptions);
-        }
-
-        switch (true) {
-            case RestApiBundle\Helper\TypeExtractor::isScalar($propertyInfoType):
-                $schema  = match ($propertyInfoType->getBuiltinType()) {
-                    PropertyInfo\Type::BUILTIN_TYPE_INT => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class, $propertyInfoType->isNullable()),
-                    PropertyInfo\Type::BUILTIN_TYPE_FLOAT => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\FloatTransformer::class, $propertyInfoType->isNullable()),
-                    PropertyInfo\Type::BUILTIN_TYPE_BOOL => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class, $propertyInfoType->isNullable()),
-                    default => throw new \LogicException(),
-                };
-
-                break;
-
-            case $propertyInfoType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isMapperDate($propertyInfoType->getClassName()):
-                $dateFormat = null;
-                foreach ($typeOptions as $typeOption) {
-                    if ($typeOption instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
-                        $dateFormat = $typeOption->getFormat();
-                    }
-                }
-
-                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DateTransformer::class, $propertyInfoType->isNullable(), [
-                    RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION => $dateFormat,
-                ]);
-
-                break;
-
-            case $propertyInfoType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isDateTime($propertyInfoType->getClassName()):
-                $dateFormat = null;
-                foreach ($typeOptions as $typeOption) {
-                    if ($typeOption instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
-                        $dateFormat = $typeOption->getFormat();
-                    }
-                }
-
-                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class, $propertyInfoType->isNullable(), [
-                    RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION => $dateFormat,
-                ]);
-
-                break;
-
-            case $propertyInfoType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isMapperModel($propertyInfoType->getClassName()):
+        if (!$schema) {
+            if ($propertyInfoType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isMapperModel($propertyInfoType->getClassName())) {
                 $schema = $this->resolve($propertyInfoType->getClassName(), $propertyInfoType->isNullable());
-
-                break;
-
-            case $propertyInfoType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isMapperEnum($propertyInfoType->getClassName()):
-                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\EnumTransformer::class, $propertyInfoType->isNullable(), [
-                    RestApiBundle\Services\Mapper\Transformer\EnumTransformer::CLASS_OPTION => $propertyInfoType->getClassName(),
-                ]);
-
-                break;
-
-            case $propertyInfoType->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($propertyInfoType->getClassName()):
-                $fieldName = 'id';
-                foreach ($typeOptions as $typeOption) {
-                    if ($typeOption instanceof RestApiBundle\Mapping\Mapper\FindByField) {
-                        $fieldName = $typeOption->getField();
-                    }
-                }
-
-                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class, $propertyInfoType->isNullable(), [
-                    RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::CLASS_OPTION => $propertyInfoType->getClassName(),
-                    RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::FIELD_OPTION => $fieldName,
-                ]);
-
-                break;
-
-            case $propertyInfoType->isCollection():
-                $collectionValueSchema = $this->resolveSchemaByType(RestApiBundle\Helper\TypeExtractor::extractFirstCollectionValueType($propertyInfoType), $typeOptions);
-                if ($collectionValueSchema->transformerClass === RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class) {
-                    $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class, $propertyInfoType->isNullable(), array_merge($collectionValueSchema->transformerOptions, [
-                       RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::MULTIPLE_OPTION => true,
-                    ]));
-                } else {
-                    $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $propertyInfoType->isNullable());
-                }
-
-                break;
-
-            case $propertyInfoType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isUploadedFile($propertyInfoType->getClassName()):
-                $schema = RestApiBundle\Model\Mapper\Schema::createUploadedFileType($propertyInfoType->isNullable());
-
-                break;
-
-            default:
+            } elseif ($propertyInfoType->isCollection()) {
+                $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($propertyInfoType);
+                $collectionValueSchema = $this->resolveSchemaByType($collectionValueType, $typeOptions);
+                $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $propertyInfoType->isNullable());
+            } else {
                 throw new \LogicException(sprintf('Unknown type: %s', $this->propertyTypeToString($propertyInfoType)));
+            }
         }
 
         return $schema;
