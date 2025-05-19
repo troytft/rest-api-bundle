@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Fixture\TestApp\Repository;
 
@@ -14,12 +14,12 @@ class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceE
         parent::__construct($registry, Tests\Fixture\TestApp\Entity\Book::class);
     }
 
-    public function find($id, $lockMode = null, $lockVersion = null)
+    public function find($id, $lockMode = null, $lockVersion = null): ?Tests\Fixture\TestApp\Entity\Book
     {
         return $this->findOneBy(['id' => $id]);
     }
 
-    public function findOneBy(array $criteria, array $orderBy = null): ?Tests\Fixture\TestApp\Entity\Book
+    public function findOneBy(array $criteria, ?array $orderBy = null): ?Tests\Fixture\TestApp\Entity\Book
     {
         $result = null;
 
@@ -47,7 +47,7 @@ class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceE
     /**
      * @return Tests\Fixture\TestApp\Entity\Book[]
      */
-    public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null): array
+    public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null): array
     {
         $result = [];
 
