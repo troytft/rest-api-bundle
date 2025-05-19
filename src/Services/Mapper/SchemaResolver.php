@@ -22,6 +22,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\PhpEnumTypeResolver(),
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\PolyfillEnumTypeResolver(),
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\DoctrineEntityTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\DoctrineEntityArrayTypeResolver(),
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\DateTypeResolver(),
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\DateTimeTypeResolver(),
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\UploadedFileTypeResolver(),
@@ -105,21 +106,9 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             if ($propertyInfoType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isMapperModel($propertyInfoType->getClassName())) {
                 $schema = $this->resolve($propertyInfoType->getClassName(), $propertyInfoType->isNullable());
             } elseif ($propertyInfoType->isCollection()) {
-                $collectionValueSchema = $this->resolveSchemaByType(RestApiBundle\Helper\TypeExtractor::extractFirstCollectionValueType($propertyInfoType), $typeOptions);
-                if ($collectionValueSchema->transformerClass === RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class) {
-                    $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(
-                        RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class,
-                        $propertyInfoType->isNullable(),
-                        array_merge(
-                            $collectionValueSchema->transformerOptions,
-                            [
-                                RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::MULTIPLE_OPTION => true,
-                            ]
-                        ),
-                    );
-                } else {
-                    $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $propertyInfoType->isNullable());
-                }
+                $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($propertyInfoType);
+                $collectionValueSchema = $this->resolveSchemaByType($collectionValueType, $typeOptions);
+                $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $propertyInfoType->isNullable());
             } else {
                 throw new \LogicException(sprintf('Unknown type: %s', $this->propertyTypeToString($propertyInfoType)));
             }

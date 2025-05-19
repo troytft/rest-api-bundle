@@ -170,7 +170,7 @@ class ResponseModelResolver
 
         return new OpenApi\Schema([
             'type' => OpenApi\Type::ARRAY,
-            'items' => $this->resolveByType(RestApiBundle\Helper\TypeExtractor::extractFirstCollectionValueType($type)),
+            'items' => $this->resolveByType(RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($type)),
             'nullable' => $type->isNullable(),
         ]);
     }
