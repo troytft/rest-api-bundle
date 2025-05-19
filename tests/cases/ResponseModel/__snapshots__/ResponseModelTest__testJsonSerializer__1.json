@@ -1,0 +1,23 @@
+{
+    "dateType": {
+        "required": "2025-05-19",
+        "nullable": null,
+        "__typename": "DateType"
+    },
+    "dateTimeType": {
+        "required": "2025-05-19T00:00:00+00:00",
+        "nullable": null,
+        "__typename": "DateTimeType"
+    },
+    "phpEnumType": {
+        "stringRequired": "created",
+        "stringNullable": null,
+        "__typename": "PhpEnumType"
+    },
+    "polyfillEnumType": {
+        "stringRequired": "archived",
+        "stringNullable": null,
+        "__typename": "PolyfillEnumType"
+    },
+    "__typename": "Root"
+}
