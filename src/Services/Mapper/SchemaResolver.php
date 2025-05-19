@@ -3,7 +3,6 @@
 namespace RestApiBundle\Services\Mapper;
 
 use RestApiBundle;
-use RestApiBundle\Services\Mapper\SchemaTypeResolver\DoctrineEntityTypeResolver;
 use Symfony\Component\PropertyInfo;
 
 use function sprintf;
@@ -23,6 +22,8 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\PhpEnumTypeResolver(),
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\PolyfillEnumTypeResolver(),
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\DoctrineEntityTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\DateTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\DateTimeTypeResolver(),
         ];
     }
 
@@ -104,34 +105,6 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         }
 
         switch (true) {
-            case $propertyInfoType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isMapperDate($propertyInfoType->getClassName()):
-                $dateFormat = null;
-                foreach ($typeOptions as $typeOption) {
-                    if ($typeOption instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
-                        $dateFormat = $typeOption->getFormat();
-                    }
-                }
-
-                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DateTransformer::class, $propertyInfoType->isNullable(), [
-                    RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION => $dateFormat,
-                ]);
-
-                break;
-
-            case $propertyInfoType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isDateTime($propertyInfoType->getClassName()):
-                $dateFormat = null;
-                foreach ($typeOptions as $typeOption) {
-                    if ($typeOption instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
-                        $dateFormat = $typeOption->getFormat();
-                    }
-                }
-
-                $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class, $propertyInfoType->isNullable(), [
-                    RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION => $dateFormat,
-                ]);
-
-                break;
-
             case $propertyInfoType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isMapperModel($propertyInfoType->getClassName()):
                 $schema = $this->resolve($propertyInfoType->getClassName(), $propertyInfoType->isNullable());
 
