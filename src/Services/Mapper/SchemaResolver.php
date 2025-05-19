@@ -16,6 +16,9 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
     {
         $this->schemaTypeResolvers = [
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\StringTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\IntegerTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\FloatTypeResolver(),
+            new RestApiBundle\Services\Mapper\SchemaTypeResolver\BooleanTypeResolver(),
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\PhpEnumTypeResolver(),
         ];
     }
