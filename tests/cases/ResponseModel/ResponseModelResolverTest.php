@@ -1,5 +1,10 @@
 <?php
 
+namespace cases\ResponseModel;
+
+use RestApiBundle;
+use Tests;
+
 class ResponseModelResolverTest extends Tests\BaseTestCase
 {
     public function testDate(): void
@@ -18,9 +23,17 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
         $this->assertMatchesOpenApiSchemaSnapshot($schemas[array_key_first($schemas)]);
     }
 
-    public function testEnum(): void
+    public function testPolyfillEnum(): void
     {
-        $this->getResponseModelResolver()->resolveReference(Tests\Fixture\OpenApi\ResponseModelResolverTest\ResponseModel\TestEnumModel::class);
+        $this->getResponseModelResolver()->resolveReference(Tests\Fixture\OpenApi\ResponseModelResolverTest\ResponseModel\PolyfillEnumModel::class);
+        $schemas = $this->getResponseModelResolver()->dumpSchemas();
+
+        $this->assertMatchesOpenApiSchemaSnapshot($schemas[array_key_first($schemas)]);
+    }
+
+    public function testPhpEnum(): void
+    {
+        $this->getResponseModelResolver()->resolveReference(Tests\Fixture\OpenApi\ResponseModelResolverTest\ResponseModel\PhpEnumModel::class);
         $schemas = $this->getResponseModelResolver()->dumpSchemas();
 
         $this->assertMatchesOpenApiSchemaSnapshot($schemas[array_key_first($schemas)]);
