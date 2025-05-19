@@ -98,16 +98,6 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         }
 
         switch (true) {
-            case RestApiBundle\Helper\TypeExtractor::isScalar($propertyInfoType):
-                $schema  = match ($propertyInfoType->getBuiltinType()) {
-                    PropertyInfo\Type::BUILTIN_TYPE_INT => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class, $propertyInfoType->isNullable()),
-                    PropertyInfo\Type::BUILTIN_TYPE_FLOAT => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\FloatTransformer::class, $propertyInfoType->isNullable()),
-                    PropertyInfo\Type::BUILTIN_TYPE_BOOL => RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class, $propertyInfoType->isNullable()),
-                    default => throw new \LogicException(),
-                };
-
-                break;
-
             case $propertyInfoType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isMapperDate($propertyInfoType->getClassName()):
                 $dateFormat = null;
                 foreach ($typeOptions as $typeOption) {
