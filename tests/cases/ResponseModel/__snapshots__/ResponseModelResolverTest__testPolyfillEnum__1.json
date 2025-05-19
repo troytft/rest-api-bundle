@@ -21,7 +21,7 @@
         },
         "__typename": {
             "type": "string",
-            "default": "PolyfillEnumModel",
+            "default": "PolyfillEnumType",
             "nullable": false
         }
     }

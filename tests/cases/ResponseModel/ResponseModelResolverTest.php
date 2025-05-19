@@ -9,7 +9,7 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
 {
     public function testDate(): void
     {
-        $this->getResponseModelResolver()->resolveReference(Tests\Fixture\OpenApi\ResponseModelResolverTest\ResponseModel\TestDateModel::class);
+        $this->getResponseModelResolver()->resolveReference(Tests\Fixture\ResponseModel\DateType::class);
         $schemas = $this->getResponseModelResolver()->dumpSchemas();
 
         $this->assertMatchesOpenApiSchemaSnapshot($schemas[array_key_first($schemas)]);
@@ -17,7 +17,7 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
 
     public function testDateTime(): void
     {
-        $this->getResponseModelResolver()->resolveReference(Tests\Fixture\OpenApi\ResponseModelResolverTest\ResponseModel\TestDateTimeModel::class);
+        $this->getResponseModelResolver()->resolveReference(Tests\Fixture\ResponseModel\DateTimeType::class);
         $schemas = $this->getResponseModelResolver()->dumpSchemas();
 
         $this->assertMatchesOpenApiSchemaSnapshot($schemas[array_key_first($schemas)]);
@@ -25,7 +25,7 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
 
     public function testPolyfillEnum(): void
     {
-        $this->getResponseModelResolver()->resolveReference(Tests\Fixture\OpenApi\ResponseModelResolverTest\ResponseModel\PolyfillEnumModel::class);
+        $this->getResponseModelResolver()->resolveReference(Tests\Fixture\ResponseModel\PolyfillEnumType::class);
         $schemas = $this->getResponseModelResolver()->dumpSchemas();
 
         $this->assertMatchesOpenApiSchemaSnapshot($schemas[array_key_first($schemas)]);
@@ -33,7 +33,7 @@ class ResponseModelResolverTest extends Tests\BaseTestCase
 
     public function testPhpEnum(): void
     {
-        $this->getResponseModelResolver()->resolveReference(Tests\Fixture\OpenApi\ResponseModelResolverTest\ResponseModel\PhpEnumModel::class);
+        $this->getResponseModelResolver()->resolveReference(Tests\Fixture\ResponseModel\PhpEnumType::class);
         $schemas = $this->getResponseModelResolver()->dumpSchemas();
 
         $this->assertMatchesOpenApiSchemaSnapshot($schemas[array_key_first($schemas)]);

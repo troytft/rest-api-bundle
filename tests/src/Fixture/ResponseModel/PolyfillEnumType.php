@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Fixture\OpenApi\ResponseModelResolverTest\ResponseModel;
+namespace Tests\Fixture\ResponseModel;
 
 use Tests;
 use RestApiBundle;
 
-class PolyfillEnumModel implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
+class PolyfillEnumType implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {
     public function getStringRequired(): Tests\Fixture\TestApp\Enum\PolyfillStringEnum
     {
