@@ -32,5 +32,3 @@ class JsonSerializationTest extends Tests\BaseTestCase
         return $this->getContainer()->get(RestApiBundle\Services\ResponseModel\Serializer::class);
     }
 }
-
-
