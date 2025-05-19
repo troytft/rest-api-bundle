@@ -44,7 +44,7 @@
     "require-dev": {
         "nyholm/symfony-bundle-test": "^2.0",
         "phpbench/phpbench": "^1.0.4",
-        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan": "~2.1.16",
         "phpunit/phpunit": "^9.5",
         "slevomat/coding-standard": "^6.4",
         "spatie/phpunit-snapshot-assertions": "^4.2",
