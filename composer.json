@@ -42,6 +42,7 @@
     },
     "bin": ["bin/generate-docs"],
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.75",
         "nyholm/symfony-bundle-test": "^2.0",
         "phpbench/phpbench": "^1.0.4",
         "phpstan/phpstan": "~2.1.16",

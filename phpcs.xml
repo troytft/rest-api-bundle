@@ -52,4 +52,6 @@
             <property name="searchAnnotations" value="true"/>
         </properties>
     </rule>
+
+    <rule ref="declare_strict_types"/>
 </ruleset>
