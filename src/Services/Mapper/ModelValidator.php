@@ -21,7 +21,7 @@ class ModelValidator
      */
     public function validate(RestApiBundle\Mapping\Mapper\ModelInterface $model): array
     {
-        return \array_merge_recursive($this->getFirstLevelErrors($model), $this->getNestedErrors($model));
+        return array_merge_recursive($this->getFirstLevelErrors($model), $this->getNestedErrors($model));
     }
 
     /**
@@ -51,7 +51,7 @@ class ModelValidator
     {
         $result = [];
 
-        $schema = $this->schemaResolver->resolve(\get_class($model));
+        $schema = $this->schemaResolver->resolve($model::class);
 
         /** @var RestApiBundle\Model\Mapper\Schema $propertySchema */
         foreach ($schema->properties as $propertyName => $propertySchema) {
@@ -115,17 +115,17 @@ class ModelValidator
     {
         $path = $constraintViolation->getPropertyPath();
         if (str_contains($path, '[')) {
-            $path = \str_replace(['[', ']'], ['.', ''], $path);
+            $path = str_replace(['[', ']'], ['.', ''], $path);
         }
 
         $pathParts = [];
         $schema = $this->schemaResolver->resolve(\get_class($constraintViolation->getRoot()));
-        foreach (\explode('.', $path) as $part) {
+        foreach (explode('.', $path) as $part) {
             $property = $schema->properties[$part] ?? null;
             if ($property instanceof RestApiBundle\Model\Mapper\Schema) {
                 $pathParts[] = $part;
                 $schema = $property;
-            } elseif (\is_numeric($part)) {
+            } elseif (is_numeric($part)) {
                 $pathParts[] = $part;
             } else {
                 $pathParts[] = '*';
@@ -134,6 +134,6 @@ class ModelValidator
             }
         }
 
-        return \implode('.', $pathParts);
+        return implode('.', $pathParts);
     }
 }

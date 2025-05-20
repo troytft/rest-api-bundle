@@ -18,6 +18,6 @@ trait PathTrait
 
     public function getPathAsString(): string
     {
-        return \join('.', $this->path);
+        return implode('.', $this->path);
     }
 }

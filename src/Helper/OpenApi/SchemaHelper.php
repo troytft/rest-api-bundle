@@ -78,7 +78,7 @@ final class SchemaHelper
             PropertyInfo\Type::BUILTIN_TYPE_INT,
             PropertyInfo\Type::BUILTIN_TYPE_FLOAT,
         ];
-        if (!in_array($enumData->type, $allowedTypes, true)) {
+        if (!\in_array($enumData->type, $allowedTypes, true)) {
             throw new \LogicException();
         }
 

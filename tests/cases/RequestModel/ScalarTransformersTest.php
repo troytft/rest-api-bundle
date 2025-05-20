@@ -9,15 +9,15 @@ class ScalarTransformersTest extends Tests\BaseTestCase
         $transformer = new RestApiBundle\Services\Mapper\Transformer\BooleanTransformer();
 
         // positive scenarios
-        $this->assertSame(true, $transformer->transform(true));
-        $this->assertSame(true, $transformer->transform('true'));
-        $this->assertSame(false, $transformer->transform(false));
-        $this->assertSame(false, $transformer->transform('false'));
-        $this->assertSame(true, $transformer->transform('1'));
-        $this->assertSame(false, $transformer->transform('0'));
-        $this->assertSame(false, $transformer->transform(''));
-        $this->assertSame(true, $transformer->transform(1));
-        $this->assertSame(false, $transformer->transform(0));
+        $this->assertTrue($transformer->transform(true));
+        $this->assertTrue($transformer->transform('true'));
+        $this->assertFalse($transformer->transform(false));
+        $this->assertFalse($transformer->transform('false'));
+        $this->assertTrue($transformer->transform('1'));
+        $this->assertFalse($transformer->transform('0'));
+        $this->assertFalse($transformer->transform(''));
+        $this->assertTrue($transformer->transform(1));
+        $this->assertFalse($transformer->transform(0));
 
         // negative scenarios
         try {

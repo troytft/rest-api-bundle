@@ -60,7 +60,7 @@ class SchemaResolver implements SchemaResolverInterface
                 $propertySchema = $this->resolveSchemaByType($reflectionPropertyType, $propertyOptions);
 
                 if (!$reflectionProperty->isPublic()) {
-                    $formattedPropertyName = \ucfirst($reflectionProperty->getName());
+                    $formattedPropertyName = ucfirst($reflectionProperty->getName());
                     $propertySchema->propertySetterName = 'set'.$formattedPropertyName;
                     if (!$reflectionClass->hasMethod($propertySchema->propertySetterName) || !$reflectionClass->getMethod($propertySchema->propertySetterName)->isPublic()) {
                         throw new RestApiBundle\Exception\Schema\InvalidDefinitionException(\sprintf('Property "%s" must be public or setter must exist.', $reflectionProperty->getName()));

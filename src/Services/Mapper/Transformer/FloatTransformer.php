@@ -10,11 +10,11 @@ class FloatTransformer implements TransformerInterface
 {
     public function transform($value, array $options = []): float
     {
-        if (!\is_numeric($value)) {
+        if (!is_numeric($value)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\FloatRequiredException();
         }
 
-        $value = \filter_var($value, FILTER_VALIDATE_FLOAT);
+        $value = filter_var($value, \FILTER_VALIDATE_FLOAT);
         if ($value === false) {
             throw new RestApiBundle\Exception\Mapper\Transformer\FloatRequiredException();
         }

@@ -11,7 +11,7 @@ class BooleanTransformer implements TransformerInterface
     public function transform($value, array $options = []): bool
     {
         if (\is_string($value)) {
-            $value = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            $value = filter_var($value, \FILTER_VALIDATE_BOOLEAN, \FILTER_NULL_ON_FAILURE);
             if (!\is_bool($value)) {
                 throw new RestApiBundle\Exception\Mapper\Transformer\BooleanRequiredException();
             }

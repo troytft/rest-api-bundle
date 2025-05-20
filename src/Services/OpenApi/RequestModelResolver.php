@@ -85,7 +85,7 @@ class RequestModelResolver
                         throw new \InvalidArgumentException();
                     }
 
-                    if (!\array_is_list($choices)) {
+                    if (!array_is_list($choices)) {
                         throw new \InvalidArgumentException();
                     }
 

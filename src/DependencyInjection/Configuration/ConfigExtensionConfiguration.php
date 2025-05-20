@@ -43,7 +43,7 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
                     ->defaultTrue()
                 ->end()
                 ->scalarNode(RestApiBundle\Enum\SettingsKey::RESPONSE_JSON_ENCODE_OPTIONS)
-                    ->defaultValue(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+                    ->defaultValue(\JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES)
                     ->beforeNormalization()
                     ->ifArray()->then(function ($options) {
                         $result = 0;

@@ -36,8 +36,8 @@ class EndpointFinder
             }
 
             if (!$autoloadFixed) {
-                $filePathParts = \explode('/', $fileInfo->getPathname());
-                $namespaceDirectory = \implode('/', \array_slice($filePathParts, 0, \count($filePathParts) - \substr_count($class, '\\') - 1));
+                $filePathParts = explode('/', $fileInfo->getPathname());
+                $namespaceDirectory = implode('/', \array_slice($filePathParts, 0, \count($filePathParts) - substr_count($class, '\\') - 1));
                 $this->getClassLoader()->add('', $namespaceDirectory);
 
                 $autoloadFixed = true;
@@ -46,7 +46,7 @@ class EndpointFinder
             $endpoints[] = $this->extractEndpointsByReflectionClass(RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class));
         }
 
-        return \array_merge(...$endpoints);
+        return array_merge(...$endpoints);
     }
 
     /**
@@ -83,7 +83,7 @@ class EndpointFinder
     private function getClassLoader(): ClassLoader
     {
         $result = null;
-        foreach (\spl_autoload_functions() as $classWithFunction) {
+        foreach (spl_autoload_functions() as $classWithFunction) {
             if (!\is_array($classWithFunction)) {
                 continue;
             }

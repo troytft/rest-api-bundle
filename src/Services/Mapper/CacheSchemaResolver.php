@@ -63,7 +63,7 @@ final class CacheSchemaResolver implements SchemaResolverInterface
             $values[$this->resolveCacheKey($class, false)] = $this->resolve($class);
         }
 
-        $classes = \array_merge($classes, $this->cacheAdapter->warmUp($values));
+        $classes = array_merge($classes, $this->cacheAdapter->warmUp($values));
 
         return $classes;
     }
@@ -75,6 +75,6 @@ final class CacheSchemaResolver implements SchemaResolverInterface
 
     private function resolveCacheKey(string $class, bool $isNullable): string
     {
-        return strtr(\ltrim($class, '\\'), '\\', '.').$isNullable;
+        return strtr(ltrim($class, '\\'), '\\', '.').$isNullable;
     }
 }

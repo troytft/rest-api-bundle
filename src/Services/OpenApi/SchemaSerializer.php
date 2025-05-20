@@ -16,8 +16,8 @@ final class SchemaSerializer
 
     public function toJson(OpenApi\OpenApi $specification): string
     {
-        $result = json_encode($specification->getSerializableData(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        $result = json_encode($specification->getSerializableData(), \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE | \JSON_PRETTY_PRINT);
+        if (json_last_error() !== \JSON_ERROR_NONE) {
             throw new \InvalidArgumentException(json_last_error_msg());
         }
 

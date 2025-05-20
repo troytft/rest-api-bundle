@@ -10,7 +10,7 @@ class PhpFileParserHelper
 {
     public static function getClassByFileInfo(SplFileInfo $fileInfo): ?string
     {
-        $tokens = \token_get_all($fileInfo->getContents());
+        $tokens = token_get_all($fileInfo->getContents());
 
         $namespaceTokenOpened = false;
         $namespace = '';

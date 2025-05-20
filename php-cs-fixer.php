@@ -13,6 +13,7 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
         '@DoctrineAnnotation' => true,
+        '@Symfony:risky' => true,
         'declare_strict_types' => true,
         'function_to_constant' => true,
         'is_null' => true,

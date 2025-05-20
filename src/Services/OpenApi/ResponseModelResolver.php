@@ -58,7 +58,7 @@ class ResponseModelResolver
             $result[$typename] = $this->schemaCache[$class];
         }
 
-        \ksort($result);
+        ksort($result);
 
         return $result;
     }
@@ -75,7 +75,7 @@ class ResponseModelResolver
                 continue;
             }
 
-            $propertyName = \lcfirst(\substr($reflectionMethod->getName(), 3));
+            $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
 
             try {
                 $returnType = RestApiBundle\Helper\TypeExtractor::extractByReflectionMethod($reflectionMethod);

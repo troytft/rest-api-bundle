@@ -73,7 +73,7 @@ class SchemaGenerator
                     }
                 }
 
-                $method = \strtolower($method);
+                $method = strtolower($method);
                 if (isset($pathItem->getOperations()[$method])) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Operation with same url and method already defined in specification', $endpointData->reflectionMethod);
                 }
@@ -82,11 +82,11 @@ class SchemaGenerator
             }
         }
 
-        \ksort($paths);
+        ksort($paths);
         $rootElement->paths = new OpenApi\Paths($paths);
 
-        \ksort($tags);
-        $rootElement->tags = \array_values($tags);
+        ksort($tags);
+        $rootElement->tags = array_values($tags);
 
         foreach ($this->responseModelResolver->dumpSchemas() as $typename => $schema) {
             if (isset($schemas[$typename])) {
@@ -97,7 +97,7 @@ class SchemaGenerator
         }
 
         if ($schemas) {
-            \ksort($schemas);
+            ksort($schemas);
             $rootElement->components->schemas = $schemas;
         }
 
@@ -141,8 +141,8 @@ class SchemaGenerator
             'summary' => $endpointData->endpointMapping->title,
             'responses' => $this->createResponses($endpointData->reflectionMethod, $endpointData->endpointMapping->httpStatusCode),
             'tags' => match (true) {
-                is_string($endpointData->endpointMapping->tags) => [$endpointData->endpointMapping->tags],
-                is_array($endpointData->endpointMapping->tags) => $endpointData->endpointMapping->tags,
+                \is_string($endpointData->endpointMapping->tags) => [$endpointData->endpointMapping->tags],
+                \is_array($endpointData->endpointMapping->tags) => $endpointData->endpointMapping->tags,
             },
         ]);
 

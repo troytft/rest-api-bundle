@@ -25,7 +25,7 @@ class Mapper
     public function map(RestApiBundle\Mapping\Mapper\ModelInterface $model, array $data, ?RestApiBundle\Model\Mapper\Context $context = null): void
     {
         try {
-            $schema = $this->schemaResolver->resolve(\get_class($model));
+            $schema = $this->schemaResolver->resolve($model::class);
             $this->mapObject($schema, $model, $data, [], $context ?: new RestApiBundle\Model\Mapper\Context());
         } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
             throw $this->convertStackedMappingException($exception);
@@ -47,7 +47,7 @@ class Mapper
             if ($stackableException instanceof RestApiBundle\Exception\Mapper\Transformer\WrappedTransformerException) {
                 $propertyPath = $stackableException->getPathAsString();
                 $previousException = $stackableException->getPrevious();
-                $translationId = \get_class($previousException);
+                $translationId = $previousException::class;
 
                 if ($previousException instanceof RestApiBundle\Exception\Mapper\Transformer\InvalidDateFormatException) {
                     $translationParameters = [
@@ -62,12 +62,12 @@ class Mapper
                 }
             } else {
                 $propertyPath = $stackableException->getPathAsString();
-                $translationId = \get_class($stackableException);
+                $translationId = $stackableException::class;
             }
 
             $message = $this->translator->trans($translationId, $translationParameters, 'exceptions');
             if ($message === $translationId) {
-                throw new \InvalidArgumentException(sprintf('Can\'t find translation with key "%s"', $translationId));
+                throw new \InvalidArgumentException(\sprintf('Can\'t find translation with key "%s"', $translationId));
             }
 
             $errors[$propertyPath] = [$message];
@@ -79,7 +79,7 @@ class Mapper
     private function mapObject(RestApiBundle\Model\Mapper\Schema $schema, RestApiBundle\Mapping\Mapper\ModelInterface $model, array $data, array $basePath, RestApiBundle\Model\Mapper\Context $context): void
     {
         if ($context->clearMissing) {
-            $propertiesNotPresentedInData = \array_diff(\array_keys($schema->properties), \array_keys($data));
+            $propertiesNotPresentedInData = array_diff(array_keys($schema->properties), array_keys($data));
             foreach ($propertiesNotPresentedInData as $propertyName) {
                 $data[$propertyName] = null;
             }
@@ -108,7 +108,7 @@ class Mapper
             } catch (RestApiBundle\Exception\Mapper\StackableMappingExceptionInterface $exception) {
                 $mappingExceptionsStack[] = $exception;
             } catch (RestApiBundle\Exception\Mapper\StackedMappingException $exception) {
-                $mappingExceptionsStack = \array_merge($mappingExceptionsStack, $exception->getExceptions());
+                $mappingExceptionsStack = array_merge($mappingExceptionsStack, $exception->getExceptions());
             }
         }
 
@@ -133,7 +133,7 @@ class Mapper
 
             case RestApiBundle\Model\Mapper\Schema::MODEL_TYPE:
                 $class = $schema->class;
-                if (!\is_array($rawValue) || (\count($rawValue) > 0 && \array_is_list($rawValue))) {
+                if (!\is_array($rawValue) || (\count($rawValue) > 0 && array_is_list($rawValue))) {
                     throw new RestApiBundle\Exception\Mapper\MappingValidation\ObjectRequiredException($basePath);
                 }
 
@@ -174,7 +174,7 @@ class Mapper
 
     private function mapCollectionType(RestApiBundle\Model\Mapper\Schema $schema, $rawValue, array $basePath, RestApiBundle\Model\Mapper\Context $context): array
     {
-        if (!\is_array($rawValue) || !\array_is_list($rawValue)) {
+        if (!\is_array($rawValue) || !array_is_list($rawValue)) {
             throw new RestApiBundle\Exception\Mapper\MappingValidation\CollectionRequiredException($basePath);
         }
 
@@ -197,7 +197,7 @@ class Mapper
 
     public function addTransformer(Transformer\TransformerInterface $transformer): static
     {
-        $this->transformers[\get_class($transformer)] = $transformer;
+        $this->transformers[$transformer::class] = $transformer;
 
         return $this;
     }

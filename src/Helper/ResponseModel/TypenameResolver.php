@@ -11,7 +11,7 @@ class TypenameResolver
         $parts = [];
         $hasResponseModelPart = false;
 
-        foreach (\explode('\\', $class) as $part) {
+        foreach (explode('\\', $class) as $part) {
             if ($hasResponseModelPart) {
                 $parts[] = $part;
             } elseif ($part === 'ResponseModel') {
@@ -23,7 +23,7 @@ class TypenameResolver
             throw new \RuntimeException(\sprintf('Response model "%s" must be in "ResponseModel" namespace', $class));
         }
 
-        $typename = \join('_', $parts);
+        $typename = implode('_', $parts);
         if (!$typename) {
             throw new \RuntimeException(\sprintf('Response model "%s" must have typename', $class));
         }

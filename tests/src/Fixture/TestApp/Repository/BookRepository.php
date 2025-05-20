@@ -68,7 +68,7 @@ class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceE
             }
         }
 
-        return \array_values($result);
+        return array_values($result);
     }
 
     /**
