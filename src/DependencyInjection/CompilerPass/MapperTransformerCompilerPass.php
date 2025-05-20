@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\DependencyInjection\CompilerPass;
 
 use RestApiBundle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 class MapperTransformerCompilerPass implements CompilerPassInterface

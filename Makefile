@@ -6,3 +6,9 @@ benchmark-compare:
 
 benchmark-save:
 	vendor/bin/phpbench run --tag=original
+
+test-cs:
+	vendor/bin/php-cs-fixer fix src --dry-run --diff
+
+fix-cs:
+	vendor/bin/php-cs-fixer fix src

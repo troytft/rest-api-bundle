@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\EventSubscriber;
 
 use RestApiBundle;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
@@ -17,7 +19,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::EXCEPTION => 'onEvent'
+            KernelEvents::EXCEPTION => 'onEvent',
         ];
     }
 

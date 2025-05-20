@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Services\Mapper\Transformer;
 
 use RestApiBundle;
-
-use function is_string;
 
 class StringTransformer implements TransformerInterface
 {
@@ -15,7 +15,7 @@ class StringTransformer implements TransformerInterface
     {
         if (is_numeric($value)) {
             $value = (string) $value;
-        } elseif (!is_string($value)) {
+        } elseif (!\is_string($value)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\StringRequiredException();
         }
 

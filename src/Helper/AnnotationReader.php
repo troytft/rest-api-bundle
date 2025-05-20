@@ -1,9 +1,8 @@
 <?php
 
-namespace RestApiBundle\Helper;
+declare(strict_types=1);
 
-use function array_map;
-use function array_merge;
+namespace RestApiBundle\Helper;
 
 final class AnnotationReader
 {
@@ -68,7 +67,6 @@ final class AnnotationReader
         );
     }
 
-
     public static function getMethodAnnotation(\ReflectionMethod $reflectionMethod, string $class)
     {
         foreach (static::getMethodAnnotations($reflectionMethod) as $methodAnnotation) {
@@ -84,6 +82,7 @@ final class AnnotationReader
     {
         return array_map(function (\ReflectionAttribute $reflectionAttribute) {
             $class = $reflectionAttribute->getName();
+
             return new $class(...$reflectionAttribute->getArguments());
         }, $attributes);
     }

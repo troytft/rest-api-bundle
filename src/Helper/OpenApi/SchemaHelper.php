@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Helper\OpenApi;
 
-use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
+use RestApiBundle;
 use Symfony\Component\PropertyInfo;
 
 final class SchemaHelper
@@ -76,7 +78,7 @@ final class SchemaHelper
             PropertyInfo\Type::BUILTIN_TYPE_INT,
             PropertyInfo\Type::BUILTIN_TYPE_FLOAT,
         ];
-        if (!in_array($enumData->type, $allowedTypes, true)) {
+        if (!\in_array($enumData->type, $allowedTypes, true)) {
             throw new \LogicException();
         }
 

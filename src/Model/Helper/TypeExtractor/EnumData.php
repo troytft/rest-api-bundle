@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Model\Helper\TypeExtractor;
 
 class EnumData

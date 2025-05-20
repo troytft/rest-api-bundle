@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Exception\Mapper\Transformer;
 
 class InvalidDateTimeException extends \Exception implements TransformerExceptionInterface
@@ -9,9 +11,6 @@ class InvalidDateTimeException extends \Exception implements TransformerExceptio
      */
     private $errorMessage;
 
-    /**
-     * @param string $format
-     */
     public function __construct(string $format)
     {
         parent::__construct();
@@ -19,9 +18,6 @@ class InvalidDateTimeException extends \Exception implements TransformerExceptio
         $this->errorMessage = $format;
     }
 
-    /**
-     * @return string
-     */
     public function getErrorMessage(): string
     {
         return $this->errorMessage;

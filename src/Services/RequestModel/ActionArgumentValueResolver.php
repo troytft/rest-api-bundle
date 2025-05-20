@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Services\RequestModel;
 
 use RestApiBundle;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
+use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
 class ActionArgumentValueResolver implements ArgumentValueResolverInterface
 {
     public function __construct(
         private RequestStack $requestStack,
-        private RestApiBundle\Services\Mapper\Mapper $mapper
+        private RestApiBundle\Services\Mapper\Mapper $mapper,
     ) {
     }
 

@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\DependencyInjection;
 
-use RestApiBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
@@ -17,7 +18,7 @@ class SettingsExtension extends Extension
 
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
-        return new RestApiBundle\DependencyInjection\Configuration\ConfigExtensionConfiguration($this->getAlias());
+        return new Configuration\ConfigExtensionConfiguration($this->getAlias());
     }
 
     public function load(array $configs, ContainerBuilder $container)

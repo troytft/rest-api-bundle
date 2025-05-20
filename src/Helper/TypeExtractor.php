@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Helper;
 
-use RestApiBundle;
+use phpDocumentor\Reflection as PhpDoc;
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
+use RestApiBundle;
 use Symfony\Component\PropertyInfo;
-use phpDocumentor\Reflection as PhpDoc;
-
-use function in_array;
 
 final class TypeExtractor
 {
@@ -33,14 +33,14 @@ final class TypeExtractor
 
             if ($phpTypeOrClass === 'null' | $phpTypeOrClass === 'void') {
                 $result[] = new PropertyInfo\Type(PropertyInfo\Type::BUILTIN_TYPE_NULL, $sourceReflectionType->allowsNull());
-            } elseif ($reflectionType instanceof  \ReflectionNamedType && $reflectionType->isBuiltin()) {
+            } elseif ($reflectionType instanceof \ReflectionNamedType && $reflectionType->isBuiltin()) {
                 $result[] = new PropertyInfo\Type($phpTypeOrClass, $sourceReflectionType->allowsNull());
             } else {
                 $result[] = new PropertyInfo\Type(PropertyInfo\Type::BUILTIN_TYPE_OBJECT, $sourceReflectionType->allowsNull(), $phpTypeOrClass);
             }
         }
 
-        if (count($result) > 1) {
+        if (\count($result) > 1) {
             throw new RestApiBundle\Exception\Schema\InvalidDefinitionException('Union types are not supported.');
         }
 
@@ -50,7 +50,7 @@ final class TypeExtractor
     private static function extractByDocBlockTag(PhpDoc\Type $phpDocType): ?PropertyInfo\Type
     {
         $result = static::getDocBlockHelper()->getTypes($phpDocType);
-        if (count($result) > 1) {
+        if (\count($result) > 1) {
             throw new RestApiBundle\Exception\Schema\InvalidDefinitionException('Union types are not supported.');
         }
 
@@ -120,7 +120,7 @@ final class TypeExtractor
         }
 
         $docBlock = static::getDocBlockFactory()->create($reflectionMethod->getDocComment());
-        $count = count($docBlock->getTagsByName('return'));
+        $count = \count($docBlock->getTagsByName('return'));
 
         if ($count === 0) {
             return null;
@@ -145,7 +145,7 @@ final class TypeExtractor
         }
 
         $docBlock = static::getDocBlockFactory()->create($reflectionProperty->getDocComment());
-        $count = count($docBlock->getTagsByName('var'));
+        $count = \count($docBlock->getTagsByName('var'));
 
         if ($count === 0) {
             return null;
@@ -181,12 +181,12 @@ final class TypeExtractor
             PropertyInfo\Type::BUILTIN_TYPE_FLOAT,
         ];
 
-        return in_array($type->getBuiltinType(), $types, true);
+        return \in_array($type->getBuiltinType(), $types, true);
     }
 
     public static function extractCollectionValueType(PropertyInfo\Type $type): PropertyInfo\Type
     {
-        if (count($type->getCollectionValueTypes()) > 1) {
+        if (\count($type->getCollectionValueTypes()) > 1) {
             throw new \InvalidArgumentException();
         }
 
@@ -213,9 +213,9 @@ final class TypeExtractor
         } elseif (method_exists($class, 'getValues')) {
             $values = $class::getValues();
         } else {
-            $reflectionClass = RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class);
+            $reflectionClass = ReflectionHelper::getReflectionClass($class);
             foreach ($reflectionClass->getReflectionConstants(\ReflectionClassConstant::IS_PUBLIC) as $reflectionConstant) {
-                if (is_scalar($reflectionConstant->getValue())) {
+                if (\is_scalar($reflectionConstant->getValue())) {
                     $values[] = $reflectionConstant->getValue();
                 }
             }
@@ -227,11 +227,11 @@ final class TypeExtractor
 
         $types = [];
         foreach ($values as $value) {
-            if (is_int($value)) {
+            if (\is_int($value)) {
                 $types[PropertyInfo\Type::BUILTIN_TYPE_INT] = true;
-            } elseif (is_string($value)) {
+            } elseif (\is_string($value)) {
                 $types[PropertyInfo\Type::BUILTIN_TYPE_STRING] = true;
-            } elseif (is_float($value)) {
+            } elseif (\is_float($value)) {
                 $types[PropertyInfo\Type::BUILTIN_TYPE_FLOAT] = true;
             } else {
                 throw new \InvalidArgumentException();
@@ -239,12 +239,12 @@ final class TypeExtractor
         }
 
         $types = array_keys($types);
-        if (count($types) === 1) {
+        if (\count($types) === 1) {
             $type = $types[0];
         } else {
-            if (in_array(PropertyInfo\Type::BUILTIN_TYPE_STRING, $types, true)) {
+            if (\in_array(PropertyInfo\Type::BUILTIN_TYPE_STRING, $types, true)) {
                 $type = PropertyInfo\Type::BUILTIN_TYPE_STRING;
-            } elseif (in_array(PropertyInfo\Type::BUILTIN_TYPE_FLOAT, $types, true)) {
+            } elseif (\in_array(PropertyInfo\Type::BUILTIN_TYPE_FLOAT, $types, true)) {
                 $type = PropertyInfo\Type::BUILTIN_TYPE_FLOAT;
             } else {
                 $type = PropertyInfo\Type::BUILTIN_TYPE_INT;
