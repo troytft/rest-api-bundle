@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Services\OpenApi;
 
-use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
+use RestApiBundle;
 use Symfony\Component\PropertyInfo;
-use Symfony\Component\Validator as Validator;
-
-use function array_is_list;
-use function sprintf;
+use Symfony\Component\Validator;
 
 class RequestModelResolver
 {
@@ -21,7 +20,7 @@ class RequestModelResolver
     public function resolve(string $class, bool $nullable = false): OpenApi\Schema
     {
         if (!RestApiBundle\Helper\ReflectionHelper::isMapperModel($class)) {
-            throw new \InvalidArgumentException(sprintf('Class %s is not a request model', $class));
+            throw new \InvalidArgumentException(\sprintf('Class %s is not a request model', $class));
         }
 
         $properties = [];
@@ -86,7 +85,7 @@ class RequestModelResolver
                         throw new \InvalidArgumentException();
                     }
 
-                    if (!array_is_list($choices)) {
+                    if (!\array_is_list($choices)) {
                         throw new \InvalidArgumentException();
                     }
 
@@ -206,11 +205,11 @@ class RequestModelResolver
                 'type' => OpenApi\Type::ARRAY,
                 'items' => $itemsType,
                 'nullable' => $nullable,
-                'description' => sprintf('Collection of "%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName),
+                'description' => \sprintf('Collection of "%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName),
             ]);
         } else {
             $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromString($columnType);
-            $result->description = sprintf('"%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName);
+            $result->description = \sprintf('"%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName);
             $result->nullable = $nullable;
         }
 

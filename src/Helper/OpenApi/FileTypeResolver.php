@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Helper\OpenApi;
 
 class FileTypeResolver

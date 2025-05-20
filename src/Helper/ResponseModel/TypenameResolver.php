@@ -1,10 +1,8 @@
 <?php
 
-namespace RestApiBundle\Helper\ResponseModel;
+declare(strict_types=1);
 
-use function explode;
-use function join;
-use function sprintf;
+namespace RestApiBundle\Helper\ResponseModel;
 
 class TypenameResolver
 {
@@ -13,7 +11,7 @@ class TypenameResolver
         $parts = [];
         $hasResponseModelPart = false;
 
-        foreach (explode('\\', $class) as $part) {
+        foreach (\explode('\\', $class) as $part) {
             if ($hasResponseModelPart) {
                 $parts[] = $part;
             } elseif ($part === 'ResponseModel') {
@@ -22,12 +20,12 @@ class TypenameResolver
         }
 
         if (!$hasResponseModelPart) {
-            throw new \RuntimeException(sprintf('Response model "%s" must be in "ResponseModel" namespace', $class));
+            throw new \RuntimeException(\sprintf('Response model "%s" must be in "ResponseModel" namespace', $class));
         }
 
-        $typename = join('_', $parts);
+        $typename = implode('_', $parts);
         if (!$typename) {
-            throw new \RuntimeException(sprintf('Response model "%s" must have typename', $class));
+            throw new \RuntimeException(\sprintf('Response model "%s" must have typename', $class));
         }
 
         return $typename;

@@ -1,12 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Services\Mapper\Transformer;
 
 use RestApiBundle;
-
-use function array_merge;
-use function array_values;
-use function implode;
 
 class DateTimeTransformer implements TransformerInterface
 {
@@ -28,8 +26,8 @@ class DateTimeTransformer implements TransformerInterface
         }
 
         $lastErrors = \DateTime::getLastErrors();
-        if (is_array($lastErrors) && ($lastErrors['warning_count'] || $lastErrors['error_count'])) {
-            $errorMessage = implode(', ', array_merge(array_values($lastErrors['warnings']), array_values($lastErrors['errors'])));
+        if (\is_array($lastErrors) && ($lastErrors['warning_count'] || $lastErrors['error_count'])) {
+            $errorMessage = \implode(', ', \array_merge(\array_values($lastErrors['warnings']), \array_values($lastErrors['errors'])));
 
             throw new RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeException($errorMessage);
         }

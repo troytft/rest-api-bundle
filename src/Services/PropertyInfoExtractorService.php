@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Services;
 
-use Symfony\Component\PropertyInfo;
 use RestApiBundle;
+use Symfony\Component\PropertyInfo;
 
 class PropertyInfoExtractorService
 {
@@ -29,7 +31,7 @@ class PropertyInfoExtractorService
         if (!$propertyTypes) {
             throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Property has empty type', $class, $propertyName);
         }
-        if (count($propertyTypes) !== 1) {
+        if (\count($propertyTypes) !== 1) {
             throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Wrong property types count', $class, $propertyName);
         }
 
