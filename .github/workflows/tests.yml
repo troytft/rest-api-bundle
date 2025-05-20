@@ -10,8 +10,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                symfony-versions: [ '5.3' ]
-                php-versions: [ '8.1', '8.2' ]
+                php-versions: [ '8.1', '8.3' ]
 
         steps:
             -   name: Checkout repository
@@ -37,7 +36,7 @@ jobs:
 
             -   name: Install Symfony
                 if: steps.composer-cache.outputs.cache-hit != 'true'
-                run: composer require 'symfony/framework-bundle:^${{ matrix.symfony-versions }}' --no-suggest --no-interaction --no-progress
+                run: composer require 'symfony/framework-bundle:^5.4' --no-suggest --no-interaction --no-progress
 
             -   name: Run PHPUnit
                 run: vendor/bin/phpunit
