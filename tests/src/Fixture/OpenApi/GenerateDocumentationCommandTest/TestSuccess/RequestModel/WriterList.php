@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel;
 
-use Tests;
 use RestApiBundle\Mapping\Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
+use Tests;
 
 #[Mapper\ExposeAll]
 class WriterList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface

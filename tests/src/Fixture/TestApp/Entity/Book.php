@@ -1,12 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Fixture\TestApp\Entity;
 
-use Tests;
 use Doctrine\ORM\Mapping as ORM;
+use Tests;
 
 /**
  * @ORM\Table()
+ *
  * @ORM\Entity(repositoryClass="Tests\Fixture\TestApp\Repository\BookRepository")
  */
 class Book
@@ -15,7 +18,9 @@ class Book
      * @var int
      *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @ORM\Column(name="id", type="integer")
      */
     private $id;

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 class FileTypeResolverTest extends Tests\BaseTestCase
 {
@@ -13,14 +15,14 @@ class FileTypeResolverTest extends Tests\BaseTestCase
     {
         try {
             RestApiBundle\Helper\OpenApi\FileTypeResolver::resolveByFilename('file.xml');
-        } catch (\Exception $exception) {
-            $this->assertInstanceOf(\InvalidArgumentException::class, $exception);
+        } catch (Exception $exception) {
+            $this->assertInstanceOf(InvalidArgumentException::class, $exception);
         }
 
         try {
             RestApiBundle\Helper\OpenApi\FileTypeResolver::resolveByFilename('file_without_extension');
-        } catch (\Exception $exception) {
-            $this->assertInstanceOf(\InvalidArgumentException::class, $exception);
+        } catch (Exception $exception) {
+            $this->assertInstanceOf(InvalidArgumentException::class, $exception);
         }
     }
 }

@@ -1,12 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Fixture\TestApp\Entity;
 
-use Tests;
 use Doctrine\ORM\Mapping as ORM;
+use Tests;
 
 /**
  * @ORM\Table()
+ *
  * @ORM\Entity(repositoryClass="Tests\Fixture\TestApp\Repository\AuthorRepository")
  */
 class Author
@@ -15,7 +18,9 @@ class Author
      * @var int
      *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @ORM\Column(name="id", type="integer")
      */
     private $id;
@@ -48,7 +53,7 @@ class Author
     }
 
     /**
-     * @return Tests\Fixture\TestApp\Entity\Book[]
+     * @return Book[]
      */
     public function getGenres(): array
     {

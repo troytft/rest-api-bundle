@@ -1,8 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess;
 
-use Tests;
 use RestApiBundle\Mapping\OpenApi;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,9 +17,9 @@ class BookController
      *
      * @Route(methods="GET")
      *
-     * @return Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\Book[]
+     * @return ResponseModel\Book[]
      */
-    public function listAction(Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\BookList $requestModel): array
+    public function listAction(RequestModel\BookList $requestModel): array
     {
         return [];
     }
@@ -28,7 +29,7 @@ class BookController
      *
      * @Route(methods="POST")
      */
-    public function uploadAction(Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\UploadBook $requestModel): void
+    public function uploadAction(RequestModel\UploadBook $requestModel): void
     {
     }
 }

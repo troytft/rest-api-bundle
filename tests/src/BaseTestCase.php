@@ -1,15 +1,16 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests;
 
-use Tests;
 use cebe\openapi\spec as OpenApi;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Nyholm\BundleTest\TestKernel;
 use RestApiBundle;
 use Spatie\Snapshots\MatchesSnapshots;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Nyholm\BundleTest\TestKernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 abstract class BaseTestCase extends KernelTestCase
 {
@@ -25,9 +26,9 @@ abstract class BaseTestCase extends KernelTestCase
         /** @var TestKernel $kernel */
         $kernel = parent::createKernel($options);
         $kernel->addTestBundle(RestApiBundle\RestApiBundle::class);
-        $kernel->addTestBundle(Tests\Fixture\TestApp\TestAppBundle::class);
+        $kernel->addTestBundle(Fixture\TestApp\TestAppBundle::class);
         $kernel->addTestBundle(DoctrineBundle::class);
-        $kernel->addTestConfig(__DIR__ . '/Fixture/TestApp/Resources/config/config.yaml');
+        $kernel->addTestConfig(__DIR__.'/Fixture/TestApp/Resources/config/config.yaml');
         $kernel->handleOptions($options);
 
         return $kernel;

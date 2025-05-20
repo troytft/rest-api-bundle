@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess;
 
-use Tests;
-use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Mapping\OpenApi as Docs;
+use Symfony\Component\Routing\Annotation\Route;
+use Tests;
 
 /**
  * @Route("/writers")
@@ -16,9 +18,9 @@ class WriterController
      *
      * @Route(methods="POST")
      */
-    public function createAction(Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\WriterData $requestModel): Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\Author
+    public function createAction(RequestModel\WriterData $requestModel): ResponseModel\Author
     {
-        return new Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\Author();
+        return new ResponseModel\Author();
     }
 
     /**
@@ -26,9 +28,9 @@ class WriterController
      *
      * @Route(methods="GET")
      *
-     * @return Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\Author[]
+     * @return ResponseModel\Author[]
      */
-    public function listAction(Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\WriterList $requestModel)
+    public function listAction(RequestModel\WriterList $requestModel)
     {
         return [];
     }

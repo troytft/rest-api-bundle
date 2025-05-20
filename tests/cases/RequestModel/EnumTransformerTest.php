@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 class EnumTransformerTest extends Tests\BaseTestCase
 {
@@ -10,7 +12,7 @@ class EnumTransformerTest extends Tests\BaseTestCase
         ]);
 
         $this->assertTrue($model->getField() instanceof Tests\Fixture\TestApp\Enum\PolyfillStringEnum);
-        $this->assertSame(\Tests\Fixture\TestApp\Enum\PolyfillStringEnum::CREATED, $model->getField()->getValue());
+        $this->assertSame(Tests\Fixture\TestApp\Enum\PolyfillStringEnum::CREATED, $model->getField()->getValue());
     }
 
     public function testValueNotFound()
@@ -18,7 +20,7 @@ class EnumTransformerTest extends Tests\BaseTestCase
         try {
             $model = new Tests\Fixture\Mapper\EnumTransformerTest\Model();
             $this->getMapper()->map($model, [
-                'field' => 'invalid'
+                'field' => 'invalid',
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {

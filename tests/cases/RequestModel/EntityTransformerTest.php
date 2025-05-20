@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 class EntityTransformerTest extends Tests\BaseTestCase
 {
@@ -8,14 +10,14 @@ class EntityTransformerTest extends Tests\BaseTestCase
 
         // by id
         $this->getMapper()->map($model, [
-            'byId' => 1
+            'byId' => 1,
         ]);
 
         $this->assertSame(1, $model->byId?->getId());
 
         // by custom field
         $this->getMapper()->map($model, [
-            'bySlug' => 'design-ideas-making-house-home'
+            'bySlug' => 'design-ideas-making-house-home',
         ]);
 
         $this->assertSame(2, $model->bySlug?->getId());

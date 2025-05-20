@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Fixture\TestApp\Entity;
 
@@ -6,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table()
+ *
  * @ORM\Entity()
  */
 class Genre
@@ -14,7 +17,9 @@ class Genre
      * @var int
      *
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @ORM\Column(name="id", type="integer")
      */
     private $id;

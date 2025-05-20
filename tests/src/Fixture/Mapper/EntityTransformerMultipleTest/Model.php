@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Fixture\Mapper\EntityTransformerMultipleTest;
 
-use Tests;
 use RestApiBundle\Mapping\Mapper;
+use Tests;
 
 #[Mapper\ExposeAll]
 class Model implements Mapper\ModelInterface

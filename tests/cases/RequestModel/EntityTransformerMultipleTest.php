@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 class EntityTransformerMultipleTest extends Tests\BaseTestCase
 {
@@ -8,7 +10,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
 
         // by id
         $this->getMapper()->map($model, [
-            'byId' => [1, 2]
+            'byId' => [1, 2],
         ]);
 
         $this->assertCount(2, $model->byId);
@@ -20,7 +22,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
             'bySlug' => [
                 'keto-cookbook-beginners-low-carb-homemade',
                 'design-ideas-making-house-home',
-            ]
+            ],
         ]);
 
         $this->assertCount(2, $model->bySlug);
@@ -43,7 +45,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
 
         try {
             $this->getMapper()->map($model, [
-                'byId' => [null,],
+                'byId' => [null],
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {
@@ -61,7 +63,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
 
         try {
             $this->getMapper()->map($model, [
-                'bySlug' => [null,],
+                'bySlug' => [null],
             ]);
             $this->fail();
         } catch (RestApiBundle\Exception\Mapper\MappingException $exception) {

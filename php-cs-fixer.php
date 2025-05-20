@@ -12,4 +12,5 @@ return (new PhpCsFixer\Config())
         '@Symfony' => true,
         'declare_strict_types' => true,
         'function_to_constant' => true,
+        'is_null' => true,
     ]);

@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Fixture\ResponseModel;
 
-use Tests;
 use RestApiBundle;
+use Tests;
 
 class PolyfillEnumType implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {

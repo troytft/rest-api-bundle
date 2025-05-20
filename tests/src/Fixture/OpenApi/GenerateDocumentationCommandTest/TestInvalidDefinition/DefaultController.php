@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestInvalidDefinition;
 
-use Symfony\Component\Routing\Annotation\Route;
 use RestApiBundle\Mapping\OpenApi as Docs;
+use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController
 {

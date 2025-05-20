@@ -1,11 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Fixture\TestApp\Repository;
 
 use Tests;
-
-use function array_values;
-use function in_array;
 
 class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
 {
@@ -54,7 +53,7 @@ class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceE
         $criteriaId = $criteria['id'] ?? null;
         if ($criteriaId) {
             foreach ($this->findAll() as $book) {
-                if (in_array($book->getId(), $criteriaId, true)) {
+                if (\in_array($book->getId(), $criteriaId, true)) {
                     $result[$book->getId()] = $book;
                 }
             }
@@ -63,14 +62,13 @@ class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceE
         $criteriaSlug = $criteria['slug'] ?? null;
         if ($criteriaSlug) {
             foreach ($this->findAll() as $book) {
-                if (in_array($book->getSlug(), $criteriaSlug, true)) {
+                if (\in_array($book->getSlug(), $criteriaSlug, true)) {
                     $result[$book->getId()] = $book;
                 }
             }
         }
 
-
-        return array_values($result);
+        return \array_values($result);
     }
 
     /**
@@ -80,7 +78,7 @@ class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceE
     {
         return [
             new Tests\Fixture\TestApp\Entity\Book(1, 'keto-cookbook-beginners-low-carb-homemade', 'Keto Cookbook For Beginners: 1000 Recipes For Quick & Easy Low-Carb Homemade Cooking'),
-            new Tests\Fixture\TestApp\Entity\Book(2, 'design-ideas-making-house-home', 'Home Stories: Design Ideas for Making a House a Home')
+            new Tests\Fixture\TestApp\Entity\Book(2, 'design-ideas-making-house-home', 'Home Stories: Design Ideas for Making a House a Home'),
         ];
     }
 }

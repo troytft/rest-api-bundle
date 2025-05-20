@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel;
 
-use Tests;
 use RestApiBundle\Mapping\Mapper;
+use Tests;
 
 #[Mapper\ExposeAll]
 class BookList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface

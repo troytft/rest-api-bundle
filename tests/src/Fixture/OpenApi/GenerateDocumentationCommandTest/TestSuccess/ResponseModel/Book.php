@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel;
 
-use Tests;
 use RestApiBundle;
+use Tests;
 
 class Book implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {

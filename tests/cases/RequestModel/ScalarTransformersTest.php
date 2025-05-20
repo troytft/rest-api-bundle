@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 class ScalarTransformersTest extends Tests\BaseTestCase
 {
@@ -138,7 +140,7 @@ class ScalarTransformersTest extends Tests\BaseTestCase
         // trim
         $this->assertSame(' 10', $transformer->transform(' 10'));
         $this->assertSame('10', $transformer->transform(' 10', [
-            \RestApiBundle\Services\Mapper\Transformer\StringTransformer::TRIM_OPTION => true,
+            RestApiBundle\Services\Mapper\Transformer\StringTransformer::TRIM_OPTION => true,
         ]));
     }
 }

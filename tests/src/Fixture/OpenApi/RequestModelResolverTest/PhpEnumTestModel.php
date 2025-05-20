@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Fixture\OpenApi\RequestModelResolverTest;
 
-use Tests;
 use RestApiBundle\Mapping\Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
+use Tests;
 
 #[Mapper\ExposeAll]
 class PhpEnumTestModel implements Mapper\ModelInterface

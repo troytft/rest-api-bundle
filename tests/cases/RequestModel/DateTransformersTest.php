@@ -1,11 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 class DateTransformersTest extends Tests\BaseTestCase
 {
     public function testDateTimeFormatOption()
     {
         $options = [
-            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION => 'Y/m/d-H:i:sP'
+            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION => 'Y/m/d-H:i:sP',
         ];
 
         // invalid date format
@@ -18,13 +20,13 @@ class DateTransformersTest extends Tests\BaseTestCase
 
         // success
         $value = $this->getDateTimeTransformer()->transform('2021/10/01-16:00:00+00:00', $options);
-        $this->assertInstanceOf(\DateTime::class, $value);
+        $this->assertInstanceOf(DateTime::class, $value);
     }
 
     public function testDateFormatOption()
     {
         $options = [
-            RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION => 'Y/m/d'
+            RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION => 'Y/m/d',
         ];
 
         // invalid date format
@@ -37,18 +39,18 @@ class DateTransformersTest extends Tests\BaseTestCase
 
         // success
         $value = $this->getDateTransformer()->transform('2021/10/01', $options);
-        $this->assertInstanceOf(\DateTime::class, $value);
+        $this->assertInstanceOf(DateTime::class, $value);
     }
 
     public function testDateTimeForceLocalTimezoneOption()
     {
-        $datetime = new \DateTime();
-        $timezone = new \DateTimeZone('Europe/Prague');
+        $datetime = new DateTime();
+        $timezone = new DateTimeZone('Europe/Prague');
         $datetime->setTimezone($timezone);
 
         // false
         $options = [
-            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORCE_LOCAL_TIMEZONE_OPTION => false
+            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORCE_LOCAL_TIMEZONE_OPTION => false,
         ];
 
         $value = $this->getDateTimeTransformer()->transform('2021-10-01T16:00:00+03:00', $options);
@@ -56,7 +58,7 @@ class DateTransformersTest extends Tests\BaseTestCase
 
         // true
         $options = [
-            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORCE_LOCAL_TIMEZONE_OPTION => true
+            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORCE_LOCAL_TIMEZONE_OPTION => true,
         ];
 
         $value = $this->getDateTimeTransformer()->transform('2021-10-01T16:00:00+03:00', $options);

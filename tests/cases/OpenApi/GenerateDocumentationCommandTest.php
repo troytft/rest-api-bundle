@@ -1,13 +1,15 @@
-<?php declare(strict_types=1);
+<?php
 
-use Symfony\Component\Console\Tester\CommandTester;
+declare(strict_types=1);
+
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class GenerateDocumentationCommandTest extends Tests\BaseTestCase
 {
     public function testSuccess()
     {
-        $filename = tempnam(sys_get_temp_dir(), 'openapi') . '.yaml';
+        $filename = tempnam(sys_get_temp_dir(), 'openapi').'.yaml';
 
         $application = new Application($this->getKernel());
         $command = $application->find('rest-api:generate-documentation');
@@ -16,7 +18,7 @@ class GenerateDocumentationCommandTest extends Tests\BaseTestCase
         $commandTester->execute([
             'input' => 'tests/src/Fixture/OpenApi/GenerateDocumentationCommandTest/TestSuccess',
             'output' => $filename,
-            '--template' => 'tests/src/Fixture/OpenApi/GenerateDocumentationCommandTest/TestSuccess/Resources/template.yaml'
+            '--template' => 'tests/src/Fixture/OpenApi/GenerateDocumentationCommandTest/TestSuccess/Resources/template.yaml',
         ]);
 
         $this->assertSame(0, $commandTester->getStatusCode(), $commandTester->getDisplay());
