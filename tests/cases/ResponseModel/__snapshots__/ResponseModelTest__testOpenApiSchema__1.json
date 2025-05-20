@@ -43,6 +43,20 @@
             }
         }
     },
+    "Inner": {
+        "type": "object",
+        "properties": {
+            "stringField": {
+                "type": "string",
+                "nullable": false
+            },
+            "__typename": {
+                "type": "string",
+                "default": "Inner",
+                "nullable": false
+            }
+        }
+    },
     "PhpEnumType": {
         "type": "object",
         "properties": {
@@ -92,6 +106,32 @@
                     "archived"
                 ]
             },
+            "arrayRequired": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "nullable": false,
+                    "enum": [
+                        "created",
+                        "published",
+                        "archived"
+                    ]
+                },
+                "nullable": false
+            },
+            "arrayNullable": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "nullable": false,
+                    "enum": [
+                        "created",
+                        "published",
+                        "archived"
+                    ]
+                },
+                "nullable": false
+            },
             "__typename": {
                 "type": "string",
                 "default": "PolyfillEnumType",
@@ -103,16 +143,26 @@
         "type": "object",
         "properties": {
             "dateType": {
-                "$ref": "#\/components\/schemas\/DateType"
+                "$ref": "#/components/schemas/DateType"
             },
             "dateTimeType": {
-                "$ref": "#\/components\/schemas\/DateTimeType"
+                "$ref": "#/components/schemas/DateTimeType"
             },
             "phpEnumType": {
-                "$ref": "#\/components\/schemas\/PhpEnumType"
+                "$ref": "#/components/schemas/PhpEnumType"
             },
             "polyfillEnumType": {
-                "$ref": "#\/components\/schemas\/PolyfillEnumType"
+                "$ref": "#/components/schemas/PolyfillEnumType"
+            },
+            "innerModel": {
+                "$ref": "#/components/schemas/Inner"
+            },
+            "innerModelArray": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Inner"
+                },
+                "nullable": false
             },
             "__typename": {
                 "type": "string",

@@ -16,4 +16,20 @@ class PolyfillEnumType implements RestApiBundle\Mapping\ResponseModel\ResponseMo
     {
         return null;
     }
+
+    /**
+     * @return Tests\Fixture\TestApp\Enum\PolyfillStringEnum[]
+     */
+    public function getArrayRequired(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return Tests\Fixture\TestApp\Enum\PolyfillStringEnum[]
+     */
+    public function getArrayNullable(): array
+    {
+        return [];
+    }
 }

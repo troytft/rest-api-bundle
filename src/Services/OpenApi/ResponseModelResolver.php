@@ -23,8 +23,17 @@ class ResponseModelResolver
      */
     private array $typenameCache = [];
 
-    public function __construct(private RestApiBundle\Services\SettingsProvider $settingsProvider)
-    {
+    private PropertyInfo\PropertyInfoExtractor $propertyInfoExtractor;
+
+    public function __construct(
+        private RestApiBundle\Services\SettingsProvider $settingsProvider,
+        private PropertyInfo\Extractor\ReflectionExtractor $reflectionExtractor,
+        private PropertyInfo\Extractor\PhpDocExtractor $phpDocExtractor,
+    ) {
+        $this->propertyInfoExtractor = new PropertyInfo\PropertyInfoExtractor(
+            [$this->reflectionExtractor],
+            [$this->phpDocExtractor, $this->reflectionExtractor],
+        );
     }
 
     public function resolveReference(string $class): OpenApi\Reference
@@ -66,10 +75,12 @@ class ResponseModelResolver
         return $result;
     }
 
+
     private function resolveModelSchema(string $class, string $typename): OpenApi\Schema
     {
         $properties = [];
 
+//        var_dump($this->propertyInfoExtractor->getProperties($class));
         $reflectedClass = RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class);
         $reflectedMethods = $reflectedClass->getMethods(\ReflectionMethod::IS_PUBLIC);
 
@@ -78,7 +89,10 @@ class ResponseModelResolver
                 continue;
             }
 
+
             $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
+
+//            var_dump($this->propertyInfoExtractor->getTypes($class, $propertyName));
 
             try {
                 $returnType = RestApiBundle\Helper\TypeExtractor::extractByReflectionMethod($reflectionMethod);

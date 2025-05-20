@@ -17,7 +17,14 @@
     "polyfillEnumType": {
         "stringRequired": "archived",
         "stringNullable": null,
+        "arrayRequired": [],
+        "arrayNullable": [],
         "__typename": "PolyfillEnumType"
     },
+    "innerModel": {
+        "stringField": "",
+        "__typename": "Inner"
+    },
+    "innerModelArray": [],
     "__typename": "Root"
 }
