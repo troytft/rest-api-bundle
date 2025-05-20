@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace RestApiBundle\Helper\ResponseModel;
 
-use function explode;
-use function join;
-use function sprintf;
-
 class TypenameResolver
 {
     public static function resolve(string $class): string
@@ -15,21 +11,21 @@ class TypenameResolver
         $parts = [];
         $hasResponseModelPart = false;
 
-        foreach (explode('\\', $class) as $part) {
+        foreach (\explode('\\', $class) as $part) {
             if ($hasResponseModelPart) {
                 $parts[] = $part;
-            } elseif ($part === 'ResponseModel') {
+            } elseif ('ResponseModel' === $part) {
                 $hasResponseModelPart = true;
             }
         }
 
         if (!$hasResponseModelPart) {
-            throw new \RuntimeException(sprintf('Response model "%s" must be in "ResponseModel" namespace', $class));
+            throw new \RuntimeException(\sprintf('Response model "%s" must be in "ResponseModel" namespace', $class));
         }
 
-        $typename = join('_', $parts);
+        $typename = \join('_', $parts);
         if (!$typename) {
-            throw new \RuntimeException(sprintf('Response model "%s" must have typename', $class));
+            throw new \RuntimeException(\sprintf('Response model "%s" must have typename', $class));
         }
 
         return $typename;

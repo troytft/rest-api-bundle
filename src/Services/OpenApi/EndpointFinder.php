@@ -4,19 +4,10 @@ declare(strict_types=1);
 
 namespace RestApiBundle\Services\OpenApi;
 
-use RestApiBundle;
 use Composer\Autoload\ClassLoader;
+use RestApiBundle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Routing\Annotation\Route;
-
-use function array_merge;
-use function array_slice;
-use function count;
-use function explode;
-use function implode;
-use function is_array;
-use function spl_autoload_functions;
-use function substr_count;
 
 class EndpointFinder
 {
@@ -45,9 +36,9 @@ class EndpointFinder
             }
 
             if (!$autoloadFixed) {
-                $filePathParts = explode('/', $fileInfo->getPathname());
-                $namespaceDirectory = implode('/', array_slice($filePathParts, 0, count($filePathParts) - substr_count($class, '\\') - 1));
-                $this->getClassLoader()->add("", $namespaceDirectory);
+                $filePathParts = \explode('/', $fileInfo->getPathname());
+                $namespaceDirectory = \implode('/', \array_slice($filePathParts, 0, \count($filePathParts) - \substr_count($class, '\\') - 1));
+                $this->getClassLoader()->add('', $namespaceDirectory);
 
                 $autoloadFixed = true;
             }
@@ -55,7 +46,7 @@ class EndpointFinder
             $endpoints[] = $this->extractEndpointsByReflectionClass(RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class));
         }
 
-        return array_merge(...$endpoints);
+        return \array_merge(...$endpoints);
     }
 
     /**
@@ -92,8 +83,8 @@ class EndpointFinder
     private function getClassLoader(): ClassLoader
     {
         $result = null;
-        foreach (spl_autoload_functions() as $classWithFunction) {
-            if (!is_array($classWithFunction)) {
+        foreach (\spl_autoload_functions() as $classWithFunction) {
+            if (!\is_array($classWithFunction)) {
                 continue;
             }
 

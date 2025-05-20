@@ -6,10 +6,6 @@ namespace RestApiBundle\Services\Mapper\Transformer;
 
 use RestApiBundle;
 
-use function array_merge;
-use function array_values;
-use function implode;
-
 class DateTimeTransformer implements TransformerInterface
 {
     public const FORMAT_OPTION = 'format';
@@ -25,13 +21,13 @@ class DateTimeTransformer implements TransformerInterface
         $forceLocalTimezone = $options[static::FORCE_LOCAL_TIMEZONE_OPTION] ?? $this->settingsProvider->isForceRequestDatetimeToLocalTimezone();
 
         $result = \DateTime::createFromFormat($format, $value);
-        if ($result === false) {
+        if (false === $result) {
             throw new RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeFormatException($format);
         }
 
         $lastErrors = \DateTime::getLastErrors();
         if (is_array($lastErrors) && ($lastErrors['warning_count'] || $lastErrors['error_count'])) {
-            $errorMessage = implode(', ', array_merge(array_values($lastErrors['warnings']), array_values($lastErrors['errors'])));
+            $errorMessage = \implode(', ', \array_merge(\array_values($lastErrors['warnings']), \array_values($lastErrors['errors'])));
 
             throw new RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeException($errorMessage);
         }

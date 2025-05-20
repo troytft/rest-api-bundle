@@ -14,13 +14,13 @@ class Serializer
 
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
-        RestApiBundle\Services\ResponseModel\ResponseModelNormalizer $responseModelNormalizer
+        ResponseModelNormalizer $responseModelNormalizer,
     ) {
         $normalizers = [
             $responseModelNormalizer,
-            new RestApiBundle\Services\ResponseModel\SerializableDateNormalizer(),
-            new RestApiBundle\Services\ResponseModel\SerializableEnumNormalizer(),
-            new RestApiBundle\Services\ResponseModel\BackedEnumNormalizer(),
+            new SerializableDateNormalizer(),
+            new SerializableEnumNormalizer(),
+            new BackedEnumNormalizer(),
             new DateTimeNormalizer(),
         ];
         $encoders = [
@@ -32,7 +32,7 @@ class Serializer
 
     public function serialize($value): ?string
     {
-        if ($value === null) {
+        if (null === $value) {
             $result = null;
         } elseif ($value instanceof RestApiBundle\Mapping\ResponseModel\ResponseModelInterface) {
             $result = $this->responseModelToJson($value);
@@ -51,7 +51,7 @@ class Serializer
                 $chunks[] = $this->responseModelToJson($item);
             }
 
-            $result = '[' . join(',', $chunks) . ']';
+            $result = '['.join(',', $chunks).']';
         } else {
             throw new \InvalidArgumentException();
         }
@@ -62,7 +62,7 @@ class Serializer
     private function responseModelToJson(RestApiBundle\Mapping\ResponseModel\ResponseModelInterface $responseModel): string
     {
         return $this->serializer->serialize($responseModel, 'json', [
-            RestApiBundle\Services\ResponseModel\SerializableDateNormalizer::FORMAT_KEY => $this->settingsProvider->getResponseModelDateFormat(),
+            SerializableDateNormalizer::FORMAT_KEY => $this->settingsProvider->getResponseModelDateFormat(),
             JsonEncode::OPTIONS => $this->settingsProvider->getResponseJsonEncodeOptions(),
             DateTimeNormalizer::FORMAT_KEY => $this->settingsProvider->getResponseModelDateTimeFormat(),
             DateTimeNormalizer::TIMEZONE_KEY => new \DateTimeZone('UTC'),

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace RestApiBundle\Mapping\Mapper;
 
-use function is_array;
-use function is_string;
-
 /**
  * @Annotation
  * @Target({"PROPERTY", "ANNOTATION"})
@@ -21,9 +18,9 @@ class FindByField implements PropertyOptionInterface
      */
     public function __construct($options)
     {
-        if (is_array($options) && isset($options['value'])) {
+        if (\is_array($options) && isset($options['value'])) {
             $this->field = $options['value'];
-        } elseif (is_string($options)) {
+        } elseif (\is_string($options)) {
             $this->field = $options;
         } else {
             throw new \InvalidArgumentException();

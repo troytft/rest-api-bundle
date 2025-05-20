@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace RestApiBundle\Helper\OpenApi;
 
-use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
+use RestApiBundle;
 use Symfony\Component\PropertyInfo;
 
 final class SchemaHelper

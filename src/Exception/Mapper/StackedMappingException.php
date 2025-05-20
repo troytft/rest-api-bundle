@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace RestApiBundle\Exception\Mapper;
 
-use RestApiBundle;
-
 class StackedMappingException extends \Exception
 {
     /**
-     * @var RestApiBundle\Exception\Mapper\StackableMappingExceptionInterface[]
+     * @var StackableMappingExceptionInterface[]
      */
     private array $exceptions;
 
     /**
-     * @param RestApiBundle\Exception\Mapper\StackableMappingExceptionInterface[] $exceptions
+     * @param StackableMappingExceptionInterface[] $exceptions
      */
     public function __construct(array $exceptions)
     {
@@ -24,7 +22,7 @@ class StackedMappingException extends \Exception
     }
 
     /**
-     * @return RestApiBundle\Exception\Mapper\StackableMappingExceptionInterface[]
+     * @return StackableMappingExceptionInterface[]
      */
     public function getExceptions(): array
     {

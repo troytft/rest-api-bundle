@@ -14,7 +14,7 @@ class IntegerTypeResolver implements SchemaTypeResolverInterface
      */
     public function supports(PropertyInfo\Type $propertyInfoType, array $typeOptions): bool
     {
-        return $propertyInfoType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT;
+        return PropertyInfo\Type::BUILTIN_TYPE_INT === $propertyInfoType->getBuiltinType();
     }
 
     /**

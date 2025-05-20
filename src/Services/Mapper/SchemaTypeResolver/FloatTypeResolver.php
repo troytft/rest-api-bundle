@@ -14,7 +14,7 @@ class FloatTypeResolver implements SchemaTypeResolverInterface
      */
     public function supports(PropertyInfo\Type $propertyInfoType, array $typeOptions): bool
     {
-        return $propertyInfoType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_FLOAT;
+        return PropertyInfo\Type::BUILTIN_TYPE_FLOAT === $propertyInfoType->getBuiltinType();
     }
 
     /**

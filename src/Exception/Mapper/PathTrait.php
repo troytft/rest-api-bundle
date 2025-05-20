@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace RestApiBundle\Exception\Mapper;
 
-use function join;
-
 trait PathTrait
 {
     /**
@@ -20,6 +18,6 @@ trait PathTrait
 
     public function getPathAsString(): string
     {
-        return join('.', $this->path);
+        return \join('.', $this->path);
     }
 }

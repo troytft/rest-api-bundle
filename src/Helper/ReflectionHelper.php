@@ -7,8 +7,6 @@ namespace RestApiBundle\Helper;
 use RestApiBundle;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-use function class_exists;
-
 final class ReflectionHelper
 {
     /**
@@ -27,7 +25,7 @@ final class ReflectionHelper
 
     public static function isResponseModel(string $class): bool
     {
-        if (!class_exists($class)) {
+        if (!\class_exists($class)) {
             return false;
         }
 
@@ -38,7 +36,7 @@ final class ReflectionHelper
 
     public static function isDateTime(string $class): bool
     {
-        if (!class_exists($class)) {
+        if (!\class_exists($class)) {
             return false;
         }
 
@@ -49,7 +47,7 @@ final class ReflectionHelper
 
     public static function isUploadedFile(string $class): bool
     {
-        return $class === UploadedFile::class;
+        return UploadedFile::class === $class;
     }
 
     public static function isMapperDate(string $class): bool
@@ -61,7 +59,7 @@ final class ReflectionHelper
 
     public static function isResponseModelEnum(string $class): bool
     {
-        if (!class_exists($class)) {
+        if (!\class_exists($class)) {
             return false;
         }
 
@@ -72,7 +70,7 @@ final class ReflectionHelper
 
     public static function isMapperEnum(string $class): bool
     {
-        if (!class_exists($class)) {
+        if (!\class_exists($class)) {
             return false;
         }
 
@@ -83,7 +81,7 @@ final class ReflectionHelper
 
     public static function isResponseModelDate(string $class): bool
     {
-        if (!class_exists($class)) {
+        if (!\class_exists($class)) {
             return false;
         }
 
@@ -94,7 +92,7 @@ final class ReflectionHelper
 
     public static function isMapperModel(string $class): bool
     {
-        if (!class_exists($class)) {
+        if (!\class_exists($class)) {
             return false;
         }
 
@@ -105,7 +103,7 @@ final class ReflectionHelper
 
     public static function isRequestModel(string $class): bool
     {
-        if (!class_exists($class)) {
+        if (!\class_exists($class)) {
             return false;
         }
 

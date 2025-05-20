@@ -64,6 +64,6 @@ class SettingsProvider
 
     public function getSourceCodeDirectory(): string
     {
-        return $this->parameterBag->get('kernel.project_dir') . '/src';
+        return $this->parameterBag->get('kernel.project_dir').'/src';
     }
 }

@@ -21,7 +21,7 @@ class SchemaCacheWarmer implements CacheWarmerInterface
 
     public function warmUp($cacheDir)
     {
-        return [];//return $this->cacheSchemaResolver->warmUpCache($this->settingsProvider->getSourceCodeDirectory());
+        return []; // return $this->cacheSchemaResolver->warmUpCache($this->settingsProvider->getSourceCodeDirectory());
     }
 
     public function isOptional()

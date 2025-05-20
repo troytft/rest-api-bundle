@@ -14,7 +14,7 @@ class BooleanTypeResolver implements SchemaTypeResolverInterface
      */
     public function supports(PropertyInfo\Type $propertyInfoType, array $typeOptions): bool
     {
-        return $propertyInfoType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_BOOL;
+        return PropertyInfo\Type::BUILTIN_TYPE_BOOL === $propertyInfoType->getBuiltinType();
     }
 
     /**

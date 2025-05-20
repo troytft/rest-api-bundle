@@ -6,7 +6,7 @@ namespace RestApiBundle\Mapping\ResponseModel;
 
 use RestApiBundle;
 
-abstract class BaseEnum implements RestApiBundle\Mapping\ResponseModel\EnumInterface, RestApiBundle\Mapping\Mapper\EnumInterface
+abstract class BaseEnum implements EnumInterface, RestApiBundle\Mapping\Mapper\EnumInterface
 {
     final private function __construct(private int|string $value)
     {

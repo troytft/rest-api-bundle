@@ -8,29 +8,20 @@ use RestApiBundle;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-use function array_merge_recursive;
-use function explode;
-use function get_class;
-use function implode;
-use function is_numeric;
-use function sprintf;
-use function str_replace;
-
 class ModelValidator
 {
     public function __construct(
-        private RestApiBundle\Services\Mapper\SchemaResolverInterface $schemaResolver,
-        private ValidatorInterface $validator
+        private SchemaResolverInterface $schemaResolver,
+        private ValidatorInterface $validator,
     ) {
     }
-
 
     /**
      * @return array<string, string[]>
      */
     public function validate(RestApiBundle\Mapping\Mapper\ModelInterface $model): array
     {
-        return array_merge_recursive($this->getFirstLevelErrors($model), $this->getNestedErrors($model));
+        return \array_merge_recursive($this->getFirstLevelErrors($model), $this->getNestedErrors($model));
     }
 
     /**
@@ -60,11 +51,11 @@ class ModelValidator
     {
         $result = [];
 
-        $schema = $this->schemaResolver->resolve(get_class($model));
+        $schema = $this->schemaResolver->resolve(\get_class($model));
 
         /** @var RestApiBundle\Model\Mapper\Schema $propertySchema */
         foreach ($schema->properties as $propertyName => $propertySchema) {
-            if ($propertySchema->type === RestApiBundle\Model\Mapper\Schema::MODEL_TYPE) {
+            if (RestApiBundle\Model\Mapper\Schema::MODEL_TYPE === $propertySchema->type) {
                 $propertyValue = $this->getPropertyValueFromInstance($model, $propertyName, $propertySchema);
                 if (!$propertyValue) {
                     continue;
@@ -72,10 +63,10 @@ class ModelValidator
 
                 $innerErrors = $this->validate($propertyValue);
                 if ($innerErrors) {
-                    $prefix = sprintf('%s.', $propertyName);
+                    $prefix = \sprintf('%s.', $propertyName);
                     $result[] = $this->appendPrefixToArrayKeys($prefix, $innerErrors);
                 }
-            } elseif ($propertySchema->type === RestApiBundle\Model\Mapper\Schema::ARRAY_TYPE && $propertySchema->valuesType->type === RestApiBundle\Model\Mapper\Schema::MODEL_TYPE) {
+            } elseif (RestApiBundle\Model\Mapper\Schema::ARRAY_TYPE === $propertySchema->type && RestApiBundle\Model\Mapper\Schema::MODEL_TYPE === $propertySchema->valuesType->type) {
                 $propertyValue = $this->getPropertyValueFromInstance($model, $propertyName, $propertySchema);
                 if (!$propertyValue) {
                     continue;
@@ -84,7 +75,7 @@ class ModelValidator
                 foreach ($propertyValue as $itemIndex => $itemValue) {
                     $innerErrors = $this->validate($itemValue);
                     if ($innerErrors) {
-                        $prefix = sprintf('%s.%d.', $propertyName, $itemIndex);
+                        $prefix = \sprintf('%s.%d.', $propertyName, $itemIndex);
                         $result[] = $this->appendPrefixToArrayKeys($prefix, $innerErrors);
                     }
                 }
@@ -114,7 +105,7 @@ class ModelValidator
         $result = [];
 
         foreach ($array as $key => $value) {
-            $result[$prefix . $key] = $value;
+            $result[$prefix.$key] = $value;
         }
 
         return $result;
@@ -124,17 +115,17 @@ class ModelValidator
     {
         $path = $constraintViolation->getPropertyPath();
         if (str_contains($path, '[')) {
-            $path = str_replace(['[', ']'], ['.', ''], $path);
+            $path = \str_replace(['[', ']'], ['.', ''], $path);
         }
 
         $pathParts = [];
-        $schema = $this->schemaResolver->resolve(get_class($constraintViolation->getRoot()));
-        foreach (explode('.', $path) as $part) {
+        $schema = $this->schemaResolver->resolve(\get_class($constraintViolation->getRoot()));
+        foreach (\explode('.', $path) as $part) {
             $property = $schema->properties[$part] ?? null;
             if ($property instanceof RestApiBundle\Model\Mapper\Schema) {
                 $pathParts[] = $part;
                 $schema = $property;
-            } elseif (is_numeric($part)) {
+            } elseif (\is_numeric($part)) {
                 $pathParts[] = $part;
             } else {
                 $pathParts[] = '*';
@@ -143,6 +134,6 @@ class ModelValidator
             }
         }
 
-        return implode('.', $pathParts);
+        return \implode('.', $pathParts);
     }
 }

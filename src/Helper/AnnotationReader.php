@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace RestApiBundle\Helper;
 
-use function array_map;
-use function array_merge;
-
 final class AnnotationReader
 {
     private static ?\Doctrine\Common\Annotations\AnnotationReader $annotationReader = null;
@@ -26,7 +23,7 @@ final class AnnotationReader
 
     public static function getPropertyAnnotations(\ReflectionProperty $reflectionProperty): array
     {
-        return array_merge(
+        return \array_merge(
             static::getAnnotationReader()->getPropertyAnnotations($reflectionProperty),
             static::createAnnotationsFromAttributes($reflectionProperty->getAttributes())
         );
@@ -45,7 +42,7 @@ final class AnnotationReader
 
     public static function getClassAnnotations(\ReflectionClass $reflectionClass): array
     {
-        return array_merge(
+        return \array_merge(
             static::getAnnotationReader()->getClassAnnotations($reflectionClass),
             static::createAnnotationsFromAttributes($reflectionClass->getAttributes())
         );
@@ -64,12 +61,11 @@ final class AnnotationReader
 
     public static function getMethodAnnotations(\ReflectionMethod $reflectionMethod): array
     {
-        return array_merge(
+        return \array_merge(
             static::getAnnotationReader()->getMethodAnnotations($reflectionMethod),
             static::createAnnotationsFromAttributes($reflectionMethod->getAttributes())
         );
     }
-
 
     public static function getMethodAnnotation(\ReflectionMethod $reflectionMethod, string $class)
     {
@@ -84,8 +80,9 @@ final class AnnotationReader
 
     private static function createAnnotationsFromAttributes(array $attributes): array
     {
-        return array_map(function (\ReflectionAttribute $reflectionAttribute) {
+        return \array_map(function (\ReflectionAttribute $reflectionAttribute) {
             $class = $reflectionAttribute->getName();
+
             return new $class(...$reflectionAttribute->getArguments());
         }, $attributes);
     }

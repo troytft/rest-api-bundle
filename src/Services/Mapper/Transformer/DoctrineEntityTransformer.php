@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace RestApiBundle\Services\Mapper\Transformer;
 
+use Doctrine\ORM\EntityManagerInterface;
 use RestApiBundle;
 use Symfony\Component\PropertyInfo;
-use Doctrine\ORM\EntityManagerInterface;
 
 class DoctrineEntityTransformer implements TransformerInterface
 {
@@ -16,8 +16,8 @@ class DoctrineEntityTransformer implements TransformerInterface
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private RestApiBundle\Services\Mapper\Transformer\StringTransformer $stringTransformer,
-        private RestApiBundle\Services\Mapper\Transformer\IntegerTransformer $integerTransformer,
+        private StringTransformer $stringTransformer,
+        private IntegerTransformer $integerTransformer,
     ) {
     }
 
@@ -56,9 +56,9 @@ class DoctrineEntityTransformer implements TransformerInterface
     private function transformMultipleItems(string $class, string $fieldName, mixed $value): array
     {
         $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
-        if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_INT && !is_array($value)) {
+        if (PropertyInfo\Type::BUILTIN_TYPE_INT === $columnType && !is_array($value)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
-        } elseif ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING && !is_array($value)) {
+        } elseif (PropertyInfo\Type::BUILTIN_TYPE_STRING === $columnType && !is_array($value)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
         }
 
@@ -67,9 +67,9 @@ class DoctrineEntityTransformer implements TransformerInterface
         }
 
         $firstCollectionItem = $value[0] ?? null;
-        if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_INT && !is_numeric($firstCollectionItem)) {
+        if (PropertyInfo\Type::BUILTIN_TYPE_INT === $columnType && !is_numeric($firstCollectionItem)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
-        } elseif ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING && (!is_string($firstCollectionItem) && !is_numeric($firstCollectionItem))) {
+        } elseif (PropertyInfo\Type::BUILTIN_TYPE_STRING === $columnType && (!is_string($firstCollectionItem) && !is_numeric($firstCollectionItem))) {
             throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
         }
 
@@ -83,7 +83,7 @@ class DoctrineEntityTransformer implements TransformerInterface
         }
 
         $sortedResults = [];
-        $getterName = 'get' . ucfirst($fieldName);
+        $getterName = 'get'.ucfirst($fieldName);
 
         foreach ($results as $object) {
             if (!method_exists($object, $getterName)) {
@@ -91,7 +91,7 @@ class DoctrineEntityTransformer implements TransformerInterface
             }
 
             $key = array_search($object->{$getterName}(), $value);
-            if ($key === false) {
+            if (false === $key) {
                 throw new \InvalidArgumentException();
             }
 

@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace RestApiBundle\Helper;
 
-use RestApiBundle;
+use phpDocumentor\Reflection as PhpDoc;
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
+use RestApiBundle;
 use Symfony\Component\PropertyInfo;
-use phpDocumentor\Reflection as PhpDoc;
-
-use function in_array;
 
 final class TypeExtractor
 {
@@ -29,13 +27,13 @@ final class TypeExtractor
 
         foreach ($reflectionTypes as $reflectionType) {
             $phpTypeOrClass = $sourceReflectionType instanceof \ReflectionNamedType ? $sourceReflectionType->getName() : (string) $reflectionType;
-            if ($phpTypeOrClass === 'mixed') {
+            if ('mixed' === $phpTypeOrClass) {
                 continue;
             }
 
-            if ($phpTypeOrClass === 'null' | $phpTypeOrClass === 'void') {
+            if ('null' === $phpTypeOrClass | 'void' === $phpTypeOrClass) {
                 $result[] = new PropertyInfo\Type(PropertyInfo\Type::BUILTIN_TYPE_NULL, $sourceReflectionType->allowsNull());
-            } elseif ($reflectionType instanceof  \ReflectionNamedType && $reflectionType->isBuiltin()) {
+            } elseif ($reflectionType instanceof \ReflectionNamedType && $reflectionType->isBuiltin()) {
                 $result[] = new PropertyInfo\Type($phpTypeOrClass, $sourceReflectionType->allowsNull());
             } else {
                 $result[] = new PropertyInfo\Type(PropertyInfo\Type::BUILTIN_TYPE_OBJECT, $sourceReflectionType->allowsNull(), $phpTypeOrClass);
@@ -79,7 +77,7 @@ final class TypeExtractor
             }
         }
 
-        if ($typeByReflection?->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_ARRAY) {
+        if (PropertyInfo\Type::BUILTIN_TYPE_ARRAY === $typeByReflection?->getBuiltinType()) {
             $typeByReflection = null;
         }
 
@@ -124,7 +122,7 @@ final class TypeExtractor
         $docBlock = static::getDocBlockFactory()->create($reflectionMethod->getDocComment());
         $count = count($docBlock->getTagsByName('return'));
 
-        if ($count === 0) {
+        if (0 === $count) {
             return null;
         }
 
@@ -149,7 +147,7 @@ final class TypeExtractor
         $docBlock = static::getDocBlockFactory()->create($reflectionProperty->getDocComment());
         $count = count($docBlock->getTagsByName('var'));
 
-        if ($count === 0) {
+        if (0 === $count) {
             return null;
         }
 
@@ -183,7 +181,7 @@ final class TypeExtractor
             PropertyInfo\Type::BUILTIN_TYPE_FLOAT,
         ];
 
-        return in_array($type->getBuiltinType(), $types, true);
+        return \in_array($type->getBuiltinType(), $types, true);
     }
 
     public static function extractCollectionValueType(PropertyInfo\Type $type): PropertyInfo\Type
@@ -215,7 +213,7 @@ final class TypeExtractor
         } elseif (method_exists($class, 'getValues')) {
             $values = $class::getValues();
         } else {
-            $reflectionClass = RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class);
+            $reflectionClass = ReflectionHelper::getReflectionClass($class);
             foreach ($reflectionClass->getReflectionConstants(\ReflectionClassConstant::IS_PUBLIC) as $reflectionConstant) {
                 if (is_scalar($reflectionConstant->getValue())) {
                     $values[] = $reflectionConstant->getValue();
@@ -241,12 +239,12 @@ final class TypeExtractor
         }
 
         $types = array_keys($types);
-        if (count($types) === 1) {
+        if (1 === count($types)) {
             $type = $types[0];
         } else {
-            if (in_array(PropertyInfo\Type::BUILTIN_TYPE_STRING, $types, true)) {
+            if (\in_array(PropertyInfo\Type::BUILTIN_TYPE_STRING, $types, true)) {
                 $type = PropertyInfo\Type::BUILTIN_TYPE_STRING;
-            } elseif (in_array(PropertyInfo\Type::BUILTIN_TYPE_FLOAT, $types, true)) {
+            } elseif (\in_array(PropertyInfo\Type::BUILTIN_TYPE_FLOAT, $types, true)) {
                 $type = PropertyInfo\Type::BUILTIN_TYPE_FLOAT;
             } else {
                 $type = PropertyInfo\Type::BUILTIN_TYPE_INT;

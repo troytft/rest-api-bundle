@@ -7,27 +7,24 @@ namespace RestApiBundle\Services\Mapper;
 use RestApiBundle;
 use Symfony\Component\PropertyInfo;
 
-use function sprintf;
-use function ucfirst;
-
-class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInterface
+class SchemaResolver implements SchemaResolverInterface
 {
     private array $schemaTypeResolvers;
 
     public function __construct()
     {
         $this->schemaTypeResolvers = [
-            new RestApiBundle\Services\Mapper\SchemaTypeResolver\StringTypeResolver(),
-            new RestApiBundle\Services\Mapper\SchemaTypeResolver\IntegerTypeResolver(),
-            new RestApiBundle\Services\Mapper\SchemaTypeResolver\FloatTypeResolver(),
-            new RestApiBundle\Services\Mapper\SchemaTypeResolver\BooleanTypeResolver(),
-            new RestApiBundle\Services\Mapper\SchemaTypeResolver\PhpEnumTypeResolver(),
-            new RestApiBundle\Services\Mapper\SchemaTypeResolver\PolyfillEnumTypeResolver(),
-            new RestApiBundle\Services\Mapper\SchemaTypeResolver\DoctrineEntityTypeResolver(),
-            new RestApiBundle\Services\Mapper\SchemaTypeResolver\DoctrineEntityArrayTypeResolver(),
-            new RestApiBundle\Services\Mapper\SchemaTypeResolver\DateTypeResolver(),
-            new RestApiBundle\Services\Mapper\SchemaTypeResolver\DateTimeTypeResolver(),
-            new RestApiBundle\Services\Mapper\SchemaTypeResolver\UploadedFileTypeResolver(),
+            new SchemaTypeResolver\StringTypeResolver(),
+            new SchemaTypeResolver\IntegerTypeResolver(),
+            new SchemaTypeResolver\FloatTypeResolver(),
+            new SchemaTypeResolver\BooleanTypeResolver(),
+            new SchemaTypeResolver\PhpEnumTypeResolver(),
+            new SchemaTypeResolver\PolyfillEnumTypeResolver(),
+            new SchemaTypeResolver\DoctrineEntityTypeResolver(),
+            new SchemaTypeResolver\DoctrineEntityArrayTypeResolver(),
+            new SchemaTypeResolver\DateTypeResolver(),
+            new SchemaTypeResolver\DateTimeTypeResolver(),
+            new SchemaTypeResolver\UploadedFileTypeResolver(),
         ];
     }
 
@@ -63,19 +60,19 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 $propertySchema = $this->resolveSchemaByType($reflectionPropertyType, $propertyOptions);
 
                 if (!$reflectionProperty->isPublic()) {
-                    $formattedPropertyName = ucfirst($reflectionProperty->getName());
-                    $propertySchema->propertySetterName = 'set' . $formattedPropertyName;
+                    $formattedPropertyName = \ucfirst($reflectionProperty->getName());
+                    $propertySchema->propertySetterName = 'set'.$formattedPropertyName;
                     if (!$reflectionClass->hasMethod($propertySchema->propertySetterName) || !$reflectionClass->getMethod($propertySchema->propertySetterName)->isPublic()) {
-                        throw new RestApiBundle\Exception\Schema\InvalidDefinitionException(sprintf('Property "%s" must be public or setter must exist.', $reflectionProperty->getName()));
+                        throw new RestApiBundle\Exception\Schema\InvalidDefinitionException(\sprintf('Property "%s" must be public or setter must exist.', $reflectionProperty->getName()));
                     }
 
-                    $propertySchema->propertyGetterName = 'get' . $formattedPropertyName;
+                    $propertySchema->propertyGetterName = 'get'.$formattedPropertyName;
                     if (!$reflectionClass->hasMethod($propertySchema->propertyGetterName) || !$reflectionClass->getMethod($propertySchema->propertyGetterName)->isPublic()) {
                         $propertySchema->propertyGetterName = $reflectionProperty->getName();
                         if (!$reflectionClass->hasMethod($propertySchema->propertyGetterName) || !$reflectionClass->getMethod($propertySchema->propertyGetterName)->isPublic()) {
-                            $propertySchema->propertyGetterName = 'is' . $formattedPropertyName;
+                            $propertySchema->propertyGetterName = 'is'.$formattedPropertyName;
                             if (!$reflectionClass->hasMethod($propertySchema->propertyGetterName) || !$reflectionClass->getMethod($propertySchema->propertyGetterName)->isPublic()) {
-                                throw new RestApiBundle\Exception\Schema\InvalidDefinitionException(sprintf('Property "%s" must be public or getter must exist.', $reflectionProperty->getName()));
+                                throw new RestApiBundle\Exception\Schema\InvalidDefinitionException(\sprintf('Property "%s" must be public or getter must exist.', $reflectionProperty->getName()));
                             }
                         }
                     }
@@ -112,7 +109,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                 $collectionValueSchema = $this->resolveSchemaByType($collectionValueType, $typeOptions);
                 $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $propertyInfoType->isNullable());
             } else {
-                throw new \LogicException(sprintf('Unknown type: %s', $this->propertyTypeToString($propertyInfoType)));
+                throw new \LogicException(\sprintf('Unknown type: %s', $this->propertyTypeToString($propertyInfoType)));
             }
         }
 
@@ -124,24 +121,25 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
         $prefix = $propertyInfoType->isNullable() ? '?' : '';
         $builtinType = $propertyInfoType->getBuiltinType();
 
-        if ($builtinType === PropertyInfo\Type::BUILTIN_TYPE_OBJECT) {
+        if (PropertyInfo\Type::BUILTIN_TYPE_OBJECT === $builtinType) {
             $className = $propertyInfoType->getClassName();
-            if ($className !== null) {
-                return $prefix . $className;
+            if (null !== $className) {
+                return $prefix.$className;
             }
-            return $prefix . 'object';
+
+            return $prefix.'object';
         }
 
-        if ($builtinType === PropertyInfo\Type::BUILTIN_TYPE_ARRAY) {
+        if (PropertyInfo\Type::BUILTIN_TYPE_ARRAY === $builtinType) {
             $collectionKeyType = $propertyInfoType->getCollectionKeyTypes();
             $collectionValueType = $propertyInfoType->getCollectionValueTypes();
 
             $keyType = $collectionKeyType ? $this->propertyTypeToString($collectionKeyType[0]) : 'mixed';
             $valueType = $collectionValueType ? $this->propertyTypeToString($collectionValueType[0]) : 'mixed';
 
-            return $prefix . "array<{$keyType}, {$valueType}>";
+            return $prefix."array<{$keyType}, {$valueType}>";
         }
 
-        return $prefix . $builtinType;
+        return $prefix.$builtinType;
     }
 }

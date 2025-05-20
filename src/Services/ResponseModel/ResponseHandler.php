@@ -8,13 +8,11 @@ use RestApiBundle;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel;
 
-use function array_merge;
-
 class ResponseHandler
 {
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
-        private RestApiBundle\Services\ResponseModel\Serializer $serializer
+        private Serializer $serializer,
     ) {
     }
 
@@ -32,8 +30,8 @@ class ResponseHandler
 
             $event->setResponse(new HttpFoundation\Response(
                 $this->serializer->serialize($result),
-                $result === null ? 204 : 200,
-                array_merge($defaultHeaders, $event->getRequest()->attributes->get('_response_headers', [])),
+                null === $result ? 204 : 200,
+                \array_merge($defaultHeaders, $event->getRequest()->attributes->get('_response_headers', [])),
             ));
         }
     }

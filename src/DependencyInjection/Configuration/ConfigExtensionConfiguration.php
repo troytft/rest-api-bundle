@@ -8,10 +8,6 @@ use RestApiBundle;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-use function constant;
-use function defined;
-use function is_int;
-
 class ConfigExtensionConfiguration implements ConfigurationInterface
 {
     private string $alias;
@@ -52,10 +48,10 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
                     ->ifArray()->then(function ($options) {
                         $result = 0;
                         foreach ($options as $option) {
-                            if (is_int($option)) {
+                            if (\is_int($option)) {
                                 $result |= (int) $option;
-                            } elseif (defined($option)) {
-                                $result |= constant($option);
+                            } elseif (\defined($option)) {
+                                $result |= \constant($option);
                             } else {
                                 throw new \InvalidArgumentException('Expected either an integer representing one of the JSON_ constants, or a string of the constant itself.');
                             }
@@ -66,10 +62,10 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
                     ->end()
                     ->beforeNormalization()
                     ->ifString()->then(function ($options) {
-                        if (is_int($options)) {
+                        if (\is_int($options)) {
                             $result = (int) $options;
-                        } elseif (defined($options)) {
-                            $result = constant($options);
+                        } elseif (\defined($options)) {
+                            $result = \constant($options);
                         } else {
                             throw new \InvalidArgumentException('Expected either an integer representing one of the JSON_ constants, or a string of the constant itself.');
                         }
@@ -79,7 +75,7 @@ class ConfigExtensionConfiguration implements ConfigurationInterface
                     ->end()
                     ->validate()
                     ->always(function ($v) {
-                        if (!is_int($v)) {
+                        if (!\is_int($v)) {
                             throw new \InvalidArgumentException('Expected either integer value or a array of the JSON_ constants.');
                         }
 

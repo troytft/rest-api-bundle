@@ -10,14 +10,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-use function json_decode;
-
 class BodySubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::REQUEST => 'onEvent'
+            KernelEvents::REQUEST => 'onEvent',
         ];
     }
 
@@ -28,8 +26,8 @@ class BodySubscriber implements EventSubscriberInterface
             return;
         }
 
-        $decodedContent = json_decode($request->getContent(), true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        $decodedContent = \json_decode($request->getContent(), true);
+        if (JSON_ERROR_NONE !== json_last_error()) {
             throw new \Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException();
         }
 
@@ -38,7 +36,7 @@ class BodySubscriber implements EventSubscriberInterface
 
     private function isSupportedRequest(Request $request): bool
     {
-        if (count($request->request->all()) !== 0) {
+        if (0 !== count($request->request->all())) {
             return false;
         }
 
@@ -46,7 +44,7 @@ class BodySubscriber implements EventSubscriberInterface
             return false;
         }
 
-        if ($request->getContent() === '') {
+        if ('' === $request->getContent()) {
             return false;
         }
 

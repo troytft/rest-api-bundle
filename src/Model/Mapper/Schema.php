@@ -41,16 +41,12 @@ final class Schema
     }
 
     /**
-     * @param string $class
      * @param array<string, self> $properties
-     * @param bool $isNullable
-     *
-     * @return self
      */
     public static function createModelType(
         string $class,
         array $properties,
-        bool $isNullable
+        bool $isNullable,
     ): self {
         $instance = new self();
         $instance->type = self::MODEL_TYPE;
@@ -63,7 +59,7 @@ final class Schema
 
     public static function createArrayType(
         self $valuesType,
-        bool $isNullable
+        bool $isNullable,
     ): self {
         $instance = new self();
         $instance->valuesType = $valuesType;
