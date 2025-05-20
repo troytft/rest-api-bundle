@@ -13,8 +13,8 @@ class PropertyInfoExtractorService
 
     private PropertyInfo\PropertyInfoExtractor $propertyInfoExtractor;
 
-    public function __construct(
-    ) {
+    public function __construct()
+    {
         $this->reflectionExtractor = new PropertyInfo\Extractor\ReflectionExtractor();
         $this->phpDocExtractor = new PropertyInfo\Extractor\PhpDocExtractor();
         $this->propertyInfoExtractor = new PropertyInfo\PropertyInfoExtractor(
