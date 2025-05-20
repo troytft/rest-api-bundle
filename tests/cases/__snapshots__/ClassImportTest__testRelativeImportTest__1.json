@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "properties": {
+        "innerModelField": {
+            "type": "object",
+            "properties": {
+                "stringField": {
+                    "type": "string",
+                    "nullable": false
+                }
+            },
+            "nullable": true
+        },
+        "innerModelArrayField": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "stringField": {
+                        "type": "string",
+                        "nullable": false
+                    }
+                },
+                "nullable": false
+            },
+            "nullable": true
+        }
+    },
+    "nullable": false
+}

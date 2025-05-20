@@ -30,7 +30,7 @@ class DoctrineHelper
 
         $type = RestApiBundle\Helper\TypeExtractor::extractByReflectionProperty($reflectionProperty);
         if (!$type) {
-            throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException('Property has empty type', $reflectionProperty);
+            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Property has empty type', $reflectionProperty->class, $reflectionProperty->name);
         }
 
         $allowedTypes = [

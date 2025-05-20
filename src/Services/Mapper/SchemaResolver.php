@@ -12,7 +12,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
 {
     private array $schemaTypeResolvers;
 
-    public function __construct()
+    public function __construct(private RestApiBundle\Services\PropertyInfoExtractorService $propertyInfoExtractorService)
     {
         $this->schemaTypeResolvers = [
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\StringTypeResolver(),
@@ -53,12 +53,8 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             }
 
             try {
-                $reflectionPropertyType = RestApiBundle\Helper\TypeExtractor::extractByReflectionProperty($reflectionProperty);
-                if (!$reflectionPropertyType) {
-                    throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException('Property has empty type', $reflectionProperty);
-                }
-
-                $propertySchema = $this->resolveSchemaByType($reflectionPropertyType, $propertyOptions);
+                $propertyType = $this->propertyInfoExtractorService->getSingleTypeRequired($class, $reflectionProperty->getName());
+                $propertySchema = $this->resolveSchemaByType($propertyType, $propertyOptions);
 
                 if (!$reflectionProperty->isPublic()) {
                     $formattedPropertyName = ucfirst($reflectionProperty->getName());
@@ -79,7 +75,7 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
                     }
                 }
             } catch (RestApiBundle\Exception\Schema\InvalidDefinitionException $exception) {
-                throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException($exception->getMessage(), $reflectionProperty, $exception);
+                throw new RestApiBundle\Exception\ContextAware\PropertyAwareException($exception->getMessage(), $reflectionProperty->class, $reflectionProperty->name, $exception);
             }
 
             $properties[$reflectionProperty->getName()] = $propertySchema;

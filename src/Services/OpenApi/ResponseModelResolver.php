@@ -23,8 +23,10 @@ class ResponseModelResolver
      */
     private array $typenameCache = [];
 
-    public function __construct(private RestApiBundle\Services\SettingsProvider $settingsProvider)
-    {
+    public function __construct(
+        private RestApiBundle\Services\SettingsProvider $settingsProvider,
+        private RestApiBundle\Services\PropertyInfoExtractorService $propertyInfoExtractorService,
+    ) {
     }
 
     public function resolveReference(string $class): OpenApi\Reference
@@ -66,6 +68,7 @@ class ResponseModelResolver
         return $result;
     }
 
+
     private function resolveModelSchema(string $class, string $typename): OpenApi\Schema
     {
         $properties = [];
@@ -81,12 +84,8 @@ class ResponseModelResolver
             $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
 
             try {
-                $returnType = RestApiBundle\Helper\TypeExtractor::extractByReflectionMethod($reflectionMethod);
-                if (!$returnType) {
-                    throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type is not specified', $reflectionMethod);
-                }
-
-                $propertySchema = $this->resolveByType($returnType);
+                $propertyType = $this->propertyInfoExtractorService->getSingleTypeRequired($class, $propertyName);
+                $propertySchema = $this->resolveByType($propertyType);
 
                 if (RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionMethod)) {
                     $propertySchema->deprecated = true;
