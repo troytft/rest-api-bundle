@@ -9,12 +9,19 @@ class ClassImportTest extends Tests\BaseTestCase
         $this->assertMatchesOpenApiSchemaSnapshot($schema);
     }
 
-//    public function testRelativeImport(): void
-//    {
-//        $schema = $this->getRequestModelResolver()->resolve(\Tests\Fixture\ClassImportTest\RequestModel\RelativeImport::class);
-//
-//        $this->assertMatchesOpenApiSchemaSnapshot($schema);
-//    }
+    public function testRelativeImport(): void
+    {
+        $schema = $this->getRequestModelResolver()->resolve(\Tests\Fixture\ClassImportTest\RequestModel\RelativeImport::class);
+
+        $this->assertMatchesOpenApiSchemaSnapshot($schema);
+    }
+
+    public function testUseAlias(): void
+    {
+        $schema = $this->getRequestModelResolver()->resolve(\Tests\Fixture\ClassImportTest\RequestModel\UseAlias::class);
+
+        $this->assertMatchesOpenApiSchemaSnapshot($schema);
+    }
 
     private function getRequestModelResolver(): RestApiBundle\Services\OpenApi\RequestModelResolver
     {

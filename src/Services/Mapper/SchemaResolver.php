@@ -12,8 +12,12 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
 {
     private array $schemaTypeResolvers;
 
-    public function __construct()
-    {
+    private PropertyInfo\PropertyInfoExtractor $propertyInfoExtractor;
+
+    public function __construct(
+        private PropertyInfo\Extractor\ReflectionExtractor $reflectionExtractor,
+        private PropertyInfo\Extractor\PhpDocExtractor $phpDocExtractor,
+    ) {
         $this->schemaTypeResolvers = [
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\StringTypeResolver(),
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\IntegerTypeResolver(),
@@ -27,6 +31,11 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\DateTimeTypeResolver(),
             new RestApiBundle\Services\Mapper\SchemaTypeResolver\UploadedFileTypeResolver(),
         ];
+
+        $this->propertyInfoExtractor = new PropertyInfo\PropertyInfoExtractor(
+            [$this->reflectionExtractor],
+            [$this->phpDocExtractor, $this->reflectionExtractor],
+        );
     }
 
     public function resolve(string $class, bool $isNullable = false): RestApiBundle\Model\Mapper\Schema
@@ -53,10 +62,14 @@ class SchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInte
             }
 
             try {
-                $reflectionPropertyType = RestApiBundle\Helper\TypeExtractor::extractByReflectionProperty($reflectionProperty);
-                if (!$reflectionPropertyType) {
+                $propertyTypes = $this->propertyInfoExtractor->getTypes($class, $reflectionProperty->getName());
+                if (!$propertyTypes) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException('Property has empty type', $reflectionProperty);
                 }
+                if (count($propertyTypes) !== 1) {
+                    throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException('Wrong property types count', $reflectionProperty);
+                }
+                $reflectionPropertyType = $propertyTypes[0] ?? throw new \RuntimeException();
 
                 $propertySchema = $this->resolveSchemaByType($reflectionPropertyType, $propertyOptions);
 
