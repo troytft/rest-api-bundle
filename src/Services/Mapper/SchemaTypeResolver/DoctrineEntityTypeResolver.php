@@ -14,7 +14,7 @@ class DoctrineEntityTypeResolver implements SchemaTypeResolverInterface
      */
     public function supports(PropertyInfo\Type $propertyInfoType, array $typeOptions): bool
     {
-        return $propertyInfoType->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($propertyInfoType->getClassName());
+        return $propertyInfoType->getClassName() && class_exists($propertyInfoType->getClassName()) && RestApiBundle\Helper\DoctrineHelper::isEntity($propertyInfoType->getClassName());
     }
 
     /**

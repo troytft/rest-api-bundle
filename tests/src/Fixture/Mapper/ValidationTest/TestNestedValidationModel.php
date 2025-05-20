@@ -12,7 +12,7 @@ class TestNestedValidationModel implements Mapper\ModelInterface
     public ?ChildModel $childModel;
 
     /**
-     * @var array<ChildModel>|null
+     * @var ChildModel[]|null
      */
     public ?array $childModels;
 }

@@ -92,10 +92,6 @@ final class ReflectionHelper
 
     public static function isMapperModel(string $class): bool
     {
-        if (!class_exists($class)) {
-            return false;
-        }
-
         $reflectionClass = static::getReflectionClass($class);
 
         return $reflectionClass->isInstantiable() && $reflectionClass->implementsInterface(RestApiBundle\Mapping\Mapper\ModelInterface::class);
@@ -103,10 +99,6 @@ final class ReflectionHelper
 
     public static function isRequestModel(string $class): bool
     {
-        if (!class_exists($class)) {
-            return false;
-        }
-
         $reflectionClass = static::getReflectionClass($class);
 
         return $reflectionClass->isInstantiable() && $reflectionClass->implementsInterface(RestApiBundle\Mapping\RequestModel\RequestModelInterface::class);

@@ -21,7 +21,6 @@ class SchemaResolver implements SchemaResolverInterface
             new SchemaTypeResolver\PhpEnumTypeResolver(),
             new SchemaTypeResolver\PolyfillEnumTypeResolver(),
             new SchemaTypeResolver\DoctrineEntityTypeResolver(),
-            new SchemaTypeResolver\DoctrineEntityArrayTypeResolver(),
             new SchemaTypeResolver\DateTypeResolver(),
             new SchemaTypeResolver\DateTimeTypeResolver(),
             new SchemaTypeResolver\UploadedFileTypeResolver(),
@@ -57,7 +56,7 @@ class SchemaResolver implements SchemaResolverInterface
                     throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException('Property has empty type', $reflectionProperty);
                 }
 
-                $propertySchema = $this->resolveSchemaByType($reflectionPropertyType, $propertyOptions);
+                $propertySchema = $this->resolveSchemaByType($reflectionPropertyType, $propertyOptions, $reflectionClass->getNamespaceName());
 
                 if (!$reflectionProperty->isPublic()) {
                     $formattedPropertyName = ucfirst($reflectionProperty->getName());
@@ -90,7 +89,7 @@ class SchemaResolver implements SchemaResolverInterface
     /**
      * @param RestApiBundle\Mapping\Mapper\PropertyOptionInterface[] $typeOptions
      */
-    private function resolveSchemaByType(PropertyInfo\Type $propertyInfoType, array $typeOptions = []): RestApiBundle\Model\Mapper\Schema
+    private function resolveSchemaByType(PropertyInfo\Type $propertyInfoType, array $typeOptions, string $namespace): RestApiBundle\Model\Mapper\Schema
     {
         $schema = null;
         foreach ($this->schemaTypeResolvers as $schemaTypeResolver) {
@@ -102,12 +101,39 @@ class SchemaResolver implements SchemaResolverInterface
         }
 
         if (!$schema) {
-            if ($propertyInfoType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isMapperModel($propertyInfoType->getClassName())) {
+            if ($propertyInfoType->getClassName()) {
                 $schema = $this->resolve($propertyInfoType->getClassName(), $propertyInfoType->isNullable());
             } elseif ($propertyInfoType->isCollection()) {
                 $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($propertyInfoType);
-                $collectionValueSchema = $this->resolveSchemaByType($collectionValueType, $typeOptions);
-                $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $propertyInfoType->isNullable());
+                $class = $collectionValueType->getClassName();
+                if ($class) {
+                    if (!class_exists($class)) {
+                        $class = $namespace.'\\'.$class;
+                        if (!class_exists($class)) {
+                            throw new \LogicException('Class does not exist: ', +$class);
+                        }
+                    }
+
+                    if (RestApiBundle\Helper\DoctrineHelper::isEntity($class)) {
+                        $fieldName = 'id';
+                        foreach ($typeOptions as $typeOption) {
+                            if ($typeOption instanceof RestApiBundle\Mapping\Mapper\FindByField) {
+                                $fieldName = $typeOption->getField();
+                            }
+                        }
+
+                        $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($propertyInfoType);
+
+                        $schema = RestApiBundle\Model\Mapper\Schema::createTransformerType(Transformer\DoctrineEntityTransformer::class, $propertyInfoType->isNullable(), [
+                            Transformer\DoctrineEntityTransformer::CLASS_OPTION => $collectionValueType->getClassName(),
+                            Transformer\DoctrineEntityTransformer::FIELD_OPTION => $fieldName,
+                            Transformer\DoctrineEntityTransformer::MULTIPLE_OPTION => true,
+                        ]);
+                    }
+                } else {
+                    $collectionValueSchema = $this->resolveSchemaByType($collectionValueType, $typeOptions, $namespace);
+                    $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $propertyInfoType->isNullable());
+                }
             } else {
                 throw new \LogicException(\sprintf('Unknown type: %s', $this->propertyTypeToString($propertyInfoType)));
             }
