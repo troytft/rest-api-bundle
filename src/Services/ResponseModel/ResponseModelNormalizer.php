@@ -23,7 +23,7 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
         return $result;
     }
 
-    protected function getAttributeValue($object, $attribute, $format = null, array $context = [])
+    protected function getAttributeValue($object, $attribute, $format = null, array $context = []): mixed
     {
         if ($attribute === static::ATTRIBUTE_TYPENAME) {
             $result = RestApiBundle\Helper\ResponseModel\TypenameResolver::resolve(get_class($object));

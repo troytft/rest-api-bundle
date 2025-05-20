@@ -14,7 +14,7 @@ class BackedEnumNormalizer implements ContextAwareNormalizerInterface
     /**
      * @param \BackedEnum $object
      */
-    public function normalize($object, $format = null, array $context = []): float|array|\ArrayObject|bool|int|string|null
+    public function normalize($object, $format = null, array $context = []): string|int
     {
         return $object->value;
     }

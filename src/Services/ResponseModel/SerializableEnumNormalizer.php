@@ -15,7 +15,7 @@ class SerializableEnumNormalizer implements ContextAwareNormalizerInterface
     /**
      * @param RestApiBundle\Mapping\ResponseModel\EnumInterface $object
      */
-    public function normalize($object, $format = null, array $context = []): float|array|\ArrayObject|bool|int|string|null
+    public function normalize($object, $format = null, array $context = []): string|int
     {
         return $object->getValue();
     }

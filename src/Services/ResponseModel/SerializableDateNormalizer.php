@@ -17,7 +17,7 @@ class SerializableDateNormalizer implements ContextAwareNormalizerInterface
     /**
      * @param RestApiBundle\Mapping\ResponseModel\DateInterface $object
      */
-    public function normalize($object, $format = null, array $context = []): float|array|\ArrayObject|bool|int|string|null
+    public function normalize($object, $format = null, array $context = []): string
     {
         return $object->getValue()->format($context[static::FORMAT_KEY]);
     }
