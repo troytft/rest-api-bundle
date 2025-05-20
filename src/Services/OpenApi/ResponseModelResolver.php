@@ -75,7 +75,6 @@ class ResponseModelResolver
     {
         $properties = [];
 
-//        var_dump($this->propertyInfoExtractor->getProperties($class));
         $reflectedClass = RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class);
         $reflectedMethods = $reflectedClass->getMethods(\ReflectionMethod::IS_PUBLIC);
 
@@ -84,10 +83,7 @@ class ResponseModelResolver
                 continue;
             }
 
-
             $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
-
-//            var_dump($this->propertyInfoExtractor->getTypes($class, $propertyName));
 
             try {
                 $propertyType = $this->propertyInfoExtractorService->getSingleTypeRequired($class, $propertyName);
