@@ -90,7 +90,7 @@ class DoctrineEntityTransformer implements TransformerInterface
                 throw new \InvalidArgumentException();
             }
 
-            $key = array_search($object->{$getterName}(), $value);
+            $key = array_search($object->{$getterName}(), $value, true);
             if ($key === false) {
                 throw new \InvalidArgumentException();
             }

@@ -16,7 +16,7 @@ class EnumTransformer implements TransformerInterface
         $enumValues = RestApiBundle\Helper\TypeExtractor::extractEnumData($class)->values;
 
         // strict compare disabled cause value has raw type
-        if (!\in_array($value, $enumValues)) {
+        if (!\in_array($value, $enumValues, true)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\ValueNotFoundInEnumException();
         }
 

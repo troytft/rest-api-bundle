@@ -20,7 +20,7 @@ class AuthorRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\Servic
 
     public function findOneBy(array $criteria, ?array $orderBy = null): ?Tests\Fixture\TestApp\Entity\Author
     {
-        if (isset($criteria['id']) && \in_array($criteria['id'], $this->existIds)) {
+        if (isset($criteria['id']) && \in_array($criteria['id'], $this->existIds, true)) {
             return $this->createEntityWithId($criteria['id']);
         }
 
@@ -36,7 +36,7 @@ class AuthorRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\Servic
 
         if (isset($criteria['id'])) {
             foreach ($criteria['id'] as $id) {
-                if (\in_array($id, $this->existIds)) {
+                if (\in_array($id, $this->existIds, true)) {
                     $result[] = $this->createEntityWithId($id);
                 }
             }
