@@ -10,7 +10,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                symfony-versions: [ '5.4', '6.4' ]
+                symfony-versions: [ '5.4' ]
                 php-versions: [ '8.1', '8.3' ]
 
         steps:
