@@ -10,12 +10,12 @@ class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\G
 {
     public const ATTRIBUTE_TYPENAME = '__typename';
 
-    public function supportsNormalization($data, $format = null)
+    public function supportsNormalization($data, $format = null): bool
     {
         return $data instanceof RestApiBundle\Mapping\ResponseModel\ResponseModelInterface;
     }
 
-    public function extractAttributes($object, $format = null, array $context = [])
+    public function extractAttributes($object, $format = null, array $context = []): array
     {
         $result = parent::extractAttributes($object, $format, $context);
         $result[] = static::ATTRIBUTE_TYPENAME;

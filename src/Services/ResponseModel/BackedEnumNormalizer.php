@@ -6,7 +6,7 @@ use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 
 class BackedEnumNormalizer implements ContextAwareNormalizerInterface
 {
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof \BackedEnum;
     }
@@ -14,7 +14,7 @@ class BackedEnumNormalizer implements ContextAwareNormalizerInterface
     /**
      * @param \BackedEnum $object
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = []): float|array|\ArrayObject|bool|int|string|null
     {
         return $object->value;
     }
