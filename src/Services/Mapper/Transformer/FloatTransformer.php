@@ -15,7 +15,7 @@ class FloatTransformer implements TransformerInterface
         }
 
         $value = \filter_var($value, FILTER_VALIDATE_FLOAT);
-        if (false === $value) {
+        if ($value === false) {
             throw new RestApiBundle\Exception\Mapper\Transformer\FloatRequiredException();
         }
 

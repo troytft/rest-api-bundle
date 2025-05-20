@@ -47,7 +47,7 @@ final class ReflectionHelper
 
     public static function isUploadedFile(string $class): bool
     {
-        return UploadedFile::class === $class;
+        return $class === UploadedFile::class;
     }
 
     public static function isMapperDate(string $class): bool

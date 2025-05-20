@@ -119,9 +119,9 @@ class Mapper
 
     private function mapType(RestApiBundle\Model\Mapper\Schema $schema, $rawValue, array $basePath, RestApiBundle\Model\Mapper\Context $context)
     {
-        if (null === $rawValue && $schema->isNullable) {
+        if ($rawValue === null && $schema->isNullable) {
             return null;
-        } elseif (null === $rawValue && !$schema->isNullable) {
+        } elseif ($rawValue === null && !$schema->isNullable) {
             throw new RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException($basePath);
         }
 

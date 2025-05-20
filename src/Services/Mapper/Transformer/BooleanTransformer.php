@@ -15,9 +15,9 @@ class BooleanTransformer implements TransformerInterface
             if (!\is_bool($value)) {
                 throw new RestApiBundle\Exception\Mapper\Transformer\BooleanRequiredException();
             }
-        } elseif (0 === $value) {
+        } elseif ($value === 0) {
             $value = false;
-        } elseif (1 === $value) {
+        } elseif ($value === 1) {
             $value = true;
         } elseif (!\is_bool($value)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\BooleanRequiredException();

@@ -16,11 +16,11 @@ class PhpFileParserHelper
         $namespace = '';
 
         foreach ($tokens as $token) {
-            if (\is_array($token) && \T_NAMESPACE === $token[0]) {
+            if (\is_array($token) && $token[0] === \T_NAMESPACE) {
                 $namespaceTokenOpened = true;
-            } elseif ($namespaceTokenOpened && \is_array($token) && \T_WHITESPACE !== $token[0]) {
+            } elseif ($namespaceTokenOpened && \is_array($token) && $token[0] !== \T_WHITESPACE) {
                 $namespace .= $token[1];
-            } elseif ($namespaceTokenOpened && \is_string($token) && ';' === $token) {
+            } elseif ($namespaceTokenOpened && \is_string($token) && $token === ';') {
                 break;
             }
         }

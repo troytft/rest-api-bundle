@@ -106,8 +106,12 @@ class SchemaResolver implements SchemaResolverInterface
                 $schema = $this->resolve($propertyInfoType->getClassName(), $propertyInfoType->isNullable());
             } elseif ($propertyInfoType->isCollection()) {
                 $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($propertyInfoType);
-                $collectionValueSchema = $this->resolveSchemaByType($collectionValueType, $typeOptions);
-                $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $propertyInfoType->isNullable());
+                if ($collectionValueType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isMapperModel($collectionValueType->getClassName())) {
+                    $schema = $this->resolve($propertyInfoType->getClassName(), $propertyInfoType->isNullable());
+                } else {
+                    $collectionValueSchema = $this->resolveSchemaByType($collectionValueType);
+                    $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $propertyInfoType->isNullable());
+                }
             } else {
                 throw new \LogicException(\sprintf('Unknown type: %s', $this->propertyTypeToString($propertyInfoType)));
             }
@@ -121,16 +125,16 @@ class SchemaResolver implements SchemaResolverInterface
         $prefix = $propertyInfoType->isNullable() ? '?' : '';
         $builtinType = $propertyInfoType->getBuiltinType();
 
-        if (PropertyInfo\Type::BUILTIN_TYPE_OBJECT === $builtinType) {
+        if ($builtinType === PropertyInfo\Type::BUILTIN_TYPE_OBJECT) {
             $className = $propertyInfoType->getClassName();
-            if (null !== $className) {
+            if ($className !== null) {
                 return $prefix.$className;
             }
 
             return $prefix.'object';
         }
 
-        if (PropertyInfo\Type::BUILTIN_TYPE_ARRAY === $builtinType) {
+        if ($builtinType === PropertyInfo\Type::BUILTIN_TYPE_ARRAY) {
             $collectionKeyType = $propertyInfoType->getCollectionKeyTypes();
             $collectionValueType = $propertyInfoType->getCollectionValueTypes();
 

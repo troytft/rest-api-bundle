@@ -56,9 +56,9 @@ class DoctrineEntityTransformer implements TransformerInterface
     private function transformMultipleItems(string $class, string $fieldName, mixed $value): array
     {
         $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
-        if (PropertyInfo\Type::BUILTIN_TYPE_INT === $columnType && !is_array($value)) {
+        if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_INT && !is_array($value)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
-        } elseif (PropertyInfo\Type::BUILTIN_TYPE_STRING === $columnType && !is_array($value)) {
+        } elseif ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING && !is_array($value)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
         }
 
@@ -67,9 +67,9 @@ class DoctrineEntityTransformer implements TransformerInterface
         }
 
         $firstCollectionItem = $value[0] ?? null;
-        if (PropertyInfo\Type::BUILTIN_TYPE_INT === $columnType && !is_numeric($firstCollectionItem)) {
+        if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_INT && !is_numeric($firstCollectionItem)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
-        } elseif (PropertyInfo\Type::BUILTIN_TYPE_STRING === $columnType && (!is_string($firstCollectionItem) && !is_numeric($firstCollectionItem))) {
+        } elseif ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING && (!is_string($firstCollectionItem) && !is_numeric($firstCollectionItem))) {
             throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
         }
 
@@ -91,7 +91,7 @@ class DoctrineEntityTransformer implements TransformerInterface
             }
 
             $key = array_search($object->{$getterName}(), $value);
-            if (false === $key) {
+            if ($key === false) {
                 throw new \InvalidArgumentException();
             }
 

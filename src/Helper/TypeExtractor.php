@@ -27,11 +27,11 @@ final class TypeExtractor
 
         foreach ($reflectionTypes as $reflectionType) {
             $phpTypeOrClass = $sourceReflectionType instanceof \ReflectionNamedType ? $sourceReflectionType->getName() : (string) $reflectionType;
-            if ('mixed' === $phpTypeOrClass) {
+            if ($phpTypeOrClass === 'mixed') {
                 continue;
             }
 
-            if ('null' === $phpTypeOrClass | 'void' === $phpTypeOrClass) {
+            if ($phpTypeOrClass === 'null' | $phpTypeOrClass === 'void') {
                 $result[] = new PropertyInfo\Type(PropertyInfo\Type::BUILTIN_TYPE_NULL, $sourceReflectionType->allowsNull());
             } elseif ($reflectionType instanceof \ReflectionNamedType && $reflectionType->isBuiltin()) {
                 $result[] = new PropertyInfo\Type($phpTypeOrClass, $sourceReflectionType->allowsNull());
@@ -77,7 +77,7 @@ final class TypeExtractor
             }
         }
 
-        if (PropertyInfo\Type::BUILTIN_TYPE_ARRAY === $typeByReflection?->getBuiltinType()) {
+        if ($typeByReflection?->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_ARRAY) {
             $typeByReflection = null;
         }
 
@@ -122,7 +122,7 @@ final class TypeExtractor
         $docBlock = static::getDocBlockFactory()->create($reflectionMethod->getDocComment());
         $count = count($docBlock->getTagsByName('return'));
 
-        if (0 === $count) {
+        if ($count === 0) {
             return null;
         }
 
@@ -147,7 +147,7 @@ final class TypeExtractor
         $docBlock = static::getDocBlockFactory()->create($reflectionProperty->getDocComment());
         $count = count($docBlock->getTagsByName('var'));
 
-        if (0 === $count) {
+        if ($count === 0) {
             return null;
         }
 
@@ -239,7 +239,7 @@ final class TypeExtractor
         }
 
         $types = array_keys($types);
-        if (1 === count($types)) {
+        if (count($types) === 1) {
             $type = $types[0];
         } else {
             if (\in_array(PropertyInfo\Type::BUILTIN_TYPE_STRING, $types, true)) {

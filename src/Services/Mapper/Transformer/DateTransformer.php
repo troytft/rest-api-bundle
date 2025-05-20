@@ -19,7 +19,7 @@ class DateTransformer implements TransformerInterface
         $format = $options[static::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
 
         $result = RestApiBundle\Mapping\Mapper\Date::createFromFormat($format, $value);
-        if (false === $result) {
+        if ($result === false) {
             throw new RestApiBundle\Exception\Mapper\Transformer\InvalidDateFormatException($format);
         }
 

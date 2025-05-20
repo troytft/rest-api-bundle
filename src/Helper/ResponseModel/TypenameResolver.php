@@ -14,7 +14,7 @@ class TypenameResolver
         foreach (\explode('\\', $class) as $part) {
             if ($hasResponseModelPart) {
                 $parts[] = $part;
-            } elseif ('ResponseModel' === $part) {
+            } elseif ($part === 'ResponseModel') {
                 $hasResponseModelPart = true;
             }
         }

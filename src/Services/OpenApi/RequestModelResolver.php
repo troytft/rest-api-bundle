@@ -65,11 +65,11 @@ class RequestModelResolver
         foreach ($constraints as $constraint) {
             switch ($constraint::class) {
                 case Validator\Constraints\Range::class:
-                    if (null !== $constraint->min) {
+                    if ($constraint->min !== null) {
                         $schema->minimum = $constraint->min;
                     }
 
-                    if (null !== $constraint->max) {
+                    if ($constraint->max !== null) {
                         $schema->maximum = $constraint->max;
                     }
 
@@ -94,11 +94,11 @@ class RequestModelResolver
                     break;
 
                 case Validator\Constraints\Length::class:
-                    if (null !== $constraint->min) {
+                    if ($constraint->min !== null) {
                         $schema->minLength = $constraint->min;
                     }
 
-                    if (null !== $constraint->max) {
+                    if ($constraint->max !== null) {
                         $schema->maxLength = $constraint->max;
                     }
 

@@ -14,7 +14,7 @@ class StringTypeResolver implements SchemaTypeResolverInterface
      */
     public function supports(PropertyInfo\Type $propertyInfoType, array $typeOptions): bool
     {
-        return PropertyInfo\Type::BUILTIN_TYPE_STRING === $propertyInfoType->getBuiltinType();
+        return $propertyInfoType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING;
     }
 
     /**

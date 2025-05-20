@@ -30,7 +30,7 @@ class ResponseHandler
 
             $event->setResponse(new HttpFoundation\Response(
                 $this->serializer->serialize($result),
-                null === $result ? 204 : 200,
+                $result === null ? 204 : 200,
                 \array_merge($defaultHeaders, $event->getRequest()->attributes->get('_response_headers', [])),
             ));
         }

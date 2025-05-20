@@ -21,7 +21,7 @@ class EnumTransformer implements TransformerInterface
         }
 
         $result = call_user_func([$class, 'from'], $value);
-        if (false === $result) {
+        if ($result === false) {
             throw new \LogicException();
         }
 

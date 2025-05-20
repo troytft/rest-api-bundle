@@ -15,7 +15,7 @@ class IntegerTransformer implements TransformerInterface
         }
 
         $value = \filter_var($value, FILTER_VALIDATE_INT);
-        if (false === $value) {
+        if ($value === false) {
             throw new RestApiBundle\Exception\Mapper\Transformer\IntegerRequiredException();
         }
 

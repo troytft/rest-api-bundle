@@ -27,7 +27,7 @@ class BodySubscriber implements EventSubscriberInterface
         }
 
         $decodedContent = \json_decode($request->getContent(), true);
-        if (JSON_ERROR_NONE !== json_last_error()) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new \Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException();
         }
 
@@ -36,7 +36,7 @@ class BodySubscriber implements EventSubscriberInterface
 
     private function isSupportedRequest(Request $request): bool
     {
-        if (0 !== count($request->request->all())) {
+        if (count($request->request->all()) !== 0) {
             return false;
         }
 
@@ -44,7 +44,7 @@ class BodySubscriber implements EventSubscriberInterface
             return false;
         }
 
-        if ('' === $request->getContent()) {
+        if ($request->getContent() === '') {
             return false;
         }
 

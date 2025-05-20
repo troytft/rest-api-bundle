@@ -55,7 +55,7 @@ class ModelValidator
 
         /** @var RestApiBundle\Model\Mapper\Schema $propertySchema */
         foreach ($schema->properties as $propertyName => $propertySchema) {
-            if (RestApiBundle\Model\Mapper\Schema::MODEL_TYPE === $propertySchema->type) {
+            if ($propertySchema->type === RestApiBundle\Model\Mapper\Schema::MODEL_TYPE) {
                 $propertyValue = $this->getPropertyValueFromInstance($model, $propertyName, $propertySchema);
                 if (!$propertyValue) {
                     continue;
@@ -66,7 +66,7 @@ class ModelValidator
                     $prefix = \sprintf('%s.', $propertyName);
                     $result[] = $this->appendPrefixToArrayKeys($prefix, $innerErrors);
                 }
-            } elseif (RestApiBundle\Model\Mapper\Schema::ARRAY_TYPE === $propertySchema->type && RestApiBundle\Model\Mapper\Schema::MODEL_TYPE === $propertySchema->valuesType->type) {
+            } elseif ($propertySchema->type === RestApiBundle\Model\Mapper\Schema::ARRAY_TYPE && $propertySchema->valuesType->type === RestApiBundle\Model\Mapper\Schema::MODEL_TYPE) {
                 $propertyValue = $this->getPropertyValueFromInstance($model, $propertyName, $propertySchema);
                 if (!$propertyValue) {
                     continue;

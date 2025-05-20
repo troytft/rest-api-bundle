@@ -21,7 +21,7 @@ class DateTimeTransformer implements TransformerInterface
         $forceLocalTimezone = $options[static::FORCE_LOCAL_TIMEZONE_OPTION] ?? $this->settingsProvider->isForceRequestDatetimeToLocalTimezone();
 
         $result = \DateTime::createFromFormat($format, $value);
-        if (false === $result) {
+        if ($result === false) {
             throw new RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeFormatException($format);
         }
 

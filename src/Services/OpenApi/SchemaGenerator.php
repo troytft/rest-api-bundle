@@ -209,7 +209,7 @@ class SchemaGenerator
             $requestModelType = new PropertyInfo\Type(PropertyInfo\Type::BUILTIN_TYPE_OBJECT, false, $endpointData->endpointMapping->requestModel);
         }
 
-        if ($requestModelType && HttpFoundation\Request::METHOD_GET === $httpMethod) {
+        if ($requestModelType && $httpMethod === HttpFoundation\Request::METHOD_GET) {
             $operationParameters = array_merge($operationParameters, $this->createQueryParametersFromRequestModel($requestModelType->getClassName()));
         } elseif ($requestModelType) {
             $operation->requestBody = $this->createRequestBodyFromRequestModel($requestModelType->getClassName());
@@ -269,7 +269,7 @@ class SchemaGenerator
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type is not specified', $reflectionMethod);
         }
 
-        if (PropertyInfo\Type::BUILTIN_TYPE_NULL === $returnType->getBuiltinType() || $returnType->isNullable()) {
+        if ($returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL || $returnType->isNullable()) {
             $this->addEmptyResponse($responses, $httpStatusCode);
         }
 
@@ -283,9 +283,9 @@ class SchemaGenerator
         } elseif ($returnType->getClassName()) {
             if (RestApiBundle\Helper\ReflectionHelper::isResponseModel($returnType->getClassName())) {
                 $this->addSingleResponseModelResponse($responses, $returnType, $httpStatusCode);
-            } elseif (HttpFoundation\RedirectResponse::class === $returnType->getClassName()) {
+            } elseif ($returnType->getClassName() === HttpFoundation\RedirectResponse::class) {
                 $this->addRedirectResponse($responses, $httpStatusCode);
-            } elseif (HttpFoundation\BinaryFileResponse::class === $returnType->getClassName()) {
+            } elseif ($returnType->getClassName() === HttpFoundation\BinaryFileResponse::class) {
                 $this->addBinaryFileResponse($responses, $httpStatusCode);
             } else {
                 throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException(\sprintf('Unknown response class type "%s"', $returnType->getClassName()), $reflectionMethod);
@@ -376,7 +376,7 @@ class SchemaGenerator
 
         $contentType = 'application/json';
         foreach ($schema->properties as $schemaProperty) {
-            if (OpenApi\Type::STRING === $schemaProperty->type && 'binary' === $schemaProperty->format) {
+            if ($schemaProperty->type === OpenApi\Type::STRING && $schemaProperty->format === 'binary') {
                 $contentType = 'multipart/form-data';
 
                 break;
@@ -405,12 +405,12 @@ class SchemaGenerator
         foreach ($requestModelSchema->properties as $propertyName => $propertySchema) {
             $parameter = new OpenApi\Parameter([
                 'in' => 'query',
-                'name' => OpenApi\Type::ARRAY === $propertySchema->type ? \sprintf('%s[]', $propertyName) : $propertyName,
+                'name' => $propertySchema->type === OpenApi\Type::ARRAY ? \sprintf('%s[]', $propertyName) : $propertyName,
                 'required' => !$propertySchema->nullable,
                 'schema' => $propertySchema,
             ]);
 
-            if (OpenApi\Type::OBJECT === $propertySchema->type) {
+            if ($propertySchema->type === OpenApi\Type::OBJECT) {
                 $parameter->style = 'deepObject';
             }
 

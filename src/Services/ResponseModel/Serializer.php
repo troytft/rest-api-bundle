@@ -32,7 +32,7 @@ class Serializer
 
     public function serialize($value): ?string
     {
-        if (null === $value) {
+        if ($value === null) {
             $result = null;
         } elseif ($value instanceof RestApiBundle\Mapping\ResponseModel\ResponseModelInterface) {
             $result = $this->responseModelToJson($value);
