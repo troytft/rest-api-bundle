@@ -3,7 +3,7 @@
 namespace Tests\Fixture\ClassImportTest\RequestModel;
 
 use RestApiBundle\Mapping\Mapper;
-use Tests\Fixture\ClassImportTest\RequestModel\Inner AS InnerModel;
+use Tests\Fixture\ClassImportTest\RequestModel\Inner as InnerModel;
 
 #[Mapper\ExposeAll]
 class UseAlias implements Mapper\ModelInterface
