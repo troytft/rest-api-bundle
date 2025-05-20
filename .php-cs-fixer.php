@@ -3,12 +3,14 @@
 declare(strict_types=1);
 
 $finder = (new PhpCsFixer\Finder())
-    ->in(['/src', '/tests/src']);
+    ->in(__DIR__)
+    ->exclude('tests/Fixtures')
+    ->exclude('tests/cases');
 
 return (new PhpCsFixer\Config())
+    ->setFinder($finder)
     ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setRiskyAllowed(true)
-    ->setFinder($finder)
     ->setRules([
         '@Symfony' => true,
         '@DoctrineAnnotation' => true,
