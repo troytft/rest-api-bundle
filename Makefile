@@ -6,3 +6,6 @@ benchmark-compare:
 
 benchmark-save:
 	vendor/bin/phpbench run --tag=original
+
+cs-fixer:
+	vendor/bin/
