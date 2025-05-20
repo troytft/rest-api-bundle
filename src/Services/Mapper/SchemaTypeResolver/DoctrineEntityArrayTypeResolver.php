@@ -21,6 +21,7 @@ class DoctrineEntityArrayTypeResolver implements SchemaTypeResolverInterface
         $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($propertyInfoType);
 
         var_dump($collectionValueType);
+
         return $collectionValueType->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($collectionValueType->getClassName());
     }
 
