@@ -107,7 +107,7 @@ final class TypeExtractor
             $varTag = static::resolveVarTag($reflectionProperty);
             $result = static::extract($reflectionProperty->getType(), $varTag?->getType());
         } catch (RestApiBundle\Exception\Schema\InvalidDefinitionException $exception) {
-            throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException($exception->getMessage(), $reflectionProperty);
+            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException($exception->getMessage(), $reflectionProperty->class, $reflectionProperty->name);
         }
 
         return $result;

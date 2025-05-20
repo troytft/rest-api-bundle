@@ -39,8 +39,4 @@ return function (ContainerConfigurator $configurator) {
     $services
         ->load('RestApiBundle\\CacheWarmer\\', '../../../src/CacheWarmer/*')
         ->tag('container.no_preload');
-
-    $services->set(\Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor::class);
-
-    $services->set(\Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor::class);
 };
