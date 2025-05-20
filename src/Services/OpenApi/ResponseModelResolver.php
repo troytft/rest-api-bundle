@@ -23,8 +23,6 @@ class ResponseModelResolver
      */
     private array $typenameCache = [];
 
-    private PropertyInfo\PropertyInfoExtractor $propertyInfoExtractor;
-
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
         private RestApiBundle\Services\PropertyInfoExtractorService $propertyInfoExtractorService,
