@@ -18,10 +18,7 @@
         <exclude name="Squiz.WhiteSpace.ControlStructureSpacing"/>
     </rule>
 
-    <rule ref="PSR12">
-        <exclude name="PSR12.Files.FileHeader" />
-        <exclude name="PSR12.Files.OpenTag" />
-    </rule>
+    <rule ref="PSR12"/>
 
     <rule ref="Generic.Files.LineLength">
         <properties>
