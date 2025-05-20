@@ -18,7 +18,7 @@
         <exclude name="Squiz.WhiteSpace.ControlStructureSpacing"/>
     </rule>
 
-    <rule ref="PSR12">
+    <rule ref="PSR12"/>
 
     <rule ref="Generic.Files.LineLength">
         <properties>
