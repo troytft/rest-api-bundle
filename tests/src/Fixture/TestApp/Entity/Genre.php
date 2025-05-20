@@ -5,8 +5,8 @@ namespace Tests\Fixture\TestApp\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table()
- * @ORM\Entity()
+ * @ORM\Entity
+ * @ORM\Table(name="genres")
  */
 class Genre
 {
