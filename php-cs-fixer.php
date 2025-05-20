@@ -17,6 +17,7 @@ return (new PhpCsFixer\Config())
         'declare_strict_types' => true,
         'function_to_constant' => true,
         'is_null' => true,
+        'strict_param' => true,
         'yoda_style' => [
             'equal' => false,
             'identical' => false,
