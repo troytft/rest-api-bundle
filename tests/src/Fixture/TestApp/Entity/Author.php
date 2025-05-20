@@ -5,32 +5,29 @@ declare(strict_types=1);
 namespace Tests\Fixture\TestApp\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Tests;
 
 /**
- * @ORM\Table()
+ * @ORM\Table
  *
  * @ORM\Entity(repositoryClass="Tests\Fixture\TestApp\Repository\AuthorRepository")
  */
 class Author
 {
     /**
-     * @var int
-     *
-     * @ORM\Id()
+     * @ORM\Id
      *
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
      * @ORM\Column(name="id", type="integer")
      */
-    private $id;
+    private int $id;
 
     public function getId(): int
     {
         return $this->id;
     }
 
-    public function setId(int $id)
+    public function setId(int $id): static
     {
         $this->id = $id;
 

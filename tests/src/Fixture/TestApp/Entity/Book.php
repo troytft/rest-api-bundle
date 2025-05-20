@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Tests;
 
 /**
- * @ORM\Table()
+ * @ORM\Table
  *
  * @ORM\Entity(repositoryClass="Tests\Fixture\TestApp\Repository\BookRepository")
  */
@@ -17,7 +17,7 @@ class Book
     /**
      * @var int
      *
-     * @ORM\Id()
+     * @ORM\Id
      *
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *

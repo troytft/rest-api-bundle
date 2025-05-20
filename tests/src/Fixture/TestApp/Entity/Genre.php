@@ -7,16 +7,16 @@ namespace Tests\Fixture\TestApp\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table()
+ * @ORM\Table
  *
- * @ORM\Entity()
+ * @ORM\Entity
  */
 class Genre
 {
     /**
      * @var int
      *
-     * @ORM\Id()
+     * @ORM\Id
      *
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *

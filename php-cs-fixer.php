@@ -7,10 +7,12 @@ $finder = (new PhpCsFixer\Finder())
     ->exclude('vendor');
 
 return (new PhpCsFixer\Config())
+    ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setRiskyAllowed(true)
     ->setFinder($finder)
     ->setRules([
         '@Symfony' => true,
+        '@DoctrineAnnotation' => true,
         'declare_strict_types' => true,
         'function_to_constant' => true,
         'is_null' => true,
