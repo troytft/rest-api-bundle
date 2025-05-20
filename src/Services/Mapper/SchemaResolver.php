@@ -106,12 +106,8 @@ class SchemaResolver implements SchemaResolverInterface
                 $schema = $this->resolve($propertyInfoType->getClassName(), $propertyInfoType->isNullable());
             } elseif ($propertyInfoType->isCollection()) {
                 $collectionValueType = RestApiBundle\Helper\TypeExtractor::extractCollectionValueType($propertyInfoType);
-                if ($collectionValueType->getClassName() && RestApiBundle\Helper\ReflectionHelper::isMapperModel($collectionValueType->getClassName())) {
-                    $schema = $this->resolve($propertyInfoType->getClassName(), $propertyInfoType->isNullable());
-                } else {
-                    $collectionValueSchema = $this->resolveSchemaByType($collectionValueType);
-                    $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $propertyInfoType->isNullable());
-                }
+                $collectionValueSchema = $this->resolveSchemaByType($collectionValueType, $typeOptions);
+                $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $propertyInfoType->isNullable());
             } else {
                 throw new \LogicException(\sprintf('Unknown type: %s', $this->propertyTypeToString($propertyInfoType)));
             }
