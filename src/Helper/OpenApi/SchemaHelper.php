@@ -32,6 +32,7 @@ final class SchemaHelper
     {
         return new OpenApi\Schema([
             'type' => OpenApi\Type::INTEGER,
+            'format' => 'int64',
             'nullable' => $nullable,
         ]);
     }
