@@ -18,7 +18,7 @@ class DoctrineEntityTransformer implements TransformerInterface
         private EntityManagerInterface $entityManager,
         private StringTransformer $stringTransformer,
         private IntegerTransformer $integerTransformer,
-        private RestApiBundle\Services\PropertyInfoExtractorService $propertyInfoExtractorService,
+        private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService,
     ) {
     }
 
@@ -39,7 +39,7 @@ class DoctrineEntityTransformer implements TransformerInterface
 
     private function transformSingleItem(string $class, string $fieldName, mixed $value): object
     {
-        $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($class, $fieldName);
+        $propertyType = $this->propertyTypeExtractorService->getTypeRequired($class, $fieldName);
         $value = match ($propertyType->getBuiltinType()) {
             PropertyInfo\Type::BUILTIN_TYPE_INT => $this->integerTransformer->transform($value),
             PropertyInfo\Type::BUILTIN_TYPE_STRING => $this->stringTransformer->transform($value),
@@ -56,7 +56,7 @@ class DoctrineEntityTransformer implements TransformerInterface
 
     private function transformMultipleItems(string $class, string $fieldName, mixed $value): array
     {
-        $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($class, $fieldName);
+        $propertyType = $this->propertyTypeExtractorService->getTypeRequired($class, $fieldName);
         if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT && $propertyType->isCollection()) {
             throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
         } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING && $propertyType->isCollection()) {

@@ -22,7 +22,7 @@ class ResponseModelResolver
 
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
-        private RestApiBundle\Services\PropertyInfoExtractorService $propertyInfoExtractorService,
+        private RestApiBundle\Services\MethodReturnTypeExtractorService $methodReturnTypeExtractorService,
     ) {
     }
 
@@ -80,7 +80,7 @@ class ResponseModelResolver
             $propertyName = \lcfirst(\substr($reflectionMethod->getName(), 3));
 
             try {
-                $propertyType = $this->propertyInfoExtractorService->getRequiredMethodReturnType($reflectionMethod);
+                $propertyType = $this->methodReturnTypeExtractorService->getTypeRequired($reflectionMethod);
                 $propertySchema = $this->resolveByType($propertyType);
 
                 if (RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionMethod)) {

@@ -15,7 +15,7 @@ class SchemaGenerator
     public function __construct(
         private RequestModelResolver $requestModelResolver,
         private ResponseModelResolver $responseModelResolver,
-        private RestApiBundle\Services\PropertyInfoExtractorService $propertyInfoExtractorService,
+        private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService,
     ) {
     }
 
@@ -249,7 +249,7 @@ class SchemaGenerator
 
     private function createDoctrineEntityPathParameter(string $name, PropertyInfo\Type $type, string $entityFieldName): OpenApi\Parameter
     {
-        $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($type->getClassName(), $entityFieldName);
+        $propertyType = $this->propertyTypeExtractorService->getTypeRequired($type->getClassName(), $entityFieldName);
         if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
             $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger(false);
         } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {

@@ -11,7 +11,7 @@ class SchemaResolver implements SchemaResolverInterface
 {
     private array $schemaTypeResolvers;
 
-    public function __construct(private RestApiBundle\Services\PropertyInfoExtractorService $propertyInfoExtractorService)
+    public function __construct(private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService)
     {
         $this->schemaTypeResolvers = [
             new SchemaTypeResolver\StringTypeResolver(),
@@ -52,7 +52,7 @@ class SchemaResolver implements SchemaResolverInterface
             }
 
             try {
-                $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($class, $reflectionProperty->getName());
+                $propertyType = $this->propertyTypeExtractorService->getTypeRequired($class, $reflectionProperty->getName());
                 $propertySchema = $this->resolveSchemaByType($propertyType, $propertyOptions);
 
                 if (!$reflectionProperty->isPublic()) {
