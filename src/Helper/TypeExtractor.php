@@ -85,7 +85,7 @@ final class TypeExtractor
         return static::$phpDocContextFactory;
     }
 
-    private static function extract(?\ReflectionType $reflectionType, ?PhpDoc\Type $docBlockType): ?PropertyInfo\Type
+    private static function mergeReflectionTypeAndPhpDocType(?\ReflectionType $reflectionType, ?PhpDoc\Type $docBlockType): ?PropertyInfo\Type
     {
         $typeByDocBlock = $docBlockType ? static::extractByDocBlockTag($docBlockType) : null;
         $typeByReflection = $reflectionType ? static::extractByReflectionType($reflectionType) : null;
@@ -105,14 +105,14 @@ final class TypeExtractor
 
     public static function extractByReflectionParameter(\ReflectionParameter $reflectionParameter): ?PropertyInfo\Type
     {
-        return static::extract($reflectionParameter->getType(), null);
+        return static::mergeReflectionTypeAndPhpDocType($reflectionParameter->getType(), null);
     }
 
     public static function extractByReflectionMethod(\ReflectionMethod $reflectionMethod): ?PropertyInfo\Type
     {
         try {
             $returnTag = static::resolveReturnTag($reflectionMethod);
-            $result = static::extract($reflectionMethod->getReturnType(), $returnTag?->getType());
+            $result = static::mergeReflectionTypeAndPhpDocType($reflectionMethod->getReturnType(), $returnTag?->getType());
         } catch (RestApiBundle\Exception\Schema\InvalidDefinitionException $exception) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException($exception->getMessage(), $reflectionMethod);
         }
