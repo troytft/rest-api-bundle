@@ -171,7 +171,7 @@ paths:
                         type: array
                         items:
                             type: integer
-                            nullable: false
+                            nullable: true
                         nullable: true
                         deprecated: true
                     description: 'Collection of "Book" fetched by field "id"'

@@ -214,6 +214,8 @@ class RequestModelResolver
                 'nullable' => $nullable,
                 'description' => \sprintf('Collection of "%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName),
             ]);
+        } else {
+            $schema->description = \sprintf('"%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName);
         }
 
         return $schema;

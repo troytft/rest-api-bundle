@@ -15,3 +15,6 @@ fix-cs:
 
 test-unit:
 	vendor/bin/phpunit --testdox
+
+save-unit:
+	vendor/bin/phpunit -d --update-snapshots

@@ -237,9 +237,9 @@ class SchemaGenerator
     {
         $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($type->getClassName(), $entityFieldName);
         if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
-            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger($type->isNullable());
+            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger(false);
         } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
-            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createString($type->isNullable());
+            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createString(false);
         } else {
             throw new RestApiBundle\Exception\ContextAware\UnknownPropertyTypeException($type->getClassName(), $entityFieldName);
         }
