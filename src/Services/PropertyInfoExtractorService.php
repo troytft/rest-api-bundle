@@ -28,11 +28,11 @@ class PropertyInfoExtractorService
         );
     }
 
-    public function getRequiredPropertyType(string $class, string $property): PropertyInfo\Type
+    public function getOptionalPropertyType(string $class, string $property): ?PropertyInfo\Type
     {
         $types = $this->propertyInfoExtractor->getTypes($class, $property);
         if (!$types) {
-            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Property has empty type', $class, $property);
+            return null;
         }
 
         if (\count($types) !== 1) {
@@ -40,5 +40,15 @@ class PropertyInfoExtractorService
         }
 
         return $types[0] ?? throw new \RuntimeException();
+    }
+
+    public function getRequiredPropertyType(string $class, string $property): PropertyInfo\Type
+    {
+        $type = $this->getOptionalPropertyType($class, $property);
+        if (!$type) {
+            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Property is required', $class, $property);
+        }
+
+        return $type;
     }
 }
