@@ -12,11 +12,6 @@ abstract class BaseEnum implements EnumInterface, RestApiBundle\Mapping\Mapper\E
     {
     }
 
-    public static function from(int|string $value): static
-    {
-        return new static($value);
-    }
-
     public function getValue(): int|string
     {
         return $this->value;
