@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace cases\__snapshots__;
+namespace cases;
 
 use RestApiBundle;
 use Tests;

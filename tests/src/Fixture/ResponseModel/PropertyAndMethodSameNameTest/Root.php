@@ -8,10 +8,16 @@ use Tests;
 class Root implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {
     /**
+     * @var Tests\Fixture\TestApp\Entity\Book[]
+     */
+    private array $items;
+
+    /**
      * @param Tests\Fixture\TestApp\Entity\Book[] $items
      */
     public function __construct(array $items)
     {
+        $this->items = $items;
     }
 
     /**
