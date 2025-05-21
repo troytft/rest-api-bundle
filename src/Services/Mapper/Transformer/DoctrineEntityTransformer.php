@@ -64,11 +64,11 @@ class DoctrineEntityTransformer implements TransformerInterface
         }
 
         if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
-            if (!is_countable($value)) {
+            if (!\is_countable($value)) {
                 throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
             }
         } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
-            if (!is_countable($value)) {
+            if (!\is_countable($value)) {
                 throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
             }
         } else {
@@ -80,13 +80,13 @@ class DoctrineEntityTransformer implements TransformerInterface
         }
 
         $firstCollectionItem = $value[0] ?? null;
-        if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT && !is_numeric($firstCollectionItem)) {
+        if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT && !\is_numeric($firstCollectionItem)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
-        } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING && (!\is_string($firstCollectionItem) && !is_numeric($firstCollectionItem))) {
+        } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING && (!\is_string($firstCollectionItem) && !\is_numeric($firstCollectionItem))) {
             throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
         }
 
-        if (\count($value) !== \count(array_unique($value))) {
+        if (\count($value) !== \count(\array_unique($value))) {
             throw new RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException();
         }
 
@@ -96,14 +96,14 @@ class DoctrineEntityTransformer implements TransformerInterface
         }
 
         $sortedResults = [];
-        $getterName = 'get' . ucfirst($fieldName);
+        $getterName = 'get' . \ucfirst($fieldName);
 
         foreach ($results as $object) {
-            if (!method_exists($object, $getterName)) {
+            if (!\method_exists($object, $getterName)) {
                 throw new \InvalidArgumentException();
             }
 
-            $key = array_search($object->{$getterName}(), $value, true);
+            $key = \array_search($object->{$getterName}(), $value, true);
             if ($key === false) {
                 throw new \InvalidArgumentException();
             }
@@ -112,7 +112,7 @@ class DoctrineEntityTransformer implements TransformerInterface
         }
 
         unset($results);
-        ksort($sortedResults);
+        \ksort($sortedResults);
 
         return $sortedResults;
     }

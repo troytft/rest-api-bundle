@@ -118,7 +118,7 @@ class RequestModelResolver
                     throw new \InvalidArgumentException();
                 }
 
-                if (!array_is_list($choices)) {
+                if (!\array_is_list($choices)) {
                     throw new \InvalidArgumentException();
                 }
 
@@ -207,8 +207,8 @@ class RequestModelResolver
 
     private function resolveShortClassName(string $class): string
     {
-        $chunks = explode('\\', $class);
+        $chunks = \explode('\\', $class);
 
-        return $chunks[array_key_last($chunks)] ?? throw new \LogicException();
+        return $chunks[\array_key_last($chunks)] ?? throw new \LogicException();
     }
 }

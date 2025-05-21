@@ -114,6 +114,6 @@ final class ReflectionHelper
 
     public static function isDeprecated(\ReflectionMethod|\ReflectionProperty $reflection): bool
     {
-        return \is_string($reflection->getDocComment()) && str_contains($reflection->getDocComment(), '@deprecated');
+        return \is_string($reflection->getDocComment()) && \str_contains($reflection->getDocComment(), '@deprecated');
     }
 }

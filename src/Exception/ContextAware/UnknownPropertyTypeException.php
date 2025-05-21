@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Exception\ContextAware;
 
 class UnknownPropertyTypeException extends PropertyAwareException

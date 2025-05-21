@@ -153,7 +153,7 @@ final class TypeExtractor
     {
         $values = null;
 
-        if (class_exists($class) && enum_exists($class)) {
+        if (\class_exists($class) && \enum_exists($class)) {
             foreach ($class::cases() as $case) {
                 if ($case instanceof \BackedEnum) {
                     $values[] = $case->value;
@@ -161,7 +161,7 @@ final class TypeExtractor
                     throw new \InvalidArgumentException();
                 }
             }
-        } elseif (method_exists($class, 'getValues')) {
+        } elseif (\method_exists($class, 'getValues')) {
             $values = $class::getValues();
         } else {
             $reflectionClass = ReflectionHelper::getReflectionClass($class);
@@ -187,7 +187,7 @@ final class TypeExtractor
             }
         }
 
-        $types = array_keys($types);
+        $types = \array_keys($types);
         if (\count($types) === 1) {
             $type = $types[0];
         } else {

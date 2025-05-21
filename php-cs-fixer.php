@@ -20,6 +20,11 @@ return (new PhpCsFixer\Config())
         'is_null' => true,
         'strict_param' => true,
         'concat_space' => ['spacing' => 'one'],
+        'native_function_invocation' => [
+            'scope' => 'all',
+            'include' => ['@all'],
+            'exclude' => [],
+        ],
         'yoda_style' => [
             'equal' => false,
             'identical' => false,

@@ -37,7 +37,7 @@ class Serializer
         } elseif ($value instanceof RestApiBundle\Mapping\ResponseModel\ResponseModelInterface) {
             $result = $this->responseModelToJson($value);
         } elseif (\is_array($value)) {
-            if (!array_is_list($value)) {
+            if (!\array_is_list($value)) {
                 throw new \InvalidArgumentException('Associative arrays are not allowed');
             }
 
@@ -51,7 +51,7 @@ class Serializer
                 $chunks[] = $this->responseModelToJson($item);
             }
 
-            $result = '[' . implode(',', $chunks) . ']';
+            $result = '[' . \implode(',', $chunks) . ']';
         } else {
             throw new \InvalidArgumentException();
         }

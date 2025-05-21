@@ -35,7 +35,7 @@ class ResponseModelResolver
             }
 
             $typename = RestApiBundle\Helper\ResponseModel\TypenameResolver::resolve($class);
-            $classInCache = array_search($typename, $this->typenameCache, true);
+            $classInCache = \array_search($typename, $this->typenameCache, true);
             if ($classInCache !== false && $classInCache !== $class) {
                 throw new \InvalidArgumentException(\sprintf('Typename %s for class %s already used by another class %s', $typename, $class, $classInCache));
             }
@@ -60,7 +60,7 @@ class ResponseModelResolver
             $result[$typename] = $this->schemaCache[$class];
         }
 
-        ksort($result);
+        \ksort($result);
 
         return $result;
     }
@@ -73,14 +73,14 @@ class ResponseModelResolver
         $reflectedMethods = $reflectedClass->getMethods(\ReflectionMethod::IS_PUBLIC);
 
         foreach ($reflectedMethods as $reflectionMethod) {
-            if (!str_starts_with($reflectionMethod->getName(), 'get')) {
+            if (!\str_starts_with($reflectionMethod->getName(), 'get')) {
                 continue;
             }
 
-            $propertyName = lcfirst(substr($reflectionMethod->getName(), 3));
+            $propertyName = \lcfirst(\substr($reflectionMethod->getName(), 3));
 
             try {
-                $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($class, $propertyName);
+                $propertyType = $this->propertyInfoExtractorService->getRequiredMethodReturnType($reflectionMethod);
                 $propertySchema = $this->resolveByType($propertyType);
 
                 if (RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionMethod)) {
@@ -153,7 +153,7 @@ class ResponseModelResolver
 
                 break;
 
-            case $type->getClassName() && enum_exists($type->getClassName()):
+            case $type->getClassName() && \enum_exists($type->getClassName()):
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ReflectionHelper::isResponseModelEnum($type->getClassName()):
                 $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createEnum($type->getClassName(), $type->isNullable());
 

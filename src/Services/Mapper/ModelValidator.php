@@ -86,7 +86,7 @@ class ModelValidator
             return [];
         }
 
-        return array_merge(...$result);
+        return \array_merge(...$result);
     }
 
     private function getPropertyValueFromInstance(RestApiBundle\Mapping\Mapper\ModelInterface $instance, string $propertyName, RestApiBundle\Model\Mapper\Schema $propertySchema): mixed
@@ -114,7 +114,7 @@ class ModelValidator
     private function normalizeConstraintViolationPath(ConstraintViolationInterface $constraintViolation): string
     {
         $path = $constraintViolation->getPropertyPath();
-        if (str_contains($path, '[')) {
+        if (\str_contains($path, '[')) {
             $path = \str_replace(['[', ']'], ['.', ''], $path);
         }
 

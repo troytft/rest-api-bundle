@@ -30,7 +30,7 @@ class PropertyInfoExtractorService
 
     public function getOptionalPropertyType(string $class, string $property): ?PropertyInfo\Type
     {
-        if (!property_exists($class, $property)) {
+        if (!\property_exists($class, $property) && !\method_exists($class, $property)) {
             throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Property not exist in class', $class, $property);
         }
 
@@ -51,6 +51,35 @@ class PropertyInfoExtractorService
         $type = $this->getOptionalPropertyType($class, $property);
         if (!$type) {
             throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Empty property type', $class, $property);
+        }
+
+        return $type;
+    }
+
+    public function getOptionalMethodReturnType(\ReflectionMethod $reflectionMethod): ?PropertyInfo\Type
+    {
+        if (!\str_starts_with($reflectionMethod->getName(), 'get')) {
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Method name must start with "get"', $reflectionMethod);
+        }
+        $propertyName = \lcfirst(\substr($reflectionMethod->name, 3));
+
+        $types = $this->propertyInfoExtractor->getTypes($reflectionMethod->class, $propertyName);
+        if (!$types) {
+            return null;
+        }
+
+        if (\count($types) !== 1) {
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Wrong method return types count', $reflectionMethod);
+        }
+
+        return $types[0] ?? throw new \RuntimeException();
+    }
+
+    public function getRequiredMethodReturnType(\ReflectionMethod $reflectionMethod): PropertyInfo\Type
+    {
+        $type = $this->getOptionalMethodReturnType($reflectionMethod);
+        if (!$type) {
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Empty property type', $reflectionMethod);
         }
 
         return $type;
