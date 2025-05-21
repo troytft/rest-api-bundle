@@ -105,37 +105,10 @@ class SchemaResolver implements SchemaResolverInterface
                 $collectionValueSchema = $this->resolveSchemaByType($collectionValueType, $typeOptions);
                 $schema = RestApiBundle\Model\Mapper\Schema::createArrayType($collectionValueSchema, $propertyInfoType->isNullable());
             } else {
-                throw new \LogicException(\sprintf('Unknown type: %s', $this->propertyTypeToString($propertyInfoType)));
+                throw new \LogicException(\sprintf('Unknown type: %s', RestApiBundle\Helper\PropertyInfoHelper::format($propertyInfoType)));
             }
         }
 
         return $schema;
-    }
-
-    private function propertyTypeToString(PropertyInfo\Type $propertyInfoType): string
-    {
-        $prefix = $propertyInfoType->isNullable() ? '?' : '';
-        $builtinType = $propertyInfoType->getBuiltinType();
-
-        if ($builtinType === PropertyInfo\Type::BUILTIN_TYPE_OBJECT) {
-            $className = $propertyInfoType->getClassName();
-            if ($className !== null) {
-                return $prefix . $className;
-            }
-
-            return $prefix . 'object';
-        }
-
-        if ($builtinType === PropertyInfo\Type::BUILTIN_TYPE_ARRAY) {
-            $collectionKeyType = $propertyInfoType->getCollectionKeyTypes();
-            $collectionValueType = $propertyInfoType->getCollectionValueTypes();
-
-            $keyType = $collectionKeyType ? $this->propertyTypeToString($collectionKeyType[0]) : 'mixed';
-            $valueType = $collectionValueType ? $this->propertyTypeToString($collectionValueType[0]) : 'mixed';
-
-            return $prefix . "array<{$keyType}, {$valueType}>";
-        }
-
-        return $prefix . $builtinType;
     }
 }
