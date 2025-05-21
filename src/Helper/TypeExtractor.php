@@ -182,8 +182,6 @@ final class TypeExtractor
                 $types[PropertyInfo\Type::BUILTIN_TYPE_INT] = true;
             } elseif (\is_string($value)) {
                 $types[PropertyInfo\Type::BUILTIN_TYPE_STRING] = true;
-            } elseif (\is_float($value)) {
-                $types[PropertyInfo\Type::BUILTIN_TYPE_FLOAT] = true;
             } else {
                 throw new \InvalidArgumentException();
             }
@@ -195,8 +193,6 @@ final class TypeExtractor
         } else {
             if (\in_array(PropertyInfo\Type::BUILTIN_TYPE_STRING, $types, true)) {
                 $type = PropertyInfo\Type::BUILTIN_TYPE_STRING;
-            } elseif (\in_array(PropertyInfo\Type::BUILTIN_TYPE_FLOAT, $types, true)) {
-                $type = PropertyInfo\Type::BUILTIN_TYPE_FLOAT;
             } else {
                 $type = PropertyInfo\Type::BUILTIN_TYPE_INT;
             }
