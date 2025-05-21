@@ -29,17 +29,6 @@ final class AnnotationReader
         );
     }
 
-    public static function getPropertyAnnotation(\ReflectionProperty $reflectionProperty, string $class)
-    {
-        foreach (static::getPropertyAnnotations($reflectionProperty) as $propertyAnnotation) {
-            if ($propertyAnnotation instanceof $class) {
-                return $propertyAnnotation;
-            }
-        }
-
-        return null;
-    }
-
     public static function getClassAnnotations(\ReflectionClass $reflectionClass): array
     {
         return array_merge(

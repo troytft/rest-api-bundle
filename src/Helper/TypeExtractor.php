@@ -101,18 +101,6 @@ final class TypeExtractor
         return $result;
     }
 
-    public static function extractByReflectionProperty(\ReflectionProperty $reflectionProperty): ?PropertyInfo\Type
-    {
-        try {
-            $varTag = static::resolveVarTag($reflectionProperty);
-            $result = static::extract($reflectionProperty->getType(), $varTag?->getType());
-        } catch (RestApiBundle\Exception\Schema\InvalidDefinitionException $exception) {
-            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException($exception->getMessage(), $reflectionProperty->class, $reflectionProperty->name);
-        }
-
-        return $result;
-    }
-
     private static function resolveReturnTag(\ReflectionMethod $reflectionMethod): ?Return_
     {
         if (!$reflectionMethod->getDocComment()) {
@@ -138,31 +126,6 @@ final class TypeExtractor
         return $returnTag;
     }
 
-    private static function resolveVarTag(\ReflectionProperty $reflectionProperty): ?PhpDoc\DocBlock\Tags\Var_
-    {
-        if (!$reflectionProperty->getDocComment()) {
-            return null;
-        }
-
-        $docBlock = static::getDocBlockFactory()->create($reflectionProperty->getDocComment());
-        $count = \count($docBlock->getTagsByName('var'));
-
-        if ($count === 0) {
-            return null;
-        }
-
-        if ($count > 1) {
-            throw new \LogicException();
-        }
-
-        $varTag = $docBlock->getTagsByName('var')[0];
-        if (!$varTag instanceof PhpDoc\DocBlock\Tags\Var_ || !$varTag->getType()) {
-            throw new \InvalidArgumentException();
-        }
-
-        return $varTag;
-    }
-
     private static function getDocBlockFactory(): PhpDoc\DocBlockFactoryInterface
     {
         if (!static::$docBlockFactory) {
@@ -170,18 +133,6 @@ final class TypeExtractor
         }
 
         return static::$docBlockFactory;
-    }
-
-    public static function isScalar(PropertyInfo\Type $type): bool
-    {
-        $types = [
-            PropertyInfo\Type::BUILTIN_TYPE_INT,
-            PropertyInfo\Type::BUILTIN_TYPE_BOOL,
-            PropertyInfo\Type::BUILTIN_TYPE_STRING,
-            PropertyInfo\Type::BUILTIN_TYPE_FLOAT,
-        ];
-
-        return \in_array($type->getBuiltinType(), $types, true);
     }
 
     public static function extractCollectionValueType(PropertyInfo\Type $type): PropertyInfo\Type
@@ -231,8 +182,6 @@ final class TypeExtractor
                 $types[PropertyInfo\Type::BUILTIN_TYPE_INT] = true;
             } elseif (\is_string($value)) {
                 $types[PropertyInfo\Type::BUILTIN_TYPE_STRING] = true;
-            } elseif (\is_float($value)) {
-                $types[PropertyInfo\Type::BUILTIN_TYPE_FLOAT] = true;
             } else {
                 throw new \InvalidArgumentException();
             }
@@ -244,8 +193,6 @@ final class TypeExtractor
         } else {
             if (\in_array(PropertyInfo\Type::BUILTIN_TYPE_STRING, $types, true)) {
                 $type = PropertyInfo\Type::BUILTIN_TYPE_STRING;
-            } elseif (\in_array(PropertyInfo\Type::BUILTIN_TYPE_FLOAT, $types, true)) {
-                $type = PropertyInfo\Type::BUILTIN_TYPE_FLOAT;
             } else {
                 $type = PropertyInfo\Type::BUILTIN_TYPE_INT;
             }

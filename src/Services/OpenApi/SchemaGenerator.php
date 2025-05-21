@@ -15,6 +15,7 @@ class SchemaGenerator
     public function __construct(
         private RequestModelResolver $requestModelResolver,
         private ResponseModelResolver $responseModelResolver,
+        private RestApiBundle\Services\PropertyInfoExtractorService $propertyInfoExtractorService,
     ) {
     }
 
@@ -73,7 +74,7 @@ class SchemaGenerator
                     }
                 }
 
-                $method = \strtolower($method);
+                $method = strtolower($method);
                 if (isset($pathItem->getOperations()[$method])) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Operation with same url and method already defined in specification', $endpointData->reflectionMethod);
                 }
@@ -82,11 +83,11 @@ class SchemaGenerator
             }
         }
 
-        \ksort($paths);
+        ksort($paths);
         $rootElement->paths = new OpenApi\Paths($paths);
 
-        \ksort($tags);
-        $rootElement->tags = \array_values($tags);
+        ksort($tags);
+        $rootElement->tags = array_values($tags);
 
         foreach ($this->responseModelResolver->dumpSchemas() as $typename => $schema) {
             if (isset($schemas[$typename])) {
@@ -97,7 +98,7 @@ class SchemaGenerator
         }
 
         if ($schemas) {
-            \ksort($schemas);
+            ksort($schemas);
             $rootElement->components->schemas = $schemas;
         }
 
@@ -172,7 +173,13 @@ class SchemaGenerator
                 continue;
             }
 
-            if (RestApiBundle\Helper\TypeExtractor::isScalar($reflectionMethodType)) {
+            $scalarBuildinTypes = [
+                PropertyInfo\Type::BUILTIN_TYPE_INT,
+                PropertyInfo\Type::BUILTIN_TYPE_STRING,
+                PropertyInfo\Type::BUILTIN_TYPE_FLOAT,
+                PropertyInfo\Type::BUILTIN_TYPE_BOOL,
+            ];
+            if ($reflectionMethodType->getBuiltinType() && \in_array($reflectionMethodType->getBuiltinType(), $scalarBuildinTypes, true)) {
                 $scalarTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
             } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($reflectionMethodType->getClassName())) {
                 $doctrineEntityTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
@@ -224,23 +231,38 @@ class SchemaGenerator
 
     private function createScalarPathParameter(string $name, PropertyInfo\Type $type): OpenApi\Parameter
     {
+        if ($type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger(false);
+        } elseif ($type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
+            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createString(false);
+        } else {
+            throw new \InvalidArgumentException();
+        }
+
         return new OpenApi\Parameter([
             'in' => 'path',
             'name' => $name,
             'required' => true,
-            'schema' => RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromPropertyInfoType($type),
+            'schema' => $schema,
         ]);
     }
 
     private function createDoctrineEntityPathParameter(string $name, PropertyInfo\Type $type, string $entityFieldName): OpenApi\Parameter
     {
-        $entityColumnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($type->getClassName(), $entityFieldName);
+        $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($type->getClassName(), $entityFieldName);
+        if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger(false);
+        } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
+            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createString(false);
+        } else {
+            throw new RestApiBundle\Exception\ContextAware\UnknownPropertyTypeException($type->getClassName(), $entityFieldName);
+        }
 
         return new OpenApi\Parameter([
             'in' => 'path',
             'name' => $name,
             'required' => !$type->isNullable(),
-            'schema' => RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromString($entityColumnType, $type->isNullable()),
+            'schema' => $schema,
             'description' => \sprintf('Element by "%s"', $entityFieldName),
         ]);
     }
