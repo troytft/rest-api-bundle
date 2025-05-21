@@ -166,10 +166,15 @@ class RequestModelResolver
 
     private function resolveScalarTransformer(string $type, bool $nullable, array $validationConstraints): OpenApi\Schema
     {
-        $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromString($type, $nullable);
-        $this->applyConstraints($result, $validationConstraints);
+        $schema = match ($type) {
+            PropertyInfo\Type::BUILTIN_TYPE_INT => RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger($nullable),
+            PropertyInfo\Type::BUILTIN_TYPE_STRING => RestApiBundle\Helper\OpenApi\SchemaHelper::createString($nullable),
+            PropertyInfo\Type::BUILTIN_TYPE_BOOL => RestApiBundle\Helper\OpenApi\SchemaHelper::createBoolean($nullable),
+            PropertyInfo\Type::BUILTIN_TYPE_FLOAT => RestApiBundle\Helper\OpenApi\SchemaHelper::createFloat($nullable),
+        };
+        $this->applyConstraints($schema, $validationConstraints);
 
-        return $result;
+        return $schema;
     }
 
     /**

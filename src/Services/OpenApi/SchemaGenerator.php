@@ -225,11 +225,19 @@ class SchemaGenerator
 
     private function createScalarPathParameter(string $name, PropertyInfo\Type $type): OpenApi\Parameter
     {
+        if ($type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger(false);
+        } elseif ($type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
+            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createString(false);
+        } else {
+            throw new \InvalidArgumentException();
+        }
+
         return new OpenApi\Parameter([
             'in' => 'path',
             'name' => $name,
             'required' => true,
-            'schema' => RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromPropertyInfoType($type),
+            'schema' => $schema,
         ]);
     }
 

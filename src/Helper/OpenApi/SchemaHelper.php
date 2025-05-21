@@ -20,11 +20,6 @@ final class SchemaHelper
         return $result;
     }
 
-    public static function createScalarFromPropertyInfoType(PropertyInfo\Type $type): OpenApi\Schema
-    {
-        return static::createScalarFromString($type->getBuiltinType(), $type->isNullable());
-    }
-
     public static function createString(bool $nullable): OpenApi\Schema
     {
         return new OpenApi\Schema([
@@ -58,17 +53,6 @@ final class SchemaHelper
         ]);
     }
 
-    public static function createScalarFromString(string $type, bool $nullable = false): OpenApi\Schema
-    {
-        return match ($type) {
-            PropertyInfo\Type::BUILTIN_TYPE_STRING => static::createString($nullable),
-            PropertyInfo\Type::BUILTIN_TYPE_INT => static::createInteger($nullable),
-            PropertyInfo\Type::BUILTIN_TYPE_FLOAT => static::createFloat($nullable),
-            PropertyInfo\Type::BUILTIN_TYPE_BOOL => static::createBoolean($nullable),
-            default => throw new \InvalidArgumentException($type),
-        };
-    }
-
     public static function createDate(string $format, bool $nullable = false): OpenApi\Schema
     {
         return new OpenApi\Schema([
@@ -92,19 +76,16 @@ final class SchemaHelper
     public static function createEnum(string $class, bool $nullable = false): OpenApi\Schema
     {
         $enumData = RestApiBundle\Helper\TypeExtractor::extractEnumData($class);
-
-        $allowedTypes = [
-            PropertyInfo\Type::BUILTIN_TYPE_STRING,
-            PropertyInfo\Type::BUILTIN_TYPE_INT,
-            PropertyInfo\Type::BUILTIN_TYPE_FLOAT,
-        ];
-        if (!\in_array($enumData->type, $allowedTypes, true)) {
+        if ($enumData->type === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
+            $schema = static::createString($nullable);
+        } elseif ($enumData->type === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+            $schema = static::createInteger($nullable);
+        } else {
             throw new \LogicException();
         }
 
-        $result = static::createScalarFromString($enumData->type, $nullable);
-        $result->enum = $enumData->values;
+        $schema->enum = $enumData->values;
 
-        return $result;
+        return $schema;
     }
 }
