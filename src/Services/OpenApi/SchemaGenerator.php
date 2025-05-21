@@ -16,7 +16,7 @@ class SchemaGenerator
         private RequestModelResolver $requestModelResolver,
         private ResponseModelResolver $responseModelResolver,
         private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService,
-        private RestApiBundle\Services\MethodReturnTypeExtractorService  $methodReturnTypeExtractorService,
+        private RestApiBundle\Services\MethodReturnTypeExtractorService $methodReturnTypeExtractorService,
     ) {
     }
 
