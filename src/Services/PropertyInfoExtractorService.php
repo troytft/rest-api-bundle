@@ -22,7 +22,7 @@ class PropertyInfoExtractorService
         $this->propertyInfoExtractor = new PropertyInfo\PropertyInfoExtractor(
             [$this->reflectionExtractor],
             [$this->phpDocExtractor, $this->reflectionExtractor],
-            [$this->reflectionExtractor],
+            [$this->phpDocExtractor],
             [$this->reflectionExtractor, $this->phpDocExtractor],
             [$this->reflectionExtractor],
         );
