@@ -15,6 +15,7 @@ class SchemaGenerator
     public function __construct(
         private RequestModelResolver $requestModelResolver,
         private ResponseModelResolver $responseModelResolver,
+        private RestApiBundle\Services\PropertyInfoExtractorService $propertyInfoExtractorService,
     ) {
     }
 
@@ -73,7 +74,7 @@ class SchemaGenerator
                     }
                 }
 
-                $method = \strtolower($method);
+                $method = strtolower($method);
                 if (isset($pathItem->getOperations()[$method])) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Operation with same url and method already defined in specification', $endpointData->reflectionMethod);
                 }
@@ -82,11 +83,11 @@ class SchemaGenerator
             }
         }
 
-        \ksort($paths);
+        ksort($paths);
         $rootElement->paths = new OpenApi\Paths($paths);
 
-        \ksort($tags);
-        $rootElement->tags = \array_values($tags);
+        ksort($tags);
+        $rootElement->tags = array_values($tags);
 
         foreach ($this->responseModelResolver->dumpSchemas() as $typename => $schema) {
             if (isset($schemas[$typename])) {
@@ -97,7 +98,7 @@ class SchemaGenerator
         }
 
         if ($schemas) {
-            \ksort($schemas);
+            ksort($schemas);
             $rootElement->components->schemas = $schemas;
         }
 
@@ -234,7 +235,14 @@ class SchemaGenerator
 
     private function createDoctrineEntityPathParameter(string $name, PropertyInfo\Type $type, string $entityFieldName): OpenApi\Parameter
     {
-        $entityColumnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($type->getClassName(), $entityFieldName);
+        $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($type->getClassName(), $entityFieldName);
+        if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+            $entityColumnType = 'integer';
+        } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
+            $entityColumnType = 'string';
+        } else {
+            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Unknown type', $type->getClassName(), $entityFieldName);
+        }
 
         return new OpenApi\Parameter([
             'in' => 'path',

@@ -14,6 +14,7 @@ class RequestModelResolver
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
         private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver,
+        private RestApiBundle\Services\PropertyInfoExtractorService $propertyInfoExtractorService,
     ) {
     }
 
@@ -196,7 +197,14 @@ class RequestModelResolver
         $class = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::CLASS_OPTION];
         $fieldName = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::FIELD_OPTION];
         $isMultiple = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::MULTIPLE_OPTION] ?? false;
-        $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
+        $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($class, $fieldName);
+        if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+            $columnType = 'integer';
+        } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
+            $columnType = 'string';
+        } else {
+            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Unknown type', $class, $fieldName);
+        }
 
         if ($isMultiple) {
             $itemsType = RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromString($columnType);
