@@ -25,6 +25,7 @@ paths:
                     required: false
                     schema:
                         type: integer
+                        format: int64
                         nullable: true
                 -
                     name: limit
@@ -32,6 +33,7 @@ paths:
                     required: false
                     schema:
                         type: integer
+                        format: int64
                         nullable: true
                 -
                     name: author
@@ -39,6 +41,7 @@ paths:
                     required: false
                     schema:
                         type: integer
+                        format: int64
                         nullable: true
                     description: '"Author" fetched by field "id"'
         post:
@@ -102,6 +105,7 @@ paths:
                                     type: array
                                     items:
                                         type: integer
+                                        format: int64
                                         nullable: false
                                     description: 'Collection of "Genre" fetched by field "id"'
                                     nullable: false
@@ -128,6 +132,7 @@ paths:
                     required: true
                     schema:
                         type: integer
+                        format: int64
                         nullable: false
                 -
                     name: limit
@@ -135,6 +140,7 @@ paths:
                     required: true
                     schema:
                         type: integer
+                        format: int64
                         nullable: false
                 -
                     name: name
@@ -171,6 +177,7 @@ paths:
                         type: array
                         items:
                             type: integer
+                            format: int64
                             nullable: true
                         nullable: true
                         deprecated: true
@@ -192,6 +199,7 @@ paths:
                     required: true
                     schema:
                         type: integer
+                        format: int64
                         nullable: false
 components:
     schemas:
@@ -200,9 +208,11 @@ components:
             properties:
                 id:
                     type: integer
+                    format: int64
                     nullable: false
                 genresCount:
                     type: integer
+                    format: int64
                     nullable: false
                     deprecated: true
                 __typename:
@@ -214,6 +224,7 @@ components:
             properties:
                 id:
                     type: integer
+                    format: int64
                     nullable: false
                 __typename:
                     type: string
