@@ -25,6 +25,6 @@ class Root implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
      */
     public function getItems(): array
     {
-        return [];
+        return array_map(fn ($item) => new Inner($item), $this->items);
     }
 }
