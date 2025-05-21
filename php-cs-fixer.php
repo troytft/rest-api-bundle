@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 $finder = (new PhpCsFixer\Finder())
     ->in(__DIR__)
-    ->exclude('tests/Fixtures')
+    ->exclude('tests/Fixture')
     ->exclude('tests/cases');
 
 return (new PhpCsFixer\Config())
