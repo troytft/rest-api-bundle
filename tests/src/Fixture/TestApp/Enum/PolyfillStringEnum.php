@@ -19,18 +19,4 @@ class PolyfillStringEnum extends \RestApiBundle\Mapping\ResponseModel\BaseEnum
             static::ARCHIVED,
         ];
     }
-
-    public static function from(int|string $value): static
-    {
-        return new static($value);
-    }
-
-    public static function tryFrom(int|string $value): ?static
-    {
-        if (!in_array($value, static::getValues(), true)) {
-            return null;
-        }
-
-        return new static($value);
-    }
 }
