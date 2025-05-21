@@ -13,15 +13,12 @@ class PropertyInfoExtractorService
 
     private PropertyInfo\Extractor\PhpDocExtractor $phpDocExtractor;
 
-    private PropertyInfo\Extractor\PhpStanExtractor $phpStanExtractor;
-
     private PropertyInfo\PropertyInfoExtractor $propertyInfoExtractor;
 
     public function __construct()
     {
         $this->reflectionExtractor = new PropertyInfo\Extractor\ReflectionExtractor();
         $this->phpDocExtractor = new PropertyInfo\Extractor\PhpDocExtractor();
-        $this->phpStanExtractor = new PropertyInfo\Extractor\PhpStanExtractor();
         $this->propertyInfoExtractor = new PropertyInfo\PropertyInfoExtractor(
             [$this->reflectionExtractor],
             [$this->phpDocExtractor, $this->reflectionExtractor],
