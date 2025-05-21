@@ -52,7 +52,7 @@ class SchemaResolver implements SchemaResolverInterface
             }
 
             try {
-                $propertyType = $this->propertyInfoExtractorService->getSingleTypeRequired($class, $reflectionProperty->getName());
+                $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($class, $reflectionProperty->getName());
                 $propertySchema = $this->resolveSchemaByType($propertyType, $propertyOptions);
 
                 if (!$reflectionProperty->isPublic()) {

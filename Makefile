@@ -12,3 +12,6 @@ test-cs:
 
 fix-cs:
 	vendor/bin/php-cs-fixer fix src
+
+test-unit:
+	vendor/bin/phpunit --testdox

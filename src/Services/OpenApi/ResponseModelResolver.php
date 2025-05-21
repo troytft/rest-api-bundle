@@ -80,7 +80,7 @@ class ResponseModelResolver
             $propertyName = \lcfirst(\substr($reflectionMethod->getName(), 3));
 
             try {
-                $propertyType = $this->propertyInfoExtractorService->getSingleTypeRequired($class, $propertyName);
+                $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($class, $propertyName);
                 $propertySchema = $this->resolveByType($propertyType);
 
                 if (RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionMethod)) {
