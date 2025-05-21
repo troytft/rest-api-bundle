@@ -21,7 +21,7 @@ class Root implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
     }
 
     /**
-     * @return Tests\Fixture\ResponseModel\PropertyAndMethodSameNameTest\Inner[]
+     * @return Inner[]
      */
     public function getItems(): array
     {
