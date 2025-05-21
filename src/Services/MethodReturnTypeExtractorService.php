@@ -9,25 +9,6 @@ use Symfony\Component\PropertyInfo;
 
 class MethodReturnTypeExtractorService
 {
-    private PropertyInfo\Extractor\ReflectionExtractor $reflectionExtractor;
-
-    private PropertyInfo\Extractor\PhpDocExtractor $phpDocExtractor;
-
-    private PropertyInfo\PropertyInfoExtractor $propertyInfoExtractor;
-
-    public function __construct()
-    {
-        $this->reflectionExtractor = new PropertyInfo\Extractor\ReflectionExtractor();
-        $this->phpDocExtractor = new PropertyInfo\Extractor\PhpDocExtractor();
-        $this->propertyInfoExtractor = new PropertyInfo\PropertyInfoExtractor(
-            [$this->reflectionExtractor],
-            [$this->phpDocExtractor, $this->reflectionExtractor],
-            [$this->phpDocExtractor],
-            [$this->reflectionExtractor, $this->phpDocExtractor],
-            [$this->reflectionExtractor],
-        );
-    }
-
     public function getTypeOptional(\ReflectionMethod $reflectionMethod): ?PropertyInfo\Type
     {
         return RestApiBundle\Helper\TypeExtractor::extractByReflectionMethod($reflectionMethod);
