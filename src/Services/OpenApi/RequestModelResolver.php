@@ -63,61 +63,6 @@ class RequestModelResolver
      */
     private function applyConstraints(OpenApi\Schema $schema, array $constraints): void
     {
-        foreach ($constraints as $constraint) {
-            switch ($constraint::class) {
-                case Validator\Constraints\Range::class:
-                    if ($constraint->min !== null) {
-                        $schema->minimum = $constraint->min;
-                    }
-
-                    if ($constraint->max !== null) {
-                        $schema->maximum = $constraint->max;
-                    }
-
-                    break;
-
-                case Validator\Constraints\Choice::class:
-                    if ($constraint->choices) {
-                        $choices = $constraint->choices;
-                    } elseif ($constraint->callback) {
-                        $callback = $constraint->callback;
-                        $choices = $callback();
-                    } else {
-                        throw new \InvalidArgumentException();
-                    }
-
-                    if (!array_is_list($choices)) {
-                        throw new \InvalidArgumentException();
-                    }
-
-                    $schema->enum = $choices;
-
-                    break;
-
-                case Validator\Constraints\Length::class:
-                    if ($constraint->min !== null) {
-                        $schema->minLength = $constraint->min;
-                    }
-
-                    if ($constraint->max !== null) {
-                        $schema->maxLength = $constraint->max;
-                    }
-
-                    break;
-
-                case Validator\Constraints\NotBlank::class:
-                    if (!$constraint->allowNull) {
-                        $schema->nullable = false;
-                    }
-
-                    break;
-
-                case Validator\Constraints\NotNull::class:
-                    $schema->nullable = false;
-
-                    break;
-            }
-        }
     }
 
     /**
@@ -147,34 +92,64 @@ class RequestModelResolver
     }
 
     /**
-     * @param Validator\Constraint[] $validationConstraints
+     * @param Validator\Constraint[] $constraints
      */
-    private function resolveTransformerAwareType(RestApiBundle\Model\Mapper\Schema $schema, array $validationConstraints): OpenApi\Schema
+    private function resolveTransformerAwareType(RestApiBundle\Model\Mapper\Schema $schema, array $constraints): OpenApi\Schema
     {
-        return match ($schema->transformerClass) {
-            RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class => $this->resolveScalarTransformer(PropertyInfo\Type::BUILTIN_TYPE_INT, $schema->isNullable, $validationConstraints),
-            RestApiBundle\Services\Mapper\Transformer\StringTransformer::class => $this->resolveScalarTransformer(PropertyInfo\Type::BUILTIN_TYPE_STRING, $schema->isNullable, $validationConstraints),
-            RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class => $this->resolveScalarTransformer(PropertyInfo\Type::BUILTIN_TYPE_BOOL, $schema->isNullable, $validationConstraints),
-            RestApiBundle\Services\Mapper\Transformer\FloatTransformer::class => $this->resolveScalarTransformer(PropertyInfo\Type::BUILTIN_TYPE_FLOAT, $schema->isNullable, $validationConstraints),
-            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class => $this->resolveDateTimeTransformer($schema->transformerOptions, $schema->isNullable, $validationConstraints),
+        $result = match ($schema->transformerClass) {
+            RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class => RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger($schema->isNullable),
+            RestApiBundle\Services\Mapper\Transformer\StringTransformer::class => RestApiBundle\Helper\OpenApi\SchemaHelper::createString($schema->isNullable),
+            RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class => RestApiBundle\Helper\OpenApi\SchemaHelper::createBoolean($schema->isNullable),
+            RestApiBundle\Services\Mapper\Transformer\FloatTransformer::class => RestApiBundle\Helper\OpenApi\SchemaHelper::createFloat($schema->isNullable),
+            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class => $this->resolveDateTimeTransformer($schema->transformerOptions, $schema->isNullable, $constraints),
             RestApiBundle\Services\Mapper\Transformer\DateTransformer::class => $this->resolveDateTransformer($schema->transformerOptions, $schema->isNullable),
             RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class => $this->resolveDoctrineEntityTransformer($schema->transformerOptions, $schema->isNullable),
             RestApiBundle\Services\Mapper\Transformer\EnumTransformer::class => $this->resolveEnumTransformer($schema->transformerOptions, $schema->isNullable),
             default => throw new \InvalidArgumentException(),
         };
-    }
 
-    private function resolveScalarTransformer(string $type, bool $nullable, array $validationConstraints): OpenApi\Schema
-    {
-        $schema = match ($type) {
-            PropertyInfo\Type::BUILTIN_TYPE_INT => RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger($nullable),
-            PropertyInfo\Type::BUILTIN_TYPE_STRING => RestApiBundle\Helper\OpenApi\SchemaHelper::createString($nullable),
-            PropertyInfo\Type::BUILTIN_TYPE_BOOL => RestApiBundle\Helper\OpenApi\SchemaHelper::createBoolean($nullable),
-            PropertyInfo\Type::BUILTIN_TYPE_FLOAT => RestApiBundle\Helper\OpenApi\SchemaHelper::createFloat($nullable),
-        };
-        $this->applyConstraints($schema, $validationConstraints);
+        foreach ($constraints as $constraint) {
+            if ($constraint instanceof Validator\Constraints\Range) {
+                if ($constraint->min !== null) {
+                    $result->minimum = $constraint->min;
+                }
 
-        return $schema;
+                if ($constraint->max !== null) {
+                    $result->maximum = $constraint->max;
+                }
+            } elseif ($constraint instanceof Validator\Constraints\Choice) {
+                if ($constraint->choices) {
+                    $choices = $constraint->choices;
+                } elseif ($constraint->callback) {
+                    $callback = $constraint->callback;
+                    $choices = $callback();
+                } else {
+                    throw new \InvalidArgumentException();
+                }
+
+                if (!array_is_list($choices)) {
+                    throw new \InvalidArgumentException();
+                }
+
+                $result->enum = $choices;
+            } elseif ($constraint instanceof Validator\Constraints\Length) {
+                if ($constraint->min !== null) {
+                    $result->minLength = $constraint->min;
+                }
+
+                if ($constraint->max !== null) {
+                    $result->maxLength = $constraint->max;
+                }
+            } elseif ($constraint instanceof Validator\Constraints\NotBlank) {
+                if (!$constraint->allowNull) {
+                    $result->nullable = false;
+                }
+            } elseif ($constraint instanceof Validator\Constraints\NotNull) {
+                $result->nullable = false;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -183,11 +158,8 @@ class RequestModelResolver
     private function resolveDateTimeTransformer(array $options, bool $nullable, array $validationConstraints): OpenApi\Schema
     {
         $format = $options[RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateTimeFormat();
-        $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createDateTime($format, $nullable);
 
-        $this->applyConstraints($result, $validationConstraints);
-
-        return $result;
+        return RestApiBundle\Helper\OpenApi\SchemaHelper::createDateTime($format, $nullable);
     }
 
     private function resolveDateTransformer(array $options, bool $nullable): OpenApi\Schema
