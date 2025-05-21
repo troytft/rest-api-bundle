@@ -13,7 +13,7 @@ return function (ContainerConfigurator $configurator) {
             ->autowire()
             ->autoconfigure()
             ->public()
-            ->bind(RestApiBundle\Services\Mapper\SchemaResolverInterface::class, \service(RestApiBundle\Services\Mapper\CacheSchemaResolver::class))
+            ->bind(RestApiBundle\Services\Mapper\SchemaResolverInterface::class, service(RestApiBundle\Services\Mapper\CacheSchemaResolver::class))
             ->bind('$cacheDir', '%kernel.cache_dir%');
 
     $services
