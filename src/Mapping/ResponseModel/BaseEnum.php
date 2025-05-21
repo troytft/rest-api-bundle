@@ -31,5 +31,5 @@ abstract class BaseEnum implements EnumInterface, RestApiBundle\Mapping\Mapper\E
         return new static($value);
     }
 
-    public static abstract function getValues(): array;
+    abstract public static function getValues(): array;
 }
