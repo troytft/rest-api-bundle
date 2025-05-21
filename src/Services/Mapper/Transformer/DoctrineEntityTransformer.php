@@ -70,6 +70,10 @@ class DoctrineEntityTransformer implements TransformerInterface
                 throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
             }
 
+            if (!\count($value)) {
+                return [];
+            }
+
             if (!\is_numeric($firstItem)) {
                 throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
             }
@@ -80,6 +84,10 @@ class DoctrineEntityTransformer implements TransformerInterface
                 throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
             }
 
+            if (!\count($value)) {
+                return [];
+            }
+
             if (!\is_string($firstItem) && !\is_numeric($firstItem)) {
                 throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
             }
@@ -87,10 +95,6 @@ class DoctrineEntityTransformer implements TransformerInterface
             $value = \array_map(fn ($item) => (string) $item, $value);
         } else {
             throw new \InvalidArgumentException();
-        }
-
-        if (!\count($value)) {
-            return [];
         }
 
         if (\count($value) !== \count(\array_unique($value))) {
