@@ -87,7 +87,7 @@ class ResponseModelResolver
                     $propertySchema->deprecated = true;
                 }
             } catch (RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException $exception) {
-                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException(\sprintf('Unknown type: %s', $reflectionMethod->class), $reflectionMethod);
+                throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException($exception->getMessage(), $reflectionMethod);
             }
 
             $properties[$propertyName] = $propertySchema;
@@ -166,7 +166,7 @@ class ResponseModelResolver
                 break;
 
             default:
-                throw new RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException();
+                throw new RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException($type);
         }
 
         return $schema;
@@ -175,7 +175,7 @@ class ResponseModelResolver
     private function resolveCollection(PropertyInfo\Type $type): OpenApi\Schema
     {
         if (!$type->getCollectionValueTypes()) {
-            throw new RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException();
+            throw new RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException($type);
         }
 
         return new OpenApi\Schema([

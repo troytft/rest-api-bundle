@@ -16,6 +16,7 @@ class SchemaGenerator
         private RequestModelResolver $requestModelResolver,
         private ResponseModelResolver $responseModelResolver,
         private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService,
+        private RestApiBundle\Services\MethodReturnTypeExtractorService  $methodReturnTypeExtractorService,
     ) {
     }
 
@@ -286,13 +287,10 @@ class SchemaGenerator
     {
         $responses = new OpenApi\Responses([]);
 
-        $returnType = RestApiBundle\Helper\TypeExtractor::extractByReflectionMethod($reflectionMethod);
-        if (!$returnType) {
-            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Return type is not specified', $reflectionMethod);
-        }
+        $returnType = $this->methodReturnTypeExtractorService->getTypeRequired($reflectionMethod);
 
         if ($returnType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_NULL || $returnType->isNullable()) {
-            $this->addEmptyResponse($responses, $httpStatusCode);
+            $responses->addResponse((string) ($httpStatusCode ?? 204), $this->createEmptyBodyResponse());
         }
 
         if ($returnType->isCollection()) {
@@ -317,11 +315,9 @@ class SchemaGenerator
         return $responses;
     }
 
-    private function addEmptyResponse(OpenApi\Responses $responses, ?int $httpStatusCode = null): void
+    private function createEmptyBodyResponse(): OpenApi\Response
     {
-        $httpStatusCode = $httpStatusCode ?? 204;
-
-        $responses->addResponse((string) $httpStatusCode, new OpenApi\Response(['description' => 'Response with empty body']));
+        return new OpenApi\Response(['description' => 'Response with empty body']);
     }
 
     private function addBinaryFileResponse(OpenApi\Responses $responses, ?int $httpStatusCode = null): void
