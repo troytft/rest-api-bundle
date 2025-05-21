@@ -63,8 +63,17 @@ class DoctrineEntityTransformer implements TransformerInterface
             throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
         }
 
+        $firstItem = $value[0] ?? null;
+        if (!$firstItem) {
+            return [];
+        }
+
         if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
             if (!\is_countable($value)) {
+                throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
+            }
+
+            if (!\is_numeric($firstItem)) {
                 throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
             }
 
@@ -74,20 +83,13 @@ class DoctrineEntityTransformer implements TransformerInterface
                 throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
             }
 
+            if (!\is_string($firstItem) && !\is_numeric($firstItem)) {
+                throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
+            }
+
             $value = \array_map(fn ($item) => (string) $item, $value);
         } else {
             throw new \InvalidArgumentException();
-        }
-
-        if (!\count($value)) {
-            return [];
-        }
-
-        $firstCollectionItem = $value[0] ?? null;
-        if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT && !\is_numeric($firstCollectionItem)) {
-            throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
-        } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING && (!\is_string($firstCollectionItem) && !\is_numeric($firstCollectionItem))) {
-            throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
         }
 
         if (\count($value) !== \count(\array_unique($value))) {
