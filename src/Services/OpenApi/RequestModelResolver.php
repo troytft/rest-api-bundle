@@ -57,15 +57,6 @@ class RequestModelResolver
     }
 
     /**
-     * @todo: refactor to more clear solution
-     *
-     * @param Validator\Constraint[] $constraints
-     */
-    private function applyConstraints(OpenApi\Schema $schema, array $constraints): void
-    {
-    }
-
-    /**
      * @param Validator\Constraint[] $validationConstraints
      */
     private function resolveByMapperSchema(RestApiBundle\Model\Mapper\Schema $schema, array $validationConstraints): OpenApi\Schema

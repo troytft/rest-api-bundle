@@ -135,18 +135,6 @@ final class TypeExtractor
         return static::$docBlockFactory;
     }
 
-    public static function isScalar(PropertyInfo\Type $type): bool
-    {
-        $types = [
-            PropertyInfo\Type::BUILTIN_TYPE_INT,
-            PropertyInfo\Type::BUILTIN_TYPE_BOOL,
-            PropertyInfo\Type::BUILTIN_TYPE_STRING,
-            PropertyInfo\Type::BUILTIN_TYPE_FLOAT,
-        ];
-
-        return \in_array($type->getBuiltinType(), $types, true);
-    }
-
     public static function extractCollectionValueType(PropertyInfo\Type $type): PropertyInfo\Type
     {
         if (\count($type->getCollectionValueTypes()) > 1) {
