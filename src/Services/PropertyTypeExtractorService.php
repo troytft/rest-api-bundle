@@ -7,7 +7,7 @@ namespace RestApiBundle\Services;
 use RestApiBundle;
 use Symfony\Component\PropertyInfo;
 
-class PropertyInfoExtractorService
+class PropertyTypeExtractorService
 {
     private PropertyInfo\Extractor\ReflectionExtractor $reflectionExtractor;
 
@@ -17,7 +17,7 @@ class PropertyInfoExtractorService
 
     public function __construct()
     {
-        $this->reflectionExtractor = new PropertyInfo\Extractor\ReflectionExtractor();
+        $this->reflectionExtractor = new PropertyInfo\Extractor\ReflectionExtractor([], []); // disable getters/setters
         $this->phpDocExtractor = new PropertyInfo\Extractor\PhpDocExtractor();
         $this->propertyInfoExtractor = new PropertyInfo\PropertyInfoExtractor(
             [$this->reflectionExtractor],
@@ -28,8 +28,12 @@ class PropertyInfoExtractorService
         );
     }
 
-    public function getOptionalPropertyType(string $class, string $property): ?PropertyInfo\Type
+    public function getTypeOptional(string $class, string $property): ?PropertyInfo\Type
     {
+        if (!\property_exists($class, $property) && !\method_exists($class, $property)) {
+            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Property not exist in class', $class, $property);
+        }
+
         $types = $this->propertyInfoExtractor->getTypes($class, $property);
         if (!$types) {
             return null;
@@ -42,11 +46,11 @@ class PropertyInfoExtractorService
         return $types[0] ?? throw new \RuntimeException();
     }
 
-    public function getRequiredPropertyType(string $class, string $property): PropertyInfo\Type
+    public function getTypeRequired(string $class, string $property): PropertyInfo\Type
     {
-        $type = $this->getOptionalPropertyType($class, $property);
+        $type = $this->getTypeOptional($class, $property);
         if (!$type) {
-            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Property is required', $class, $property);
+            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Empty property type', $class, $property);
         }
 
         return $type;

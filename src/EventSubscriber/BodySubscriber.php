@@ -27,7 +27,7 @@ class BodySubscriber implements EventSubscriberInterface
         }
 
         $decodedContent = \json_decode($request->getContent(), true);
-        if (json_last_error() !== \JSON_ERROR_NONE) {
+        if (\json_last_error() !== \JSON_ERROR_NONE) {
             throw new \Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException();
         }
 

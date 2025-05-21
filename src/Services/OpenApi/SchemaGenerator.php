@@ -15,7 +15,7 @@ class SchemaGenerator
     public function __construct(
         private RequestModelResolver $requestModelResolver,
         private ResponseModelResolver $responseModelResolver,
-        private RestApiBundle\Services\PropertyInfoExtractorService $propertyInfoExtractorService,
+        private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService,
     ) {
     }
 
@@ -74,7 +74,7 @@ class SchemaGenerator
                     }
                 }
 
-                $method = strtolower($method);
+                $method = \strtolower($method);
                 if (isset($pathItem->getOperations()[$method])) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Operation with same url and method already defined in specification', $endpointData->reflectionMethod);
                 }
@@ -83,11 +83,11 @@ class SchemaGenerator
             }
         }
 
-        ksort($paths);
+        \ksort($paths);
         $rootElement->paths = new OpenApi\Paths($paths);
 
-        ksort($tags);
-        $rootElement->tags = array_values($tags);
+        \ksort($tags);
+        $rootElement->tags = \array_values($tags);
 
         foreach ($this->responseModelResolver->dumpSchemas() as $typename => $schema) {
             if (isset($schemas[$typename])) {
@@ -98,7 +98,7 @@ class SchemaGenerator
         }
 
         if ($schemas) {
-            ksort($schemas);
+            \ksort($schemas);
             $rootElement->components->schemas = $schemas;
         }
 
@@ -118,7 +118,7 @@ class SchemaGenerator
             HttpFoundation\Request::METHOD_DELETE,
             HttpFoundation\Request::METHOD_PATCH,
         ];
-        if (array_diff($endpointData->actionRouteMapping->getMethods(), $allowedMethods)) {
+        if (\array_diff($endpointData->actionRouteMapping->getMethods(), $allowedMethods)) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Route has invalid methods', $endpointData->reflectionMethod);
         }
 
@@ -201,7 +201,7 @@ class SchemaGenerator
                 $operationParameters[] = $this->createDoctrineEntityPathParameter($parameterName, $doctrineEntityTypes[$parameterName], 'id');
                 unset($doctrineEntityTypes[$parameterName]);
             } else {
-                $doctrineEntityType = reset($doctrineEntityTypes);
+                $doctrineEntityType = \reset($doctrineEntityTypes);
                 if (!$doctrineEntityType instanceof PropertyInfo\Type) {
                     throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException(\sprintf('Associated parameter for placeholder %s not matched', $parameterName), $endpointData->reflectionMethod);
                 }
@@ -217,7 +217,7 @@ class SchemaGenerator
         }
 
         if ($requestModelType && $httpMethod === HttpFoundation\Request::METHOD_GET) {
-            $operationParameters = array_merge($operationParameters, $this->createQueryParametersFromRequestModel($requestModelType->getClassName()));
+            $operationParameters = \array_merge($operationParameters, $this->createQueryParametersFromRequestModel($requestModelType->getClassName()));
         } elseif ($requestModelType) {
             $operation->requestBody = $this->createRequestBodyFromRequestModel($requestModelType->getClassName());
         }
@@ -249,7 +249,7 @@ class SchemaGenerator
 
     private function createDoctrineEntityPathParameter(string $name, PropertyInfo\Type $type, string $entityFieldName): OpenApi\Parameter
     {
-        $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($type->getClassName(), $entityFieldName);
+        $propertyType = $this->propertyTypeExtractorService->getTypeRequired($type->getClassName(), $entityFieldName);
         if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
             $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger(false);
         } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
@@ -275,7 +275,7 @@ class SchemaGenerator
         $matches = null;
         $placeholders = [];
 
-        if (preg_match_all('/{([^}]+)}/', $path, $matches)) {
+        if (\preg_match_all('/{([^}]+)}/', $path, $matches)) {
             $placeholders = $matches[1];
         }
 

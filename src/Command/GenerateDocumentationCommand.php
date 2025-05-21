@@ -68,7 +68,7 @@ final class GenerateDocumentationCommand extends Command
     private function readFromFile(string $filename): OpenApi\OpenApi
     {
         $fileType = RestApiBundle\Helper\OpenApi\FileTypeResolver::resolveByFilename($filename);
-        $fileContent = file_get_contents($filename);
+        $fileContent = \file_get_contents($filename);
 
         return match ($fileType) {
             RestApiBundle\Helper\OpenApi\FileTypeResolver::JSON_TYPE => $this->schemaSerializer->fromJson($fileContent),

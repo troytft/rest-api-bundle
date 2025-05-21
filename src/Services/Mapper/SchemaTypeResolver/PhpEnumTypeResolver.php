@@ -14,7 +14,7 @@ class PhpEnumTypeResolver implements SchemaTypeResolverInterface
      */
     public function supports(PropertyInfo\Type $propertyInfoType, array $typeOptions): bool
     {
-        return $propertyInfoType->getClassName() && enum_exists($propertyInfoType->getClassName());
+        return $propertyInfoType->getClassName() && \enum_exists($propertyInfoType->getClassName());
     }
 
     /**

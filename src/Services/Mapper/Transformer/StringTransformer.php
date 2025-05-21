@@ -13,7 +13,7 @@ class StringTransformer implements TransformerInterface
 
     public function transform($value, array $options = []): ?string
     {
-        if (is_numeric($value)) {
+        if (\is_numeric($value)) {
             $value = (string) $value;
         } elseif (!\is_string($value)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\StringRequiredException();
@@ -21,7 +21,7 @@ class StringTransformer implements TransformerInterface
 
         $trim = $options[static::TRIM_OPTION] ?? false;
         if ($trim) {
-            $value = trim($value);
+            $value = \trim($value);
         }
 
         $emptyToNull = $options[static::EMPTY_TO_NULL_OPTION] ?? false;

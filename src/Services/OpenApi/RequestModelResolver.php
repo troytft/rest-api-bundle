@@ -14,7 +14,7 @@ class RequestModelResolver
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
         private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver,
-        private RestApiBundle\Services\PropertyInfoExtractorService $propertyInfoExtractorService,
+        private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService,
     ) {
     }
 
@@ -118,7 +118,7 @@ class RequestModelResolver
                     throw new \InvalidArgumentException();
                 }
 
-                if (!array_is_list($choices)) {
+                if (!\array_is_list($choices)) {
                     throw new \InvalidArgumentException();
                 }
 
@@ -166,7 +166,7 @@ class RequestModelResolver
         $fieldName = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::FIELD_OPTION];
         $isMultiple = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::MULTIPLE_OPTION] ?? false;
 
-        $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($class, $fieldName);
+        $propertyType = $this->propertyTypeExtractorService->getTypeRequired($class, $fieldName);
         if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
             $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger($nullable);
         } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
@@ -207,8 +207,8 @@ class RequestModelResolver
 
     private function resolveShortClassName(string $class): string
     {
-        $chunks = explode('\\', $class);
+        $chunks = \explode('\\', $class);
 
-        return $chunks[array_key_last($chunks)] ?? throw new \LogicException();
+        return $chunks[\array_key_last($chunks)] ?? throw new \LogicException();
     }
 }

@@ -23,7 +23,7 @@ class TypenameResolver
             throw new \RuntimeException(\sprintf('Response model "%s" must be in "ResponseModel" namespace', $class));
         }
 
-        $typename = implode('_', $parts);
+        $typename = \implode('_', $parts);
         if (!$typename) {
             throw new \RuntimeException(\sprintf('Response model "%s" must have typename', $class));
         }

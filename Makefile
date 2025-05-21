@@ -8,10 +8,10 @@ benchmark-save:
 	vendor/bin/phpbench run --tag=original
 
 test-cs:
-	vendor/bin/php-cs-fixer fix src --dry-run --diff
+	vendor/bin/php-cs-fixer fix src --config=php-cs-fixer.php --dry-run --diff
 
 fix-cs:
-	vendor/bin/php-cs-fixer fix src
+	vendor/bin/php-cs-fixer fix src --config=php-cs-fixer.php
 
 test-unit:
 	vendor/bin/phpunit --testdox

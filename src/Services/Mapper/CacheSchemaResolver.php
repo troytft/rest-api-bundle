@@ -75,6 +75,6 @@ final class CacheSchemaResolver implements SchemaResolverInterface
 
     private function resolveCacheKey(string $class, bool $isNullable): string
     {
-        return strtr(\ltrim($class, '\\'), '\\', '.') . $isNullable;
+        return \strtr(\ltrim($class, '\\'), '\\', '.') . $isNullable;
     }
 }
