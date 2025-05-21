@@ -8,7 +8,6 @@ class PolyfillStringEnum extends \RestApiBundle\Mapping\ResponseModel\BaseEnum
     public const PUBLISHED = 'published';
     public const ARCHIVED = 'archived';
 
-
     final private function __construct(private int|string $value)
     {
     }
