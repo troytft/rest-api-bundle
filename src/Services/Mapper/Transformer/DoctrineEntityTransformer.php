@@ -64,9 +64,6 @@ class DoctrineEntityTransformer implements TransformerInterface
         }
 
         $firstItem = $value[0] ?? null;
-        if (!$firstItem) {
-            return [];
-        }
 
         if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
             if (!\is_countable($value)) {
@@ -90,6 +87,10 @@ class DoctrineEntityTransformer implements TransformerInterface
             $value = \array_map(fn ($item) => (string) $item, $value);
         } else {
             throw new \InvalidArgumentException();
+        }
+
+        if (!\count($value)) {
+            return [];
         }
 
         if (\count($value) !== \count(\array_unique($value))) {
