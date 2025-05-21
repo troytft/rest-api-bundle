@@ -67,10 +67,14 @@ class DoctrineEntityTransformer implements TransformerInterface
             if (!\is_countable($value)) {
                 throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
             }
+
+            $value = \array_map(fn ($item) => (int) $item, $value);
         } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
             if (!\is_countable($value)) {
                 throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
             }
+
+            $value = \array_map(fn ($item) => (string) $item, $value);
         } else {
             throw new \InvalidArgumentException();
         }
