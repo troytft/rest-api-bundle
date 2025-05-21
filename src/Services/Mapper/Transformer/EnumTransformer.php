@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace RestApiBundle\Services\Mapper\Transformer;
 
 use RestApiBundle;
+use Symfony\Component\PropertyInfo;
 
 class EnumTransformer implements TransformerInterface
 {
@@ -13,10 +14,13 @@ class EnumTransformer implements TransformerInterface
     public function transform($value, array $options)
     {
         $class = $options[static::CLASS_OPTION] ?? throw new \InvalidArgumentException();
-        $enumValues = RestApiBundle\Helper\TypeExtractor::extractEnumData($class)->values;
+        $enumData = RestApiBundle\Helper\TypeExtractor::extractEnumData($class);
 
-        // strict compare disabled cause value has raw type
-        if (!\in_array($value, $enumValues, true)) {
+        if (\is_string($value) && $enumData->type === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+            $value = (int) $value;
+        }
+
+        if (!\in_array($value, $enumData->values, true)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\ValueNotFoundInEnumException();
         }
 
