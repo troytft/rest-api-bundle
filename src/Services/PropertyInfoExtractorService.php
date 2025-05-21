@@ -30,6 +30,10 @@ class PropertyInfoExtractorService
 
     public function getOptionalPropertyType(string $class, string $property): ?PropertyInfo\Type
     {
+        if (!property_exists($class, $property)) {
+            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Property not exist in class', $class, $property);
+        }
+
         $types = $this->propertyInfoExtractor->getTypes($class, $property);
         if (!$types) {
             return null;
@@ -46,7 +50,7 @@ class PropertyInfoExtractorService
     {
         $type = $this->getOptionalPropertyType($class, $property);
         if (!$type) {
-            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Property is required', $class, $property);
+            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Empty property type', $class, $property);
         }
 
         return $type;
