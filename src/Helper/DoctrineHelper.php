@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace RestApiBundle\Helper;
 
 use Doctrine;
-use RestApiBundle;
-use Symfony\Component\PropertyInfo;
 
 class DoctrineHelper
 {
