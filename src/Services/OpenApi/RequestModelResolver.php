@@ -86,7 +86,7 @@ class RequestModelResolver
                         throw new \InvalidArgumentException();
                     }
 
-                    if (!\array_is_list($choices)) {
+                    if (!array_is_list($choices)) {
                         throw new \InvalidArgumentException();
                     }
 
@@ -197,31 +197,26 @@ class RequestModelResolver
         $class = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::CLASS_OPTION];
         $fieldName = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::FIELD_OPTION];
         $isMultiple = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::MULTIPLE_OPTION] ?? false;
+
         $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($class, $fieldName);
         if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
-            $columnType = 'integer';
+            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger($nullable);
         } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
-            $columnType = 'string';
+            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createString($nullable);
         } else {
-            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Unknown type', $class, $fieldName);
+            throw new RestApiBundle\Exception\ContextAware\UnknownPropertyTypeException($class, $fieldName);
         }
 
         if ($isMultiple) {
-            $itemsType = RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromString($columnType);
-
-            $result = new OpenApi\Schema([
+            $schema = new OpenApi\Schema([
                 'type' => OpenApi\Type::ARRAY,
-                'items' => $itemsType,
+                'items' => $schema,
                 'nullable' => $nullable,
                 'description' => \sprintf('Collection of "%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName),
             ]);
-        } else {
-            $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromString($columnType);
-            $result->description = \sprintf('"%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName);
-            $result->nullable = $nullable;
         }
 
-        return $result;
+        return $schema;
     }
 
     private function resolveEnumTransformer(array $options, bool $nullable): OpenApi\Schema

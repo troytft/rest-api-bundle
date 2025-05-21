@@ -237,18 +237,18 @@ class SchemaGenerator
     {
         $propertyType = $this->propertyInfoExtractorService->getRequiredPropertyType($type->getClassName(), $entityFieldName);
         if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
-            $entityColumnType = 'integer';
+            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger($type->isNullable());
         } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
-            $entityColumnType = 'string';
+            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createString($type->isNullable());
         } else {
-            throw new RestApiBundle\Exception\ContextAware\PropertyAwareException('Unknown type', $type->getClassName(), $entityFieldName);
+            throw new RestApiBundle\Exception\ContextAware\UnknownPropertyTypeException($type->getClassName(), $entityFieldName);
         }
 
         return new OpenApi\Parameter([
             'in' => 'path',
             'name' => $name,
             'required' => !$type->isNullable(),
-            'schema' => RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromString($entityColumnType, $type->isNullable()),
+            'schema' => $schema,
             'description' => \sprintf('Element by "%s"', $entityFieldName),
         ]);
     }

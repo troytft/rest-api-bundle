@@ -25,27 +25,47 @@ final class SchemaHelper
         return static::createScalarFromString($type->getBuiltinType(), $type->isNullable());
     }
 
+    public static function createString(bool $nullable): OpenApi\Schema
+    {
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::STRING,
+            'nullable' => $nullable,
+        ]);
+    }
+
+    public static function createInteger(bool $nullable): OpenApi\Schema
+    {
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::INTEGER,
+            'nullable' => $nullable,
+        ]);
+    }
+
+    public static function createFloat(bool $nullable): OpenApi\Schema
+    {
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::NUMBER,
+            'format' => 'double',
+            'nullable' => $nullable,
+        ]);
+    }
+
+    public static function createBoolean(bool $nullable): OpenApi\Schema
+    {
+        return new OpenApi\Schema([
+            'type' => OpenApi\Type::BOOLEAN,
+            'nullable' => $nullable,
+        ]);
+    }
+
     public static function createScalarFromString(string $type, bool $nullable = false): OpenApi\Schema
     {
         return match ($type) {
-            PropertyInfo\Type::BUILTIN_TYPE_STRING => new OpenApi\Schema([
-                'type' => OpenApi\Type::STRING,
-                'nullable' => $nullable,
-            ]),
-            PropertyInfo\Type::BUILTIN_TYPE_INT => new OpenApi\Schema([
-                'type' => OpenApi\Type::INTEGER,
-                'nullable' => $nullable,
-            ]),
-            PropertyInfo\Type::BUILTIN_TYPE_FLOAT => new OpenApi\Schema([
-                'type' => OpenApi\Type::NUMBER,
-                'format' => 'double',
-                'nullable' => $nullable,
-            ]),
-            PropertyInfo\Type::BUILTIN_TYPE_BOOL => new OpenApi\Schema([
-                'type' => OpenApi\Type::BOOLEAN,
-                'nullable' => $nullable,
-            ]),
-            default => throw new \InvalidArgumentException(),
+            PropertyInfo\Type::BUILTIN_TYPE_STRING => static::createString($nullable),
+            PropertyInfo\Type::BUILTIN_TYPE_INT => static::createInteger($nullable),
+            PropertyInfo\Type::BUILTIN_TYPE_FLOAT => static::createFloat($nullable),
+            PropertyInfo\Type::BUILTIN_TYPE_BOOL => static::createBoolean($nullable),
+            default => throw new \InvalidArgumentException($type),
         };
     }
 
