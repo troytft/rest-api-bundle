@@ -44,6 +44,38 @@ paths:
                         format: int64
                         nullable: true
                     description: '"Author" fetched by field "id"'
+                -
+                    name: polyfillStringEnum
+                    in: query
+                    required: false
+                    schema:
+                        type: string
+                        nullable: true
+                        enum:
+                            - created
+                            - published
+                            - archived
+                -
+                    name: phpStringEnum
+                    in: query
+                    required: false
+                    schema:
+                        type: string
+                        nullable: true
+                        enum:
+                            - created
+                            - published
+                            - archived
+                -
+                    name: phpStringEnumLimited
+                    in: query
+                    required: false
+                    schema:
+                        type: string
+                        nullable: true
+                        enum:
+                            - published
+                            - created
         post:
             tags:
                 - books

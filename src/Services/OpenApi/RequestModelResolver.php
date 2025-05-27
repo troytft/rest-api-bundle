@@ -109,20 +109,7 @@ class RequestModelResolver
                     $result->maximum = $constraint->max;
                 }
             } elseif ($constraint instanceof Validator\Constraints\Choice) {
-                if ($constraint->choices) {
-                    $choices = $constraint->choices;
-                } elseif ($constraint->callback) {
-                    $callback = $constraint->callback;
-                    $choices = $callback();
-                } else {
-                    throw new \InvalidArgumentException();
-                }
-
-                if (!\array_is_list($choices)) {
-                    throw new \InvalidArgumentException();
-                }
-
-                $result->enum = $choices;
+                $result->enum = $this->extractConstraintChoices($constraint);
             } elseif ($constraint instanceof Validator\Constraints\Length) {
                 if ($constraint->min !== null) {
                     $result->minLength = $constraint->min;
@@ -210,5 +197,23 @@ class RequestModelResolver
         $chunks = \explode('\\', $class);
 
         return $chunks[\array_key_last($chunks)] ?? throw new \LogicException();
+    }
+
+    private function extractConstraintChoices(Validator\Constraints\Choice $constraint): array
+    {
+        if ($constraint->choices) {
+            $choices = $constraint->choices;
+        } elseif ($constraint->callback) {
+            $callback = $constraint->callback;
+            $choices = $callback();
+        } else {
+            throw new \InvalidArgumentException();
+        }
+
+        if (!\array_is_list($choices)) {
+            throw new \InvalidArgumentException();
+        }
+
+        return \array_map(fn ($item) => $item instanceof \BackedEnum ? $item->value : $item, $choices);
     }
 }
