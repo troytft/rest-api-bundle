@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Services\Mapper\SchemaTypeResolver;
 
 use RestApiBundle;

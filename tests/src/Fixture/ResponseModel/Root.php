@@ -3,6 +3,7 @@
 namespace Tests\Fixture\ResponseModel;
 
 use RestApiBundle;
+use Tests;
 
 class Root implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {
@@ -24,5 +25,18 @@ class Root implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
     public function getPolyfillEnumType(): PolyfillEnumType
     {
         return new PolyfillEnumType();
+    }
+
+    public function getInnerModel(): Inner
+    {
+        return new Inner();
+    }
+
+    /**
+     * @return Tests\Fixture\ResponseModel\Inner[]
+     */
+    public function getInnerModelArray(): array
+    {
+        return [];
     }
 }

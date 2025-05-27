@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Services\Mapper\Transformer;
 
+use Doctrine\ORM\EntityManagerInterface;
 use RestApiBundle;
 use Symfony\Component\PropertyInfo;
-use Doctrine\ORM\EntityManagerInterface;
 
 class DoctrineEntityTransformer implements TransformerInterface
 {
@@ -14,8 +16,9 @@ class DoctrineEntityTransformer implements TransformerInterface
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private RestApiBundle\Services\Mapper\Transformer\StringTransformer $stringTransformer,
-        private RestApiBundle\Services\Mapper\Transformer\IntegerTransformer $integerTransformer,
+        private StringTransformer $stringTransformer,
+        private IntegerTransformer $integerTransformer,
+        private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService,
     ) {
     }
 
@@ -36,8 +39,8 @@ class DoctrineEntityTransformer implements TransformerInterface
 
     private function transformSingleItem(string $class, string $fieldName, mixed $value): object
     {
-        $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
-        $value = match ($columnType) {
+        $propertyType = $this->propertyTypeExtractorService->getTypeRequired($class, $fieldName);
+        $value = match ($propertyType->getBuiltinType()) {
             PropertyInfo\Type::BUILTIN_TYPE_INT => $this->integerTransformer->transform($value),
             PropertyInfo\Type::BUILTIN_TYPE_STRING => $this->stringTransformer->transform($value),
             default => throw new \InvalidArgumentException(),
@@ -53,42 +56,65 @@ class DoctrineEntityTransformer implements TransformerInterface
 
     private function transformMultipleItems(string $class, string $fieldName, mixed $value): array
     {
-        $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
-        if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_INT && !is_array($value)) {
+        $propertyType = $this->propertyTypeExtractorService->getTypeRequired($class, $fieldName);
+        if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT && $propertyType->isCollection()) {
             throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
-        } elseif ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING && !is_array($value)) {
+        } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING && $propertyType->isCollection()) {
             throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
         }
 
-        if (!count($value)) {
-            return [];
+        $firstItem = $value[0] ?? null;
+
+        if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+            if (!\is_countable($value)) {
+                throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
+            }
+
+            if (!\count($value)) {
+                return [];
+            }
+
+            if (!\is_numeric($firstItem)) {
+                throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
+            }
+
+            $value = \array_map(fn ($item) => (int) $item, $value);
+        } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
+            if (!\is_countable($value)) {
+                throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
+            }
+
+            if (!\count($value)) {
+                return [];
+            }
+
+            if (!\is_string($firstItem) && !\is_numeric($firstItem)) {
+                throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
+            }
+
+            $value = \array_map(fn ($item) => (string) $item, $value);
+        } else {
+            throw new \InvalidArgumentException();
         }
 
-        $firstCollectionItem = $value[0] ?? null;
-        if ($columnType === PropertyInfo\Type::BUILTIN_TYPE_INT && !is_numeric($firstCollectionItem)) {
-            throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
-        } elseif ($columnType === PropertyInfo\Type::BUILTIN_TYPE_STRING && (!is_string($firstCollectionItem) && !is_numeric($firstCollectionItem))) {
-            throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
-        }
-
-        if (count($value) !== count(array_unique($value))) {
+        if (\count($value) !== \count(\array_unique($value))) {
             throw new RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException();
         }
 
         $results = $this->entityManager->getRepository($class)->findBy([$fieldName => $value]);
-        if (count($results) !== count($value)) {
+        if (\count($results) !== \count($value)) {
             throw new RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException();
         }
 
         $sortedResults = [];
-        $getterName = 'get' . ucfirst($fieldName);
+        $getterName = 'get' . \ucfirst($fieldName);
 
         foreach ($results as $object) {
-            if (!method_exists($object, $getterName)) {
+            if (!\method_exists($object, $getterName)) {
                 throw new \InvalidArgumentException();
             }
 
-            $key = array_search($object->{$getterName}(), $value);
+            $key = \array_search($object->{$getterName}(), $value, true);
             if ($key === false) {
                 throw new \InvalidArgumentException();
             }
@@ -97,7 +123,7 @@ class DoctrineEntityTransformer implements TransformerInterface
         }
 
         unset($results);
-        ksort($sortedResults);
+        \ksort($sortedResults);
 
         return $sortedResults;
     }

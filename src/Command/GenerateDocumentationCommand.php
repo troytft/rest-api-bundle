@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Command;
 
-use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
+use RestApiBundle;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class GenerateDocumentationCommand extends Command
@@ -66,7 +68,7 @@ final class GenerateDocumentationCommand extends Command
     private function readFromFile(string $filename): OpenApi\OpenApi
     {
         $fileType = RestApiBundle\Helper\OpenApi\FileTypeResolver::resolveByFilename($filename);
-        $fileContent = file_get_contents($filename);
+        $fileContent = \file_get_contents($filename);
 
         return match ($fileType) {
             RestApiBundle\Helper\OpenApi\FileTypeResolver::JSON_TYPE => $this->schemaSerializer->fromJson($fileContent),

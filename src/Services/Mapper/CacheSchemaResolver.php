@@ -1,23 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Services\Mapper;
 
 use RestApiBundle;
 use Symfony\Component\Cache;
 use Symfony\Component\Finder\Finder;
 
-use function array_merge;
-use function ltrim;
-
-final class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaResolverInterface
+final class CacheSchemaResolver implements SchemaResolverInterface
 {
     private const CACHE_FILENAME = 'mapper_schema.php.cache';
 
     private Cache\Adapter\PhpArrayAdapter $cacheAdapter;
 
     public function __construct(
-        private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver,
-        string $cacheDir
+        private SchemaResolver $schemaResolver,
+        string $cacheDir,
     ) {
         $this->cacheAdapter = new Cache\Adapter\PhpArrayAdapter(
             $cacheDir . \DIRECTORY_SEPARATOR . static::CACHE_FILENAME,
@@ -64,7 +63,7 @@ final class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaR
             $values[$this->resolveCacheKey($class, false)] = $this->resolve($class);
         }
 
-        $classes = array_merge($classes, $this->cacheAdapter->warmUp($values));
+        $classes = \array_merge($classes, $this->cacheAdapter->warmUp($values));
 
         return $classes;
     }
@@ -76,6 +75,6 @@ final class CacheSchemaResolver implements RestApiBundle\Services\Mapper\SchemaR
 
     private function resolveCacheKey(string $class, bool $isNullable): string
     {
-        return strtr(ltrim($class, '\\'), '\\', '.') . $isNullable;
+        return \strtr(\ltrim($class, '\\'), '\\', '.') . $isNullable;
     }
 }

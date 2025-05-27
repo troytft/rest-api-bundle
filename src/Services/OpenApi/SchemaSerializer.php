@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Services\OpenApi;
 
 use cebe\openapi\spec as OpenApi;
@@ -14,9 +16,9 @@ final class SchemaSerializer
 
     public function toJson(OpenApi\OpenApi $specification): string
     {
-        $result = json_encode($specification->getSerializableData(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \InvalidArgumentException(json_last_error_msg());
+        $result = \json_encode($specification->getSerializableData(), \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE | \JSON_PRETTY_PRINT);
+        if (\json_last_error() !== \JSON_ERROR_NONE) {
+            throw new \InvalidArgumentException(\json_last_error_msg());
         }
 
         return $result;
@@ -29,12 +31,12 @@ final class SchemaSerializer
 
     public function fromJson(string $content): OpenApi\OpenApi
     {
-        return $this->fromArray(json_decode($content, true));
+        return $this->fromArray(\json_decode($content, true));
     }
 
     private function fromArray(array $data): OpenApi\OpenApi
     {
-        return new OpenApi\OpenApi(array_merge([
+        return new OpenApi\OpenApi(\array_merge([
             'paths' => [],
             'tags' => [],
             'components' => [],

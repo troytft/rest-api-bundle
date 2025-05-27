@@ -1,27 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Services\OpenApi;
 
-use RestApiBundle;
 use cebe\openapi\spec as OpenApi;
+use RestApiBundle;
 use Symfony\Component\PropertyInfo;
-use Symfony\Component\Validator as Validator;
-
-use function array_is_list;
-use function sprintf;
+use Symfony\Component\Validator;
 
 class RequestModelResolver
 {
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
         private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver,
+        private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService,
     ) {
     }
 
     public function resolve(string $class, bool $nullable = false): OpenApi\Schema
     {
         if (!RestApiBundle\Helper\ReflectionHelper::isMapperModel($class)) {
-            throw new \InvalidArgumentException(sprintf('Class %s is not a request model', $class));
+            throw new \InvalidArgumentException(\sprintf('Class %s is not a request model', $class));
         }
 
         $properties = [];
@@ -57,70 +57,6 @@ class RequestModelResolver
     }
 
     /**
-     * @todo: refactor to more clear solution
-     *
-     * @param Validator\Constraint[] $constraints
-     */
-    private function applyConstraints(OpenApi\Schema $schema, array $constraints): void
-    {
-        foreach ($constraints as $constraint) {
-            switch ($constraint::class) {
-                case Validator\Constraints\Range::class:
-                    if ($constraint->min !== null) {
-                        $schema->minimum = $constraint->min;
-                    }
-
-                    if ($constraint->max !== null) {
-                        $schema->maximum = $constraint->max;
-                    }
-
-                    break;
-
-                case Validator\Constraints\Choice::class:
-                    if ($constraint->choices) {
-                        $choices = $constraint->choices;
-                    } elseif ($constraint->callback) {
-                        $callback = $constraint->callback;
-                        $choices = $callback();
-                    } else {
-                        throw new \InvalidArgumentException();
-                    }
-
-                    if (!array_is_list($choices)) {
-                        throw new \InvalidArgumentException();
-                    }
-
-                    $schema->enum = $choices;
-
-                    break;
-
-                case Validator\Constraints\Length::class:
-                    if ($constraint->min !== null) {
-                        $schema->minLength = $constraint->min;
-                    }
-
-                    if ($constraint->max !== null) {
-                        $schema->maxLength = $constraint->max;
-                    }
-
-                    break;
-
-                case Validator\Constraints\NotBlank::class:
-                    if (!$constraint->allowNull) {
-                        $schema->nullable = false;
-                    }
-
-                    break;
-
-                case Validator\Constraints\NotNull::class:
-                    $schema->nullable = false;
-
-                    break;
-            }
-        }
-    }
-
-    /**
      * @param Validator\Constraint[] $validationConstraints
      */
     private function resolveByMapperSchema(RestApiBundle\Model\Mapper\Schema $schema, array $validationConstraints): OpenApi\Schema
@@ -147,27 +83,49 @@ class RequestModelResolver
     }
 
     /**
-     * @param Validator\Constraint[] $validationConstraints
+     * @param Validator\Constraint[] $constraints
      */
-    private function resolveTransformerAwareType(RestApiBundle\Model\Mapper\Schema $schema, array $validationConstraints): OpenApi\Schema
+    private function resolveTransformerAwareType(RestApiBundle\Model\Mapper\Schema $schema, array $constraints): OpenApi\Schema
     {
-        return match ($schema->transformerClass) {
-            RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class => $this->resolveScalarTransformer(PropertyInfo\Type::BUILTIN_TYPE_INT, $schema->isNullable, $validationConstraints),
-            RestApiBundle\Services\Mapper\Transformer\StringTransformer::class => $this->resolveScalarTransformer(PropertyInfo\Type::BUILTIN_TYPE_STRING, $schema->isNullable, $validationConstraints),
-            RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class => $this->resolveScalarTransformer(PropertyInfo\Type::BUILTIN_TYPE_BOOL, $schema->isNullable, $validationConstraints),
-            RestApiBundle\Services\Mapper\Transformer\FloatTransformer::class => $this->resolveScalarTransformer(PropertyInfo\Type::BUILTIN_TYPE_FLOAT, $schema->isNullable, $validationConstraints),
-            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class => $this->resolveDateTimeTransformer($schema->transformerOptions, $schema->isNullable, $validationConstraints),
+        $result = match ($schema->transformerClass) {
+            RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class => RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger($schema->isNullable),
+            RestApiBundle\Services\Mapper\Transformer\StringTransformer::class => RestApiBundle\Helper\OpenApi\SchemaHelper::createString($schema->isNullable),
+            RestApiBundle\Services\Mapper\Transformer\BooleanTransformer::class => RestApiBundle\Helper\OpenApi\SchemaHelper::createBoolean($schema->isNullable),
+            RestApiBundle\Services\Mapper\Transformer\FloatTransformer::class => RestApiBundle\Helper\OpenApi\SchemaHelper::createFloat($schema->isNullable),
+            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class => $this->resolveDateTimeTransformer($schema->transformerOptions, $schema->isNullable, $constraints),
             RestApiBundle\Services\Mapper\Transformer\DateTransformer::class => $this->resolveDateTransformer($schema->transformerOptions, $schema->isNullable),
             RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class => $this->resolveDoctrineEntityTransformer($schema->transformerOptions, $schema->isNullable),
             RestApiBundle\Services\Mapper\Transformer\EnumTransformer::class => $this->resolveEnumTransformer($schema->transformerOptions, $schema->isNullable),
             default => throw new \InvalidArgumentException(),
         };
-    }
 
-    private function resolveScalarTransformer(string $type, bool $nullable, array $validationConstraints): OpenApi\Schema
-    {
-        $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromString($type, $nullable);
-        $this->applyConstraints($result, $validationConstraints);
+        foreach ($constraints as $constraint) {
+            if ($constraint instanceof Validator\Constraints\Range) {
+                if ($constraint->min !== null) {
+                    $result->minimum = $constraint->min;
+                }
+
+                if ($constraint->max !== null) {
+                    $result->maximum = $constraint->max;
+                }
+            } elseif ($constraint instanceof Validator\Constraints\Choice) {
+                $result->enum = $this->extractConstraintChoices($constraint);
+            } elseif ($constraint instanceof Validator\Constraints\Length) {
+                if ($constraint->min !== null) {
+                    $result->minLength = $constraint->min;
+                }
+
+                if ($constraint->max !== null) {
+                    $result->maxLength = $constraint->max;
+                }
+            } elseif ($constraint instanceof Validator\Constraints\NotBlank) {
+                if (!$constraint->allowNull) {
+                    $result->nullable = false;
+                }
+            } elseif ($constraint instanceof Validator\Constraints\NotNull) {
+                $result->nullable = false;
+            }
+        }
 
         return $result;
     }
@@ -178,11 +136,8 @@ class RequestModelResolver
     private function resolveDateTimeTransformer(array $options, bool $nullable, array $validationConstraints): OpenApi\Schema
     {
         $format = $options[RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateTimeFormat();
-        $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createDateTime($format, $nullable);
 
-        $this->applyConstraints($result, $validationConstraints);
-
-        return $result;
+        return RestApiBundle\Helper\OpenApi\SchemaHelper::createDateTime($format, $nullable);
     }
 
     private function resolveDateTransformer(array $options, bool $nullable): OpenApi\Schema
@@ -197,24 +152,28 @@ class RequestModelResolver
         $class = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::CLASS_OPTION];
         $fieldName = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::FIELD_OPTION];
         $isMultiple = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::MULTIPLE_OPTION] ?? false;
-        $columnType = RestApiBundle\Helper\DoctrineHelper::extractColumnType($class, $fieldName);
 
-        if ($isMultiple) {
-            $itemsType = RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromString($columnType);
-
-            $result = new OpenApi\Schema([
-                'type' => OpenApi\Type::ARRAY,
-                'items' => $itemsType,
-                'nullable' => $nullable,
-                'description' => sprintf('Collection of "%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName),
-            ]);
+        $propertyType = $this->propertyTypeExtractorService->getTypeRequired($class, $fieldName);
+        if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
+            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger($nullable);
+        } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
+            $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createString($nullable);
         } else {
-            $result = RestApiBundle\Helper\OpenApi\SchemaHelper::createScalarFromString($columnType);
-            $result->description = sprintf('"%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName);
-            $result->nullable = $nullable;
+            throw new RestApiBundle\Exception\ContextAware\UnknownPropertyTypeException($class, $fieldName);
         }
 
-        return $result;
+        if ($isMultiple) {
+            $schema = new OpenApi\Schema([
+                'type' => OpenApi\Type::ARRAY,
+                'items' => $schema,
+                'nullable' => $nullable,
+                'description' => \sprintf('Collection of "%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName),
+            ]);
+        } else {
+            $schema->description = \sprintf('"%s" fetched by field "%s"', $this->resolveShortClassName($class), $fieldName);
+        }
+
+        return $schema;
     }
 
     private function resolveEnumTransformer(array $options, bool $nullable): OpenApi\Schema
@@ -235,8 +194,26 @@ class RequestModelResolver
 
     private function resolveShortClassName(string $class): string
     {
-        $chunks = explode('\\', $class);
+        $chunks = \explode('\\', $class);
 
-        return $chunks[array_key_last($chunks)] ?? throw new \LogicException();
+        return $chunks[\array_key_last($chunks)] ?? throw new \LogicException();
+    }
+
+    private function extractConstraintChoices(Validator\Constraints\Choice $constraint): array
+    {
+        if ($constraint->choices) {
+            $choices = $constraint->choices;
+        } elseif ($constraint->callback) {
+            $callback = $constraint->callback;
+            $choices = $callback();
+        } else {
+            throw new \InvalidArgumentException();
+        }
+
+        if (!\array_is_list($choices)) {
+            throw new \InvalidArgumentException();
+        }
+
+        return \array_map(fn ($item) => $item instanceof \BackedEnum ? $item->value : $item, $choices);
     }
 }

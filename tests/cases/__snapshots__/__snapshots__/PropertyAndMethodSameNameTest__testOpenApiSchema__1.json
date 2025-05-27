@@ -1,0 +1,34 @@
+{
+    "PropertyAndMethodSameNameTest_Inner": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer",
+                "format": "int64",
+                "nullable": false
+            },
+            "__typename": {
+                "type": "string",
+                "default": "PropertyAndMethodSameNameTest_Inner",
+                "nullable": false
+            }
+        }
+    },
+    "PropertyAndMethodSameNameTest_Root": {
+        "type": "object",
+        "properties": {
+            "items": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/PropertyAndMethodSameNameTest_Inner"
+                },
+                "nullable": false
+            },
+            "__typename": {
+                "type": "string",
+                "default": "PropertyAndMethodSameNameTest_Root",
+                "nullable": false
+            }
+        }
+    }
+}

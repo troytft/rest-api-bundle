@@ -1,19 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RestApiBundle\Helper;
 
-use RestApiBundle;
+use phpDocumentor\Reflection as PhpDoc;
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlockFactory;
+use RestApiBundle;
 use Symfony\Component\PropertyInfo;
-use phpDocumentor\Reflection as PhpDoc;
-
-use function in_array;
 
 final class TypeExtractor
 {
     private static ?PropertyInfo\Util\PhpDocTypeHelper $docBlockHelper = null;
     private static ?PhpDoc\DocBlockFactoryInterface $docBlockFactory = null;
+    private static ?PhpDoc\Types\ContextFactory $phpDocContextFactory = null;
 
     private static function extractByReflectionType(\ReflectionType $sourceReflectionType): ?PropertyInfo\Type
     {
@@ -33,14 +34,14 @@ final class TypeExtractor
 
             if ($phpTypeOrClass === 'null' | $phpTypeOrClass === 'void') {
                 $result[] = new PropertyInfo\Type(PropertyInfo\Type::BUILTIN_TYPE_NULL, $sourceReflectionType->allowsNull());
-            } elseif ($reflectionType instanceof  \ReflectionNamedType && $reflectionType->isBuiltin()) {
+            } elseif ($reflectionType instanceof \ReflectionNamedType && $reflectionType->isBuiltin()) {
                 $result[] = new PropertyInfo\Type($phpTypeOrClass, $sourceReflectionType->allowsNull());
             } else {
                 $result[] = new PropertyInfo\Type(PropertyInfo\Type::BUILTIN_TYPE_OBJECT, $sourceReflectionType->allowsNull(), $phpTypeOrClass);
             }
         }
 
-        if (count($result) > 1) {
+        if (\count($result) > 1) {
             throw new RestApiBundle\Exception\Schema\InvalidDefinitionException('Union types are not supported.');
         }
 
@@ -50,7 +51,7 @@ final class TypeExtractor
     private static function extractByDocBlockTag(PhpDoc\Type $phpDocType): ?PropertyInfo\Type
     {
         $result = static::getDocBlockHelper()->getTypes($phpDocType);
-        if (count($result) > 1) {
+        if (\count($result) > 1) {
             throw new RestApiBundle\Exception\Schema\InvalidDefinitionException('Union types are not supported.');
         }
 
@@ -66,7 +67,25 @@ final class TypeExtractor
         return static::$docBlockHelper;
     }
 
-    private static function extract(?\ReflectionType $reflectionType, ?PhpDoc\Type $docBlockType): ?PropertyInfo\Type
+    private static function getDocBlockFactory(): PhpDoc\DocBlockFactoryInterface
+    {
+        if (!static::$docBlockFactory) {
+            static::$docBlockFactory = DocBlockFactory::createInstance();
+        }
+
+        return static::$docBlockFactory;
+    }
+
+    private static function getPhpDocContextFactory(): PhpDoc\Types\ContextFactory
+    {
+        if (!static::$phpDocContextFactory) {
+            static::$phpDocContextFactory = new PhpDoc\Types\ContextFactory();
+        }
+
+        return static::$phpDocContextFactory;
+    }
+
+    private static function mergeReflectionTypeAndPhpDocType(?\ReflectionType $reflectionType, ?PhpDoc\Type $docBlockType): ?PropertyInfo\Type
     {
         $typeByDocBlock = $docBlockType ? static::extractByDocBlockTag($docBlockType) : null;
         $typeByReflection = $reflectionType ? static::extractByReflectionType($reflectionType) : null;
@@ -86,28 +105,16 @@ final class TypeExtractor
 
     public static function extractByReflectionParameter(\ReflectionParameter $reflectionParameter): ?PropertyInfo\Type
     {
-        return static::extract($reflectionParameter->getType(), null);
+        return static::mergeReflectionTypeAndPhpDocType($reflectionParameter->getType(), null);
     }
 
     public static function extractByReflectionMethod(\ReflectionMethod $reflectionMethod): ?PropertyInfo\Type
     {
         try {
             $returnTag = static::resolveReturnTag($reflectionMethod);
-            $result = static::extract($reflectionMethod->getReturnType(), $returnTag?->getType());
+            $result = static::mergeReflectionTypeAndPhpDocType($reflectionMethod->getReturnType(), $returnTag?->getType());
         } catch (RestApiBundle\Exception\Schema\InvalidDefinitionException $exception) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException($exception->getMessage(), $reflectionMethod);
-        }
-
-        return $result;
-    }
-
-    public static function extractByReflectionProperty(\ReflectionProperty $reflectionProperty): ?PropertyInfo\Type
-    {
-        try {
-            $varTag = static::resolveVarTag($reflectionProperty);
-            $result = static::extract($reflectionProperty->getType(), $varTag?->getType());
-        } catch (RestApiBundle\Exception\Schema\InvalidDefinitionException $exception) {
-            throw new RestApiBundle\Exception\ContextAware\ReflectionPropertyAwareException($exception->getMessage(), $reflectionProperty);
         }
 
         return $result;
@@ -119,8 +126,11 @@ final class TypeExtractor
             return null;
         }
 
-        $docBlock = static::getDocBlockFactory()->create($reflectionMethod->getDocComment());
-        $count = count($docBlock->getTagsByName('return'));
+        $context = static::getPhpDocContextFactory()->createFromReflector($reflectionMethod);
+        $docBlock = static::getDocBlockFactory()
+            ->create($reflectionMethod->getDocComment(), $context);
+
+        $count = \count($docBlock->getTagsByName('return'));
 
         if ($count === 0) {
             return null;
@@ -138,55 +148,9 @@ final class TypeExtractor
         return $returnTag;
     }
 
-    private static function resolveVarTag(\ReflectionProperty $reflectionProperty): ?PhpDoc\DocBlock\Tags\Var_
-    {
-        if (!$reflectionProperty->getDocComment()) {
-            return null;
-        }
-
-        $docBlock = static::getDocBlockFactory()->create($reflectionProperty->getDocComment());
-        $count = count($docBlock->getTagsByName('var'));
-
-        if ($count === 0) {
-            return null;
-        }
-
-        if ($count > 1) {
-            throw new \LogicException();
-        }
-
-        $varTag = $docBlock->getTagsByName('var')[0];
-        if (!$varTag instanceof PhpDoc\DocBlock\Tags\Var_ || !$varTag->getType()) {
-            throw new \InvalidArgumentException();
-        }
-
-        return $varTag;
-    }
-
-    private static function getDocBlockFactory(): PhpDoc\DocBlockFactoryInterface
-    {
-        if (!static::$docBlockFactory) {
-            static::$docBlockFactory = DocBlockFactory::createInstance();
-        }
-
-        return static::$docBlockFactory;
-    }
-
-    public static function isScalar(PropertyInfo\Type $type): bool
-    {
-        $types = [
-            PropertyInfo\Type::BUILTIN_TYPE_INT,
-            PropertyInfo\Type::BUILTIN_TYPE_BOOL,
-            PropertyInfo\Type::BUILTIN_TYPE_STRING,
-            PropertyInfo\Type::BUILTIN_TYPE_FLOAT,
-        ];
-
-        return in_array($type->getBuiltinType(), $types, true);
-    }
-
     public static function extractCollectionValueType(PropertyInfo\Type $type): PropertyInfo\Type
     {
-        if (count($type->getCollectionValueTypes()) > 1) {
+        if (\count($type->getCollectionValueTypes()) > 1) {
             throw new \InvalidArgumentException();
         }
 
@@ -202,7 +166,7 @@ final class TypeExtractor
     {
         $values = null;
 
-        if (class_exists($class) && enum_exists($class)) {
+        if (\class_exists($class) && \enum_exists($class)) {
             foreach ($class::cases() as $case) {
                 if ($case instanceof \BackedEnum) {
                     $values[] = $case->value;
@@ -210,12 +174,12 @@ final class TypeExtractor
                     throw new \InvalidArgumentException();
                 }
             }
-        } elseif (method_exists($class, 'getValues')) {
+        } elseif (\method_exists($class, 'getValues')) {
             $values = $class::getValues();
         } else {
-            $reflectionClass = RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class);
+            $reflectionClass = ReflectionHelper::getReflectionClass($class);
             foreach ($reflectionClass->getReflectionConstants(\ReflectionClassConstant::IS_PUBLIC) as $reflectionConstant) {
-                if (is_scalar($reflectionConstant->getValue())) {
+                if (\is_scalar($reflectionConstant->getValue())) {
                     $values[] = $reflectionConstant->getValue();
                 }
             }
@@ -227,25 +191,21 @@ final class TypeExtractor
 
         $types = [];
         foreach ($values as $value) {
-            if (is_int($value)) {
+            if (\is_int($value)) {
                 $types[PropertyInfo\Type::BUILTIN_TYPE_INT] = true;
-            } elseif (is_string($value)) {
+            } elseif (\is_string($value)) {
                 $types[PropertyInfo\Type::BUILTIN_TYPE_STRING] = true;
-            } elseif (is_float($value)) {
-                $types[PropertyInfo\Type::BUILTIN_TYPE_FLOAT] = true;
             } else {
                 throw new \InvalidArgumentException();
             }
         }
 
-        $types = array_keys($types);
-        if (count($types) === 1) {
+        $types = \array_keys($types);
+        if (\count($types) === 1) {
             $type = $types[0];
         } else {
-            if (in_array(PropertyInfo\Type::BUILTIN_TYPE_STRING, $types, true)) {
+            if (\in_array(PropertyInfo\Type::BUILTIN_TYPE_STRING, $types, true)) {
                 $type = PropertyInfo\Type::BUILTIN_TYPE_STRING;
-            } elseif (in_array(PropertyInfo\Type::BUILTIN_TYPE_FLOAT, $types, true)) {
-                $type = PropertyInfo\Type::BUILTIN_TYPE_FLOAT;
             } else {
                 $type = PropertyInfo\Type::BUILTIN_TYPE_INT;
             }
