@@ -6,8 +6,8 @@ use Tests;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table()
- * @ORM\Entity(repositoryClass="Tests\Fixture\TestApp\Repository\BookRepository")
+ * @ORM\Entity
+ * @ORM\Table(name="books")
  */
 class Book
 {
