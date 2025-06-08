@@ -62,7 +62,7 @@ return \Symplify\EasyCodingStandard\Config\ECSConfig::configure()
     ])
     ->withConfiguredRule(\PhpCsFixer\Fixer\FunctionNotation\NativeFunctionInvocationFixer::class,
         [
-            'include' => ['@all'],
+            'include' => ['@internal'],
             'scope' => 'all',
             'strict' => false,
         ])
