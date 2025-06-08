@@ -15,14 +15,20 @@ class Endpoint
      * @Required
      */
     public string $title;
+
     public ?string $description;
-    /** @var string[]|string */
+
+    /**
+     * @var string[]|string
+     */
     public $tags;
+
     public ?string $requestModel;
+
     public ?int $httpStatusCode;
 
     /**
-     * @param array|string    $options
+     * @param array|string $options
      * @param string[]|string $tags
      */
     public function __construct($options = [], string $title = '', ?string $description = null, $tags = [], ?string $requestModel = null, ?int $httpStatusCode = null)

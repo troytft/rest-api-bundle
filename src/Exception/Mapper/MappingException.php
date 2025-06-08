@@ -11,8 +11,9 @@ class MappingException extends \RuntimeException implements RestApiBundle\Except
     /**
      * @param array<string, string[]> $properties
      */
-    public function __construct(private array $properties)
-    {
+    public function __construct(
+        private array $properties,
+    ) {
         parent::__construct();
     }
 

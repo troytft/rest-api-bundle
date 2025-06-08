@@ -11,8 +11,9 @@ class SchemaResolver implements SchemaResolverInterface
 {
     private array $schemaTypeResolvers;
 
-    public function __construct(private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService)
-    {
+    public function __construct(
+        private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService,
+    ) {
         $this->schemaTypeResolvers = [
             new SchemaTypeResolver\StringTypeResolver(),
             new SchemaTypeResolver\IntegerTypeResolver(),
