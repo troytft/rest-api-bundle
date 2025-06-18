@@ -10,11 +10,11 @@ use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 return function (ContainerConfigurator $configurator) {
     $services = $configurator->services()
         ->defaults()
-            ->autowire()
-            ->autoconfigure()
-            ->public()
-            ->bind(RestApiBundle\Services\Mapper\SchemaResolverInterface::class, service(RestApiBundle\Services\Mapper\CacheSchemaResolver::class))
-            ->bind('$cacheDir', '%kernel.cache_dir%');
+        ->autowire()
+        ->autoconfigure()
+        ->public()
+        ->bind(RestApiBundle\Services\Mapper\SchemaResolverInterface::class, service(RestApiBundle\Services\Mapper\CacheSchemaResolver::class))
+        ->bind('$cacheDir', '%kernel.cache_dir%');
 
     $services
         ->instanceof(RestApiBundle\Services\Mapper\Transformer\TransformerInterface::class)

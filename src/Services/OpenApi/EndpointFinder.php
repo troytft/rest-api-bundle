@@ -38,7 +38,8 @@ class EndpointFinder
             if (!$autoloadFixed) {
                 $filePathParts = \explode('/', $fileInfo->getPathname());
                 $namespaceDirectory = \implode('/', \array_slice($filePathParts, 0, \count($filePathParts) - \substr_count($class, '\\') - 1));
-                $this->getClassLoader()->add('', $namespaceDirectory);
+                $this->getClassLoader()
+                    ->add('', $namespaceDirectory);
 
                 $autoloadFixed = true;
             }

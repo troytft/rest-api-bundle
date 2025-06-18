@@ -21,6 +21,7 @@ class SerializableDateNormalizer implements ContextAwareNormalizerInterface
      */
     public function normalize($object, $format = null, array $context = [])
     {
-        return $object->getValue()->format($context[static::FORMAT_KEY]);
+        return $object->getValue()
+            ->format($context[static::FORMAT_KEY]);
     }
 }

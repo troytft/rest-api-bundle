@@ -10,8 +10,9 @@ class DateTransformer implements TransformerInterface
 {
     public const FORMAT_OPTION = 'format';
 
-    public function __construct(private RestApiBundle\Services\SettingsProvider $settingsProvider)
-    {
+    public function __construct(
+        private RestApiBundle\Services\SettingsProvider $settingsProvider,
+    ) {
     }
 
     public function transform($value, array $options = []): \DateTime

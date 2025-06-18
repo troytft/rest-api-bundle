@@ -46,7 +46,8 @@ class DoctrineEntityTransformer implements TransformerInterface
             default => throw new \InvalidArgumentException(),
         };
 
-        $entity = $this->entityManager->getRepository($class)->findOneBy([$fieldName => $value]);
+        $entity = $this->entityManager->getRepository($class)
+            ->findOneBy([$fieldName => $value]);
         if (!$entity) {
             throw new RestApiBundle\Exception\RequestModel\EntityNotFoundException();
         }
@@ -101,7 +102,8 @@ class DoctrineEntityTransformer implements TransformerInterface
             throw new RestApiBundle\Exception\RequestModel\RepeatableEntityOfEntityCollectionException();
         }
 
-        $results = $this->entityManager->getRepository($class)->findBy([$fieldName => $value]);
+        $results = $this->entityManager->getRepository($class)
+            ->findBy([$fieldName => $value]);
         if (\count($results) !== \count($value)) {
             throw new RestApiBundle\Exception\RequestModel\OneEntityOfEntitiesCollectionNotFoundException();
         }

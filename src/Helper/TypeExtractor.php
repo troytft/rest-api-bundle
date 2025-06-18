@@ -13,7 +13,9 @@ use Symfony\Component\PropertyInfo;
 final class TypeExtractor
 {
     private static ?PropertyInfo\Util\PhpDocTypeHelper $docBlockHelper = null;
+
     private static ?PhpDoc\DocBlockFactoryInterface $docBlockFactory = null;
+
     private static ?PhpDoc\Types\ContextFactory $phpDocContextFactory = null;
 
     private static function extractByReflectionType(\ReflectionType $sourceReflectionType): ?PropertyInfo\Type
