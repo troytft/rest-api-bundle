@@ -3,19 +3,13 @@
 namespace Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestInvalidDefinition;
 
 use Symfony\Component\Routing\Annotation\Route;
-use RestApiBundle\Mapping\OpenApi as Docs;
+use RestApiBundle\Mapping\OpenApi;
 
 class DefaultController
 {
-    /**
-     * @Docs\Endpoint(title="Title", tags={"tag"})
-     *
-     * @Route("/{unknown_parameter}", methods="GET")
-     *
-     * @return null
-     */
-    public function testAction()
+    #[OpenApi\Endpoint(summary: 'Title', tags: ['tag'])]
+    #[Route('/{unknown_parameter}', methods: 'GET')]
+    public function testAction(): void
     {
-        return null;
     }
 }

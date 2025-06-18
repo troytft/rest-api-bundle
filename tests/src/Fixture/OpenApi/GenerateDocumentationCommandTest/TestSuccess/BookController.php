@@ -11,9 +11,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class BookController
 {
+    #[OpenApi\Endpoint(summary: 'Books list', tags: ['books'])]
     /**
-     * @OpenApi\Endpoint("Books list", tags="books")
-     *
      * @Route(methods="GET")
      *
      * @return Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\Book[]
@@ -23,9 +22,8 @@ class BookController
         return [];
     }
 
+    #[OpenApi\Endpoint(summary: 'Upload book', tags: ['books'])]
     /**
-     * @OpenApi\Endpoint("Upload book", tags="books")
-     *
      * @Route(methods="POST")
      */
     public function uploadAction(Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\UploadBook $requestModel): void
