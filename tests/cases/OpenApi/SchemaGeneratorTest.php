@@ -6,7 +6,7 @@ class SchemaGeneratorTest extends Tests\BaseTestCase
     {
         $endpointData = new \RestApiBundle\Model\OpenApi\EndpointData(
             new \ReflectionMethod(\Tests\Fixture\OpenApi\SchemaGeneratorTest\DefaultController::class, 'redirectResponseAction'),
-            new \RestApiBundle\Mapping\OpenApi\Endpoint(title: 'title', tags: 'tag'),
+            new \RestApiBundle\Mapping\OpenApi\Endpoint(summary: 'title', tags: ['tag']),
             new \Symfony\Component\Routing\Annotation\Route('/', methods: 'GET')
         );
         $schema = $this->getSchemaGenerator()->generate([$endpointData]);
@@ -18,7 +18,7 @@ class SchemaGeneratorTest extends Tests\BaseTestCase
     {
         $endpointData = new \RestApiBundle\Model\OpenApi\EndpointData(
             new \ReflectionMethod(\Tests\Fixture\OpenApi\SchemaGeneratorTest\DefaultController::class, 'binaryFileResponseAction'),
-            new \RestApiBundle\Mapping\OpenApi\Endpoint(title: 'title', tags: 'tag'),
+            new \RestApiBundle\Mapping\OpenApi\Endpoint(summary: 'title', tags: ['tag']),
             new \Symfony\Component\Routing\Annotation\Route('/', methods: 'GET')
         );
         $schema = $this->getSchemaGenerator()->generate([$endpointData]);
@@ -30,7 +30,7 @@ class SchemaGeneratorTest extends Tests\BaseTestCase
     {
         $endpointData = new \RestApiBundle\Model\OpenApi\EndpointData(
             new \ReflectionMethod(\Tests\Fixture\OpenApi\SchemaGeneratorTest\DefaultController::class, 'voidResponseAction'),
-            new \RestApiBundle\Mapping\OpenApi\Endpoint(title: 'title', tags: 'tag'),
+            new \RestApiBundle\Mapping\OpenApi\Endpoint(summary: 'title', tags: ['tag']),
             new \Symfony\Component\Routing\Annotation\Route('/', methods: 'GET')
         );
         $schema = $this->getSchemaGenerator()->generate([$endpointData]);
