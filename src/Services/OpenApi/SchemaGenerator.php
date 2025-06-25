@@ -142,29 +142,17 @@ class SchemaGenerator
         string $httpMethod,
         string $routePath,
     ): OpenApi\Operation {
-        if ($endpointData->endpointMapping->getTags()) {
-            $tags = $endpointData->endpointMapping->getTags();
-        } else {
-            $cleanedPath = \trim($routePath, '/');
-            if ($cleanedPath) {
-                $tags = \explode('/', $cleanedPath);
-            } else {
-                $tags = ['common'];
-            }
-        }
-
         $operation = new OpenApi\Operation([
             'summary' => $endpointData->endpointMapping->getSummary(),
             'responses' => $this->createResponses($endpointData->reflectionMethod, $endpointData->endpointMapping->getHttpStatusCode()),
-            'tags' => $tags,
         ]);
 
-        if (!$operation->summary) {
-            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Title can not be empty', $endpointData->reflectionMethod);
+        if ($endpointData->endpointMapping->getTags()) {
+            $operation->tags = $endpointData->endpointMapping->getTags();
         }
 
-        if (!$operation->tags) {
-            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Tags can not be empty', $endpointData->reflectionMethod);
+        if (!$operation->summary) {
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Summary can not be empty', $endpointData->reflectionMethod);
         }
 
         if ($endpointData->endpointMapping->getDescription()) {
