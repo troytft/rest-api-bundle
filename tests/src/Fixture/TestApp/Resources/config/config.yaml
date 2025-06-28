@@ -14,6 +14,12 @@ doctrine:
         memory: true
     orm:
         auto_mapping: true
+        mappings:
+            TestApp:
+                type: annotation
+                dir: '%kernel.project_dir%/tests/src/Fixture/TestApp/Entity'
+                prefix: 'Tests\Fixture\TestApp\Entity'
+                is_bundle: false
 
 rest_api: ~
 
