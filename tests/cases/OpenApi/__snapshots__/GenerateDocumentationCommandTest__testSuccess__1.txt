@@ -5,8 +5,6 @@ info:
 paths:
     /books:
         get:
-            tags:
-                - books
             summary: 'Books list'
             responses:
                 '200':
@@ -18,6 +16,8 @@ paths:
                                 items:
                                     $ref: '#/components/schemas/Book'
                                 nullable: false
+            tags:
+                - books
             parameters:
                 -
                     name: offset
@@ -77,12 +77,12 @@ paths:
                             - published
                             - created
         post:
-            tags:
-                - books
             summary: 'Upload book'
             responses:
                 '204':
                     description: 'Response with empty body'
+            tags:
+                - books
             requestBody:
                 description: 'Request body'
                 content:
@@ -101,8 +101,6 @@ paths:
                 required: true
     /writers:
         post:
-            tags:
-                - writers
             summary: 'Create writer'
             responses:
                 '200':
@@ -144,8 +142,6 @@ paths:
                             nullable: false
                 required: true
         get:
-            tags:
-                - writers
             summary: 'Writers list with filters'
             responses:
                 '200':
@@ -157,6 +153,8 @@ paths:
                                 items:
                                     $ref: '#/components/schemas/Author'
                                 nullable: false
+            tags:
+                - writers
             parameters:
                 -
                     name: offset
@@ -216,12 +214,12 @@ paths:
                     description: 'Collection of "Book" fetched by field "id"'
     '/writers/{id}':
         delete:
-            tags:
-                - writers
             summary: 'Remove writer'
             responses:
                 '204':
                     description: 'Response with empty body'
+            tags:
+                - writers
             deprecated: true
             parameters:
                 -

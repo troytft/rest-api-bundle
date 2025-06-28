@@ -11,8 +11,9 @@ class DateTimeTransformer implements TransformerInterface
     public const FORMAT_OPTION = 'format';
     public const FORCE_LOCAL_TIMEZONE_OPTION = 'forceLocalTimezone';
 
-    public function __construct(private RestApiBundle\Services\SettingsProvider $settingsProvider)
-    {
+    public function __construct(
+        private RestApiBundle\Services\SettingsProvider $settingsProvider,
+    ) {
     }
 
     public function transform($value, array $options = []): \DateTime

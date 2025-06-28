@@ -94,7 +94,7 @@ class ModelValidator
         if ($propertySchema->propertyGetterName) {
             $result = $instance->{$propertySchema->propertyGetterName}();
         } else {
-            $result = $instance->$propertyName;
+            $result = $instance->{$propertyName};
         }
 
         return $result;

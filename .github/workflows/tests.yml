@@ -43,7 +43,7 @@ jobs:
                 run: vendor/bin/phpunit
 
             -   name: Run PHP Code Sniffer
-                run: vendor/bin/phpcs
+                run: make test-cs
 
             -   name: Run PHPStan
                 run: vendor/bin/phpstan analyse --no-progress

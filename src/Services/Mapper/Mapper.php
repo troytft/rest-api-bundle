@@ -103,7 +103,7 @@ class Mapper
                 if ($propertySchema->propertySetterName) {
                     \call_user_func([$model, $propertySchema->propertySetterName], $value);
                 } else {
-                    $model->$propertyName = $value;
+                    $model->{$propertyName} = $value;
                 }
             } catch (RestApiBundle\Exception\Mapper\StackableMappingExceptionInterface $exception) {
                 $mappingExceptionsStack[] = $exception;

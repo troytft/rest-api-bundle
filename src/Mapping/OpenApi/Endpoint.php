@@ -4,43 +4,52 @@ declare(strict_types=1);
 
 namespace RestApiBundle\Mapping\OpenApi;
 
-/**
- * @Annotation
- * @Target({"METHOD"})
- */
 #[\Attribute(\Attribute::TARGET_METHOD)]
 class Endpoint
 {
     /**
-     * @Required
+     * @param string[]|null $tags
      */
-    public string $title;
-    public ?string $description;
-    /** @var string[]|string */
-    public $tags;
-    public ?string $requestModel;
-    public ?int $httpStatusCode;
+    public function __construct(
+        private string $summary,
+        private ?string $description = null,
+        private ?array $tags = null,
+        private ?string $requestModelInterface = null,
+        private ?int $httpStatusCode = null,
+        private bool $deprecated = false,
+    ) {
+    }
+
+    public function getSummary(): string
+    {
+        return $this->summary;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
 
     /**
-     * @param array|string    $options
-     * @param string[]|string $tags
+     * @return string[]|null
      */
-    public function __construct($options = [], string $title = '', ?string $description = null, $tags = [], ?string $requestModel = null, ?int $httpStatusCode = null)
+    public function getTags(): ?array
     {
-        if (\is_string($options)) {
-            $this->title = $options;
-            $this->description = $description;
-            $this->tags = $tags;
-            $this->requestModel = $requestModel;
-            $this->httpStatusCode = $httpStatusCode;
-        } elseif (\is_array($options)) {
-            $this->title = $options['title'] ?? $options['value'] ?? $title;
-            $this->description = $options['description'] ?? $description;
-            $this->tags = $options['tags'] ?? $tags;
-            $this->requestModel = $options['requestModel'] ?? $requestModel;
-            $this->httpStatusCode = $options['httpStatusCode'] ?? $httpStatusCode;
-        } else {
-            throw new \InvalidArgumentException();
-        }
+        return $this->tags;
+    }
+
+    public function getRequestModelInterface(): ?string
+    {
+        return $this->requestModelInterface;
+    }
+
+    public function getHttpStatusCode(): ?int
+    {
+        return $this->httpStatusCode;
+    }
+
+    public function getDeprecated(): bool
+    {
+        return $this->deprecated;
     }
 }

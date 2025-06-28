@@ -11,15 +11,25 @@ final class Schema
     public const TRANSFORMER_AWARE_TYPE = 'transformer-aware';
     public const UPLOADED_FILE_TYPE = 'uploaded-file';
 
-    /** @var array<string, self> */
+    /**
+     * @var array<string, self>
+     */
     public array $properties = [];
+
     public ?string $class = null;
+
     public bool $isNullable;
+
     public ?string $transformerClass = null;
+
     public array $transformerOptions = [];
+
     public string $type;
+
     public ?self $valuesType = null;
+
     public ?string $propertySetterName = null;
+
     public ?string $propertyGetterName = null;
 
     private function __construct()

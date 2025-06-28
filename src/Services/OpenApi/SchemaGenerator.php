@@ -137,30 +137,29 @@ class SchemaGenerator
         return $result;
     }
 
-    private function createOperation(RestApiBundle\Model\OpenApi\EndpointData $endpointData, string $httpMethod, string $routePath): OpenApi\Operation
-    {
+    private function createOperation(
+        RestApiBundle\Model\OpenApi\EndpointData $endpointData,
+        string $httpMethod,
+        string $routePath,
+    ): OpenApi\Operation {
         $operation = new OpenApi\Operation([
-            'summary' => $endpointData->endpointMapping->title,
-            'responses' => $this->createResponses($endpointData->reflectionMethod, $endpointData->endpointMapping->httpStatusCode),
-            'tags' => match (true) {
-                \is_string($endpointData->endpointMapping->tags) => [$endpointData->endpointMapping->tags],
-                \is_array($endpointData->endpointMapping->tags) => $endpointData->endpointMapping->tags,
-            },
+            'summary' => $endpointData->endpointMapping->getSummary(),
+            'responses' => $this->createResponses($endpointData->reflectionMethod, $endpointData->endpointMapping->getHttpStatusCode()),
         ]);
 
+        if ($endpointData->endpointMapping->getTags()) {
+            $operation->tags = $endpointData->endpointMapping->getTags();
+        }
+
         if (!$operation->summary) {
-            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Title can not be empty', $endpointData->reflectionMethod);
+            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Summary can not be empty', $endpointData->reflectionMethod);
         }
 
-        if (!$operation->tags) {
-            throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('Tags can not be empty', $endpointData->reflectionMethod);
+        if ($endpointData->endpointMapping->getDescription()) {
+            $operation->description = $endpointData->endpointMapping->getDescription();
         }
 
-        if ($endpointData->endpointMapping->description) {
-            $operation->description = $endpointData->endpointMapping->description;
-        }
-
-        if ($endpointData->deprecated) {
+        if ($endpointData->deprecated || $endpointData->endpointMapping->getDeprecated()) {
             $operation->deprecated = true;
         }
 
@@ -211,10 +210,10 @@ class SchemaGenerator
             }
         }
 
-        if ($requestModelType && $endpointData->endpointMapping->requestModel) {
+        if ($requestModelType && $endpointData->endpointMapping->getRequestModelInterface()) {
             throw new RestApiBundle\Exception\ContextAware\ReflectionMethodAwareException('RequestModel already defined by action arguments', $endpointData->reflectionMethod);
-        } elseif ($endpointData->endpointMapping->requestModel) {
-            $requestModelType = new PropertyInfo\Type(PropertyInfo\Type::BUILTIN_TYPE_OBJECT, false, $endpointData->endpointMapping->requestModel);
+        } elseif ($endpointData->endpointMapping->getRequestModelInterface()) {
+            $requestModelType = new PropertyInfo\Type(PropertyInfo\Type::BUILTIN_TYPE_OBJECT, false, $endpointData->endpointMapping->getRequestModelInterface());
         }
 
         if ($requestModelType && $httpMethod === HttpFoundation\Request::METHOD_GET) {
