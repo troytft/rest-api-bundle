@@ -16,7 +16,7 @@ doctrine:
         auto_mapping: true
         mappings:
             TestApp:
-                type: annotation
+                type: attribute
                 dir: '%kernel.project_dir%/tests/src/Fixture/TestApp/Entity'
                 prefix: 'Tests\Fixture\TestApp\Entity'
                 is_bundle: false
