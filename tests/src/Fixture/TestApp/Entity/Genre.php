@@ -4,27 +4,17 @@ namespace Tests\Fixture\TestApp\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Table()
- * @ORM\Entity()
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'genres')]
 class Genre
 {
-    /**
-     * @var int
-     *
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(name="id", type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(name: 'id', type: 'integer')]
+    private int $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="title", type="string")
-     */
-    private $title;
+    #[ORM\Column]
+    private string $title;
 
     public function __construct(int $id, string $title)
     {
@@ -37,7 +27,7 @@ class Genre
         return $this->id;
     }
 
-    public function setId(int $id)
+    public function setId(int $id): static
     {
         $this->id = $id;
 
@@ -49,7 +39,7 @@ class Genre
         return $this->title;
     }
 
-    public function setTitle(string $title)
+    public function setTitle(string $title): static
     {
         $this->title = $title;
 

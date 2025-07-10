@@ -16,6 +16,10 @@ make test-unit
 # Update test snapshots when expectations change
 make save-unit
 
+# Run specific test file or method
+vendor/bin/phpunit tests/cases/specific/TestFile.php
+vendor/bin/phpunit --filter testMethodName
+
 # Check coding standards (ECS - Easy Coding Standard)
 make test-cs
 
@@ -27,6 +31,12 @@ vendor/bin/phpstan analyse
 
 # Performance benchmarking
 make benchmark
+
+# Compare benchmark performance against baseline
+make benchmark-compare
+
+# Save current benchmark as baseline
+make benchmark-save
 ```
 
 ### Code Generation
@@ -43,23 +53,25 @@ bin/generate-docs
 
 ### Key Components
 
-**Request Abstraction** (`src/Services/Request/`):
+**Request Abstraction** (`src/Services/Mapper/`):
 - Request models implement `RequestModelInterface`
-- Automatic type transformation via transformers in `src/Services/Request/RequestTransformer/`
+- Automatic type transformation via transformers in `src/Services/Mapper/Transformer/`
+- Schema resolution via `src/Services/Mapper/SchemaTypeResolver/`
 - Validation using Symfony Validator
 
-**Response Abstraction** (`src/Services/Response/`):
+**Response Abstraction** (`src/Services/ResponseModel/`):
 - Response models implement `ResponseModelInterface`
-- Auto-serialization via public getters
-- HTTP response handling in `ResponseFactory`
+- Auto-serialization via public getters and custom normalizers
+- HTTP response handling in `ResponseHandler`
 
-**OpenAPI Documentation** (`src/Services/Docs/`):
+**OpenAPI Documentation** (`src/Services/OpenApi/`):
 - Automatic schema generation from request/response models
 - Endpoint discovery via `#[OpenApi\Endpoint]` attributes
 - OpenAPI spec export via CLI command
 
-**Type System** (`src/Services/Request/RequestTransformer/`):
-- Transformers for: string, int, float, datetime, enums, Doctrine entities
+**Type System** (`src/Services/Mapper/`):
+- Transformers for: string, int, float, datetime, enums, Doctrine entities, uploaded files
+- Schema type resolvers for complex type analysis
 - Enum support for both PHP 8.1 enums and polyfill enums
 - Complex type resolution via `src/Helper/`
 

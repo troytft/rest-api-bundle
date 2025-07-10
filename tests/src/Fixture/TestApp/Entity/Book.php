@@ -2,42 +2,25 @@
 
 namespace Tests\Fixture\TestApp\Entity;
 
-use Tests;
 use Doctrine\ORM\Mapping as ORM;
+use Tests\Fixture\TestApp\Enum\PolyfillStringEnum;
 
-/**
- * @ORM\Table()
- * @ORM\Entity(repositoryClass="Tests\Fixture\TestApp\Repository\BookRepository")
- */
+#[ORM\Entity(repositoryClass: \Tests\Fixture\TestApp\Repository\BookRepository::class)]
+#[ORM\Table(name: 'books')]
 class Book
 {
-    /**
-     * @var int
-     *
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(name="id", type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(name: 'id', type: 'integer')]
+    private int $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="slug", type="string")
-     */
-    private $slug;
+    #[ORM\Column]
+    private string $slug;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="title", type="string")
-     */
-    private $title;
+    #[ORM\Column]
+    private string $title;
 
-    /**
-     * @var string
-     */
-    private $status = Tests\Fixture\TestApp\Enum\PolyfillStringEnum::PUBLISHED;
+    private string $status = PolyfillStringEnum::PUBLISHED;
 
     public function __construct(int $id, string $slug, string $title)
     {
@@ -51,7 +34,7 @@ class Book
         return $this->id;
     }
 
-    public function setId(int $id)
+    public function setId(int $id): static
     {
         $this->id = $id;
 
@@ -63,7 +46,7 @@ class Book
         return $this->slug;
     }
 
-    public function setSlug(string $slug)
+    public function setSlug(string $slug): static
     {
         $this->slug = $slug;
 
@@ -75,7 +58,7 @@ class Book
         return $this->title;
     }
 
-    public function setTitle(string $title)
+    public function setTitle(string $title): static
     {
         $this->title = $title;
 
@@ -87,7 +70,7 @@ class Book
         return $this->status;
     }
 
-    public function setStatus(string $status)
+    public function setStatus(string $status): static
     {
         $this->status = $status;
 

@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 
 class SerializableEnumNormalizer implements ContextAwareNormalizerInterface
 {
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof RestApiBundle\Mapping\ResponseModel\EnumInterface;
     }
@@ -17,7 +17,7 @@ class SerializableEnumNormalizer implements ContextAwareNormalizerInterface
     /**
      * @param RestApiBundle\Mapping\ResponseModel\EnumInterface $object
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = []): string|int
     {
         return $object->getValue();
     }

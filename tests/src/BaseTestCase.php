@@ -5,6 +5,8 @@ namespace Tests;
 use Tests;
 use cebe\openapi\spec as OpenApi;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use RestApiBundle;
 use Spatie\Snapshots\MatchesSnapshots;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -36,8 +38,20 @@ abstract class BaseTestCase extends KernelTestCase
     public function getKernel(): KernelInterface
     {
         $this->bootKernel();
+        $this->setupDatabase();
 
         return static::$kernel;
+    }
+
+    private function setupDatabase(): void
+    {
+        $entityManager = $this->getContainer()->get(EntityManagerInterface::class);
+        $schemaTool = new SchemaTool($entityManager);
+        $metadata = $entityManager->getMetadataFactory()->getAllMetadata();
+        
+        if (!empty($metadata)) {
+            $schemaTool->createSchema($metadata);
+        }
     }
 
     protected function assertMatchesOpenApiSchemaSnapshot(OpenApi\Schema|OpenApi\OpenApi $schema): void

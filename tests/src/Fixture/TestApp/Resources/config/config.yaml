@@ -13,9 +13,13 @@ doctrine:
         driver: pdo_sqlite
         memory: true
     orm:
-        entity_managers:
-            default:
-                auto_mapping: true
+        auto_mapping: true
+        mappings:
+            TestApp:
+                type: attribute
+                dir: '%kernel.project_dir%/tests/src/Fixture/TestApp/Entity'
+                prefix: 'Tests\Fixture\TestApp\Entity'
+                is_bundle: false
 
 rest_api: ~
 

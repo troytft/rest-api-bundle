@@ -2,30 +2,24 @@
 
 namespace Tests\Fixture\TestApp\Entity;
 
-use Tests;
 use Doctrine\ORM\Mapping as ORM;
+use Tests\Fixture\TestApp\Entity\Book;
 
-/**
- * @ORM\Table()
- * @ORM\Entity(repositoryClass="Tests\Fixture\TestApp\Repository\AuthorRepository")
- */
+#[ORM\Entity(repositoryClass: \Tests\Fixture\TestApp\Repository\AuthorRepository::class)]
+#[ORM\Table(name: 'authors')]
 class Author
 {
-    /**
-     * @var int
-     *
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @ORM\Column(name="id", type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column]
+    private int $id;
 
     public function getId(): int
     {
         return $this->id;
     }
 
-    public function setId(int $id)
+    public function setId(int $id): static
     {
         $this->id = $id;
 
@@ -48,7 +42,7 @@ class Author
     }
 
     /**
-     * @return Tests\Fixture\TestApp\Entity\Book[]
+     * @return Book[]
      */
     public function getGenres(): array
     {
