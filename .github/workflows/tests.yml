@@ -36,7 +36,7 @@ jobs:
 
             -   name: Install Symfony
                 if: steps.composer-cache.outputs.cache-hit != 'true'
-                run: composer require 'symfony/framework-bundle:^6.2' --no-suggest --no-interaction --no-progress
+                run: composer require 'symfony/framework-bundle:^6.4' --no-suggest --no-interaction --no-progress
 
             -   name: Run PHPUnit
                 run: vendor/bin/phpunit

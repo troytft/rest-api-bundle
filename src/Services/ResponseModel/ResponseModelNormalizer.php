@@ -5,30 +5,31 @@ declare(strict_types=1);
 namespace RestApiBundle\Services\ResponseModel;
 
 use RestApiBundle;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class ResponseModelNormalizer extends \Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer
+class ResponseModelNormalizer implements NormalizerInterface
 {
     public const ATTRIBUTE_TYPENAME = '__typename';
+
+    private GetSetMethodNormalizer $normalizer;
+
+    public function __construct()
+    {
+        $this->normalizer = new GetSetMethodNormalizer();
+    }
 
     public function supportsNormalization($data, $format = null): bool
     {
         return $data instanceof RestApiBundle\Mapping\ResponseModel\ResponseModelInterface;
     }
 
-    public function extractAttributes($object, $format = null, array $context = []): array
+    public function normalize($object, $format = null, array $context = []): array
     {
-        $result = parent::extractAttributes($object, $format, $context);
-        $result[] = static::ATTRIBUTE_TYPENAME;
-
-        return $result;
-    }
-
-    protected function getAttributeValue($object, $attribute, $format = null, array $context = []): mixed
-    {
-        if ($attribute === static::ATTRIBUTE_TYPENAME) {
-            $result = RestApiBundle\Helper\ResponseModel\TypenameResolver::resolve($object::class);
-        } else {
-            $result = parent::getAttributeValue($object, $attribute, $format, $context);
+        $result = $this->normalizer->normalize($object, $format, $context);
+        
+        if (is_array($result)) {
+            $result[static::ATTRIBUTE_TYPENAME] = RestApiBundle\Helper\ResponseModel\TypenameResolver::resolve($object::class);
         }
 
         return $result;
