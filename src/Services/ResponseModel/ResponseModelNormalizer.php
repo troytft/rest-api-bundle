@@ -23,9 +23,7 @@ class ResponseModelNormalizer implements NormalizerInterface, SerializerAwareInt
 
     public function setSerializer(SerializerInterface $serializer): void
     {
-        if ($this->normalizer instanceof SerializerAwareInterface) {
-            $this->normalizer->setSerializer($serializer);
-        }
+        $this->normalizer->setSerializer($serializer);
     }
 
     public function supportsNormalization($data, $format = null): bool
