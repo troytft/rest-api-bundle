@@ -5,7 +5,7 @@ namespace Tests\Fixture\TestApp\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Tests\Fixture\TestApp\Entity\Book;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \Tests\Fixture\TestApp\Repository\AuthorRepository::class)]
 #[ORM\Table(name: 'authors')]
 class Author
 {

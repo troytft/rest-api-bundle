@@ -6,12 +6,17 @@ use Tests;
 
 use function in_array;
 
-class AuthorRepository
+class AuthorRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
 {
     /**
      * @var int[]
      */
-    private array $existIds = [1, 2];
+    private $existIds = [1, 2];
+
+    public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Tests\Fixture\TestApp\Entity\Author::class);
+    }
 
     public function findOneBy(array $criteria, array $orderBy = null): ?object
     {

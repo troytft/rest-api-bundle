@@ -7,8 +7,12 @@ use Tests;
 use function array_values;
 use function in_array;
 
-class BookRepository
+class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
 {
+    public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Tests\Fixture\TestApp\Entity\Book::class);
+    }
     public function find($id, $lockMode = null, $lockVersion = null): ?Tests\Fixture\TestApp\Entity\Book
     {
         return $this->findOneBy(['id' => $id]);

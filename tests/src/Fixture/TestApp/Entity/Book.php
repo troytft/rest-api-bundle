@@ -5,7 +5,7 @@ namespace Tests\Fixture\TestApp\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Tests\Fixture\TestApp\Enum\PolyfillStringEnum;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \Tests\Fixture\TestApp\Repository\BookRepository::class)]
 #[ORM\Table(name: 'books')]
 class Book
 {
