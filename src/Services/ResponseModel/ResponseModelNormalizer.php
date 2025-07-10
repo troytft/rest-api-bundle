@@ -7,8 +7,10 @@ namespace RestApiBundle\Services\ResponseModel;
 use RestApiBundle;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
-class ResponseModelNormalizer implements NormalizerInterface
+class ResponseModelNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
     public const ATTRIBUTE_TYPENAME = '__typename';
 
@@ -17,6 +19,13 @@ class ResponseModelNormalizer implements NormalizerInterface
     public function __construct()
     {
         $this->normalizer = new GetSetMethodNormalizer();
+    }
+
+    public function setSerializer(SerializerInterface $serializer): void
+    {
+        if ($this->normalizer instanceof SerializerAwareInterface) {
+            $this->normalizer->setSerializer($serializer);
+        }
     }
 
     public function supportsNormalization($data, $format = null): bool
