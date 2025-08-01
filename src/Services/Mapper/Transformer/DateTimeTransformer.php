@@ -13,11 +13,13 @@ class DateTimeTransformer implements TransformerInterface
 
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
+        private StringTransformer $stringTransformer,
     ) {
     }
 
     public function transform($value, array $options = []): \DateTime
     {
+        $value = $this->stringTransformer->transform($value);
         $format = $options[static::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateTimeFormat();
         $forceLocalTimezone = $options[static::FORCE_LOCAL_TIMEZONE_OPTION] ?? $this->settingsProvider->isForceRequestDatetimeToLocalTimezone();
 
