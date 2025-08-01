@@ -73,6 +73,16 @@ class DateTransformersTest extends Tests\BaseTestCase
         }
     }
 
+    public function testInvalidValueException()
+    {
+        try {
+            $this->getDateTransformer()->transform([]);
+            $this->fail();
+        } catch (\Throwable $exception) {
+            $this->assertInstanceOf(\RestApiBundle\Exception\Mapper\Transformer\StringRequiredException::class, $exception);
+        }
+    }
+
     public function testInvalidDateTimeException()
     {
         try {

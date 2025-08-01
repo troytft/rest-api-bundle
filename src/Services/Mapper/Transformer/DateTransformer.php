@@ -12,11 +12,13 @@ class DateTransformer implements TransformerInterface
 
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
+        private StringTransformer $stringTransformer,
     ) {
     }
 
     public function transform($value, array $options = []): \DateTime
     {
+        $value = $this->stringTransformer->transform($value);
         $format = $options[static::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
 
         $result = RestApiBundle\Mapping\Mapper\Date::createFromFormat($format, $value);
