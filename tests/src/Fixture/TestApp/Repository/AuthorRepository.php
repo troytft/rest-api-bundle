@@ -18,7 +18,7 @@ class AuthorRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\Servic
         parent::__construct($registry, Tests\Fixture\TestApp\Entity\Author::class);
     }
 
-    public function findOneBy(array $criteria, array $orderBy = null): ?object
+    public function findOneBy(array $criteria, ?array $orderBy = null): ?object
     {
         if (isset($criteria['id']) && in_array($criteria['id'], $this->existIds)) {
             return $this->createEntityWithId($criteria['id']);
@@ -28,7 +28,7 @@ class AuthorRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\Servic
         return null;
     }
 
-    public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null): array
+    public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null): array
     {
         $result = [];
 
