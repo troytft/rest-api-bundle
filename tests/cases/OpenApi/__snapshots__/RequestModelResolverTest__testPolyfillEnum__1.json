@@ -2,12 +2,12 @@
     "type": "object",
     "properties": {
         "stringRequired": {
-            "$ref": "#/components/schemas/PolyfillStringEnumEnum"
+            "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
         },
         "stringNullable": {
             "anyOf": [
                 {
-                    "$ref": "#/components/schemas/PolyfillStringEnumEnum"
+                    "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
                 },
                 {
                     "type": "null"
@@ -17,14 +17,14 @@
         "sringArrayRequired": {
             "type": "array",
             "items": {
-                "$ref": "#/components/schemas/PolyfillStringEnumEnum"
+                "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
             },
             "nullable": false
         },
         "stringArrayNullable": {
             "type": "array",
             "items": {
-                "$ref": "#/components/schemas/PolyfillStringEnumEnum"
+                "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
             },
             "nullable": true
         },

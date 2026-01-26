@@ -182,13 +182,13 @@ class SchemaGenerator
                 continue;
             }
 
-            $scalarBuildinTypes = [
+            $scalarBuiltinTypes = [
                 PropertyInfo\Type::BUILTIN_TYPE_INT,
                 PropertyInfo\Type::BUILTIN_TYPE_STRING,
                 PropertyInfo\Type::BUILTIN_TYPE_FLOAT,
                 PropertyInfo\Type::BUILTIN_TYPE_BOOL,
             ];
-            if ($reflectionMethodType->getBuiltinType() && \in_array($reflectionMethodType->getBuiltinType(), $scalarBuildinTypes, true)) {
+            if ($reflectionMethodType->getBuiltinType() && \in_array($reflectionMethodType->getBuiltinType(), $scalarBuiltinTypes, true)) {
                 $scalarTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;
             } elseif ($reflectionMethodType->getClassName() && RestApiBundle\Helper\DoctrineHelper::isEntity($reflectionMethodType->getClassName())) {
                 $doctrineEntityTypes[$reflectionMethodParameter->getName()] = $reflectionMethodType;

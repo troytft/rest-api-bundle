@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Fixture\TestApp\Enum;
+namespace Tests\Fixture\TestApp\Enum\NamespaceExample;
 
-enum PhpIntegerEnum: int
+enum PhpInteger: int
 {
     case CREATED = 0;
     case PUBLISHED = 1;

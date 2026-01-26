@@ -14,7 +14,7 @@ paths:
                             schema:
                                 type: array
                                 items:
-                                    $ref: '#/components/schemas/Book'
+                                    $ref: '#/components/schemas/BookResponseModel'
                                 nullable: false
             tags:
                 - books
@@ -51,7 +51,7 @@ paths:
                     schema:
                         anyOf:
                             -
-                                $ref: '#/components/schemas/PolyfillStringEnumEnum'
+                                $ref: '#/components/schemas/NamespaceExample.PolyfillStringEnum'
                             -
                                 type: 'null'
                 -
@@ -61,7 +61,7 @@ paths:
                     schema:
                         anyOf:
                             -
-                                $ref: '#/components/schemas/PhpStringEnumEnum'
+                                $ref: '#/components/schemas/NamespaceExample.PhpStringEnum'
                             -
                                 type: 'null'
                 -
@@ -106,7 +106,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Author'
+                                $ref: '#/components/schemas/AuthorResponseModel'
             requestBody:
                 description: 'Request body'
                 content:
@@ -149,7 +149,7 @@ paths:
                             schema:
                                 type: array
                                 items:
-                                    $ref: '#/components/schemas/Author'
+                                    $ref: '#/components/schemas/AuthorResponseModel'
                                 nullable: false
             tags:
                 - writers
@@ -231,7 +231,7 @@ paths:
                         nullable: false
 components:
     schemas:
-        Author:
+        AuthorResponseModel:
             type: object
             properties:
                 id:
@@ -245,9 +245,9 @@ components:
                     deprecated: true
                 __typename:
                     type: string
-                    default: Author
+                    default: AuthorResponseModel
                     nullable: false
-        Book:
+        BookResponseModel:
             type: object
             properties:
                 id:
@@ -256,16 +256,16 @@ components:
                     nullable: false
                 __typename:
                     type: string
-                    default: Book
+                    default: BookResponseModel
                     nullable: false
-        PhpStringEnumEnum:
+        NamespaceExample.PhpStringEnum:
             enum:
                 - created
                 - published
                 - archived
             type: string
             nullable: false
-        PolyfillStringEnumEnum:
+        NamespaceExample.PolyfillStringEnum:
             enum:
                 - created
                 - published

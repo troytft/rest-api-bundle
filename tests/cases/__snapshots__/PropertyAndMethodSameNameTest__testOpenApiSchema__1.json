@@ -1,5 +1,5 @@
 {
-    "PropertyAndMethodSameNameTest_Inner": {
+    "PropertyAndMethodSameNameTest.InnerResponseModel": {
         "type": "object",
         "properties": {
             "id": {
@@ -9,24 +9,24 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "PropertyAndMethodSameNameTest_Inner",
+                "default": "PropertyAndMethodSameNameTest.InnerResponseModel",
                 "nullable": false
             }
         }
     },
-    "PropertyAndMethodSameNameTest_Root": {
+    "PropertyAndMethodSameNameTest.RootResponseModel": {
         "type": "object",
         "properties": {
             "items": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/PropertyAndMethodSameNameTest_Inner"
+                    "$ref": "#/components/schemas/PropertyAndMethodSameNameTest.InnerResponseModel"
                 },
                 "nullable": false
             },
             "__typename": {
                 "type": "string",
-                "default": "PropertyAndMethodSameNameTest_Root",
+                "default": "PropertyAndMethodSameNameTest.RootResponseModel",
                 "nullable": false
             }
         }

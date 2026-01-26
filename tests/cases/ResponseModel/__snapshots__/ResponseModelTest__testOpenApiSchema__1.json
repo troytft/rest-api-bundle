@@ -1,5 +1,5 @@
 {
-    "DateTimeType": {
+    "DateTimeTypeResponseModel": {
         "type": "object",
         "properties": {
             "required": {
@@ -16,12 +16,12 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "DateTimeType",
+                "default": "DateTimeTypeResponseModel",
                 "nullable": false
             }
         }
     },
-    "DateType": {
+    "DateTypeResponseModel": {
         "type": "object",
         "properties": {
             "required": {
@@ -38,12 +38,12 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "DateType",
+                "default": "DateTypeResponseModel",
                 "nullable": false
             }
         }
     },
-    "Inner": {
+    "InnerResponseModel": {
         "type": "object",
         "properties": {
             "stringField": {
@@ -52,21 +52,21 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "Inner",
+                "default": "InnerResponseModel",
                 "nullable": false
             }
         }
     },
-    "PhpEnumType": {
+    "PhpEnumTypeResponseModel": {
         "type": "object",
         "properties": {
             "stringRequired": {
-                "$ref": "#/components/schemas/PhpStringEnumEnum"
+                "$ref": "#/components/schemas/NamespaceExample.PhpStringEnum"
             },
             "stringNullable": {
                 "anyOf": [
                     {
-                        "$ref": "#/components/schemas/PhpStringEnumEnum"
+                        "$ref": "#/components/schemas/NamespaceExample.PhpStringEnum"
                     },
                     {
                         "type": "null"
@@ -75,21 +75,21 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "PhpEnumType",
+                "default": "PhpEnumTypeResponseModel",
                 "nullable": false
             }
         }
     },
-    "PolyfillEnumType": {
+    "PolyfillEnumTypeResponseModel": {
         "type": "object",
         "properties": {
             "stringRequired": {
-                "$ref": "#/components/schemas/PolyfillStringEnumEnum"
+                "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
             },
             "stringNullable": {
                 "anyOf": [
                     {
-                        "$ref": "#/components/schemas/PolyfillStringEnumEnum"
+                        "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
                     },
                     {
                         "type": "null"
@@ -99,60 +99,60 @@
             "arrayRequired": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/PolyfillStringEnumEnum"
+                    "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
                 },
                 "nullable": false
             },
             "arrayNullable": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/PolyfillStringEnumEnum"
+                    "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
                 },
                 "nullable": false
             },
             "__typename": {
                 "type": "string",
-                "default": "PolyfillEnumType",
+                "default": "PolyfillEnumTypeResponseModel",
                 "nullable": false
             }
         }
     },
-    "Root": {
+    "RootResponseModel": {
         "type": "object",
         "properties": {
             "dateType": {
-                "$ref": "#/components/schemas/DateType"
+                "$ref": "#/components/schemas/DateTypeResponseModel"
             },
             "dateTimeType": {
-                "$ref": "#/components/schemas/DateTimeType"
+                "$ref": "#/components/schemas/DateTimeTypeResponseModel"
             },
             "phpEnumType": {
-                "$ref": "#/components/schemas/PhpEnumType"
+                "$ref": "#/components/schemas/PhpEnumTypeResponseModel"
             },
             "polyfillEnumType": {
-                "$ref": "#/components/schemas/PolyfillEnumType"
+                "$ref": "#/components/schemas/PolyfillEnumTypeResponseModel"
             },
             "innerModel": {
-                "$ref": "#/components/schemas/Inner"
+                "$ref": "#/components/schemas/InnerResponseModel"
             },
             "innerModelArray": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/Inner"
+                    "$ref": "#/components/schemas/InnerResponseModel"
                 },
                 "nullable": false
             },
             "withPublicProperties": {
-                "$ref": "#/components/schemas/WithPublicProperty"
+                "$ref": "#/components/schemas/WithPublicPropertyResponseModel"
             },
             "__typename": {
                 "type": "string",
-                "default": "Root",
+                "default": "RootResponseModel",
                 "nullable": false
             }
         }
     },
-    "WithPublicProperty": {
+    "WithPublicPropertyResponseModel": {
         "type": "object",
         "properties": {
             "publicProperty": {
@@ -165,7 +165,7 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "WithPublicProperty",
+                "default": "WithPublicPropertyResponseModel",
                 "nullable": false
             }
         }

@@ -2,12 +2,12 @@
     "type": "object",
     "properties": {
         "stringRequired": {
-            "$ref": "#/components/schemas/PhpStringEnumEnum"
+            "$ref": "#/components/schemas/NamespaceExample.PhpStringEnum"
         },
         "stringNullable": {
             "anyOf": [
                 {
-                    "$ref": "#/components/schemas/PolyfillStringEnumEnum"
+                    "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
                 },
                 {
                     "type": "null"
@@ -17,14 +17,14 @@
         "arrayRequired": {
             "type": "array",
             "items": {
-                "$ref": "#/components/schemas/PhpStringEnumEnum"
+                "$ref": "#/components/schemas/NamespaceExample.PhpStringEnum"
             },
             "nullable": false
         },
         "arrayNullable": {
             "type": "array",
             "items": {
-                "$ref": "#/components/schemas/PhpStringEnumEnum"
+                "$ref": "#/components/schemas/NamespaceExample.PhpStringEnum"
             },
             "nullable": true
         },

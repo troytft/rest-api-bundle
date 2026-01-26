@@ -26,7 +26,7 @@ class EnumSchemaRegistry
     {
         $typename = $this->typenameCache[$enumClass] ?? null;
         if (!$typename) {
-            $typename = $this->resolveTypename($enumClass);
+            $typename = RestApiBundle\Helper\TypenameResolver::resolve($enumClass, 'Enum');
             $classInCache = \array_search($typename, $this->typenameCache, true);
             if ($classInCache !== false && $classInCache !== $enumClass) {
                 throw new \InvalidArgumentException(\sprintf('Typename %s for enum class %s already used by another class %s', $typename, $enumClass, $classInCache));
@@ -66,14 +66,6 @@ class EnumSchemaRegistry
         \ksort($result);
 
         return $result;
-    }
-
-    private function resolveTypename(string $enumClass): string
-    {
-        $chunks = \explode('\\', $enumClass);
-        $shortName = $chunks[\array_key_last($chunks)] ?? throw new \LogicException();
-
-        return $shortName . 'Enum';
     }
 
     private function createEnumSchema(string $enumClass): OpenApi\Schema

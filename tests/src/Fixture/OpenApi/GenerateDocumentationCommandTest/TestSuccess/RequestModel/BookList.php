@@ -2,9 +2,9 @@
 
 namespace Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel;
 
+use RestApiBundle\Mapping\Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
 use Tests;
-use RestApiBundle\Mapping\Mapper;
 
 #[Mapper\ExposeAll]
 class BookList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterface
@@ -15,13 +15,13 @@ class BookList implements \RestApiBundle\Mapping\RequestModel\RequestModelInterf
 
     public ?Tests\Fixture\TestApp\Entity\Author $author;
 
-    public ?Tests\Fixture\TestApp\Enum\PolyfillStringEnum $polyfillStringEnum;
+    public ?Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString $polyfillStringEnum;
 
-    public ?Tests\Fixture\TestApp\Enum\PhpStringEnum $phpStringEnum;
+    public ?Tests\Fixture\TestApp\Enum\NamespaceExample\PhpString $phpStringEnum;
 
     #[Assert\Choice(choices: [
-        Tests\Fixture\TestApp\Enum\PhpStringEnum::PUBLISHED,
-        Tests\Fixture\TestApp\Enum\PhpStringEnum::CREATED,
+        Tests\Fixture\TestApp\Enum\NamespaceExample\PhpString::PUBLISHED,
+        Tests\Fixture\TestApp\Enum\NamespaceExample\PhpString::CREATED,
     ])]
-    public ?Tests\Fixture\TestApp\Enum\PhpStringEnum $phpStringEnumLimited;
+    public ?Tests\Fixture\TestApp\Enum\NamespaceExample\PhpString $phpStringEnumLimited;
 }

@@ -3,7 +3,7 @@
 namespace Tests\Fixture\TestApp\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Tests\Fixture\TestApp\Enum\PolyfillStringEnum;
+use Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString;
 
 #[ORM\Entity(repositoryClass: \Tests\Fixture\TestApp\Repository\BookRepository::class)]
 #[ORM\Table(name: 'books')]
@@ -20,7 +20,7 @@ class Book
     #[ORM\Column]
     private string $title;
 
-    private string $status = PolyfillStringEnum::PUBLISHED;
+    private string $status = PolyfillString::PUBLISHED;
 
     public function __construct(int $id, string $slug, string $title)
     {
