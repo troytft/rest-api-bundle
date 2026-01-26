@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.0.0
 info:
     title: 'OpenApi Specification'
     version: 1.0.0
@@ -49,21 +49,19 @@ paths:
                     in: query
                     required: false
                     schema:
-                        anyOf:
+                        oneOf:
                             -
                                 $ref: '#/components/schemas/NamespaceExample.PolyfillStringEnum'
-                            -
-                                type: 'null'
+                        nullable: true
                 -
                     name: phpStringEnum
                     in: query
                     required: false
                     schema:
-                        anyOf:
+                        oneOf:
                             -
                                 $ref: '#/components/schemas/NamespaceExample.PhpStringEnum'
-                            -
-                                type: 'null'
+                        nullable: true
                 -
                     name: phpStringEnumLimited
                     in: query

@@ -64,14 +64,12 @@
                 "$ref": "#/components/schemas/NamespaceExample.PhpStringEnum"
             },
             "stringNullable": {
-                "anyOf": [
+                "oneOf": [
                     {
                         "$ref": "#/components/schemas/NamespaceExample.PhpStringEnum"
-                    },
-                    {
-                        "type": "null"
                     }
-                ]
+                ],
+                "nullable": true
             },
             "__typename": {
                 "type": "string",
@@ -87,14 +85,12 @@
                 "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
             },
             "stringNullable": {
-                "anyOf": [
+                "oneOf": [
                     {
                         "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
-                    },
-                    {
-                        "type": "null"
                     }
-                ]
+                ],
+                "nullable": true
             },
             "arrayRequired": {
                 "type": "array",

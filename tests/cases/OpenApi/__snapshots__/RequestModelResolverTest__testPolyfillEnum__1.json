@@ -5,14 +5,12 @@
             "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
         },
         "stringNullable": {
-            "anyOf": [
+            "oneOf": [
                 {
                     "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
-                },
-                {
-                    "type": "null"
                 }
-            ]
+            ],
+            "nullable": true
         },
         "sringArrayRequired": {
             "type": "array",
