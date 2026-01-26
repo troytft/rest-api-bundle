@@ -49,7 +49,7 @@ paths:
                     in: query
                     required: false
                     schema:
-                        anyOf:
+                        oneOf:
                             -
                                 $ref: '#/components/schemas/NamespaceExample.PolyfillStringEnum'
                         nullable: true
@@ -58,7 +58,7 @@ paths:
                     in: query
                     required: false
                     schema:
-                        anyOf:
+                        oneOf:
                             -
                                 $ref: '#/components/schemas/NamespaceExample.PhpStringEnum'
                         nullable: true

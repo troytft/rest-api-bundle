@@ -5,7 +5,7 @@
             "$ref": "#/components/schemas/NamespaceExample.PhpStringEnum"
         },
         "stringNullable": {
-            "anyOf": [
+            "oneOf": [
                 {
                     "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
                 }

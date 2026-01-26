@@ -42,7 +42,7 @@ class EnumSchemaRegistry
 
         if ($nullable) {
             return new OpenApi\Schema([
-                'anyOf' => [
+                'oneOf' => [
                     $reference,
                 ],
                 'nullable' => true,
