@@ -39,4 +39,9 @@ class Root implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
     {
         return [];
     }
+
+    public function getWithPublicProperties(): WithPublicProperty
+    {
+        return new WithPublicProperty();
+    }
 }

@@ -164,9 +164,30 @@
                 },
                 "nullable": false
             },
+            "withPublicProperties": {
+                "$ref": "#/components/schemas/WithPublicProperty"
+            },
             "__typename": {
                 "type": "string",
                 "default": "Root",
+                "nullable": false
+            }
+        }
+    },
+    "WithPublicProperty": {
+        "type": "object",
+        "properties": {
+            "publicProperty": {
+                "type": "string",
+                "nullable": false
+            },
+            "methodProperty": {
+                "type": "string",
+                "nullable": false
+            },
+            "__typename": {
+                "type": "string",
+                "default": "WithPublicProperty",
                 "nullable": false
             }
         }
