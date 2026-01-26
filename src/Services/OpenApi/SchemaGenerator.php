@@ -17,6 +17,7 @@ class SchemaGenerator
         private ResponseModelResolver $responseModelResolver,
         private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService,
         private RestApiBundle\Services\MethodReturnTypeExtractorService $methodReturnTypeExtractorService,
+        private EnumSchemaRegistry $enumSchemaRegistry,
     ) {
     }
 
@@ -91,6 +92,14 @@ class SchemaGenerator
         $rootElement->tags = \array_values($tags);
 
         foreach ($this->responseModelResolver->dumpSchemas() as $typename => $schema) {
+            if (isset($schemas[$typename])) {
+                throw new \InvalidArgumentException(\sprintf('Schema with typename %s already defined', $typename));
+            }
+
+            $schemas[$typename] = $schema;
+        }
+
+        foreach ($this->enumSchemaRegistry->dumpSchemas() as $typename => $schema) {
             if (isset($schemas[$typename])) {
                 throw new \InvalidArgumentException(\sprintf('Schema with typename %s already defined', $typename));
             }

@@ -61,21 +61,16 @@
         "type": "object",
         "properties": {
             "stringRequired": {
-                "type": "string",
-                "nullable": false,
-                "enum": [
-                    "created",
-                    "published",
-                    "archived"
-                ]
+                "$ref": "#/components/schemas/PhpStringEnumEnum"
             },
             "stringNullable": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                    "created",
-                    "published",
-                    "archived"
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/PhpStringEnumEnum"
+                    },
+                    {
+                        "type": "null"
+                    }
                 ]
             },
             "__typename": {
@@ -89,46 +84,29 @@
         "type": "object",
         "properties": {
             "stringRequired": {
-                "type": "string",
-                "nullable": false,
-                "enum": [
-                    "created",
-                    "published",
-                    "archived"
-                ]
+                "$ref": "#/components/schemas/PolyfillStringEnumEnum"
             },
             "stringNullable": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                    "created",
-                    "published",
-                    "archived"
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/PolyfillStringEnumEnum"
+                    },
+                    {
+                        "type": "null"
+                    }
                 ]
             },
             "arrayRequired": {
                 "type": "array",
                 "items": {
-                    "type": "string",
-                    "nullable": false,
-                    "enum": [
-                        "created",
-                        "published",
-                        "archived"
-                    ]
+                    "$ref": "#/components/schemas/PolyfillStringEnumEnum"
                 },
                 "nullable": false
             },
             "arrayNullable": {
                 "type": "array",
                 "items": {
-                    "type": "string",
-                    "nullable": false,
-                    "enum": [
-                        "created",
-                        "published",
-                        "archived"
-                    ]
+                    "$ref": "#/components/schemas/PolyfillStringEnumEnum"
                 },
                 "nullable": false
             },

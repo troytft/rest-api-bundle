@@ -47,25 +47,23 @@ paths:
                 -
                     name: polyfillStringEnum
                     in: query
-                    required: false
+                    required: true
                     schema:
-                        type: string
-                        nullable: true
-                        enum:
-                            - created
-                            - published
-                            - archived
+                        anyOf:
+                            -
+                                $ref: '#/components/schemas/PolyfillStringEnumEnum'
+                            -
+                                type: 'null'
                 -
                     name: phpStringEnum
                     in: query
-                    required: false
+                    required: true
                     schema:
-                        type: string
-                        nullable: true
-                        enum:
-                            - created
-                            - published
-                            - archived
+                        anyOf:
+                            -
+                                $ref: '#/components/schemas/PhpStringEnumEnum'
+                            -
+                                type: 'null'
                 -
                     name: phpStringEnumLimited
                     in: query
@@ -260,6 +258,20 @@ components:
                     type: string
                     default: Book
                     nullable: false
+        PhpStringEnumEnum:
+            enum:
+                - created
+                - published
+                - archived
+            type: string
+            nullable: false
+        PolyfillStringEnumEnum:
+            enum:
+                - created
+                - published
+                - archived
+            type: string
+            nullable: false
 security:
     - {  }
     -
