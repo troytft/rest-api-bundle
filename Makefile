@@ -1,3 +1,9 @@
+PHP_VERSION=8.4
+COMPOSER_VERSION=2.9.4
+
+composer-install:
+	docker run --rm -v $(PWD):/app -w /app composer:$(COMPOSER_VERSION) install
+
 benchmark:
 	vendor/bin/phpbench run --report=aggregate
 
@@ -7,14 +13,14 @@ benchmark-compare:
 benchmark-save:
 	vendor/bin/phpbench run --tag=original
 
-test-cs:
+cs-test:
 	vendor/bin/ecs check
 
-fix-cs:
+cs-test-fix:
 	vendor/bin/ecs check --fix
 
-test-unit:
-	vendor/bin/phpunit --testdox
+unit-test:
+	docker run --rm -v $(PWD):/app -w /app php:$(PHP_VERSION)-cli vendor/bin/phpunit --testdox
 
-save-unit:
-	vendor/bin/phpunit -d --update-snapshots
+unit-test-fix:
+	docker run --rm -v $(PWD):/app -w /app php:$(PHP_VERSION)-cli vendor/bin/phpunit -d --update-snapshots
