@@ -8,6 +8,11 @@ class TypenameResolver
 {
     public static function resolve(string $class, string $pathPart): string
     {
+        return self::resolveWithoutSuffix($class, $pathPart) . $pathPart;
+    }
+
+    public static function resolveWithoutSuffix(string $class, string $pathPart): string
+    {
         $parts = [];
         $hasResponseModelPart = false;
 
@@ -23,7 +28,7 @@ class TypenameResolver
             throw new \RuntimeException(\sprintf('%s "%s" must be in "%s" namespace', $pathPart, $class, $pathPart));
         }
 
-        $typename = \implode('.', $parts) . $pathPart;
+        $typename = \implode('.', $parts);
         if (!$typename) {
             throw new \RuntimeException(\sprintf('%s "%s" must have typename', $pathPart, $class));
         }

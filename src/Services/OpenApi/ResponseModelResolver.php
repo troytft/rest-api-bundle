@@ -112,7 +112,7 @@ class ResponseModelResolver
         $properties[RestApiBundle\Services\ResponseModel\ResponseModelNormalizer::ATTRIBUTE_TYPENAME] = new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
             'nullable' => false,
-            'default' => $typename,
+            'default' => RestApiBundle\Helper\TypenameResolver::resolveWithoutSuffix($class, 'ResponseModel'),
         ]);
 
         return new OpenApi\Schema([

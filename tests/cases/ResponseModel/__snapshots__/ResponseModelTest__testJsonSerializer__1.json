@@ -2,34 +2,34 @@
     "dateType": {
         "required": "2025-05-19",
         "nullable": null,
-        "__typename": "DateTypeResponseModel"
+        "__typename": "DateType"
     },
     "dateTimeType": {
         "required": "2025-05-19T00:00:00+00:00",
         "nullable": null,
-        "__typename": "DateTimeTypeResponseModel"
+        "__typename": "DateTimeType"
     },
     "phpEnumType": {
         "stringRequired": "created",
         "stringNullable": null,
-        "__typename": "PhpEnumTypeResponseModel"
+        "__typename": "PhpEnumType"
     },
     "polyfillEnumType": {
         "stringRequired": "archived",
         "stringNullable": null,
         "arrayRequired": [],
         "arrayNullable": [],
-        "__typename": "PolyfillEnumTypeResponseModel"
+        "__typename": "PolyfillEnumType"
     },
     "innerModel": {
         "stringField": "",
-        "__typename": "InnerResponseModel"
+        "__typename": "Inner"
     },
     "innerModelArray": [],
     "withPublicProperties": {
         "methodProperty": "methodValue",
         "publicProperty": "value",
-        "__typename": "WithPublicPropertyResponseModel"
+        "__typename": "WithPublicProperty"
     },
-    "__typename": "RootResponseModel"
+    "__typename": "Root"
 }
