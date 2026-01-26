@@ -8,11 +8,9 @@
             "anyOf": [
                 {
                     "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
-                },
-                {
-                    "type": "null"
                 }
-            ]
+            ],
+            "nullable": true
         },
         "sringArrayRequired": {
             "type": "array",

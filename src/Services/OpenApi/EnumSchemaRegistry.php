@@ -44,8 +44,8 @@ class EnumSchemaRegistry
             return new OpenApi\Schema([
                 'anyOf' => [
                     $reference,
-                    new OpenApi\Schema(['type' => 'null']),
                 ],
+                'nullable' => true,
             ]);
         }
 

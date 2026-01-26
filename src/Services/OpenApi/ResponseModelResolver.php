@@ -158,8 +158,8 @@ class ResponseModelResolver
                     $schema = new OpenApi\Schema([
                         'anyOf' => [
                             $schema,
-                            new OpenApi\Schema(['type' => 'null']),
                         ],
+                        'nullable' => true,
                     ]);
                 }
 

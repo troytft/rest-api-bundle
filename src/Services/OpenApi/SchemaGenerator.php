@@ -430,14 +430,6 @@ class SchemaGenerator
 
         foreach ($requestModelSchema->properties as $propertyName => $propertySchema) {
             $isNullable = $propertySchema->nullable;
-            if (!$isNullable && $propertySchema->anyOf) {
-                foreach ($propertySchema->anyOf as $anyOfSchema) {
-                    if ($anyOfSchema instanceof OpenApi\Schema && $anyOfSchema->type === 'null') {
-                        $isNullable = true;
-                        break;
-                    }
-                }
-            }
 
             $parameter = new OpenApi\Parameter([
                 'in' => 'query',

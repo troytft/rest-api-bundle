@@ -67,11 +67,9 @@
                 "anyOf": [
                     {
                         "$ref": "#/components/schemas/NamespaceExample.PhpStringEnum"
-                    },
-                    {
-                        "type": "null"
                     }
-                ]
+                ],
+                "nullable": true
             },
             "__typename": {
                 "type": "string",
@@ -90,11 +88,9 @@
                 "anyOf": [
                     {
                         "$ref": "#/components/schemas/NamespaceExample.PolyfillStringEnum"
-                    },
-                    {
-                        "type": "null"
                     }
-                ]
+                ],
+                "nullable": true
             },
             "arrayRequired": {
                 "type": "array",
