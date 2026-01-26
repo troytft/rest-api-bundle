@@ -24,6 +24,7 @@ class ResponseModelResolver
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
         private RestApiBundle\Services\MethodReturnTypeExtractorService $methodReturnTypeExtractorService,
         private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService,
+        private EnumSchemaRegistry $enumSchemaRegistry,
     ) {
     }
 
@@ -170,7 +171,7 @@ class ResponseModelResolver
 
             case $type->getClassName() && \enum_exists($type->getClassName()):
             case $type->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_OBJECT && RestApiBundle\Helper\ReflectionHelper::isResponseModelEnum($type->getClassName()):
-                $schema = RestApiBundle\Helper\OpenApi\SchemaHelper::createEnum($type->getClassName(), $type->isNullable());
+                $schema = $this->enumSchemaRegistry->resolveReference($type->getClassName(), $type->isNullable());
 
                 break;
 

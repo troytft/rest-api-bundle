@@ -15,6 +15,7 @@ class RequestModelResolver
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
         private RestApiBundle\Services\Mapper\SchemaResolver $schemaResolver,
         private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService,
+        private EnumSchemaRegistry $enumSchemaRegistry,
     ) {
     }
 
@@ -58,8 +59,10 @@ class RequestModelResolver
 
     /**
      * @param Validator\Constraint[] $validationConstraints
+     *
+     * @return OpenApi\Schema|OpenApi\Reference
      */
-    private function resolveByMapperSchema(RestApiBundle\Model\Mapper\Schema $schema, array $validationConstraints): OpenApi\Schema
+    private function resolveByMapperSchema(RestApiBundle\Model\Mapper\Schema $schema, array $validationConstraints)
     {
         return match ($schema->type) {
             RestApiBundle\Model\Mapper\Schema::MODEL_TYPE => $this->resolve($schema->class, $schema->isNullable),
@@ -84,8 +87,10 @@ class RequestModelResolver
 
     /**
      * @param Validator\Constraint[] $constraints
+     *
+     * @return OpenApi\Schema|OpenApi\Reference
      */
-    private function resolveTransformerAwareType(RestApiBundle\Model\Mapper\Schema $schema, array $constraints): OpenApi\Schema
+    private function resolveTransformerAwareType(RestApiBundle\Model\Mapper\Schema $schema, array $constraints)
     {
         $result = match ($schema->transformerClass) {
             RestApiBundle\Services\Mapper\Transformer\IntegerTransformer::class => RestApiBundle\Helper\OpenApi\SchemaHelper::createInteger($schema->isNullable),
@@ -95,35 +100,38 @@ class RequestModelResolver
             RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class => $this->resolveDateTimeTransformer($schema->transformerOptions, $schema->isNullable, $constraints),
             RestApiBundle\Services\Mapper\Transformer\DateTransformer::class => $this->resolveDateTransformer($schema->transformerOptions, $schema->isNullable),
             RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::class => $this->resolveDoctrineEntityTransformer($schema->transformerOptions, $schema->isNullable),
-            RestApiBundle\Services\Mapper\Transformer\EnumTransformer::class => $this->resolveEnumTransformer($schema->transformerOptions, $schema->isNullable),
+            RestApiBundle\Services\Mapper\Transformer\EnumTransformer::class => $this->resolveEnumTransformer($schema->transformerOptions, $schema->isNullable, $constraints),
             default => throw new \InvalidArgumentException(),
         };
 
-        foreach ($constraints as $constraint) {
-            if ($constraint instanceof Validator\Constraints\Range) {
-                if ($constraint->min !== null) {
-                    $result->minimum = $constraint->min;
-                }
+        // Only apply constraints to Schema objects, not to References
+        if ($result instanceof OpenApi\Schema) {
+            foreach ($constraints as $constraint) {
+                if ($constraint instanceof Validator\Constraints\Range) {
+                    if ($constraint->min !== null) {
+                        $result->minimum = $constraint->min;
+                    }
 
-                if ($constraint->max !== null) {
-                    $result->maximum = $constraint->max;
-                }
-            } elseif ($constraint instanceof Validator\Constraints\Choice) {
-                $result->enum = $this->extractConstraintChoices($constraint);
-            } elseif ($constraint instanceof Validator\Constraints\Length) {
-                if ($constraint->min !== null) {
-                    $result->minLength = $constraint->min;
-                }
+                    if ($constraint->max !== null) {
+                        $result->maximum = $constraint->max;
+                    }
+                } elseif ($constraint instanceof Validator\Constraints\Choice) {
+                    $result->enum = $this->extractConstraintChoices($constraint);
+                } elseif ($constraint instanceof Validator\Constraints\Length) {
+                    if ($constraint->min !== null) {
+                        $result->minLength = $constraint->min;
+                    }
 
-                if ($constraint->max !== null) {
-                    $result->maxLength = $constraint->max;
-                }
-            } elseif ($constraint instanceof Validator\Constraints\NotBlank) {
-                if (!$constraint->allowNull) {
+                    if ($constraint->max !== null) {
+                        $result->maxLength = $constraint->max;
+                    }
+                } elseif ($constraint instanceof Validator\Constraints\NotBlank) {
+                    if (!$constraint->allowNull) {
+                        $result->nullable = false;
+                    }
+                } elseif ($constraint instanceof Validator\Constraints\NotNull) {
                     $result->nullable = false;
                 }
-            } elseif ($constraint instanceof Validator\Constraints\NotNull) {
-                $result->nullable = false;
             }
         }
 
@@ -176,11 +184,24 @@ class RequestModelResolver
         return $schema;
     }
 
-    private function resolveEnumTransformer(array $options, bool $nullable): OpenApi\Schema
+    /**
+     * @param Validator\Constraint[] $constraints
+     *
+     * @return OpenApi\Schema|OpenApi\Reference
+     */
+    private function resolveEnumTransformer(array $options, bool $nullable, array $constraints)
     {
         $class = $options[RestApiBundle\Services\Mapper\Transformer\EnumTransformer::CLASS_OPTION];
 
-        return RestApiBundle\Helper\OpenApi\SchemaHelper::createEnum($class, $nullable);
+        // If there is a Choice constraint, we need to use inline enum schema
+        // because the constraint might limit the available values
+        foreach ($constraints as $constraint) {
+            if ($constraint instanceof Validator\Constraints\Choice) {
+                return RestApiBundle\Helper\OpenApi\SchemaHelper::createEnum($class, $nullable);
+            }
+        }
+
+        return $this->enumSchemaRegistry->resolveReference($class, $nullable);
     }
 
     private function resolveUploadedFile(bool $nullable): OpenApi\Schema

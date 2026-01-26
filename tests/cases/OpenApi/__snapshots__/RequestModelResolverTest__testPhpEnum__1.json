@@ -2,46 +2,27 @@
     "type": "object",
     "properties": {
         "stringRequired": {
-            "type": "string",
-            "nullable": false,
-            "enum": [
-                "created",
-                "published",
-                "archived"
-            ]
+            "$ref": "#/components/schemas/PhpStringEnumEnum"
         },
         "stringNullable": {
-            "type": "string",
-            "nullable": true,
-            "enum": [
-                "created",
-                "published",
-                "archived"
-            ]
+            "anyOf": [
+                {
+                    "$ref": "#/components/schemas/PolyfillStringEnumEnum"
+                }
+            ],
+            "nullable": true
         },
         "arrayRequired": {
             "type": "array",
             "items": {
-                "type": "string",
-                "nullable": false,
-                "enum": [
-                    "created",
-                    "published",
-                    "archived"
-                ]
+                "$ref": "#/components/schemas/PhpStringEnumEnum"
             },
             "nullable": false
         },
         "arrayNullable": {
             "type": "array",
             "items": {
-                "type": "string",
-                "nullable": false,
-                "enum": [
-                    "created",
-                    "published",
-                    "archived"
-                ]
+                "$ref": "#/components/schemas/PhpStringEnumEnum"
             },
             "nullable": true
         },
