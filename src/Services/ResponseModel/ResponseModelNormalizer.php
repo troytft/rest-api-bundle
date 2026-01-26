@@ -36,7 +36,7 @@ class ResponseModelNormalizer implements NormalizerInterface, SerializerAwareInt
         $result = $this->normalizer->normalize($object, $format, $context);
 
         if (\is_array($result)) {
-            $result[static::ATTRIBUTE_TYPENAME] = RestApiBundle\Helper\ResponseModel\TypenameResolver::resolve($object::class);
+            $result[static::ATTRIBUTE_TYPENAME] = RestApiBundle\Helper\TypenameResolver::resolve($object::class, 'ResponseModel');
         }
 
         return $result;

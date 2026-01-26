@@ -2,48 +2,48 @@
 
 namespace Tests\Fixture\OpenApi\RequestModelResolverTest;
 
-use Tests;
 use RestApiBundle\Mapping\Mapper;
 use Symfony\Component\Validator\Constraints as Assert;
+use Tests;
 
 #[Mapper\ExposeAll]
 class PolyfillEnumTestModel implements Mapper\ModelInterface
 {
-    public Tests\Fixture\TestApp\Enum\PolyfillStringEnum $stringRequired;
+    public Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString $stringRequired;
 
-    public ?Tests\Fixture\TestApp\Enum\PolyfillStringEnum $stringNullable;
+    public ?Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString $stringNullable;
 
     /**
-     * @var Tests\Fixture\TestApp\Enum\PolyfillStringEnum[]
+     * @var \Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString[]
      */
     public array $sringArrayRequired;
 
     /**
-     * @var Tests\Fixture\TestApp\Enum\PolyfillStringEnum[]|null
+     * @var \Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString[]|null
      */
     public ?array $stringArrayNullable;
 
-    #[Assert\Choice(callback: [Tests\Fixture\TestApp\Enum\PolyfillStringEnum::class, 'getValues'])]
+    #[Assert\Choice(callback: [Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString::class, 'getValues'])]
     public string $choiceCallbackStringRequired;
 
-    #[Assert\Choice(callback: [Tests\Fixture\TestApp\Enum\PolyfillStringEnum::class, 'getValues'])]
+    #[Assert\Choice(callback: [Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString::class, 'getValues'])]
     public ?string $choiceCallbackStringNullable;
 
     /**
      * @var string[]
      */
-    #[Assert\Choice(callback: [Tests\Fixture\TestApp\Enum\PolyfillStringEnum::class, 'getValues'], multiple: true)]
+    #[Assert\Choice(callback: [Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString::class, 'getValues'], multiple: true)]
     public array $choiceCallbackStringArrayRequired;
 
     /**
      * @var string[]|null
      */
-    #[Assert\Choice(callback: [Tests\Fixture\TestApp\Enum\PolyfillStringEnum::class, 'getValues'], multiple: true)]
+    #[Assert\Choice(callback: [Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString::class, 'getValues'], multiple: true)]
     public ?array $choiceCallbackStringArrayNullable;
 
     #[Assert\Choice(choices: [
-        Tests\Fixture\TestApp\Enum\PolyfillStringEnum::CREATED,
-        Tests\Fixture\TestApp\Enum\PolyfillStringEnum::PUBLISHED,
+        Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString::CREATED,
+        Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString::PUBLISHED,
     ])]
     public ?string $choiceInlineEnumString;
 
@@ -51,8 +51,8 @@ class PolyfillEnumTestModel implements Mapper\ModelInterface
      * @var string[]
      */
     #[Assert\Choice(choices: [
-        Tests\Fixture\TestApp\Enum\PolyfillStringEnum::CREATED,
-        Tests\Fixture\TestApp\Enum\PolyfillStringEnum::PUBLISHED,
+        Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString::CREATED,
+        Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString::PUBLISHED,
     ], multiple: true)]
     public array $choiceInlineStringArrayRequired;
 
@@ -60,8 +60,8 @@ class PolyfillEnumTestModel implements Mapper\ModelInterface
      * @var string[]|null
      */
     #[Assert\Choice(choices: [
-        Tests\Fixture\TestApp\Enum\PolyfillStringEnum::CREATED,
-        Tests\Fixture\TestApp\Enum\PolyfillStringEnum::PUBLISHED,
+        Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString::CREATED,
+        Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString::PUBLISHED,
     ], multiple: true)]
     public ?array $choiceInlineStringArrayNullable;
 }

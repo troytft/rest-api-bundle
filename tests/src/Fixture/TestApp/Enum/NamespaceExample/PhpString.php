@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Fixture\TestApp\Enum;
+namespace Tests\Fixture\TestApp\Enum\NamespaceExample;
 
-enum PhpStringEnum: string
+enum PhpString: string
 {
     case CREATED = 'created';
     case PUBLISHED = 'published';

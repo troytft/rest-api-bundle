@@ -2,23 +2,23 @@
 
 namespace Tests\Fixture\ResponseModel;
 
-use Tests;
 use RestApiBundle;
+use Tests;
 
 class PolyfillEnumType implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {
-    public function getStringRequired(): Tests\Fixture\TestApp\Enum\PolyfillStringEnum
+    public function getStringRequired(): Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString
     {
-        return Tests\Fixture\TestApp\Enum\PolyfillStringEnum::from(Tests\Fixture\TestApp\Enum\PolyfillStringEnum::ARCHIVED);
+        return Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString::from(Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString::ARCHIVED);
     }
 
-    public function getStringNullable(): ?Tests\Fixture\TestApp\Enum\PolyfillStringEnum
+    public function getStringNullable(): ?Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString
     {
         return null;
     }
 
     /**
-     * @return Tests\Fixture\TestApp\Enum\PolyfillStringEnum[]
+     * @return \Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString[]
      */
     public function getArrayRequired(): array
     {
@@ -26,7 +26,7 @@ class PolyfillEnumType implements RestApiBundle\Mapping\ResponseModel\ResponseMo
     }
 
     /**
-     * @return Tests\Fixture\TestApp\Enum\PolyfillStringEnum[]
+     * @return \Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString[]
      */
     public function getArrayNullable(): array
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Fixture\TestApp\Enum;
+namespace Tests\Fixture\TestApp\Enum\NamespaceExample;
 
-class PolyfillStringEnum extends \RestApiBundle\Mapping\ResponseModel\BaseEnum
+class PolyfillString extends \RestApiBundle\Mapping\ResponseModel\BaseEnum
 {
     public const CREATED = 'created';
     public const PUBLISHED = 'published';

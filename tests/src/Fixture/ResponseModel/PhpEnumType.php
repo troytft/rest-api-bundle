@@ -2,17 +2,17 @@
 
 namespace Tests\Fixture\ResponseModel;
 
-use Tests;
 use RestApiBundle;
+use Tests;
 
 class PhpEnumType implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
 {
-    public function getStringRequired(): Tests\Fixture\TestApp\Enum\PhpStringEnum
+    public function getStringRequired(): Tests\Fixture\TestApp\Enum\NamespaceExample\PhpString
     {
-        return Tests\Fixture\TestApp\Enum\PhpStringEnum::CREATED;
+        return Tests\Fixture\TestApp\Enum\NamespaceExample\PhpString::CREATED;
     }
 
-    public function getStringNullable(): ?Tests\Fixture\TestApp\Enum\PhpStringEnum
+    public function getStringNullable(): ?Tests\Fixture\TestApp\Enum\NamespaceExample\PhpString
     {
         return null;
     }

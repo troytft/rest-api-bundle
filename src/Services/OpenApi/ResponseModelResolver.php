@@ -36,7 +36,7 @@ class ResponseModelResolver
                 throw new \InvalidArgumentException(\sprintf('Class %s is not a response model', $class));
             }
 
-            $typename = RestApiBundle\Helper\ResponseModel\TypenameResolver::resolve($class);
+            $typename = RestApiBundle\Helper\TypenameResolver::resolve($class, 'ResponseModel');
             $classInCache = \array_search($typename, $this->typenameCache, true);
             if ($classInCache !== false && $classInCache !== $class) {
                 throw new \InvalidArgumentException(\sprintf('Typename %s for class %s already used by another class %s', $typename, $class, $classInCache));
