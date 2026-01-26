@@ -8,9 +8,11 @@
             "anyOf": [
                 {
                     "$ref": "#/components/schemas/PolyfillStringEnumEnum"
+                },
+                {
+                    "type": "null"
                 }
-            ],
-            "nullable": true
+            ]
         },
         "arrayRequired": {
             "type": "array",

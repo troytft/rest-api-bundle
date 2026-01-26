@@ -47,21 +47,23 @@ paths:
                 -
                     name: polyfillStringEnum
                     in: query
-                    required: false
+                    required: true
                     schema:
                         anyOf:
                             -
                                 $ref: '#/components/schemas/PolyfillStringEnumEnum'
-                        nullable: true
+                            -
+                                type: 'null'
                 -
                     name: phpStringEnum
                     in: query
-                    required: false
+                    required: true
                     schema:
                         anyOf:
                             -
                                 $ref: '#/components/schemas/PhpStringEnumEnum'
-                        nullable: true
+                            -
+                                type: 'null'
                 -
                     name: phpStringEnumLimited
                     in: query

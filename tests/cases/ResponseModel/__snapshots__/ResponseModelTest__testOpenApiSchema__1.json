@@ -67,9 +67,11 @@
                 "anyOf": [
                     {
                         "$ref": "#/components/schemas/PhpStringEnumEnum"
+                    },
+                    {
+                        "type": "null"
                     }
-                ],
-                "nullable": true
+                ]
             },
             "__typename": {
                 "type": "string",
@@ -88,9 +90,11 @@
                 "anyOf": [
                     {
                         "$ref": "#/components/schemas/PolyfillStringEnumEnum"
+                    },
+                    {
+                        "type": "null"
                     }
-                ],
-                "nullable": true
+                ]
             },
             "arrayRequired": {
                 "type": "array",

@@ -156,8 +156,10 @@ class ResponseModelResolver
                 $schema = $this->resolveReference($type->getClassName());
                 if ($type->isNullable()) {
                     $schema = new OpenApi\Schema([
-                        'anyOf' => [$schema],
-                        'nullable' => true,
+                        'anyOf' => [
+                            $schema,
+                            new OpenApi\Schema(['type' => 'null']),
+                        ],
                     ]);
                 }
 
