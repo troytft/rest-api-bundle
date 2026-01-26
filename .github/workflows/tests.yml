@@ -39,10 +39,10 @@ jobs:
                 run: composer require 'symfony/framework-bundle:^6.4' --no-suggest --no-interaction --no-progress
 
             -   name: Run PHPUnit
-                run: vendor/bin/phpunit
+                run: make unit-test
 
             -   name: Run PHP Code Sniffer
-                run: vendor/bin/phpunit --testdox
+                run: make cs-test
 
             -   name: Run PHPStan
                 run: vendor/bin/phpstan analyse --no-progress

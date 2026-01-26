@@ -432,7 +432,7 @@ class SchemaGenerator
             $isNullable = $propertySchema->nullable;
             if (!$isNullable && $propertySchema->anyOf) {
                 foreach ($propertySchema->anyOf as $anyOfSchema) {
-                    if ($anyOfSchema->type === 'null') {
+                    if ($anyOfSchema instanceof OpenApi\Schema && $anyOfSchema->type === 'null') {
                         $isNullable = true;
                         break;
                     }
