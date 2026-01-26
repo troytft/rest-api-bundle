@@ -23,6 +23,7 @@ class ResponseModelResolver
     public function __construct(
         private RestApiBundle\Services\SettingsProvider $settingsProvider,
         private RestApiBundle\Services\MethodReturnTypeExtractorService $methodReturnTypeExtractorService,
+        private RestApiBundle\Services\PropertyTypeExtractorService $propertyTypeExtractorService,
     ) {
     }
 
@@ -70,9 +71,23 @@ class ResponseModelResolver
         $properties = [];
 
         $reflectedClass = RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class);
-        $reflectedMethods = $reflectedClass->getMethods(\ReflectionMethod::IS_PUBLIC);
 
-        foreach ($reflectedMethods as $reflectionMethod) {
+        foreach ($reflectedClass->getProperties(\ReflectionProperty::IS_PUBLIC) as $reflectionProperty) {
+            try {
+                $propertyType = $this->propertyTypeExtractorService->getTypeRequired($class, $reflectionProperty->getName());
+                $propertySchema = $this->resolveByType($propertyType);
+
+                if (RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionProperty)) {
+                    $propertySchema->deprecated = true;
+                }
+            } catch (RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException $exception) {
+                throw new RestApiBundle\Exception\ContextAware\PropertyAwareException($exception->getMessage(), $class, $reflectionProperty->getName());
+            }
+
+            $properties[$reflectionProperty->getName()] = $propertySchema;
+        }
+
+        foreach ($reflectedClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             if (!\str_starts_with($reflectionMethod->getName(), 'get')) {
                 continue;
             }

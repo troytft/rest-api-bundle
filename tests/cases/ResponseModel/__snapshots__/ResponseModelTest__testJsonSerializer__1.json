@@ -26,5 +26,10 @@
         "__typename": "Inner"
     },
     "innerModelArray": [],
+    "withPublicProperties": {
+        "methodProperty": "methodValue",
+        "publicProperty": "value",
+        "__typename": "WithPublicProperty"
+    },
     "__typename": "Root"
 }
