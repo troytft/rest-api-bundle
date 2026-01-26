@@ -16,7 +16,7 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "DateTimeTypeResponseModel",
+                "default": "DateTimeType",
                 "nullable": false
             }
         }
@@ -38,7 +38,7 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "DateTypeResponseModel",
+                "default": "DateType",
                 "nullable": false
             }
         }
@@ -52,7 +52,7 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "InnerResponseModel",
+                "default": "Inner",
                 "nullable": false
             }
         }
@@ -73,7 +73,7 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "PhpEnumTypeResponseModel",
+                "default": "PhpEnumType",
                 "nullable": false
             }
         }
@@ -108,7 +108,7 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "PolyfillEnumTypeResponseModel",
+                "default": "PolyfillEnumType",
                 "nullable": false
             }
         }
@@ -143,7 +143,7 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "RootResponseModel",
+                "default": "Root",
                 "nullable": false
             }
         }
@@ -161,7 +161,7 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "WithPublicPropertyResponseModel",
+                "default": "WithPublicProperty",
                 "nullable": false
             }
         }

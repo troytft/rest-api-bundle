@@ -9,7 +9,7 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "PropertyAndMethodSameNameTest.InnerResponseModel",
+                "default": "PropertyAndMethodSameNameTest.Inner",
                 "nullable": false
             }
         }
@@ -26,7 +26,7 @@
             },
             "__typename": {
                 "type": "string",
-                "default": "PropertyAndMethodSameNameTest.RootResponseModel",
+                "default": "PropertyAndMethodSameNameTest.Root",
                 "nullable": false
             }
         }
