@@ -114,25 +114,22 @@ paths:
                             properties:
                                 name:
                                     type: string
-                                    nullable: false
                                     minLength: 1
                                     maxLength: 255
                                 surname:
                                     type: string
-                                    nullable: false
                                     minLength: 1
                                     maxLength: 255
                                 birthday:
                                     type: string
                                     format: date
-                                    nullable: true
                                     example: '2021-04-08'
+                                    nullable: true
                                 genres:
                                     type: array
                                     items:
                                         type: integer
                                         format: int64
-                                        nullable: false
                                     description: 'Collection of "Genre" fetched by field "id"'
                                     nullable: false
                             nullable: false
@@ -159,7 +156,6 @@ paths:
                     schema:
                         type: integer
                         format: int64
-                        nullable: false
                 -
                     name: limit
                     in: query
@@ -167,7 +163,6 @@ paths:
                     schema:
                         type: integer
                         format: int64
-                        nullable: false
                 -
                     name: name
                     in: query
@@ -193,8 +188,8 @@ paths:
                     schema:
                         type: string
                         format: date
-                        nullable: true
                         example: '2021-04-08'
+                        nullable: true
                 -
                     name: 'genres[]'
                     in: query
@@ -226,7 +221,6 @@ paths:
                     schema:
                         type: integer
                         format: int64
-                        nullable: false
 components:
     schemas:
         AuthorResponseModel:
@@ -235,11 +229,9 @@ components:
                 id:
                     type: integer
                     format: int64
-                    nullable: false
                 genresCount:
                     type: integer
                     format: int64
-                    nullable: false
                     deprecated: true
                 __typename:
                     type: string
@@ -251,7 +243,6 @@ components:
                 id:
                     type: integer
                     format: int64
-                    nullable: false
                 __typename:
                     type: string
                     default: Book

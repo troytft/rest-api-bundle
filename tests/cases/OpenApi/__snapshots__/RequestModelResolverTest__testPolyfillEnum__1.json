@@ -28,7 +28,6 @@
         },
         "choiceCallbackStringRequired": {
             "type": "string",
-            "nullable": false,
             "enum": [
                 "created",
                 "published",
@@ -48,7 +47,6 @@
             "type": "array",
             "items": {
                 "type": "string",
-                "nullable": false,
                 "enum": [
                     "created",
                     "published",
@@ -61,7 +59,6 @@
             "type": "array",
             "items": {
                 "type": "string",
-                "nullable": false,
                 "enum": [
                     "created",
                     "published",
@@ -82,7 +79,6 @@
             "type": "array",
             "items": {
                 "type": "string",
-                "nullable": false,
                 "enum": [
                     "created",
                     "published"
@@ -94,7 +90,6 @@
             "type": "array",
             "items": {
                 "type": "string",
-                "nullable": false,
                 "enum": [
                     "created",
                     "published"

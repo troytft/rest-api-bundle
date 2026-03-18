@@ -22,56 +22,86 @@ final class SchemaHelper
 
     public static function createString(bool $nullable): OpenApi\Schema
     {
-        return new OpenApi\Schema([
+        $schema = new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
-            'nullable' => $nullable,
         ]);
+
+        if ($nullable) {
+            $schema->nullable = true;
+        }
+
+        return $schema;
     }
 
     public static function createInteger(bool $nullable): OpenApi\Schema
     {
-        return new OpenApi\Schema([
+        $schema = new OpenApi\Schema([
             'type' => OpenApi\Type::INTEGER,
             'format' => 'int64',
-            'nullable' => $nullable,
         ]);
+
+        if ($nullable) {
+            $schema->nullable = true;
+        }
+
+        return $schema;
     }
 
     public static function createFloat(bool $nullable): OpenApi\Schema
     {
-        return new OpenApi\Schema([
+        $schema = new OpenApi\Schema([
             'type' => OpenApi\Type::NUMBER,
             'format' => 'double',
-            'nullable' => $nullable,
         ]);
+
+        if ($nullable) {
+            $schema->nullable = true;
+        }
+
+        return $schema;
     }
 
     public static function createBoolean(bool $nullable): OpenApi\Schema
     {
-        return new OpenApi\Schema([
+        $schema = new OpenApi\Schema([
             'type' => OpenApi\Type::BOOLEAN,
-            'nullable' => $nullable,
         ]);
+
+        if ($nullable) {
+            $schema->nullable = true;
+        }
+
+        return $schema;
     }
 
     public static function createDate(string $format, bool $nullable = false): OpenApi\Schema
     {
-        return new OpenApi\Schema([
+        $schema = new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
             'format' => 'date',
             'example' => static::createExampleDateTime()->format($format),
-            'nullable' => $nullable,
         ]);
+
+        if ($nullable) {
+            $schema->nullable = true;
+        }
+
+        return $schema;
     }
 
     public static function createDateTime(string $format, bool $nullable = false): OpenApi\Schema
     {
-        return new OpenApi\Schema([
+        $schema = new OpenApi\Schema([
             'type' => OpenApi\Type::STRING,
             'format' => 'date-time',
             'example' => static::createExampleDateTime()->format($format),
-            'nullable' => $nullable,
         ]);
+
+        if ($nullable) {
+            $schema->nullable = true;
+        }
+
+        return $schema;
     }
 
     public static function createEnum(string $class, bool $nullable = false): OpenApi\Schema

@@ -5,8 +5,7 @@
             "type": "object",
             "properties": {
                 "stringField": {
-                    "type": "string",
-                    "nullable": false
+                    "type": "string"
                 }
             },
             "nullable": true
@@ -17,8 +16,7 @@
                 "type": "object",
                 "properties": {
                     "stringField": {
-                        "type": "string",
-                        "nullable": false
+                        "type": "string"
                     }
                 },
                 "nullable": false
