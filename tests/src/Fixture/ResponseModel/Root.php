@@ -27,6 +27,16 @@ class Root implements RestApiBundle\Mapping\ResponseModel\ResponseModelInterface
         return new PolyfillEnumType();
     }
 
+    public function getNullablePhpEnumType(): ?PhpEnumType
+    {
+        return null;
+    }
+
+    public function getNullablePolyfillEnumType(): ?PolyfillEnumType
+    {
+        return null;
+    }
+
     public function getInnerModel(): Inner
     {
         return new Inner();

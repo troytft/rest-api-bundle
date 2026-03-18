@@ -21,6 +21,8 @@
         "arrayNullable": [],
         "__typename": "PolyfillEnumType"
     },
+    "nullablePhpEnumType": null,
+    "nullablePolyfillEnumType": null,
     "innerModel": {
         "stringField": "",
         "__typename": "Inner"

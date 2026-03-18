@@ -128,6 +128,22 @@
             "polyfillEnumType": {
                 "$ref": "#/components/schemas/PolyfillEnumTypeResponseModel"
             },
+            "nullablePhpEnumType": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/PhpEnumTypeResponseModel"
+                    }
+                ],
+                "nullable": true
+            },
+            "nullablePolyfillEnumType": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/PolyfillEnumTypeResponseModel"
+                    }
+                ],
+                "nullable": true
+            },
             "innerModel": {
                 "$ref": "#/components/schemas/InnerResponseModel"
             },
