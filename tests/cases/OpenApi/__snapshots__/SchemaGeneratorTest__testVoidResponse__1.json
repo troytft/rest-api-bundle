@@ -5,17 +5,17 @@
         "version": "1.0.0"
     },
     "paths": {
-        "\/": {
+        "/": {
             "get": {
-                "tags": [
-                    "tag"
-                ],
                 "summary": "title",
                 "responses": {
                     "204": {
                         "description": "Response with empty body"
                     }
-                }
+                },
+                "tags": [
+                    "tag"
+                ]
             }
         }
     },

@@ -67,11 +67,13 @@ paths:
                     in: query
                     required: false
                     schema:
-                        type: string
+                        oneOf:
+                            -
+                                type: string
+                                enum:
+                                    - published
+                                    - created
                         nullable: true
-                        enum:
-                            - published
-                            - created
         post:
             summary: 'Upload book'
             responses:

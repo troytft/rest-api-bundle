@@ -5,11 +5,8 @@
         "version": "1.0.0"
     },
     "paths": {
-        "\/": {
+        "/": {
             "get": {
-                "tags": [
-                    "tag"
-                ],
                 "summary": "title",
                 "responses": {
                     "200": {
@@ -19,12 +16,15 @@
                                 "description": "File mime type",
                                 "schema": {
                                     "type": "string",
-                                    "example": "application\/octet-stream"
+                                    "example": "application/octet-stream"
                                 }
                             }
                         }
                     }
-                }
+                },
+                "tags": [
+                    "tag"
+                ]
             }
         }
     },

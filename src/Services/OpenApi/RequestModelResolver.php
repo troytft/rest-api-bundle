@@ -133,6 +133,15 @@ class RequestModelResolver
                     $result->nullable = false;
                 }
             }
+
+            if ($result->enum && $result->nullable) {
+                unset($result->nullable);
+
+                $result = new OpenApi\Schema([
+                    'oneOf' => [$result],
+                    'nullable' => true,
+                ]);
+            }
         }
 
         return $result;
