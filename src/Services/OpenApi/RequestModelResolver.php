@@ -115,8 +115,6 @@ class RequestModelResolver
                     if ($constraint->max !== null) {
                         $result->maximum = $constraint->max;
                     }
-                } elseif ($constraint instanceof Validator\Constraints\Choice) {
-                    $result->enum = $this->extractConstraintChoices($constraint);
                 } elseif ($constraint instanceof Validator\Constraints\Length) {
                     if ($constraint->min !== null) {
                         $result->minLength = $constraint->min;

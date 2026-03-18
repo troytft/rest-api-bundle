@@ -108,15 +108,24 @@ final class SchemaHelper
     {
         $enumData = RestApiBundle\Helper\TypeExtractor::extractEnumData($class);
         if ($enumData->type === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
-            $schema = static::createString($nullable);
+            $schema = static::createString(false);
         } elseif ($enumData->type === PropertyInfo\Type::BUILTIN_TYPE_INT) {
-            $schema = static::createInteger($nullable);
+            $schema = static::createInteger(false);
         } else {
             throw new \LogicException();
         }
 
         $schema->enum = $enumData->values;
 
-        return $schema;
+        if (!$nullable) {
+            return $schema;
+        }
+
+        return new OpenApi\Schema([
+            'oneOf' => [
+                $schema,
+            ],
+            'nullable' => true,
+        ]);
     }
 }
