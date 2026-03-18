@@ -5,11 +5,8 @@
         "version": "1.0.0"
     },
     "paths": {
-        "\/": {
+        "/": {
             "get": {
-                "tags": [
-                    "tag"
-                ],
                 "summary": "title",
                 "responses": {
                     "302": {
@@ -19,12 +16,15 @@
                                 "description": "Redirect URL",
                                 "schema": {
                                     "type": "string",
-                                    "example": "https:\/\/example.com"
+                                    "example": "https://example.com"
                                 }
                             }
                         }
                     }
-                }
+                },
+                "tags": [
+                    "tag"
+                ]
             }
         }
     },

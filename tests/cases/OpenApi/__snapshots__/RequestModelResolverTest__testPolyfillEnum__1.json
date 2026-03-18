@@ -36,13 +36,17 @@
             ]
         },
         "choiceCallbackStringNullable": {
-            "type": "string",
-            "nullable": true,
-            "enum": [
-                "created",
-                "published",
-                "archived"
-            ]
+            "oneOf": [
+                {
+                    "type": "string",
+                    "enum": [
+                        "created",
+                        "published",
+                        "archived"
+                    ]
+                }
+            ],
+            "nullable": true
         },
         "choiceCallbackStringArrayRequired": {
             "type": "array",
@@ -71,12 +75,16 @@
             "nullable": true
         },
         "choiceInlineEnumString": {
-            "type": "string",
-            "nullable": true,
-            "enum": [
-                "created",
-                "published"
-            ]
+            "oneOf": [
+                {
+                    "type": "string",
+                    "enum": [
+                        "created",
+                        "published"
+                    ]
+                }
+            ],
+            "nullable": true
         },
         "choiceInlineStringArrayRequired": {
             "type": "array",

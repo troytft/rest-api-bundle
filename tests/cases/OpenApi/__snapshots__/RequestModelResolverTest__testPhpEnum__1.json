@@ -35,12 +35,16 @@
             ]
         },
         "choiceInlineStringNullable": {
-            "type": "string",
-            "nullable": true,
-            "enum": [
-                "created",
-                "published"
-            ]
+            "oneOf": [
+                {
+                    "type": "string",
+                    "enum": [
+                        "created",
+                        "published"
+                    ]
+                }
+            ],
+            "nullable": true
         },
         "choiceInlineStringArrayRequired": {
             "type": "array",
