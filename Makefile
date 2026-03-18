@@ -17,7 +17,7 @@ cs-test-fix:
 	vendor/bin/ecs check --fix
 
 unit-test:
-	vendor/bin/phpunit --display-warnings --display-deprecations --display-notices --testdox
+	vendor/bin/phpunit --testdox
 
 unit-test-fix:
 	vendor/bin/phpunit -d --update-snapshots
