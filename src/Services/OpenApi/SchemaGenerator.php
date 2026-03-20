@@ -402,6 +402,10 @@ class SchemaGenerator
 
         $contentType = 'application/json';
         foreach ($schema->properties as $schemaProperty) {
+            if (!$schemaProperty instanceof OpenApi\Schema) {
+                continue;
+            }
+
             if ($schemaProperty->type === OpenApi\Type::STRING && $schemaProperty->format === 'binary') {
                 $contentType = 'multipart/form-data';
 
@@ -429,6 +433,17 @@ class SchemaGenerator
         $requestModelSchema = $this->requestModelResolver->resolve($class);
 
         foreach ($requestModelSchema->properties as $propertyName => $propertySchema) {
+            if ($propertySchema instanceof OpenApi\Reference) {
+                $queryParameters[] = new OpenApi\Parameter([
+                    'in' => 'query',
+                    'name' => $propertyName,
+                    'required' => false,
+                    'schema' => $propertySchema,
+                ]);
+
+                continue;
+            }
+
             $isNullable = $propertySchema->nullable;
 
             $parameter = new OpenApi\Parameter([
