@@ -25,7 +25,7 @@ class StringTransformer implements TransformerInterface
         }
 
         $emptyToNull = $options[static::EMPTY_TO_NULL_OPTION] ?? false;
-        if ($emptyToNull && empty($value)) {
+        if ($emptyToNull && $value === '') {
             $value = null;
         }
 

@@ -134,11 +134,26 @@ class ScalarTransformersTest extends Tests\BaseTestCase
             $transformer->transform(null);
         } catch (RestApiBundle\Exception\Mapper\Transformer\StringRequiredException $exception) {
         }
-        
+
         // trim
         $this->assertSame(' 10', $transformer->transform(' 10'));
         $this->assertSame('10', $transformer->transform(' 10', [
             \RestApiBundle\Services\Mapper\Transformer\StringTransformer::TRIM_OPTION => true,
+        ]));
+
+        // empty to null
+        $this->assertNull($transformer->transform('', [
+            \RestApiBundle\Services\Mapper\Transformer\StringTransformer::EMPTY_TO_NULL_OPTION => true,
+        ]));
+        $this->assertSame('0', $transformer->transform('0', [
+            \RestApiBundle\Services\Mapper\Transformer\StringTransformer::EMPTY_TO_NULL_OPTION => true,
+        ]));
+        $this->assertSame('0', $transformer->transform(0, [
+            \RestApiBundle\Services\Mapper\Transformer\StringTransformer::EMPTY_TO_NULL_OPTION => true,
+        ]));
+        $this->assertNull($transformer->transform('   ', [
+            \RestApiBundle\Services\Mapper\Transformer\StringTransformer::TRIM_OPTION => true,
+            \RestApiBundle\Services\Mapper\Transformer\StringTransformer::EMPTY_TO_NULL_OPTION => true,
         ]));
     }
 }
