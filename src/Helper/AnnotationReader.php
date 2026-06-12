@@ -21,23 +21,39 @@ final class AnnotationReader
         return static::$annotationReader;
     }
 
+    /**
+     * @return list<object>
+     */
     public static function getPropertyAnnotations(\ReflectionProperty $reflectionProperty): array
     {
-        return \array_merge(
+        return \array_values(\array_merge(
             static::getAnnotationReader()->getPropertyAnnotations($reflectionProperty),
             static::createAnnotationsFromAttributes($reflectionProperty->getAttributes())
-        );
+        ));
     }
 
+    /**
+     * @param \ReflectionClass<object> $reflectionClass
+     *
+     * @return list<object>
+     */
     public static function getClassAnnotations(\ReflectionClass $reflectionClass): array
     {
-        return \array_merge(
+        return \array_values(\array_merge(
             static::getAnnotationReader()->getClassAnnotations($reflectionClass),
             static::createAnnotationsFromAttributes($reflectionClass->getAttributes())
-        );
+        ));
     }
 
-    public static function getClassAnnotation(\ReflectionClass $reflectionClass, string $class)
+    /**
+     * @template T of object
+     *
+     * @param \ReflectionClass<object> $reflectionClass
+     * @param class-string<T> $class
+     *
+     * @return T|null
+     */
+    public static function getClassAnnotation(\ReflectionClass $reflectionClass, string $class): ?object
     {
         foreach (static::getClassAnnotations($reflectionClass) as $classAnnotation) {
             if ($classAnnotation instanceof $class) {
@@ -48,15 +64,25 @@ final class AnnotationReader
         return null;
     }
 
+    /**
+     * @return list<object>
+     */
     public static function getMethodAnnotations(\ReflectionMethod $reflectionMethod): array
     {
-        return \array_merge(
+        return \array_values(\array_merge(
             static::getAnnotationReader()->getMethodAnnotations($reflectionMethod),
             static::createAnnotationsFromAttributes($reflectionMethod->getAttributes())
-        );
+        ));
     }
 
-    public static function getMethodAnnotation(\ReflectionMethod $reflectionMethod, string $class)
+    /**
+     * @template T of object
+     *
+     * @param class-string<T> $class
+     *
+     * @return T|null
+     */
+    public static function getMethodAnnotation(\ReflectionMethod $reflectionMethod, string $class): ?object
     {
         foreach (static::getMethodAnnotations($reflectionMethod) as $methodAnnotation) {
             if ($methodAnnotation instanceof $class) {
@@ -67,6 +93,11 @@ final class AnnotationReader
         return null;
     }
 
+    /**
+     * @param list<\ReflectionAttribute<object>> $attributes
+     *
+     * @return list<object>
+     */
     private static function createAnnotationsFromAttributes(array $attributes): array
     {
         return \array_map(function (\ReflectionAttribute $reflectionAttribute) {

@@ -2,7 +2,7 @@
 
 class ScalarTransformersTest extends Tests\BaseTestCase
 {
-    public function testBooleanTransformer()
+    public function testBooleanTransformer(): void
     {
         $transformer = new RestApiBundle\Services\Mapper\Transformer\BooleanTransformer();
 
@@ -37,7 +37,7 @@ class ScalarTransformersTest extends Tests\BaseTestCase
         }
     }
 
-    public function testIntegerTransformer()
+    public function testIntegerTransformer(): void
     {
         $transformer = new RestApiBundle\Services\Mapper\Transformer\IntegerTransformer();
 
@@ -78,7 +78,7 @@ class ScalarTransformersTest extends Tests\BaseTestCase
         }
     }
 
-    public function testFloatTransformer()
+    public function testFloatTransformer(): void
     {
         $transformer = new RestApiBundle\Services\Mapper\Transformer\FloatTransformer();
 
@@ -114,7 +114,7 @@ class ScalarTransformersTest extends Tests\BaseTestCase
         }
     }
 
-    public function testStringTransformer()
+    public function testStringTransformer(): void
     {
         $transformer = new RestApiBundle\Services\Mapper\Transformer\StringTransformer();
 

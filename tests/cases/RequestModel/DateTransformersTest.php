@@ -2,7 +2,7 @@
 
 class DateTransformersTest extends Tests\BaseTestCase
 {
-    public function testDateTimeFormatOption()
+    public function testDateTimeFormatOption(): void
     {
         $options = [
             RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION => 'Y/m/d-H:i:sP'
@@ -21,7 +21,7 @@ class DateTransformersTest extends Tests\BaseTestCase
         $this->assertInstanceOf(\DateTime::class, $value);
     }
 
-    public function testDateFormatOption()
+    public function testDateFormatOption(): void
     {
         $options = [
             RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION => 'Y/m/d'
@@ -40,7 +40,7 @@ class DateTransformersTest extends Tests\BaseTestCase
         $this->assertInstanceOf(\DateTime::class, $value);
     }
 
-    public function testDateTimeForceLocalTimezoneOption()
+    public function testDateTimeForceLocalTimezoneOption(): void
     {
         $datetime = new \DateTime();
         $timezone = new \DateTimeZone('Europe/Prague');
@@ -63,7 +63,7 @@ class DateTransformersTest extends Tests\BaseTestCase
         $this->assertSame('UTC', $value->getTimezone()->getName());
     }
 
-    public function testInvalidDateException()
+    public function testInvalidDateException(): void
     {
         try {
             $this->getDateTransformer()->transform('2021-10-33');
@@ -73,7 +73,7 @@ class DateTransformersTest extends Tests\BaseTestCase
         }
     }
 
-    public function testInvalidValueException()
+    public function testInvalidValueException(): void
     {
         try {
             $this->getDateTransformer()->transform([]);
@@ -83,7 +83,7 @@ class DateTransformersTest extends Tests\BaseTestCase
         }
     }
 
-    public function testInvalidDateTimeException()
+    public function testInvalidDateTimeException(): void
     {
         try {
             $this->getDateTimeTransformer()->transform('2021-10-33T16:00:00+03:00');
@@ -95,11 +95,17 @@ class DateTransformersTest extends Tests\BaseTestCase
 
     private function getDateTimeTransformer(): RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer
     {
-        return $this->getContainer()->get(RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class);
+        $service = $this->getContainer()->get(RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class);
+        \assert($service instanceof RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer);
+
+        return $service;
     }
 
     private function getDateTransformer(): RestApiBundle\Services\Mapper\Transformer\DateTransformer
     {
-        return $this->getContainer()->get(RestApiBundle\Services\Mapper\Transformer\DateTransformer::class);
+        $service = $this->getContainer()->get(RestApiBundle\Services\Mapper\Transformer\DateTransformer::class);
+        \assert($service instanceof RestApiBundle\Services\Mapper\Transformer\DateTransformer);
+
+        return $service;
     }
 }

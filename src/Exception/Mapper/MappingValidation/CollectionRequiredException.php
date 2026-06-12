@@ -10,6 +10,9 @@ class CollectionRequiredException extends \Exception implements MappingValidatio
 {
     use PathTrait;
 
+    /**
+     * @param array<int|string> $path
+     */
     public function __construct(array $path)
     {
         $this->path = $path;

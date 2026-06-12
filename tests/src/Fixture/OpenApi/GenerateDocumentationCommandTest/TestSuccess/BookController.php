@@ -11,12 +11,12 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class BookController
 {
-    #[OpenApi\Endpoint(summary: 'Books list', tags: ['books'])]
     /**
      * @Route(methods="GET")
      *
      * @return Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\Book[]
      */
+    #[OpenApi\Endpoint(summary: 'Books list', tags: ['books'])]
     public function listAction(Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\BookList $requestModel): array
     {
         return [];

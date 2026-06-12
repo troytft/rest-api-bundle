@@ -24,7 +24,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onEvent(ExceptionEvent $event)
+    public function onEvent(ExceptionEvent $event): void
     {
         if (!$this->settingsProvider->isRequestValidationExceptionHandlerEnabled()) {
             return;

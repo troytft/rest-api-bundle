@@ -291,6 +291,9 @@ class SchemaGenerator
         return $placeholders;
     }
 
+    /**
+     * @return OpenApi\Responses<string, OpenApi\Response|OpenApi\Reference>
+     */
     private function createResponses(\ReflectionMethod $reflectionMethod, ?int $httpStatusCode = null): OpenApi\Responses
     {
         $responses = new OpenApi\Responses([]);
@@ -328,6 +331,9 @@ class SchemaGenerator
         return new OpenApi\Response(['description' => 'Response with empty body']);
     }
 
+    /**
+     * @param OpenApi\Responses<string, OpenApi\Response|OpenApi\Reference> $responses
+     */
     private function addBinaryFileResponse(OpenApi\Responses $responses, ?int $httpStatusCode = null): void
     {
         $httpStatusCode = $httpStatusCode ?? 200;
@@ -346,6 +352,9 @@ class SchemaGenerator
         ]));
     }
 
+    /**
+     * @param OpenApi\Responses<string, OpenApi\Response|OpenApi\Reference> $responses
+     */
     private function addRedirectResponse(OpenApi\Responses $responses, ?int $httpStatusCode = null): void
     {
         $httpStatusCode = $httpStatusCode ?? 302;
@@ -364,6 +373,9 @@ class SchemaGenerator
         ]));
     }
 
+    /**
+     * @param OpenApi\Responses<string, OpenApi\Response|OpenApi\Reference> $responses
+     */
     private function addSingleResponseModelResponse(OpenApi\Responses $responses, PropertyInfo\Type $returnType, ?int $httpStatusCode = null): void
     {
         $httpStatusCode = $httpStatusCode ?? 200;
@@ -378,6 +390,9 @@ class SchemaGenerator
         ]));
     }
 
+    /**
+     * @param OpenApi\Responses<string, OpenApi\Response|OpenApi\Reference> $responses
+     */
     private function addCollectionOfResponseModelsResponse(OpenApi\Responses $responses, PropertyInfo\Type $returnType, ?int $httpStatusCode = null): void
     {
         $httpStatusCode = $httpStatusCode ?? 200;

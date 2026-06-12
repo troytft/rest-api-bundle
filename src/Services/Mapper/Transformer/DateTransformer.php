@@ -16,7 +16,10 @@ class DateTransformer implements TransformerInterface
     ) {
     }
 
-    public function transform($value, array $options = []): \DateTime
+    /**
+     * @param array<string, mixed> $options
+     */
+    public function transform(mixed $value, array $options = []): \DateTime
     {
         $value = $this->stringTransformer->transform($value);
         $format = $options[static::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
@@ -28,7 +31,7 @@ class DateTransformer implements TransformerInterface
 
         $lastErrors = RestApiBundle\Mapping\Mapper\Date::getLastErrors();
         if (\is_array($lastErrors) && ($lastErrors['warning_count'] || $lastErrors['error_count'])) {
-            $errorMessage = \implode(', ', \array_merge(\array_values($lastErrors['warnings']), \array_values($lastErrors['errors'])));
+            $errorMessage = \implode(', ', \array_merge($lastErrors['warnings'], $lastErrors['errors']));
 
             throw new RestApiBundle\Exception\Mapper\Transformer\InvalidDateException($errorMessage);
         }

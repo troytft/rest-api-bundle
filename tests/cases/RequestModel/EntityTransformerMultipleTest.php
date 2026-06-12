@@ -2,7 +2,7 @@
 
 class EntityTransformerMultipleTest extends Tests\BaseTestCase
 {
-    public function testSuccessFetch()
+    public function testSuccessFetch(): void
     {
         $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
 
@@ -28,7 +28,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
         $this->assertSame(2, $model->bySlug[1]->getId());
     }
 
-    public function testInvalidCollection()
+    public function testInvalidCollection(): void
     {
         $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
 
@@ -69,7 +69,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
         }
     }
 
-    public function testOrder()
+    public function testOrder(): void
     {
         $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
 
@@ -88,7 +88,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
         $this->assertSame(2, $model->byId[1]->getId());
     }
 
-    public function testEntityNotFound()
+    public function testEntityNotFound(): void
     {
         $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
 
@@ -102,7 +102,7 @@ class EntityTransformerMultipleTest extends Tests\BaseTestCase
         }
     }
 
-    public function testNotUniqueValues()
+    public function testNotUniqueValues(): void
     {
         $model = new Tests\Fixture\Mapper\EntityTransformerMultipleTest\Model();
 

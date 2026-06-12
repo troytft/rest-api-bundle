@@ -51,6 +51,8 @@ class EndpointFinder
     }
 
     /**
+     * @param \ReflectionClass<object> $reflectionClass
+     *
      * @return RestApiBundle\Model\OpenApi\EndpointData[]
      */
     private function extractEndpointsByReflectionClass(\ReflectionClass $reflectionClass): array

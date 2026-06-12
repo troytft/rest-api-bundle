@@ -43,6 +43,9 @@ YAML;
 
     private function getSchemaSerializer(): RestApiBundle\Services\OpenApi\SchemaSerializer
     {
-        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\SchemaSerializer::class);
+        $service = $this->getContainer()->get(RestApiBundle\Services\OpenApi\SchemaSerializer::class);
+        \assert($service instanceof RestApiBundle\Services\OpenApi\SchemaSerializer);
+
+        return $service;
     }
 }

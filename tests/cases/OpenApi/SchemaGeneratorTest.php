@@ -40,6 +40,9 @@ class SchemaGeneratorTest extends Tests\BaseTestCase
 
     private function getSchemaGenerator(): RestApiBundle\Services\OpenApi\SchemaGenerator
     {
-        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\SchemaGenerator::class);
+        $service = $this->getContainer()->get(RestApiBundle\Services\OpenApi\SchemaGenerator::class);
+        \assert($service instanceof RestApiBundle\Services\OpenApi\SchemaGenerator);
+
+        return $service;
     }
 }

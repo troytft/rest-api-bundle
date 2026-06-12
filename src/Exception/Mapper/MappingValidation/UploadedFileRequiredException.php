@@ -10,6 +10,9 @@ class UploadedFileRequiredException extends \Exception implements MappingValidat
 {
     use PathTrait;
 
+    /**
+     * @param array<int|string> $path
+     */
     public function __construct(array $path)
     {
         $this->path = $path;

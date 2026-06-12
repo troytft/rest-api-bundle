@@ -17,6 +17,9 @@ class PropertyAndMethodSameNameTest extends Tests\BaseTestCase
 
     private function getResponseModelResolver(): RestApiBundle\Services\OpenApi\ResponseModelResolver
     {
-        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\ResponseModelResolver::class);
+        $service = $this->getContainer()->get(RestApiBundle\Services\OpenApi\ResponseModelResolver::class);
+        \assert($service instanceof RestApiBundle\Services\OpenApi\ResponseModelResolver);
+
+        return $service;
     }
 }

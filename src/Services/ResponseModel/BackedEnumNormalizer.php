@@ -8,6 +8,9 @@ use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 
 class BackedEnumNormalizer implements ContextAwareNormalizerInterface
 {
+    /**
+     * @param array<string, mixed> $context
+     */
     public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof \BackedEnum;
@@ -15,6 +18,7 @@ class BackedEnumNormalizer implements ContextAwareNormalizerInterface
 
     /**
      * @param \BackedEnum $object
+     * @param array<string, mixed> $context
      */
     public function normalize($object, $format = null, array $context = []): string|int
     {

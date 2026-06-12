@@ -31,13 +31,16 @@ class ResponseModelNormalizer implements NormalizerInterface, SerializerAwareInt
         return $data instanceof RestApiBundle\Mapping\ResponseModel\ResponseModelInterface;
     }
 
+    /**
+     * @param array<string, mixed> $context
+     *
+     * @return array<string, mixed>
+     */
     public function normalize($object, $format = null, array $context = []): array
     {
+        /** @var array<string, mixed> $result */
         $result = $this->normalizer->normalize($object, $format, $context);
-
-        if (\is_array($result)) {
-            $result[static::ATTRIBUTE_TYPENAME] = RestApiBundle\Helper\TypenameResolver::resolveWithoutSuffix($object::class, 'ResponseModel');
-        }
+        $result[static::ATTRIBUTE_TYPENAME] = RestApiBundle\Helper\TypenameResolver::resolveWithoutSuffix($object::class, 'ResponseModel');
 
         return $result;
     }

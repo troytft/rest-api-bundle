@@ -13,9 +13,9 @@ class Model implements Mapper\ModelInterface
      */
     public ?array $byId;
 
-    #[Mapper\FindByField('slug')]
     /**
      * @var Tests\Fixture\TestApp\Entity\Book[]|null
      */
+    #[Mapper\FindByField('slug')]
     public ?array $bySlug;
 }

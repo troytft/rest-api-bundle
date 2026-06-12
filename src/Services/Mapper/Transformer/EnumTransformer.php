@@ -10,7 +10,10 @@ class EnumTransformer implements TransformerInterface
 {
     public const CLASS_OPTION = 'class';
 
-    public function transform($value, array $options)
+    /**
+     * @param array<string, mixed> $options
+     */
+    public function transform(mixed $value, array $options): mixed
     {
         $class = $options[static::CLASS_OPTION] ?? throw new \InvalidArgumentException();
         $result = $class::tryFrom($value);

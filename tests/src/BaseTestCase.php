@@ -22,6 +22,9 @@ abstract class BaseTestCase extends KernelTestCase
         return TestKernel::class;
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     protected static function createKernel(array $options = []): KernelInterface
     {
         /** @var TestKernel $kernel */
@@ -46,6 +49,7 @@ abstract class BaseTestCase extends KernelTestCase
     private function setupDatabase(): void
     {
         $entityManager = $this->getContainer()->get(EntityManagerInterface::class);
+        \assert($entityManager instanceof EntityManagerInterface);
         $schemaTool = new SchemaTool($entityManager);
         $metadata = $entityManager->getMetadataFactory()->getAllMetadata();
         
@@ -59,6 +63,9 @@ abstract class BaseTestCase extends KernelTestCase
         $this->assertMatchesJsonSnapshot(json_encode($schema->getSerializableData()));
     }
 
+    /**
+     * @param array<OpenApi\Schema|OpenApi\OpenApi> $schemas
+     */
     protected function assertMatchesOpenApiSchemaSnapshots(array $schemas): void
     {
         $this->assertMatchesJsonSnapshot(json_encode(array_map(fn (OpenApi\Schema|OpenApi\OpenApi $schema) => $schema->getSerializableData(), $schemas)));
@@ -66,6 +73,9 @@ abstract class BaseTestCase extends KernelTestCase
 
     protected function getMapper(): RestApiBundle\Services\Mapper\Mapper
     {
-        return $this->getContainer()->get(RestApiBundle\Services\Mapper\Mapper::class);
+        $service = $this->getContainer()->get(RestApiBundle\Services\Mapper\Mapper::class);
+        \assert($service instanceof RestApiBundle\Services\Mapper\Mapper);
+
+        return $service;
     }
 }

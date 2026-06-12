@@ -7,6 +7,9 @@ use Tests;
 use function array_values;
 use function in_array;
 
+/**
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<Tests\Fixture\TestApp\Entity\Book>
+ */
 class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
 {
     public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)

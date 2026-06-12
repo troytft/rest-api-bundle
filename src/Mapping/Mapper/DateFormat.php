@@ -14,7 +14,7 @@ class DateFormat implements PropertyOptionInterface
     private string $format;
 
     /**
-     * @param array|string $options
+     * @param array<string, mixed>|string $options
      */
     public function __construct($options)
     {

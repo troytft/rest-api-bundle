@@ -44,6 +44,7 @@ class RequestModelResolver
             $propertyOpenApiSchema = $this->resolveByMapperSchema($propertyMapperSchema, $propertyConstraints);
 
             if (RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionProperty)) {
+                \assert($propertyOpenApiSchema instanceof OpenApi\Schema);
                 $propertyOpenApiSchema->deprecated = true;
             }
 
@@ -148,6 +149,7 @@ class RequestModelResolver
     }
 
     /**
+     * @param array<string, mixed> $options
      * @param Validator\Constraint[] $validationConstraints
      */
     private function resolveDateTimeTransformer(array $options, bool $nullable, array $validationConstraints): OpenApi\Schema
@@ -157,6 +159,9 @@ class RequestModelResolver
         return RestApiBundle\Helper\OpenApi\SchemaHelper::createDateTime($format, $nullable);
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     private function resolveDateTransformer(array $options, bool $nullable): OpenApi\Schema
     {
         $format = $options[RestApiBundle\Services\Mapper\Transformer\DateTransformer::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateFormat();
@@ -164,6 +169,9 @@ class RequestModelResolver
         return RestApiBundle\Helper\OpenApi\SchemaHelper::createDate($format, $nullable);
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     private function resolveDoctrineEntityTransformer(array $options, bool $nullable): OpenApi\Schema
     {
         $class = $options[RestApiBundle\Services\Mapper\Transformer\DoctrineEntityTransformer::CLASS_OPTION];
@@ -194,6 +202,7 @@ class RequestModelResolver
     }
 
     /**
+     * @param array<string, mixed> $options
      * @param Validator\Constraint[] $constraints
      *
      * @return OpenApi\Schema|OpenApi\Reference
@@ -229,12 +238,16 @@ class RequestModelResolver
         return $chunks[\array_key_last($chunks)] ?? throw new \LogicException();
     }
 
+    /**
+     * @return list<mixed>
+     */
     private function extractConstraintChoices(Validator\Constraints\Choice $constraint): array
     {
         if ($constraint->choices) {
             $choices = $constraint->choices;
         } elseif ($constraint->callback) {
             $callback = $constraint->callback;
+            \assert(\is_callable($callback));
             $choices = $callback();
         } else {
             throw new \InvalidArgumentException();

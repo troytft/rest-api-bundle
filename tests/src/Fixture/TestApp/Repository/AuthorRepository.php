@@ -6,6 +6,9 @@ use Tests;
 
 use function in_array;
 
+/**
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<Tests\Fixture\TestApp\Entity\Author>
+ */
 class AuthorRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
 {
     /**

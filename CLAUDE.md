@@ -26,7 +26,7 @@ make test-cs
 # Fix coding standards automatically
 make fix-cs
 
-# Run static analysis (PHPStan level 5)
+# Run static analysis (PHPStan level 6)
 vendor/bin/phpstan analyse
 
 # Performance benchmarking

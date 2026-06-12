@@ -69,6 +69,9 @@ final class GenerateDocumentationCommand extends Command
     {
         $fileType = RestApiBundle\Helper\OpenApi\FileTypeResolver::resolveByFilename($filename);
         $fileContent = \file_get_contents($filename);
+        if ($fileContent === false) {
+            throw new \RuntimeException(\sprintf('Unable to read file "%s".', $filename));
+        }
 
         return match ($fileType) {
             RestApiBundle\Helper\OpenApi\FileTypeResolver::JSON_TYPE => $this->schemaSerializer->fromJson($fileContent),
