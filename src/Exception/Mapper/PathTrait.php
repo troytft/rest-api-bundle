@@ -7,10 +7,13 @@ namespace RestApiBundle\Exception\Mapper;
 trait PathTrait
 {
     /**
-     * @var array
+     * @var array<int|string>
      */
     protected $path;
 
+    /**
+     * @return array<int|string>
+     */
     public function getPath(): array
     {
         return $this->path;

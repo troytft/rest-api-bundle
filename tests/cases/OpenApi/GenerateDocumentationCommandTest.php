@@ -5,7 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 class GenerateDocumentationCommandTest extends Tests\BaseTestCase
 {
-    public function testSuccess()
+    public function testSuccess(): void
     {
         $filename = tempnam(sys_get_temp_dir(), 'openapi') . '.yaml';
 
@@ -23,7 +23,7 @@ class GenerateDocumentationCommandTest extends Tests\BaseTestCase
         $this->assertMatchesSnapshot(file_get_contents($filename));
     }
 
-    public function testInvalidDefinition()
+    public function testInvalidDefinition(): void
     {
         $application = new Application($this->getKernel());
         $command = $application->find('rest-api:generate-documentation');

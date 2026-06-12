@@ -22,7 +22,10 @@ class DoctrineEntityTransformer implements TransformerInterface
     ) {
     }
 
-    public function transform($value, array $options)
+    /**
+     * @param array<string, mixed> $options
+     */
+    public function transform(mixed $value, array $options): mixed
     {
         $class = $options[static::CLASS_OPTION] ?? throw new \InvalidArgumentException();
         $fieldName = $options[static::FIELD_OPTION] ?? throw new \InvalidArgumentException();
@@ -37,6 +40,9 @@ class DoctrineEntityTransformer implements TransformerInterface
         return $result;
     }
 
+    /**
+     * @param class-string $class
+     */
     private function transformSingleItem(string $class, string $fieldName, mixed $value): object
     {
         $propertyType = $this->propertyTypeExtractorService->getTypeRequired($class, $fieldName);
@@ -55,6 +61,11 @@ class DoctrineEntityTransformer implements TransformerInterface
         return $entity;
     }
 
+    /**
+     * @param class-string $class
+     *
+     * @return array<int, object>
+     */
     private function transformMultipleItems(string $class, string $fieldName, mixed $value): array
     {
         $propertyType = $this->propertyTypeExtractorService->getTypeRequired($class, $fieldName);

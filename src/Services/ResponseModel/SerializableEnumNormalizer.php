@@ -9,6 +9,9 @@ use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 
 class SerializableEnumNormalizer implements ContextAwareNormalizerInterface
 {
+    /**
+     * @param array<string, mixed> $context
+     */
     public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof RestApiBundle\Mapping\ResponseModel\EnumInterface;
@@ -16,6 +19,7 @@ class SerializableEnumNormalizer implements ContextAwareNormalizerInterface
 
     /**
      * @param RestApiBundle\Mapping\ResponseModel\EnumInterface $object
+     * @param array<string, mixed> $context
      */
     public function normalize($object, $format = null, array $context = []): string|int
     {

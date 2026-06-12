@@ -13,6 +13,9 @@ use Symfony\Component\HttpKernel\Kernel;
 
 final class AppKernel extends Kernel
 {
+    /**
+     * @return list<\Symfony\Component\HttpKernel\Bundle\BundleInterface>
+     */
     public function registerBundles(): array
     {
         return [

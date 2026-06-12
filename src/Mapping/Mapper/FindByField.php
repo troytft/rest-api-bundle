@@ -14,7 +14,7 @@ class FindByField implements PropertyOptionInterface
     private string $field;
 
     /**
-     * @param array|string $options
+     * @param array<string, mixed>|string $options
      */
     public function __construct($options)
     {

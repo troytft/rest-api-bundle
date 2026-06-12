@@ -9,6 +9,9 @@ use Symfony\Component\PropertyInfo;
 
 class SchemaResolver implements SchemaResolverInterface
 {
+    /**
+     * @var list<SchemaTypeResolver\SchemaTypeResolverInterface>
+     */
     private array $schemaTypeResolvers;
 
     public function __construct(

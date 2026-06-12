@@ -8,7 +8,10 @@ use RestApiBundle;
 
 class IntegerTransformer implements TransformerInterface
 {
-    public function transform($value, array $options = []): int
+    /**
+     * @param array<string, mixed> $options
+     */
+    public function transform(mixed $value, array $options = []): int
     {
         if (!\is_numeric($value)) {
             throw new RestApiBundle\Exception\Mapper\Transformer\IntegerRequiredException();

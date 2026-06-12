@@ -22,6 +22,9 @@ abstract class BaseTestCase extends KernelTestCase
         return TestKernel::class;
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     protected static function createKernel(array $options = []): KernelInterface
     {
         /** @var TestKernel $kernel */
@@ -59,6 +62,9 @@ abstract class BaseTestCase extends KernelTestCase
         $this->assertMatchesJsonSnapshot(json_encode($schema->getSerializableData()));
     }
 
+    /**
+     * @param array<OpenApi\Schema|OpenApi\OpenApi> $schemas
+     */
     protected function assertMatchesOpenApiSchemaSnapshots(array $schemas): void
     {
         $this->assertMatchesJsonSnapshot(json_encode(array_map(fn (OpenApi\Schema|OpenApi\OpenApi $schema) => $schema->getSerializableData(), $schemas)));

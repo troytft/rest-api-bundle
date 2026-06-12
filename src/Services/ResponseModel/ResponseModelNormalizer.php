@@ -31,6 +31,11 @@ class ResponseModelNormalizer implements NormalizerInterface, SerializerAwareInt
         return $data instanceof RestApiBundle\Mapping\ResponseModel\ResponseModelInterface;
     }
 
+    /**
+     * @param array<string, mixed> $context
+     *
+     * @return array<string, mixed>
+     */
     public function normalize($object, $format = null, array $context = []): array
     {
         $result = $this->normalizer->normalize($object, $format, $context);

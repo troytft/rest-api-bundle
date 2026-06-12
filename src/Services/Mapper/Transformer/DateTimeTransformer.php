@@ -17,7 +17,10 @@ class DateTimeTransformer implements TransformerInterface
     ) {
     }
 
-    public function transform($value, array $options = []): \DateTime
+    /**
+     * @param array<string, mixed> $options
+     */
+    public function transform(mixed $value, array $options = []): \DateTime
     {
         $value = $this->stringTransformer->transform($value);
         $format = $options[static::FORMAT_OPTION] ?? $this->settingsProvider->getDefaultRequestDateTimeFormat();

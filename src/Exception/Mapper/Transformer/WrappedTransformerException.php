@@ -15,6 +15,9 @@ class WrappedTransformerException extends \Exception implements RestApiBundle\Ex
      */
     private $transformerException;
 
+    /**
+     * @param array<int|string> $path
+     */
     public function __construct(TransformerExceptionInterface $transformerException, array $path)
     {
         $this->transformerException = $transformerException;

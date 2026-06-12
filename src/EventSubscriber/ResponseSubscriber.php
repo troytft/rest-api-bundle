@@ -25,7 +25,7 @@ class ResponseSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function handle(ViewEvent $event)
+    public function handle(ViewEvent $event): void
     {
         $this->responseHandler->handleControllerResultEvent($event);
     }

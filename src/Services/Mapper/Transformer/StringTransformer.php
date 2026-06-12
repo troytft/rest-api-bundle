@@ -11,7 +11,10 @@ class StringTransformer implements TransformerInterface
     public const TRIM_OPTION = 'trim';
     public const EMPTY_TO_NULL_OPTION = 'emptyToNull';
 
-    public function transform($value, array $options = []): ?string
+    /**
+     * @param array<string, mixed> $options
+     */
+    public function transform(mixed $value, array $options = []): ?string
     {
         if (\is_numeric($value)) {
             $value = (string) $value;

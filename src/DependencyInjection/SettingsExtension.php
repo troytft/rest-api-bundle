@@ -16,6 +16,9 @@ class SettingsExtension extends Extension
         return static::ALIAS;
     }
 
+    /**
+     * @param array<string, mixed> $config
+     */
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
         return new Configuration\ConfigExtensionConfiguration($this->getAlias());

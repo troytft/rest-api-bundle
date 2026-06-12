@@ -11,6 +11,9 @@ class SerializableDateNormalizer implements ContextAwareNormalizerInterface
 {
     public const FORMAT_KEY = 'date_format';
 
+    /**
+     * @param array<string, mixed> $context
+     */
     public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof RestApiBundle\Mapping\ResponseModel\DateInterface;
@@ -18,6 +21,7 @@ class SerializableDateNormalizer implements ContextAwareNormalizerInterface
 
     /**
      * @param RestApiBundle\Mapping\ResponseModel\DateInterface $object
+     * @param array<string, mixed> $context
      */
     public function normalize($object, $format = null, array $context = []): string
     {

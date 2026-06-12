@@ -2,7 +2,7 @@
 
 class EntityTransformerTest extends Tests\BaseTestCase
 {
-    public function testSuccessFetch()
+    public function testSuccessFetch(): void
     {
         $model = new Tests\Fixture\Mapper\EntityTransformerTest\Model();
 
@@ -21,7 +21,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
         $this->assertSame(2, $model->bySlug?->getId());
     }
 
-    public function testEntityNotFound()
+    public function testEntityNotFound(): void
     {
         $model = new Tests\Fixture\Mapper\EntityTransformerTest\Model();
 
@@ -46,7 +46,7 @@ class EntityTransformerTest extends Tests\BaseTestCase
         }
     }
 
-    public function testInvalidValueType()
+    public function testInvalidValueType(): void
     {
         $model = new Tests\Fixture\Mapper\EntityTransformerTest\Model();
 

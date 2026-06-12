@@ -10,6 +10,9 @@ class CanNotBeNullException extends \Exception implements MappingValidationExcep
 {
     use PathTrait;
 
+    /**
+     * @param array<int|string> $path
+     */
     public function __construct(array $path)
     {
         $this->path = $path;

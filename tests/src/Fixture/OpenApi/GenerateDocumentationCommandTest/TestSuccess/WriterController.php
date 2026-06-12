@@ -20,13 +20,13 @@ class WriterController
         return new Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\Author();
     }
 
-    #[OpenApi\Endpoint(summary: 'Writers list with filters', tags: ['writers'])]
     /**
      * @Route(methods="GET")
      *
      * @return Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\Author[]
      */
-    public function listAction(Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\WriterList $requestModel)
+    #[OpenApi\Endpoint(summary: 'Writers list with filters', tags: ['writers'])]
+    public function listAction(Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\WriterList $requestModel): array
     {
         return [];
     }

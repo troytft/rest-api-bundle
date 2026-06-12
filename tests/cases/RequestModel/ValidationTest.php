@@ -2,7 +2,7 @@
 
 class ValidationTest extends Tests\BaseTestCase
 {
-    public function testNestedValidation()
+    public function testNestedValidation(): void
     {
         $model = new Tests\Fixture\Mapper\ValidationTest\TestNestedValidationModel();
 
@@ -37,7 +37,7 @@ class ValidationTest extends Tests\BaseTestCase
         }
     }
 
-    public function testClearMissing()
+    public function testClearMissing(): void
     {
         // enabled
         $model = new Tests\Fixture\Mapper\ValidationTest\TestClearMissingModel();
@@ -58,7 +58,7 @@ class ValidationTest extends Tests\BaseTestCase
         $this->assertSame('default value', $model->field);
     }
 
-    public function testUndefinedKey()
+    public function testUndefinedKey(): void
     {
         $model = new Tests\Fixture\Mapper\ValidationTest\TestUndefinedKeyModel();
 

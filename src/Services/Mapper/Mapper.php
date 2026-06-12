@@ -22,6 +22,9 @@ class Mapper
     ) {
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function map(RestApiBundle\Mapping\Mapper\ModelInterface $model, array $data, ?RestApiBundle\Model\Mapper\Context $context = null): void
     {
         try {
@@ -76,6 +79,10 @@ class Mapper
         return new RestApiBundle\Exception\Mapper\MappingException($errors);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param array<int|string> $basePath
+     */
     private function mapObject(RestApiBundle\Model\Mapper\Schema $schema, RestApiBundle\Mapping\Mapper\ModelInterface $model, array $data, array $basePath, RestApiBundle\Model\Mapper\Context $context): void
     {
         if ($context->clearMissing) {
@@ -117,7 +124,10 @@ class Mapper
         }
     }
 
-    private function mapType(RestApiBundle\Model\Mapper\Schema $schema, $rawValue, array $basePath, RestApiBundle\Model\Mapper\Context $context)
+    /**
+     * @param array<int|string> $basePath
+     */
+    private function mapType(RestApiBundle\Model\Mapper\Schema $schema, mixed $rawValue, array $basePath, RestApiBundle\Model\Mapper\Context $context): mixed
     {
         if ($rawValue === null && $schema->isNullable) {
             return null;
@@ -163,7 +173,10 @@ class Mapper
         return $value;
     }
 
-    private function mapTransformerAwareType(RestApiBundle\Model\Mapper\Schema $schema, $rawValue, array $basePath)
+    /**
+     * @param array<int|string> $basePath
+     */
+    private function mapTransformerAwareType(RestApiBundle\Model\Mapper\Schema $schema, mixed $rawValue, array $basePath): mixed
     {
         try {
             return $this->transformers[$schema->transformerClass]->transform($rawValue, $schema->transformerOptions);
@@ -172,7 +185,12 @@ class Mapper
         }
     }
 
-    private function mapCollectionType(RestApiBundle\Model\Mapper\Schema $schema, $rawValue, array $basePath, RestApiBundle\Model\Mapper\Context $context): array
+    /**
+     * @param array<int|string> $basePath
+     *
+     * @return list<mixed>
+     */
+    private function mapCollectionType(RestApiBundle\Model\Mapper\Schema $schema, mixed $rawValue, array $basePath, RestApiBundle\Model\Mapper\Context $context): array
     {
         if (!\is_array($rawValue) || !\array_is_list($rawValue)) {
             throw new RestApiBundle\Exception\Mapper\MappingValidation\CollectionRequiredException($basePath);
@@ -187,7 +205,12 @@ class Mapper
         return $value;
     }
 
-    private function resolvePath(array $basePath, $newNode): array
+    /**
+     * @param array<int|string> $basePath
+     *
+     * @return array<int|string>
+     */
+    private function resolvePath(array $basePath, int|string $newNode): array
     {
         $path = $basePath;
         $path[] = $newNode;

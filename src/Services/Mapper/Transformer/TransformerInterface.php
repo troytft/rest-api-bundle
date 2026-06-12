@@ -6,5 +6,8 @@ namespace RestApiBundle\Services\Mapper\Transformer;
 
 interface TransformerInterface
 {
-    public function transform($value, array $options);
+    /**
+     * @param array<string, mixed> $options
+     */
+    public function transform(mixed $value, array $options): mixed;
 }

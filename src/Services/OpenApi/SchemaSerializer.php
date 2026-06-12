@@ -34,6 +34,9 @@ final class SchemaSerializer
         return $this->fromArray(\json_decode($content, true));
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private function fromArray(array $data): OpenApi\OpenApi
     {
         return new OpenApi\OpenApi(\array_merge([

@@ -30,7 +30,7 @@ class Serializer
         $this->serializer = new \Symfony\Component\Serializer\Serializer($normalizers, $encoders);
     }
 
-    public function serialize($value): ?string
+    public function serialize(mixed $value): ?string
     {
         if ($value === null) {
             $result = null;

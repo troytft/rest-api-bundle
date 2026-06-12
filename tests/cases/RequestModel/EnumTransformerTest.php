@@ -2,7 +2,7 @@
 
 class EnumTransformerTest extends Tests\BaseTestCase
 {
-    public function testSuccess()
+    public function testSuccess(): void
     {
         $model = new Tests\Fixture\Mapper\EnumTransformerTest\Model();
         $this->getMapper()->map($model, [
@@ -13,7 +13,7 @@ class EnumTransformerTest extends Tests\BaseTestCase
         $this->assertSame(\Tests\Fixture\TestApp\Enum\NamespaceExample\PolyfillString::CREATED, $model->getField()->getValue());
     }
 
-    public function testValueNotFound()
+    public function testValueNotFound(): void
     {
         try {
             $model = new Tests\Fixture\Mapper\EnumTransformerTest\Model();

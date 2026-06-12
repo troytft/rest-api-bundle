@@ -100,6 +100,11 @@ class ModelValidator
         return $result;
     }
 
+    /**
+     * @param array<string, string[]> $array
+     *
+     * @return array<string, string[]>
+     */
     private function appendPrefixToArrayKeys(string $prefix, array $array): array
     {
         $result = [];

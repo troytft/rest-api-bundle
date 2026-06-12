@@ -22,6 +22,9 @@ final class Schema
 
     public ?string $transformerClass = null;
 
+    /**
+     * @var array<string, mixed>
+     */
     public array $transformerOptions = [];
 
     public string $type;
@@ -36,6 +39,9 @@ final class Schema
     {
     }
 
+    /**
+     * @param array<string, mixed> $transformerOptions
+     */
     public static function createTransformerType(
         string $transformerClass,
         bool $isNullable,
