@@ -33,7 +33,7 @@ class DateTimeTransformer implements TransformerInterface
 
         $lastErrors = \DateTime::getLastErrors();
         if (\is_array($lastErrors) && ($lastErrors['warning_count'] || $lastErrors['error_count'])) {
-            $errorMessage = \implode(', ', \array_merge(\array_values($lastErrors['warnings']), \array_values($lastErrors['errors'])));
+            $errorMessage = \implode(', ', \array_merge($lastErrors['warnings'], $lastErrors['errors']));
 
             throw new RestApiBundle\Exception\Mapper\Transformer\InvalidDateTimeException($errorMessage);
         }

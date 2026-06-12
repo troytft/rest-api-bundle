@@ -101,10 +101,6 @@ class Mapper
                 }
 
                 $propertySchema = $schema->properties[$propertyName];
-                if (!$propertySchema instanceof RestApiBundle\Model\Mapper\Schema) {
-                    throw new \LogicException();
-                }
-
                 $value = $this->mapType($propertySchema, $propertyValue, $this->resolvePath($basePath, $propertyName), $context);
 
                 if ($propertySchema->propertySetterName) {
@@ -131,7 +127,7 @@ class Mapper
     {
         if ($rawValue === null && $schema->isNullable) {
             return null;
-        } elseif ($rawValue === null && !$schema->isNullable) {
+        } elseif ($rawValue === null) {
             throw new RestApiBundle\Exception\Mapper\MappingValidation\CanNotBeNullException($basePath);
         }
 
