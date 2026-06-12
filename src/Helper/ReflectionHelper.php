@@ -20,6 +20,10 @@ final class ReflectionHelper
     public static function getReflectionClass(string $class): \ReflectionClass
     {
         if (!isset(static::$reflectionClassCache[$class])) {
+            if (!\class_exists($class) && !\interface_exists($class) && !\enum_exists($class)) {
+                throw new \InvalidArgumentException(\sprintf('Class "%s" does not exist.', $class));
+            }
+
             static::$reflectionClassCache[$class] = new \ReflectionClass($class);
         }
 

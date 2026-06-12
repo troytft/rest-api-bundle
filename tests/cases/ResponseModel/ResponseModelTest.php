@@ -15,7 +15,10 @@ class ResponseModelTest extends Tests\BaseTestCase
 
     private function getResponseModelResolver(): RestApiBundle\Services\OpenApi\ResponseModelResolver
     {
-        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\ResponseModelResolver::class);
+        $service = $this->getContainer()->get(RestApiBundle\Services\OpenApi\ResponseModelResolver::class);
+        \assert($service instanceof RestApiBundle\Services\OpenApi\ResponseModelResolver);
+
+        return $service;
     }
 
     public function testJsonSerializer(): void
@@ -25,6 +28,9 @@ class ResponseModelTest extends Tests\BaseTestCase
 
     private function getResponseModelSerializer(): RestApiBundle\Services\ResponseModel\Serializer
     {
-        return $this->getContainer()->get(RestApiBundle\Services\ResponseModel\Serializer::class);
+        $service = $this->getContainer()->get(RestApiBundle\Services\ResponseModel\Serializer::class);
+        \assert($service instanceof RestApiBundle\Services\ResponseModel\Serializer);
+
+        return $service;
     }
 }

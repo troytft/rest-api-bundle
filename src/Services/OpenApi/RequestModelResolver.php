@@ -44,6 +44,7 @@ class RequestModelResolver
             $propertyOpenApiSchema = $this->resolveByMapperSchema($propertyMapperSchema, $propertyConstraints);
 
             if (RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionProperty)) {
+                \assert($propertyOpenApiSchema instanceof OpenApi\Schema);
                 $propertyOpenApiSchema->deprecated = true;
             }
 
@@ -246,6 +247,7 @@ class RequestModelResolver
             $choices = $constraint->choices;
         } elseif ($constraint->callback) {
             $callback = $constraint->callback;
+            \assert(\is_callable($callback));
             $choices = $callback();
         } else {
             throw new \InvalidArgumentException();

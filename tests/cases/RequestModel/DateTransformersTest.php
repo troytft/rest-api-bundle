@@ -95,11 +95,17 @@ class DateTransformersTest extends Tests\BaseTestCase
 
     private function getDateTimeTransformer(): RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer
     {
-        return $this->getContainer()->get(RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class);
+        $service = $this->getContainer()->get(RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class);
+        \assert($service instanceof RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer);
+
+        return $service;
     }
 
     private function getDateTransformer(): RestApiBundle\Services\Mapper\Transformer\DateTransformer
     {
-        return $this->getContainer()->get(RestApiBundle\Services\Mapper\Transformer\DateTransformer::class);
+        $service = $this->getContainer()->get(RestApiBundle\Services\Mapper\Transformer\DateTransformer::class);
+        \assert($service instanceof RestApiBundle\Services\Mapper\Transformer\DateTransformer);
+
+        return $service;
     }
 }

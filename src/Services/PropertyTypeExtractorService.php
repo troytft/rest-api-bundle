@@ -23,7 +23,7 @@ class PropertyTypeExtractorService
             [$this->reflectionExtractor],
             [$this->phpDocExtractor, $this->reflectionExtractor],
             [$this->phpDocExtractor],
-            [$this->reflectionExtractor, $this->phpDocExtractor],
+            [$this->reflectionExtractor],
             [$this->reflectionExtractor],
         );
     }

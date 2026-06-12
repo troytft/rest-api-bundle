@@ -79,6 +79,7 @@ class ResponseModelResolver
                 $propertySchema = $this->resolveByType($propertyType);
 
                 if (RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionProperty)) {
+                    \assert($propertySchema instanceof OpenApi\Schema);
                     $propertySchema->deprecated = true;
                 }
             } catch (RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException $exception) {
@@ -100,6 +101,7 @@ class ResponseModelResolver
                 $propertySchema = $this->resolveByType($propertyType);
 
                 if (RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionMethod)) {
+                    \assert($propertySchema instanceof OpenApi\Schema);
                     $propertySchema->deprecated = true;
                 }
             } catch (RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException $exception) {

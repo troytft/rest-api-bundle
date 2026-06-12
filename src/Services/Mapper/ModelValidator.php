@@ -38,7 +38,7 @@ class ModelValidator
                 $errors[$path] = [];
             }
 
-            $errors[$path][] = $violation->getMessage();
+            $errors[$path][] = (string) $violation->getMessage();
         }
 
         return $errors;
@@ -124,7 +124,9 @@ class ModelValidator
         }
 
         $pathParts = [];
-        $schema = $this->schemaResolver->resolve(\get_class($constraintViolation->getRoot()));
+        $root = $constraintViolation->getRoot();
+        \assert(\is_object($root));
+        $schema = $this->schemaResolver->resolve($root::class);
         foreach (\explode('.', $path) as $part) {
             $property = $schema->properties[$part] ?? null;
             if ($property instanceof RestApiBundle\Model\Mapper\Schema) {

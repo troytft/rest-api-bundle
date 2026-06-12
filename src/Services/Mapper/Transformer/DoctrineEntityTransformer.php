@@ -78,7 +78,7 @@ class DoctrineEntityTransformer implements TransformerInterface
         $firstItem = $value[0] ?? null;
 
         if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
-            if (!\is_countable($value)) {
+            if (!\is_array($value)) {
                 throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
             }
 
@@ -92,7 +92,7 @@ class DoctrineEntityTransformer implements TransformerInterface
 
             $value = \array_map(fn ($item) => (int) $item, $value);
         } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
-            if (!\is_countable($value)) {
+            if (!\is_array($value)) {
                 throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
             }
 
@@ -138,6 +138,6 @@ class DoctrineEntityTransformer implements TransformerInterface
         unset($results);
         \ksort($sortedResults);
 
-        return $sortedResults;
+        return \array_values($sortedResults);
     }
 }

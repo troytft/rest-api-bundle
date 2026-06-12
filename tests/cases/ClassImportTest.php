@@ -25,6 +25,9 @@ class ClassImportTest extends Tests\BaseTestCase
 
     private function getRequestModelResolver(): RestApiBundle\Services\OpenApi\RequestModelResolver
     {
-        return $this->getContainer()->get(RestApiBundle\Services\OpenApi\RequestModelResolver::class);
+        $service = $this->getContainer()->get(RestApiBundle\Services\OpenApi\RequestModelResolver::class);
+        \assert($service instanceof RestApiBundle\Services\OpenApi\RequestModelResolver);
+
+        return $service;
     }
 }

@@ -104,7 +104,7 @@ class Mapper
                 $value = $this->mapType($propertySchema, $propertyValue, $this->resolvePath($basePath, $propertyName), $context);
 
                 if ($propertySchema->propertySetterName) {
-                    \call_user_func([$model, $propertySchema->propertySetterName], $value);
+                    $model->{$propertySchema->propertySetterName}($value);
                 } else {
                     $model->{$propertyName} = $value;
                 }
