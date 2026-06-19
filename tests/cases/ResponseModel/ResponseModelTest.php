@@ -13,6 +13,12 @@ class ResponseModelTest extends Tests\BaseTestCase
         $this->assertMatchesOpenApiSchemaSnapshots($this->getResponseModelResolver()->dumpSchemas());
     }
 
+    public function testDeprecatedReferenceSchema(): void
+    {
+        $this->getResponseModelResolver()->resolveReference(Tests\Fixture\ResponseModel\Deprecated::class);
+        $this->assertMatchesOpenApiSchemaSnapshots($this->getResponseModelResolver()->dumpSchemas());
+    }
+
     private function getResponseModelResolver(): RestApiBundle\Services\OpenApi\ResponseModelResolver
     {
         $service = $this->getContainer()->get(RestApiBundle\Services\OpenApi\ResponseModelResolver::class);

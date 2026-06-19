@@ -1,0 +1,38 @@
+{
+    "DeprecatedResponseModel": {
+        "type": "object",
+        "properties": {
+            "deprecatedModelProperty": {
+                "$ref": "#/components/schemas/InnerResponseModel"
+            },
+            "deprecatedEnumProperty": {
+                "$ref": "#/components/schemas/NamespaceExample.PhpStringEnum"
+            },
+            "deprecatedModel": {
+                "$ref": "#/components/schemas/InnerResponseModel"
+            },
+            "deprecatedEnum": {
+                "$ref": "#/components/schemas/NamespaceExample.PhpStringEnum"
+            },
+            "__typename": {
+                "type": "string",
+                "default": "Deprecated",
+                "nullable": false
+            }
+        }
+    },
+    "InnerResponseModel": {
+        "type": "object",
+        "properties": {
+            "stringField": {
+                "type": "string",
+                "nullable": false
+            },
+            "__typename": {
+                "type": "string",
+                "default": "Inner",
+                "nullable": false
+            }
+        }
+    }
+}
