@@ -78,8 +78,7 @@ class ResponseModelResolver
                 $propertyType = $this->propertyTypeExtractorService->getTypeRequired($class, $reflectionProperty->getName());
                 $propertySchema = $this->resolveByType($propertyType);
 
-                if (RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionProperty)) {
-                    \assert($propertySchema instanceof OpenApi\Schema);
+                if ($propertySchema instanceof OpenApi\Schema && RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionProperty)) {
                     $propertySchema->deprecated = true;
                 }
             } catch (RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException $exception) {
@@ -100,8 +99,7 @@ class ResponseModelResolver
                 $propertyType = $this->methodReturnTypeExtractorService->getTypeRequired($reflectionMethod);
                 $propertySchema = $this->resolveByType($propertyType);
 
-                if (RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionMethod)) {
-                    \assert($propertySchema instanceof OpenApi\Schema);
+                if ($propertySchema instanceof OpenApi\Schema && RestApiBundle\Helper\ReflectionHelper::isDeprecated($reflectionMethod)) {
                     $propertySchema->deprecated = true;
                 }
             } catch (RestApiBundle\Exception\OpenApi\ResponseModel\UnknownTypeException $exception) {
