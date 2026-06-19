@@ -13,19 +13,21 @@ class TypenameResolver
 
     public static function resolveWithoutSuffix(string $class, string $pathPart): string
     {
-        $parts = [];
-        $hasResponseModelPart = false;
+        $allParts = \explode('\\', $class);
 
-        foreach (\explode('\\', $class) as $part) {
-            if ($hasResponseModelPart) {
+        $parts = [];
+        $hasPathPart = false;
+
+        foreach ($allParts as $part) {
+            if ($hasPathPart) {
                 $parts[] = $part;
             } elseif ($part === $pathPart) {
-                $hasResponseModelPart = true;
+                $hasPathPart = true;
             }
         }
 
-        if (!$hasResponseModelPart) {
-            throw new \RuntimeException(\sprintf('%s "%s" must be in "%s" namespace', $pathPart, $class, $pathPart));
+        if (!$hasPathPart) {
+            $parts = $allParts;
         }
 
         $typename = \implode('.', $parts);
