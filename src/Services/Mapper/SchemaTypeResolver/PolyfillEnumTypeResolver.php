@@ -22,8 +22,11 @@ class PolyfillEnumTypeResolver implements SchemaTypeResolverInterface
      */
     public function resolve(PropertyInfo\Type $propertyInfoType, array $typeOptions): RestApiBundle\Model\Mapper\Schema
     {
+        $class = $propertyInfoType->getClassName() ?? throw new \InvalidArgumentException();
+
         return RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\EnumTransformer::class, $propertyInfoType->isNullable(), [
-            RestApiBundle\Services\Mapper\Transformer\EnumTransformer::CLASS_OPTION => $propertyInfoType->getClassName(),
+            RestApiBundle\Services\Mapper\Transformer\EnumTransformer::CLASS_OPTION => $class,
+            RestApiBundle\Services\Mapper\Transformer\EnumTransformer::BACKING_TYPE_OPTION => RestApiBundle\Helper\TypeExtractor::extractEnumData($class)->type,
         ]);
     }
 }
