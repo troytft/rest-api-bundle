@@ -41,8 +41,6 @@ The bundle itself returns the following English messages. Additional messages ma
 | Wrong type: expected an integer | `This value should be an integer.` |
 | Wrong type: expected a float | `This value should be a float.` |
 | Wrong type: expected a boolean | `This value should be a boolean.` |
-| Expected an ID array of integers | `This value should be a collection of integers.` |
-| Expected an ID array of strings | `This value should be a collection of strings.` |
 | Date cannot be parsed with the configured format | `This value should be valid date with format "{format}".` |
 | Date matches the format but is invalid (`2024-02-30`) | `This value is not a valid date.` |
 | Same for date-time values | `This value should be valid date time with format "{format}".` / `This value is not a valid datetime.` |

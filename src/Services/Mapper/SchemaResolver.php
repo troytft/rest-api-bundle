@@ -25,7 +25,7 @@ class SchemaResolver implements SchemaResolverInterface
             new SchemaTypeResolver\PhpEnumTypeResolver(),
             new SchemaTypeResolver\PolyfillEnumTypeResolver(),
             new SchemaTypeResolver\DoctrineEntityTypeResolver(),
-            new SchemaTypeResolver\DoctrineEntityArrayTypeResolver(),
+            new SchemaTypeResolver\DoctrineEntityArrayTypeResolver($propertyTypeExtractorService),
             new SchemaTypeResolver\DateTypeResolver(),
             new SchemaTypeResolver\DateTimeTypeResolver(),
             new SchemaTypeResolver\UploadedFileTypeResolver(),

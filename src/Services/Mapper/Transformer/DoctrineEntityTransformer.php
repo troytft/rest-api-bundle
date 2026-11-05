@@ -63,50 +63,14 @@ class DoctrineEntityTransformer implements TransformerInterface
 
     /**
      * @param class-string $class
+     * @param list<int|string> $value
      *
      * @return array<int, object>
      */
-    private function transformMultipleItems(string $class, string $fieldName, mixed $value): array
+    private function transformMultipleItems(string $class, string $fieldName, array $value): array
     {
-        $propertyType = $this->propertyTypeExtractorService->getTypeRequired($class, $fieldName);
-        if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT && $propertyType->isCollection()) {
-            throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
-        } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING && $propertyType->isCollection()) {
-            throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
-        }
-
-        $firstItem = $value[0] ?? null;
-
-        if ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_INT) {
-            if (!\is_array($value)) {
-                throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
-            }
-
-            if (!\count($value)) {
-                return [];
-            }
-
-            if (!\is_numeric($firstItem)) {
-                throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfIntegersRequiredException();
-            }
-
-            $value = \array_map(fn ($item) => (int) $item, $value);
-        } elseif ($propertyType->getBuiltinType() === PropertyInfo\Type::BUILTIN_TYPE_STRING) {
-            if (!\is_array($value)) {
-                throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
-            }
-
-            if (!\count($value)) {
-                return [];
-            }
-
-            if (!\is_string($firstItem) && !\is_numeric($firstItem)) {
-                throw new RestApiBundle\Exception\Mapper\Transformer\CollectionOfStringsRequiredException();
-            }
-
-            $value = \array_map(fn ($item) => (string) $item, $value);
-        } else {
-            throw new \InvalidArgumentException();
+        if (!$value) {
+            return [];
         }
 
         if (\count($value) !== \count(\array_unique($value))) {

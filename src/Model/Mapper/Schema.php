@@ -73,14 +73,21 @@ final class Schema
         return $instance;
     }
 
+    /**
+     * @param array<string, mixed> $transformerOptions
+     */
     public static function createArrayType(
         self $valuesType,
         bool $isNullable,
+        ?string $transformerClass = null,
+        array $transformerOptions = [],
     ): self {
         $instance = new self();
         $instance->valuesType = $valuesType;
         $instance->type = self::ARRAY_TYPE;
         $instance->isNullable = $isNullable;
+        $instance->transformerClass = $transformerClass;
+        $instance->transformerOptions = $transformerOptions;
 
         return $instance;
     }

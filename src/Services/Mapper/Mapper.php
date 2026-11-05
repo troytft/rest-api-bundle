@@ -198,6 +198,10 @@ class Mapper
             $value[] = $this->mapType($schema->valuesType, $item, $this->resolvePath($basePath, $i), $context);
         }
 
+        if ($schema->transformerClass) {
+            return $this->mapTransformerAwareType($schema, $value, $basePath);
+        }
+
         return $value;
     }
 
