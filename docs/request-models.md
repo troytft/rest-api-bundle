@@ -294,6 +294,17 @@ public Mapper\Date $birthday; // expects "25.12.1990"
 
 Global default formats are configured in the bundle configuration (see [errors-and-config.md](errors-and-config.md)).
 
+### `#[Mapper\KeepTimezone]`
+
+Keeps the timezone sent by the client instead of converting the value to the server's local timezone. Applies only to `\DateTime` fields.
+
+```php
+#[Mapper\KeepTimezone]
+public \DateTime $startsAt; // "2024-12-25T10:30:00+03:00" keeps "+03:00"
+```
+
+Without the attribute the field follows the global `is_force_request_datetime_to_local_timezone` setting (see [errors-and-config.md](errors-and-config.md)).
+
 ## Validation
 
 The model is validated with the standard Symfony Validator. Any assertions can be used on fields and on the class:
