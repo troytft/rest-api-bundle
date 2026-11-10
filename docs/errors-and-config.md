@@ -85,6 +85,8 @@ rest_api:
 
     # Convert request datetime values to the server's local timezone.
     # false keeps the timezone from the input value.
+    # Can be overridden per field with #[Mapper\KeepTimezone]
+    # (see request-models.md).
     is_force_request_datetime_to_local_timezone: true
 
     # Format for Mapper\Date fields in requests.

@@ -23,14 +23,18 @@ class DateTimeTypeResolver implements SchemaTypeResolverInterface
     public function resolve(PropertyInfo\Type $propertyInfoType, array $typeOptions): RestApiBundle\Model\Mapper\Schema
     {
         $dateFormatOption = null;
+        $forceLocalTimezoneOption = null;
         foreach ($typeOptions as $typeOption) {
             if ($typeOption instanceof RestApiBundle\Mapping\Mapper\DateFormat) {
                 $dateFormatOption = $typeOption->getFormat();
+            } elseif ($typeOption instanceof RestApiBundle\Mapping\Mapper\KeepTimezone) {
+                $forceLocalTimezoneOption = false;
             }
         }
 
         return RestApiBundle\Model\Mapper\Schema::createTransformerType(RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::class, $propertyInfoType->isNullable(), [
             RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORMAT_OPTION => $dateFormatOption,
+            RestApiBundle\Services\Mapper\Transformer\DateTimeTransformer::FORCE_LOCAL_TIMEZONE_OPTION => $forceLocalTimezoneOption,
         ]);
     }
 }

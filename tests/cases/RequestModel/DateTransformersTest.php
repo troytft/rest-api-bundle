@@ -63,6 +63,23 @@ class DateTransformersTest extends Tests\BaseTestCase
         $this->assertSame('UTC', $value->getTimezone()->getName());
     }
 
+    public function testKeepTimezoneAttribute(): void
+    {
+        $model = new Tests\Fixture\Mapper\DateTransformersTest\KeepTimezoneModel();
+        $this->getMapper()->map($model, [
+            'field' => '2021-10-01T16:00:00+03:00',
+        ]);
+
+        $this->assertSame('+03:00', $model->field->getTimezone()->getName());
+
+        $model = new Tests\Fixture\Mapper\DateTransformersTest\DefaultTimezoneModel();
+        $this->getMapper()->map($model, [
+            'field' => '2021-10-01T16:00:00+03:00',
+        ]);
+
+        $this->assertSame((new \DateTime())->getTimezone()->getName(), $model->field->getTimezone()->getName());
+    }
+
     public function testInvalidDateException(): void
     {
         try {
