@@ -17,8 +17,8 @@ class PropertyTypeExtractorService
 
     public function __construct()
     {
-        $this->reflectionExtractor = new PropertyInfo\Extractor\ReflectionExtractor([], []); // disable getters/setters
-        $this->phpDocExtractor = new PropertyInfo\Extractor\PhpDocExtractor();
+        $this->reflectionExtractor = new PropertyInfo\Extractor\ReflectionExtractor([], [], [], false); // disable getters/setters
+        $this->phpDocExtractor = new PropertyInfo\Extractor\PhpDocExtractor(null, [], [], []);
         $this->propertyInfoExtractor = new PropertyInfo\PropertyInfoExtractor(
             [$this->reflectionExtractor],
             [$this->phpDocExtractor, $this->reflectionExtractor],
