@@ -12,6 +12,6 @@ class DoctrineHelper
     {
         $reflectionClass = ReflectionHelper::getReflectionClass($class);
 
-        return (bool) AnnotationReader::getClassAnnotation($reflectionClass, Doctrine\ORM\Mapping\Entity::class);
+        return (bool) AttributeReader::getClassAttribute($reflectionClass, Doctrine\ORM\Mapping\Entity::class);
     }
 }

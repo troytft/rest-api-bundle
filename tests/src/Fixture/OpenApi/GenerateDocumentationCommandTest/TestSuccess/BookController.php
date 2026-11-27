@@ -6,26 +6,21 @@ use Tests;
 use RestApiBundle\Mapping\OpenApi;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/books")
- */
+#[Route('/books')]
 class BookController
 {
     /**
-     * @Route(methods="GET")
-     *
      * @return Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\ResponseModel\Book[]
      */
     #[OpenApi\Endpoint(summary: 'Books list', tags: ['books'])]
+    #[Route(methods: 'GET')]
     public function listAction(Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\BookList $requestModel): array
     {
         return [];
     }
 
     #[OpenApi\Endpoint(summary: 'Upload book', tags: ['books'])]
-    /**
-     * @Route(methods="POST")
-     */
+    #[Route(methods: 'POST')]
     public function uploadAction(Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess\RequestModel\UploadBook $requestModel): void
     {
     }
