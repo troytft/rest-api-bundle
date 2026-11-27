@@ -37,22 +37,18 @@ class SchemaResolver implements SchemaResolverInterface
         $properties = [];
         $reflectionClass = RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class);
         $isExposedAll = RestApiBundle\Helper\AttributeReader::getClassAttribute($reflectionClass, RestApiBundle\Mapping\Mapper\ExposeAll::class) instanceof RestApiBundle\Mapping\Mapper\ExposeAll;
+        if (!$isExposedAll) {
+            return RestApiBundle\Model\Mapper\Schema::createModelType($class, $properties, $isNullable);
+        }
 
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            $isExposed = false;
             $propertyOptions = [];
             $propertyAttributes = RestApiBundle\Helper\AttributeReader::getPropertyAttributes($reflectionProperty);
 
             foreach ($propertyAttributes as $propertyAttribute) {
-                if ($propertyAttribute instanceof RestApiBundle\Mapping\Mapper\Expose) {
-                    $isExposed = true;
-                } elseif ($propertyAttribute instanceof RestApiBundle\Mapping\Mapper\PropertyOptionInterface) {
+                if ($propertyAttribute instanceof RestApiBundle\Mapping\Mapper\PropertyOptionInterface) {
                     $propertyOptions[] = $propertyAttribute;
                 }
-            }
-
-            if (!$isExposed && !$isExposedAll) {
-                continue;
             }
 
             try {
