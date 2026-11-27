@@ -35,7 +35,7 @@ final class AppKernel extends Kernel
         $kernel = new static('cli', false);
 
         $application = new Application($kernel);
-        $application->setDefaultCommand(RestApiBundle\Command\GenerateDocumentationCommand::getDefaultName(), true);
+        $application->setDefaultCommand(RestApiBundle\Command\GenerateDocumentationCommand::NAME, true);
 
         return $application;
     }

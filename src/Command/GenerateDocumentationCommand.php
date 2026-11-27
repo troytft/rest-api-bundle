@@ -6,6 +6,7 @@ namespace RestApiBundle\Command;
 
 use cebe\openapi\spec as OpenApi;
 use RestApiBundle;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,14 +14,15 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
+#[AsCommand(name: self::NAME)]
 final class GenerateDocumentationCommand extends Command
 {
+    public const NAME = 'rest-api:generate-documentation';
+
     private const ARGUMENT_INPUT = 'input';
     private const ARGUMENT_OUTPUT = 'output';
     private const OPTION_TEMPLATE = 'template';
     private const OPTION_EXCLUDE_PATH = 'exclude-path';
-
-    protected static $defaultName = 'rest-api:generate-documentation';
 
     public function __construct(
         private RestApiBundle\Services\OpenApi\EndpointFinder $endpointFinder,
@@ -31,7 +33,7 @@ final class GenerateDocumentationCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument(static::ARGUMENT_INPUT, InputArgument::REQUIRED, 'Path to directory with controllers')
@@ -40,7 +42,7 @@ final class GenerateDocumentationCommand extends Command
             ->addOption(static::OPTION_EXCLUDE_PATH, null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Exclude files from search by string or regular expression');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $endpoints = $this->endpointFinder->findInDirectory(
             $input->getArgument(static::ARGUMENT_INPUT),

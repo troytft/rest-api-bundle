@@ -7,10 +7,10 @@ namespace RestApiBundle\Services\RequestModel;
 use RestApiBundle;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
+use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
-class ActionArgumentValueResolver implements ArgumentValueResolverInterface
+class ActionArgumentValueResolver implements ValueResolverInterface
 {
     public function __construct(
         private RequestStack $requestStack,
@@ -18,13 +18,15 @@ class ActionArgumentValueResolver implements ArgumentValueResolverInterface
     ) {
     }
 
-    public function supports(Request $request, ArgumentMetadata $argument): bool
+    /**
+     * @return iterable<RestApiBundle\Mapping\RequestModel\RequestModelInterface>
+     */
+    public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        return RestApiBundle\Helper\ReflectionHelper::isRequestModel($argument->getType());
-    }
+        if (!RestApiBundle\Helper\ReflectionHelper::isRequestModel($argument->getType())) {
+            return [];
+        }
 
-    public function resolve(Request $request, ArgumentMetadata $argument): \Generator
-    {
         $request = $this->requestStack->getCurrentRequest();
         $requestData = \array_merge($request->files->all(), $request->getRealMethod() === 'GET' ? $request->query->all() : $request->request->all());
 
@@ -32,7 +34,7 @@ class ActionArgumentValueResolver implements ArgumentValueResolverInterface
 
         $this->mapper->map($requestModel, $requestData);
 
-        yield $requestModel;
+        return [$requestModel];
     }
 
     private function instantiate(string $class): RestApiBundle\Mapping\RequestModel\RequestModelInterface

@@ -19,7 +19,7 @@ class SettingsExtension extends Extension
     /**
      * @param array<string, mixed> $config
      */
-    public function getConfiguration(array $config, ContainerBuilder $container)
+    public function getConfiguration(array $config, ContainerBuilder $container): Configuration\ConfigExtensionConfiguration
     {
         return new Configuration\ConfigExtensionConfiguration($this->getAlias());
     }

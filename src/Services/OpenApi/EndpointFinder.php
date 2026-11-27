@@ -7,7 +7,7 @@ namespace RestApiBundle\Services\OpenApi;
 use Composer\Autoload\ClassLoader;
 use RestApiBundle;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class EndpointFinder
 {

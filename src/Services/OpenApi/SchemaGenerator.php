@@ -8,7 +8,7 @@ use cebe\openapi\spec as OpenApi;
 use RestApiBundle;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\PropertyInfo;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class SchemaGenerator
 {

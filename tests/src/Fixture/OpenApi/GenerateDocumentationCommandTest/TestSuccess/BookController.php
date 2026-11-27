@@ -4,7 +4,7 @@ namespace Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess;
 
 use Tests;
 use RestApiBundle\Mapping\OpenApi;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/books')]
 class BookController

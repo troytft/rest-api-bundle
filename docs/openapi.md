@@ -8,7 +8,7 @@ Every action that should be included in the specification must be marked with `#
 
 ```php
 use RestApiBundle\Mapping\OpenApi;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class BookController
 {

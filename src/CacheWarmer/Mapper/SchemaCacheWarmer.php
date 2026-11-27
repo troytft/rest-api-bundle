@@ -19,12 +19,15 @@ class SchemaCacheWarmer implements CacheWarmerInterface
     //        $this->settingsProvider = $settingsProvider;
     //    }
 
-    public function warmUp($cacheDir)
+    /**
+     * @return string[]
+     */
+    public function warmUp(string $cacheDir, ?string $buildDir = null): array
     {
         return []; // return $this->cacheSchemaResolver->warmUpCache($this->settingsProvider->getSourceCodeDirectory());
     }
 
-    public function isOptional()
+    public function isOptional(): bool
     {
         return true;
     }

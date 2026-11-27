@@ -2,7 +2,7 @@
 
 namespace Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestInvalidDefinition;
 
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use RestApiBundle\Mapping\OpenApi;
 
 class DefaultController

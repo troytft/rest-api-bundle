@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use RestApiBundle;
-use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
+use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 
 return function (ContainerConfigurator $configurator) {
     $services = $configurator->services()
@@ -21,7 +21,7 @@ return function (ContainerConfigurator $configurator) {
         ->tag(RestApiBundle\DependencyInjection\CompilerPass\MapperTransformerCompilerPass::TAG);
 
     $services
-        ->instanceof(ArgumentValueResolverInterface::class)
+        ->instanceof(ValueResolverInterface::class)
         ->tag('controller.argument_value_resolver', ['priority' => 25]);
 
     $services
