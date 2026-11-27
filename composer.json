@@ -30,6 +30,7 @@
         "doctrine/orm": "^2.9",
         "phpdocumentor/reflection-docblock": "^5.4|^6.4",
         "symfony/cache": "^5.4|^6.4",
+        "symfony/console": "^5.4|^6.4",
         "symfony/expression-language": "^5.4|^6.4",
         "symfony/filesystem": "^5.4|^6.4",
         "symfony/finder": "^5.4|^6.4",
