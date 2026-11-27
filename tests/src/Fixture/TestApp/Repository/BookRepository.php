@@ -16,6 +16,10 @@ class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceE
     {
         parent::__construct($registry, Tests\Fixture\TestApp\Entity\Book::class);
     }
+
+    /**
+     * @param int|null $lockVersion
+     */
     public function find($id, $lockMode = null, $lockVersion = null): ?Tests\Fixture\TestApp\Entity\Book
     {
         return $this->findOneBy(['id' => $id]);
@@ -47,6 +51,9 @@ class BookRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceE
     }
 
     /**
+     * @param int|null $limit
+     * @param int|null $offset
+     *
      * @return Tests\Fixture\TestApp\Entity\Book[]
      */
     public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null): array

@@ -12,6 +12,7 @@ jobs:
             matrix:
                 php-versions: [ '8.4', '8.5' ]
                 symfony-versions: [ '6.4.*', '7.*' ]
+                orm-versions: [ '2.*', '3.*' ]
 
         env:
             SYMFONY_REQUIRE: ${{ matrix.symfony-versions }}
@@ -37,11 +38,11 @@ jobs:
                 uses: actions/cache@v4
                 with:
                     path: vendor
-                    key: composer-vendor-cache-${{ matrix.php-versions }}-symfony-${{ matrix.symfony-versions }}-${{ hashFiles('**/composer.json') }}
+                    key: composer-vendor-cache-${{ matrix.php-versions }}-symfony-${{ matrix.symfony-versions }}-orm-${{ matrix.orm-versions }}-${{ hashFiles('**/composer.json') }}
 
             -   name: Install dependencies
                 if: steps.composer-cache.outputs.cache-hit != 'true'
-                run: composer update --no-interaction --no-progress
+                run: composer update --no-interaction --no-progress --with "doctrine/orm:${{ matrix.orm-versions }}"
 
             -   name: Run PHPUnit
                 run: make unit-test
