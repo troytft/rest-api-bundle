@@ -12,8 +12,8 @@ class EndpointData
     public function __construct(
         public \ReflectionMethod $reflectionMethod,
         public RestApiBundle\Mapping\OpenApi\Endpoint $endpointMapping,
-        public Routing\Annotation\Route $actionRouteMapping,
-        public ?Routing\Annotation\Route $controllerRouteMapping = null,
+        public Routing\Attribute\Route $actionRouteMapping,
+        public ?Routing\Attribute\Route $controllerRouteMapping = null,
         public bool $deprecated = false,
     ) {
     }

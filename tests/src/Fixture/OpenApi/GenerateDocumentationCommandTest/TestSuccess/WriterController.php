@@ -3,7 +3,7 @@
 namespace Tests\Fixture\OpenApi\GenerateDocumentationCommandTest\TestSuccess;
 
 use Tests;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use RestApiBundle\Mapping\OpenApi;
 
 #[Route('/writers')]

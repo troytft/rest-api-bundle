@@ -11,6 +11,10 @@ jobs:
         strategy:
             matrix:
                 php-versions: [ '8.4', '8.5' ]
+                symfony-versions: [ '6.4.*', '7.*' ]
+
+        env:
+            SYMFONY_REQUIRE: ${{ matrix.symfony-versions }}
 
         steps:
             -   name: Checkout repository
@@ -21,6 +25,7 @@ jobs:
                 with:
                     php-version: ${{ matrix.php-versions }}
                     coverage: none
+                    tools: flex
                 env:
                     COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -32,11 +37,11 @@ jobs:
                 uses: actions/cache@v4
                 with:
                     path: vendor
-                    key: composer-vendor-cache-${{ matrix.php-versions }}-${{ hashFiles('**/composer.json') }}
+                    key: composer-vendor-cache-${{ matrix.php-versions }}-symfony-${{ matrix.symfony-versions }}-${{ hashFiles('**/composer.json') }}
 
-            -   name: Install Symfony
+            -   name: Install dependencies
                 if: steps.composer-cache.outputs.cache-hit != 'true'
-                run: composer require 'symfony/framework-bundle:^6.4' --no-suggest --no-interaction --no-progress
+                run: composer update --no-interaction --no-progress
 
             -   name: Run PHPUnit
                 run: make unit-test

@@ -18,7 +18,7 @@ class ResponseSubscriber implements EventSubscriberInterface
         $this->responseHandler = $responseHandler;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::VIEW => 'handle',

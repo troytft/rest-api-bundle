@@ -13,7 +13,7 @@ class MapperTransformerCompilerPass implements CompilerPassInterface
 {
     public const TAG = 'rest_api.mapper.transformer';
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->has(RestApiBundle\Services\Mapper\Mapper::class)) {
             return;
