@@ -42,27 +42,14 @@ The controller receives an object with populated fields. If the JSON contains a 
 
 ## Declaring Fields
 
-For a field to participate in mapping, either the class must be marked with `#[Mapper\ExposeAll]`, or each field must be marked with `#[Mapper\Expose]`.
+The class must be marked with `#[Mapper\ExposeAll]`; all of its properties then participate in mapping.
 
 ```php
-// Option 1: all public properties are exposed automatically
 #[Mapper\ExposeAll]
 class Filter implements RequestModelInterface
 {
     public ?string $query;
     public ?int $offset;
-}
-
-// Option 2: fields are listed explicitly
-class Filter implements RequestModelInterface
-{
-    #[Mapper\Expose]
-    public ?string $query;
-
-    #[Mapper\Expose]
-    public ?int $offset;
-
-    public string $internalState; // will not be mapped
 }
 ```
 
