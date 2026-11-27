@@ -34,10 +34,10 @@ class RequestModelResolver
             $reflectionProperty = $reflectedClass->getProperty($propertyName);
             $propertyConstraints = [];
 
-            $annotations = RestApiBundle\Helper\AnnotationReader::getPropertyAnnotations($reflectionProperty);
-            foreach ($annotations as $annotation) {
-                if ($annotation instanceof Validator\Constraint) {
-                    $propertyConstraints[] = $annotation;
+            $attributes = RestApiBundle\Helper\AttributeReader::getPropertyAttributes($reflectionProperty);
+            foreach ($attributes as $attribute) {
+                if ($attribute instanceof Validator\Constraint) {
+                    $propertyConstraints[] = $attribute;
                 }
             }
 

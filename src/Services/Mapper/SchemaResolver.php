@@ -36,18 +36,18 @@ class SchemaResolver implements SchemaResolverInterface
     {
         $properties = [];
         $reflectionClass = RestApiBundle\Helper\ReflectionHelper::getReflectionClass($class);
-        $isExposedAll = RestApiBundle\Helper\AnnotationReader::getClassAnnotation($reflectionClass, RestApiBundle\Mapping\Mapper\ExposeAll::class) instanceof RestApiBundle\Mapping\Mapper\ExposeAll;
+        $isExposedAll = RestApiBundle\Helper\AttributeReader::getClassAttribute($reflectionClass, RestApiBundle\Mapping\Mapper\ExposeAll::class) instanceof RestApiBundle\Mapping\Mapper\ExposeAll;
 
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             $isExposed = false;
             $propertyOptions = [];
-            $propertyAnnotations = RestApiBundle\Helper\AnnotationReader::getPropertyAnnotations($reflectionProperty);
+            $propertyAttributes = RestApiBundle\Helper\AttributeReader::getPropertyAttributes($reflectionProperty);
 
-            foreach ($propertyAnnotations as $propertyAnnotation) {
-                if ($propertyAnnotation instanceof RestApiBundle\Mapping\Mapper\Expose) {
+            foreach ($propertyAttributes as $propertyAttribute) {
+                if ($propertyAttribute instanceof RestApiBundle\Mapping\Mapper\Expose) {
                     $isExposed = true;
-                } elseif ($propertyAnnotation instanceof RestApiBundle\Mapping\Mapper\PropertyOptionInterface) {
-                    $propertyOptions[] = $propertyAnnotation;
+                } elseif ($propertyAttribute instanceof RestApiBundle\Mapping\Mapper\PropertyOptionInterface) {
+                    $propertyOptions[] = $propertyAttribute;
                 }
             }
 

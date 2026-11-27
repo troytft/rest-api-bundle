@@ -58,15 +58,15 @@ class EndpointFinder
     private function extractEndpointsByReflectionClass(\ReflectionClass $reflectionClass): array
     {
         $result = [];
-        $classRouteMapping = RestApiBundle\Helper\AnnotationReader::getClassAnnotation($reflectionClass, Route::class);
+        $classRouteMapping = RestApiBundle\Helper\AttributeReader::getClassAttribute($reflectionClass, Route::class);
 
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-            $methodRouteMapping = RestApiBundle\Helper\AnnotationReader::getMethodAnnotation($reflectionMethod, Route::class);
+            $methodRouteMapping = RestApiBundle\Helper\AttributeReader::getMethodAttribute($reflectionMethod, Route::class);
             if (!$methodRouteMapping) {
                 continue;
             }
 
-            $endpointMapping = RestApiBundle\Helper\AnnotationReader::getMethodAnnotation($reflectionMethod, RestApiBundle\Mapping\OpenApi\Endpoint::class);
+            $endpointMapping = RestApiBundle\Helper\AttributeReader::getMethodAttribute($reflectionMethod, RestApiBundle\Mapping\OpenApi\Endpoint::class);
             if (!$endpointMapping) {
                 continue;
             }

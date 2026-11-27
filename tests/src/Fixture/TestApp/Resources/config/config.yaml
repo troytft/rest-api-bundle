@@ -1,10 +1,9 @@
 framework:
     validation:
         enabled: true
-        enable_annotations: true
     router:
         resource: '@TestAppBundle'
-        type: annotation
+        type: attribute
         strict_requirements: true
     session:
         enabled: false

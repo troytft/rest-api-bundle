@@ -4,32 +4,14 @@ declare(strict_types=1);
 
 namespace RestApiBundle\Helper;
 
-final class AnnotationReader
+final class AttributeReader
 {
-    private static ?\Doctrine\Common\Annotations\AnnotationReader $annotationReader = null;
-
-    private static function getAnnotationReader(): \Doctrine\Common\Annotations\AnnotationReader
-    {
-        if (!isset(static::$annotationReader)) {
-            $parser = new \Doctrine\Common\Annotations\DocParser();
-            $parser
-                ->setIgnoreNotImportedAnnotations(true);
-
-            static::$annotationReader = new \Doctrine\Common\Annotations\AnnotationReader($parser);
-        }
-
-        return static::$annotationReader;
-    }
-
     /**
      * @return list<object>
      */
-    public static function getPropertyAnnotations(\ReflectionProperty $reflectionProperty): array
+    public static function getPropertyAttributes(\ReflectionProperty $reflectionProperty): array
     {
-        return \array_values(\array_merge(
-            static::getAnnotationReader()->getPropertyAnnotations($reflectionProperty),
-            static::createAnnotationsFromAttributes($reflectionProperty->getAttributes())
-        ));
+        return static::createInstances($reflectionProperty->getAttributes());
     }
 
     /**
@@ -37,12 +19,9 @@ final class AnnotationReader
      *
      * @return list<object>
      */
-    public static function getClassAnnotations(\ReflectionClass $reflectionClass): array
+    public static function getClassAttributes(\ReflectionClass $reflectionClass): array
     {
-        return \array_values(\array_merge(
-            static::getAnnotationReader()->getClassAnnotations($reflectionClass),
-            static::createAnnotationsFromAttributes($reflectionClass->getAttributes())
-        ));
+        return static::createInstances($reflectionClass->getAttributes());
     }
 
     /**
@@ -53,11 +32,11 @@ final class AnnotationReader
      *
      * @return T|null
      */
-    public static function getClassAnnotation(\ReflectionClass $reflectionClass, string $class): ?object
+    public static function getClassAttribute(\ReflectionClass $reflectionClass, string $class): ?object
     {
-        foreach (static::getClassAnnotations($reflectionClass) as $classAnnotation) {
-            if ($classAnnotation instanceof $class) {
-                return $classAnnotation;
+        foreach (static::getClassAttributes($reflectionClass) as $classAttribute) {
+            if ($classAttribute instanceof $class) {
+                return $classAttribute;
             }
         }
 
@@ -67,12 +46,9 @@ final class AnnotationReader
     /**
      * @return list<object>
      */
-    public static function getMethodAnnotations(\ReflectionMethod $reflectionMethod): array
+    public static function getMethodAttributes(\ReflectionMethod $reflectionMethod): array
     {
-        return \array_values(\array_merge(
-            static::getAnnotationReader()->getMethodAnnotations($reflectionMethod),
-            static::createAnnotationsFromAttributes($reflectionMethod->getAttributes())
-        ));
+        return static::createInstances($reflectionMethod->getAttributes());
     }
 
     /**
@@ -82,11 +58,11 @@ final class AnnotationReader
      *
      * @return T|null
      */
-    public static function getMethodAnnotation(\ReflectionMethod $reflectionMethod, string $class): ?object
+    public static function getMethodAttribute(\ReflectionMethod $reflectionMethod, string $class): ?object
     {
-        foreach (static::getMethodAnnotations($reflectionMethod) as $methodAnnotation) {
-            if ($methodAnnotation instanceof $class) {
-                return $methodAnnotation;
+        foreach (static::getMethodAttributes($reflectionMethod) as $methodAttribute) {
+            if ($methodAttribute instanceof $class) {
+                return $methodAttribute;
             }
         }
 
@@ -98,7 +74,7 @@ final class AnnotationReader
      *
      * @return list<object>
      */
-    private static function createAnnotationsFromAttributes(array $attributes): array
+    private static function createInstances(array $attributes): array
     {
         return \array_map(function (\ReflectionAttribute $reflectionAttribute) {
             $class = $reflectionAttribute->getName();
