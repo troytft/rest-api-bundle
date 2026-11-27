@@ -31,6 +31,10 @@ class AuthorRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\Servic
         return null;
     }
 
+    /**
+     * @param int|null $limit
+     * @param int|null $offset
+     */
     public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null): array
     {
         $result = [];
